@@ -526,7 +526,8 @@
                     measurementUnit = "m²";
                 }
 
-                measureAreaTooltipElement.innerHTML = `Area: <strong>${measurement}</strong> ${measurementUnit}`;
+                measureAreaTooltipElement.innerHTML = `<div style="display: flex; align-items: center;"><i class="material-icons" style="margin-right: 5px;">eco</i><span>Khu vực:</span><strong style="margin-left: 5px;">${measurement}</strong> ${measurementUnit}</div>`;
+
 
 
                 // Add a white background to the measurement size label
@@ -637,7 +638,7 @@
                 measurementUnit = "m";
             }
 
-            lineTooltipElement.innerHTML = `Chiều dài: ${measurement} ${measurementUnit}`;
+            lineTooltipElement.innerHTML = `Chiều dài: ${measurement}${measurementUnit}`;
 
             // Add a white background to the line tooltip
             lineTooltipElement.style.backgroundColor = "#ffffff";
@@ -688,7 +689,6 @@
         function clearLengthTooltips() {
             clearLineTooltips();
         }
-
 
 
 
