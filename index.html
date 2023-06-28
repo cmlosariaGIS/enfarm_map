@@ -271,6 +271,46 @@
         searchBar.style.display = "none";
 
 
+        // Define the marker layer variable
+        let markerLayer;
+
+        // Function to create a marker at the specified coordinates
+        function createMarker(coordinates) {
+            // Remove the previous marker if it exists
+            if (markerLayer) {
+                map.removeLayer(markerLayer);
+            }
+
+            // Create a new marker layer
+            const marker = new ol.Feature({
+                geometry: new ol.geom.Point(coordinates),
+            });
+
+            const markerStyle = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 6,
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0, 191, 255, 0.8)', // Light blue color
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 0, 0, 0.8)',
+                        width: 2,
+                    }),
+                }),
+            });
+
+            marker.setStyle(markerStyle);
+
+            markerLayer = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    features: [marker],
+                }),
+            });
+
+            // Add the marker layer to the map
+            map.addLayer(markerLayer);
+        }
+
         // Function to fetch place suggestions from OSM-Nominatim
         async function fetchPlaceSuggestions(searchText) {
             const baseUrl = 'https://nominatim.openstreetmap.org/search';
@@ -322,6 +362,10 @@
                     const center = ol.proj.fromLonLat([longitude, latitude]);
                     map.getView().setCenter(center);
                     map.getView().setZoom(15);
+
+                    // Create a marker at the selected place
+                    const coordinates = ol.proj.fromLonLat([longitude, latitude]);
+                    createMarker(coordinates);
                 });
 
                 suggestionItem.appendChild(gpsIcon);
@@ -332,7 +376,6 @@
             // Show the suggestions container
             suggestionsContainer.style.display = 'block';
         }
-
 
         // Function to handle search input
         function handleSearchInput() {
@@ -352,12 +395,18 @@
                 // Hide the suggestions container if the search input is empty
                 const suggestionsContainer = document.getElementById('suggestionsContainer');
                 suggestionsContainer.style.display = 'none';
+
+                // Remove the marker layer
+                if (markerLayer) {
+                    map.removeLayer(markerLayer);
+                }
             }
         }
 
         // Attach event listener to the search input
         const searchBarInput = document.getElementById('searchBarInput');
         searchInput.addEventListener('input', handleSearchInput);
+
 
 
 
