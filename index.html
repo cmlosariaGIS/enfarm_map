@@ -8,8 +8,8 @@
     <style>
         .map {
             position: relative;
-            width: 375px;
-            height: 350px;
+            width: 100%;
+            height: 100%;
             /* Adjust the height as needed */
         }
 
@@ -93,6 +93,31 @@
             font-size: 20px;
         }
 
+        .suggestionsContainer {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 333px;
+            max-height: 250px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 2;
+            display: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .suggestionsContainer div {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .suggestionsContainer div:hover {
+            background-color: #f2f2f2;
+        }
+
         .basemapBtn {
             position: absolute;
             top: 10px;
@@ -158,12 +183,20 @@
         <button id="searchBtn" class="searchBtn">
             <i class="material-icons">search</i>
         </button>
+
         <div id="searchBar" class="searchBar">
             <input id="searchInput" class="searchInput" type="text" placeholder="Search for a place..." />
             <button id="searchButton" class="searchButton">
                 <i class="material-icons">search</i>
             </button>
+            <div id="suggestionsContainer" class="suggestionsContainer"></div>
         </div>
+
+
+        <!-- Add a container for the place suggestions -->
+        <div id="suggestionsContainer"></div>
+
+
         <button id="measureBtn" class="measureBtn" onclick="startMeasurement()">
             <i class="material-icons">straighten</i>
         </button>
@@ -485,6 +518,95 @@
             const area = polygon.getArea();
             return area;
         }
+
+
+        // Function to fetch place suggestions from OSM-Nominatim
+        async function fetchPlaceSuggestions(searchText) {
+            const baseUrl = 'https://nominatim.openstreetmap.org/search';
+            const format = 'json';
+            const limit = 5;
+
+            // Add the 'countrycodes' parameter to filter results to Vietnam (country code: VN)
+            const url = `${baseUrl}?q=${encodeURIComponent(searchText)}&format=${format}&limit=${limit}&countrycodes=VN`;
+
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.map(place => ({
+                        display_name: place.display_name,
+                        lat: place.lat,
+                        lon: place.lon
+                    }));
+                } else {
+                    console.error('Failed to fetch place suggestions:', response.status, response.statusText);
+                    return [];
+                }
+            } catch (error) {
+                console.error('Failed to fetch place suggestions:', error);
+                return [];
+            }
+        }
+
+        // Function to display place suggestions below the search bar
+        function displayPlaceSuggestions(suggestions) {
+    const suggestionsContainer = document.getElementById('suggestionsContainer');
+    suggestionsContainer.innerHTML = '';
+
+    suggestions.forEach(suggestion => {
+        const suggestionItem = document.createElement('div');
+        suggestionItem.classList.add('suggestionItem');
+
+        const gpsIcon = document.createElement('i');
+        gpsIcon.classList.add('material-icons');
+        gpsIcon.textContent = 'place';
+
+        const suggestionText = document.createElement('span');
+        suggestionText.textContent = suggestion.display_name;
+
+        suggestionItem.addEventListener('click', () => {
+            // Handle suggestion click, e.g., set the map view to the selected place
+            const latitude = parseFloat(suggestion.lat);
+            const longitude = parseFloat(suggestion.lon);
+            const center = ol.proj.fromLonLat([longitude, latitude]);
+            map.getView().setCenter(center);
+            map.getView().setZoom(15);
+        });
+
+        suggestionItem.appendChild(gpsIcon);
+        suggestionItem.appendChild(suggestionText);
+        suggestionsContainer.appendChild(suggestionItem);
+    });
+
+    // Show the suggestions container
+    suggestionsContainer.style.display = 'block';
+}
+
+
+        // Function to handle search input
+        function handleSearchInput() {
+            const searchText = searchInput.value.trim();
+
+            if (searchText.length > 0) {
+                // Fetch place suggestions from OSM-Nominatim
+                fetchPlaceSuggestions(searchText)
+                    .then(suggestions => {
+                        // Display the place suggestions below the search bar
+                        displayPlaceSuggestions(suggestions);
+                    })
+                    .catch(error => {
+                        console.error('Failed to fetch place suggestions:', error);
+                    });
+            } else {
+                // Hide the suggestions container if the search input is empty
+                const suggestionsContainer = document.getElementById('suggestionsContainer');
+                suggestionsContainer.style.display = 'none';
+            }
+        }
+
+        // Attach event listener to the search input
+        const searchBarInput = document.getElementById('searchBarInput');
+        searchInput.addEventListener('input', handleSearchInput);
 
     </script>
 </body>
