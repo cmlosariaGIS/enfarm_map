@@ -16,7 +16,8 @@
         .basemapBtn,
         .locationBtn,
         .searchBtn,
-        .measureBtn,.measureLineBtn,
+        .measureAreaBtn,
+        .measureLengthBtn,
         .drawBtn {
             background-color: #ffffff;
             border-radius: 50%;
@@ -34,7 +35,8 @@
         .basemapBtn i,
         .locationBtn i,
         .searchBtn i,
-        .measureBtn i, .measureLineBtn i,
+        .measureAreaBtn i,
+        .measureLengthBtn i,
         .drawBtn i {
             font-family: "Material Icons";
             font-size: 30px;
@@ -70,7 +72,8 @@
             flex: 1;
             border: none;
             outline: none;
-            font-size: 20px;
+            font-size: 16px;
+            color: #515151;
             padding: 4px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -90,18 +93,18 @@
 
         .searchButton i {
             color: #686868;
-            font-size: 20px;
+            font-size: 30px;
         }
 
         .suggestionsContainer {
             position: absolute;
-            top: 40px;
+            top: 50px;
             left: 0;
-            width: 333px;
-            max-height: 250px;
+            width: 400px;
+            max-height: 350px;
             overflow-y: auto;
             background-color: #ffffff;
-            border-radius: 4px;
+            border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             padding: 10px;
             z-index: 2;
@@ -126,7 +129,7 @@
         }
 
         .gpsIcon {
-            margin-right: 5px;
+            margin-right: 10px;
             color: #a8a8a8;
         }
 
@@ -144,14 +147,14 @@
             z-index: 1;
         }
 
-        .measureBtn {
+        .measureAreaBtn {
             position: absolute;
             top: 130px;
             right: 30px;
             z-index: 1;
         }
 
-        .measureLineBtn {
+        .measureLengthBtn {
             position: absolute;
             top: 180px;
             right: 30px;
@@ -217,13 +220,14 @@
         <div id="suggestionsContainer"></div>
 
 
-        <button id="measureBtn" class="measureBtn" onclick="startMeasurement()">
+        <button id="measureAreaBtn" class="measureAreaBtn" onclick="startMeasurementArea()">
             <i class="material-icons">square_foot</i>
         </button>
 
-        <button id="measureLineBtn" class="measureLineBtn" onclick="startMeasurement()">
-            <i class="material-icons">straighten</i>
+        <button id="measureLengthBtn" class="measureLengthBtn" onclick="startMeasurementLength()">
+            <i class="material-icons">linear_scale</i>
         </button>
+
 
         <button id="drawBtn" class="drawBtn" onclick="startDrawing()">
             <i class="material-icons">create</i>
@@ -233,93 +237,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>
     <script>
-        const map = new ol.Map({
-            target: "map",
-            layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
-            view: new ol.View({
-                center: ol.proj.fromLonLat([106.6297, 10.8231]),
-                zoom: 12,
-            }),
-            controls: [],
-        });
 
-        const satelliteLayer = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-            }),
-        });
 
-        const streetLayer = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-            }),
-        });
-
-        map.addLayer(streetLayer);
-
-        let currentBasemap = 1;
-        const basemaps = [satelliteLayer, streetLayer];
-
-        function cycleBasemap() {
-            map.removeLayer(basemaps[currentBasemap]);
-            currentBasemap = (currentBasemap + 1) % basemaps.length;
-            map.addLayer(basemaps[currentBasemap]);
-        }
-
-        const userLocationLayer = new ol.layer.Vector({
-            source: new ol.source.Vector(),
-            style: new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 8,
-                    fill: new ol.style.Fill({
-                        color: '#1B6B93',
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: 'white',
-                        width: 3,
-                    }),
-                }),
-            }),
-            name: 'User Location',
-        });
-
-        function getUserLocation() {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const { latitude, longitude } = position.coords;
-                        const userLocation = ol.proj.fromLonLat([longitude, latitude]);
-
-                        // Remove existing user location feature if it exists
-                        userLocationLayer.getSource().clear();
-
-                        // Create a new user location feature
-                        const userLocationFeature = new ol.Feature({
-                            geometry: new ol.geom.Point(userLocation),
-                        });
-
-                        // Add the feature to the user location layer
-                        userLocationLayer.getSource().addFeature(userLocationFeature);
-
-                        // Add or update the user location layer on the map
-                        const existingUserLocationLayer = map.getLayers().getArray().find(layer => layer.get('name') === 'User Location');
-                        if (existingUserLocationLayer) {
-                            map.removeLayer(existingUserLocationLayer);
-                        }
-                        map.addLayer(userLocationLayer);
-
-                        map.getView().setCenter(userLocation);
-                        map.getView().setZoom(17);
-                    },
-                    (error) => {
-                        console.error("Error getting user location:", error);
-                    }
-                );
-            } else {
-                console.error("Geolocation is not supported by this browser.");
-            }
-        }
-
+        //SEARCH BUTTON FUNCTION
         const searchBtn = document.getElementById("searchBtn");
         const searchBar = document.getElementById("searchBar");
         const searchInput = document.getElementById("searchInput");
@@ -349,200 +269,6 @@
 
         // Hide the search bar on app load
         searchBar.style.display = "none";
-
-        let draw;
-        let measureSource;
-        let measureTooltipElement;
-        let measureTooltip;
-        let sketch;
-
-        function startMeasurement() {
-            const measureBtn = document.getElementById("measureBtn");
-            const measureBtnIcon = measureBtn.querySelector("i");
-
-            if (measureBtn.classList.contains("active")) {
-                // Disable measuring
-                measureBtn.classList.remove("active");
-                map.removeInteraction(draw);
-                map.removeOverlay(measureTooltip);
-                measureTooltipElement = null;
-                measureSource.clear();
-
-                // Change the icon back to the "straighten" icon
-                measureBtnIcon.textContent = "straighten";
-                // Reset the background color to white
-                measureBtn.style.backgroundColor = "#ffffff";
-                // Change the icon color to black
-                measureBtnIcon.style.color = "#000000";
-            } else {
-                // Enable measuring
-                measureBtn.classList.add("active");
-                measureSource = new ol.source.Vector();
-                map.addLayer(
-                    new ol.layer.Vector({
-                        source: measureSource,
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: "rgba(51, 255, 116, 0.5)", // #33ff74 with 50% transparency
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: "#33ff74",
-                                width: 5,
-                            }),
-                            image: new ol.style.Circle({
-                                radius: 7,
-                                fill: new ol.style.Fill({
-                                    color: "#ffcc33",
-                                }),
-                            }),
-                        }),
-                    })
-                );
-                createMeasureTooltip();
-                addInteraction();
-
-                // Change the icon to the "close" icon
-                measureBtnIcon.textContent = "close";
-                // Change the background color to dark red
-                measureBtn.style.backgroundColor = "#FF6666";
-                // Change the icon color to white
-                measureBtnIcon.style.color = "#ffffff";
-
-                // Add floating message
-                const floatingMessage = document.createElement("div");
-                floatingMessage.className = "floating-message";
-                const infoIcon = document.createElement("i");
-                infoIcon.className = "material-icons";
-                infoIcon.textContent = "touch_app";
-                infoIcon.style.fontSize = "25px"; 
-                floatingMessage.appendChild(infoIcon);
-                floatingMessage.innerHTML += "  Tap the screen to start measuring";
-                map.getViewport().appendChild(floatingMessage);
-
-
-                // Remove floating message after 05 seconds
-                setTimeout(function () {
-                    map.getViewport().removeChild(floatingMessage);
-                }, 5000);
-            }
-        }
-
-        let drawStartListener;
-        let drawEndListener;
-
-        function addInteraction() {
-            draw = new ol.interaction.Draw({
-                source: measureSource,
-                type: "Polygon",
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: "rgba(255, 255, 255, 0.2)",
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: "#33ff74",
-                        width: 2,
-                    }),
-                    image: new ol.style.Circle({
-                        radius: 7,
-                        fill: new ol.style.Fill({
-                            color: "#33ff74",
-                        }),
-                    }),
-                }),
-            });
-            map.addInteraction(draw);
-
-            drawEndListener = draw.on("drawend", function (evt) {
-                const feature = evt.feature;
-                measureSource.removeFeature(sketch);
-                sketch = null;
-                measureTooltipElement.className = "ol-tooltip ol-tooltip-static";
-                measureTooltip.setOffset([0, -7]);
-
-                const geom = feature.getGeometry();
-                const extent = geom.getExtent();
-                const center = ol.extent.getCenter(extent);
-                const area = getArea(geom);
-
-                let measurement = area.toFixed(2);
-                let measurementUnit = "sqm";
-
-                if (area > 1000) {
-                    measurement = (area / 10000).toFixed(2); // Convert to hectares
-                    measurementUnit = "ha";
-                }
-
-                measureTooltipElement.innerHTML = `<strong>${measurement}</strong> ${measurementUnit}`;
-
-                // Add a white background to the measurement size label
-                measureTooltipElement.style.backgroundColor = "#ffffff";
-                measureTooltipElement.style.padding = "4px 6px";
-                measureTooltipElement.style.borderRadius = "50px";
-
-                // Change the font color to Segoe UI (#515151) and set the font size to 12px
-                measureTooltipElement.style.color = "#515151";
-                measureTooltipElement.style.fontFamily = "Segoe UI";
-                measureTooltipElement.style.fontSize = "12px";
-
-                // Position the measurement tooltip element in the middle of the map
-                measureTooltip.setPosition(center);
-
-                map.removeInteraction(draw);
-                map.un("pointermove", pointerMoveHandler);
-            });
-        }
-
-        let helpTooltipElement;
-        let helpTooltip;
-
-        function createHelpTooltip() {
-            if (helpTooltipElement) {
-                helpTooltipElement.parentNode.removeChild(helpTooltipElement);
-            }
-            helpTooltipElement = document.createElement("div");
-            helpTooltipElement.className = "ol-tooltip hidden";
-            helpTooltip = new ol.Overlay({
-                element: helpTooltipElement,
-                offset: [15, 0],
-                positioning: "center-left",
-            });
-            map.addOverlay(helpTooltip);
-        }
-
-        function createMeasureTooltip() {
-            if (measureTooltipElement) {
-                measureTooltipElement.parentNode.removeChild(measureTooltipElement);
-            }
-            measureTooltipElement = document.createElement("div");
-            measureTooltipElement.className = "ol-tooltip ol-tooltip-measure";
-            measureTooltip = new ol.Overlay({
-                element: measureTooltipElement,
-                offset: [100, 0],
-                positioning: "bottom-center",
-            });
-            map.addOverlay(measureTooltip);
-        }
-
-        function pointerMoveHandler(evt) {
-            if (evt.dragging) {
-                return;
-            }
-            const helpMsg = "Click to continue drawing the polygon";
-            if (sketch) {
-                const geom = sketch.getGeometry();
-                if (geom instanceof ol.geom.Polygon) {
-                    helpMsg = continuePolygonMsg;
-                }
-            }
-            helpTooltipElement.innerHTML = helpMsg;
-            helpTooltip.setPosition(evt.coordinate);
-            helpTooltipElement.classList.remove("hidden");
-        }
-
-        function getArea(polygon) {
-            const area = polygon.getArea();
-            return area;
-        }
 
 
         // Function to fetch place suggestions from OSM-Nominatim
@@ -608,7 +334,6 @@
         }
 
 
-
         // Function to handle search input
         function handleSearchInput() {
             const searchText = searchInput.value.trim();
@@ -633,6 +358,575 @@
         // Attach event listener to the search input
         const searchBarInput = document.getElementById('searchBarInput');
         searchInput.addEventListener('input', handleSearchInput);
+
+
+
+
+
+        //BASEMAP BUTTON FUNCTION
+        const map = new ol.Map({
+            target: "map",
+            layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([106.6297, 10.8231]),
+                zoom: 12,
+            }),
+            controls: [],
+        });
+
+        const satelliteLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+            }),
+        });
+
+        const streetLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+            }),
+        });
+
+        map.addLayer(streetLayer);
+
+        let currentBasemap = 1;
+        const basemaps = [satelliteLayer, streetLayer];
+
+        function cycleBasemap() {
+            map.removeLayer(basemaps[currentBasemap]);
+            currentBasemap = (currentBasemap + 1) % basemaps.length;
+            map.addLayer(basemaps[currentBasemap]);
+        }
+
+
+
+        //MEASURE AREA BUTTON FUNCTION
+        let drawArea;
+        let measureAreaSource;
+        let measureAreaTooltipElement;
+        let measureAreaTooltip;
+        let sketchArea;
+        let lineTooltips = [];
+
+        function startMeasurementArea() {
+            const measureAreaBtn = document.getElementById("measureAreaBtn");
+            const measureAreaBtnIcon = measureAreaBtn.querySelector("i");
+
+            if (measureAreaBtn.classList.contains("active")) {
+                // Disable measuring area
+                measureAreaBtn.classList.remove("active");
+                map.removeInteraction(drawArea);
+                map.removeOverlay(measureAreaTooltip);
+                measureAreaTooltipElement = null;
+                measureAreaSource.clear();
+                clearLineTooltips(); // Clear length tooltips
+
+                // Change the icon back to the "square_foot" icon
+                measureAreaBtnIcon.textContent = "square_foot";
+                // Reset the background color to white
+                measureAreaBtn.style.backgroundColor = "#ffffff";
+                // Change the icon color to black
+                measureAreaBtnIcon.style.color = "#515151";
+            } else {
+                // Enable measuring area
+                measureAreaBtn.classList.add("active");
+                measureAreaSource = new ol.source.Vector();
+                map.addLayer(
+                    new ol.layer.Vector({
+                        source: measureAreaSource,
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: "rgba(51, 255, 116, 0.5)", // #33ff74 with 50% transparency
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: "#33ff74",
+                                width: 2,
+                            }),
+                            image: new ol.style.Circle({
+                                radius: 7,
+                                fill: new ol.style.Fill({
+                                    color: "#33ff74",
+                                }),
+                            }),
+                        }),
+                    })
+                );
+                createMeasureAreaTooltip();
+                addAreaInteraction();
+
+                // Change the icon to the "close" icon
+                measureAreaBtnIcon.textContent = "close";
+                // Change the background color to dark red
+                measureAreaBtn.style.backgroundColor = "#FF6666";
+                // Change the icon color to white
+                measureAreaBtnIcon.style.color = "#ffffff";
+
+                // Add floating message
+                const floatingMessage = document.createElement("div");
+                floatingMessage.className = "floating-message";
+                const infoIcon = document.createElement("i");
+                infoIcon.className = "material-icons";
+                infoIcon.textContent = "touch_app";
+                infoIcon.style.fontSize = "25px";
+                floatingMessage.appendChild(infoIcon);
+                floatingMessage.innerHTML += "  Chạm vào màn hình để bắt đầu đo"; //"Tap the screen to start measuring"
+                map.getViewport().appendChild(floatingMessage);
+
+                // Remove floating message after 05 seconds
+                setTimeout(function () {
+                    map.getViewport().removeChild(floatingMessage);
+                }, 5000);
+            }
+        }
+
+        let drawAreaStartListener;
+        let drawAreaEndListener;
+
+        function addAreaInteraction() {
+            drawArea = new ol.interaction.Draw({
+                source: measureAreaSource,
+                type: "Polygon",
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: "rgba(255, 255, 255, 0.2)",
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "#33ff74",
+                        width: 2,
+                    }),
+                    image: new ol.style.Circle({
+                        radius: 7,
+                        fill: new ol.style.Fill({
+                            color: "#33ff74",
+                        }),
+                    }),
+                }),
+            });
+            map.addInteraction(drawArea);
+
+            drawAreaEndListener = drawArea.on("drawend", function (evt) {
+                const feature = evt.feature;
+                measureAreaSource.removeFeature(sketchArea);
+                sketchArea = null;
+                measureAreaTooltipElement.className = "ol-tooltip ol-tooltip-static";
+                measureAreaTooltip.setOffset([0, -7]);
+
+                const geom = feature.getGeometry();
+                const extent = geom.getExtent();
+                const center = ol.extent.getCenter(extent);
+                const area = getArea(geom);
+
+                let measurement;
+                let measurementUnit;
+
+                if (area > 1000) {
+                    measurement = (area / 10000).toFixed(2); // Convert to hectares (ha)
+                    measurementUnit = "ha";
+                } else {
+                    measurement = area.toFixed(2);
+                    measurementUnit = "m²";
+                }
+
+                measureAreaTooltipElement.innerHTML = `Area: <strong>${measurement}</strong> ${measurementUnit}`;
+
+
+                // Add a white background to the measurement size label
+                measureAreaTooltipElement.style.backgroundColor = "#ffffff";
+                measureAreaTooltipElement.style.padding = "4px 6px";
+                measureAreaTooltipElement.style.borderRadius = "50px";
+                measureAreaTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
+
+                // Change the font color to Segoe UI (#515151) and set the font size to 12px
+                measureAreaTooltipElement.style.color = "#515151";
+                measureAreaTooltipElement.style.fontFamily = "Segoe UI";
+                measureAreaTooltipElement.style.fontSize = "16px";
+
+                // Position the measurement tooltip element in the middle of the map
+                measureAreaTooltip.setPosition(center);
+
+                // Create tooltips for each edge of the polygon
+                const coordinates = geom.getCoordinates()[0];
+                const numEdges = coordinates.length;
+                clearLineTooltips();
+                for (let i = 0; i < numEdges - 1; i++) {
+                    const start = coordinates[i];
+                    const end = coordinates[i + 1];
+                    const midpoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
+                    const length = ol.sphere.getLength(new ol.geom.LineString([start, end]));
+
+                    const lineTooltip = createLineTooltip(length, midpoint, start, end);
+                    lineTooltips.push(lineTooltip);
+                    map.addOverlay(lineTooltip);
+                }
+
+                map.removeInteraction(drawArea);
+                map.un("pointermove", pointerMoveHandler);
+            });
+
+            drawAreaStartListener = drawArea.on("drawstart", function (evt) {
+                const feature = evt.feature;
+                sketchArea = feature;
+                createHelpAreaTooltip();
+                map.on("pointermove", pointerMoveHandler);
+            });
+        }
+
+        let helpMeasureAreaTooltipElement;
+        let helpMeasureAreaTooltip;
+
+        function createHelpAreaTooltip() {
+            if (helpMeasureAreaTooltipElement) {
+                helpMeasureAreaTooltipElement.parentNode.removeChild(helpMeasureAreaTooltipElement);
+            }
+            helpMeasureAreaTooltipElement = document.createElement("div");
+            helpMeasureAreaTooltipElement.className = "ol-tooltip hidden";
+            helpMeasureAreaTooltip = new ol.Overlay({
+                element: helpMeasureAreaTooltipElement,
+                offset: [15, 0],
+                positioning: "center-left",
+            });
+            map.addOverlay(helpMeasureAreaTooltip);
+        }
+
+        function createMeasureAreaTooltip() {
+            if (measureAreaTooltipElement) {
+                measureAreaTooltipElement.parentNode.removeChild(measureAreaTooltipElement);
+            }
+            measureAreaTooltipElement = document.createElement("div");
+            measureAreaTooltipElement.className = "ol-tooltip ol-tooltip-measure";
+            measureAreaTooltip = new ol.Overlay({
+                element: measureAreaTooltipElement,
+                offset: [100, 0],
+                positioning: "bottom-center",
+            });
+            map.addOverlay(measureAreaTooltip);
+        }
+
+        function pointerMoveHandler(evt) {
+            if (evt.dragging) {
+                return;
+            }
+            const helpMsg = "Click to continue drawing the polygon";
+            if (sketchArea) {
+                const geom = sketchArea.getGeometry();
+                if (geom instanceof ol.geom.Polygon) {
+                    helpMsg = continuePolygonMsg;
+                }
+            }
+            helpMeasureAreaTooltipElement.innerHTML = helpMsg;
+            helpMeasureAreaTooltip.setPosition(evt.coordinate);
+            helpMeasureAreaTooltipElement.classList.remove("hidden");
+        }
+
+        function getArea(polygon) {
+            const area = polygon.getArea();
+            return area;
+        }
+
+        function createLineTooltip(length, midpoint, start, end) {
+            const lineTooltipElement = document.createElement("div");
+            lineTooltipElement.className = "ol-tooltip ol-tooltip-line";
+
+            let measurement;
+            let measurementUnit;
+
+            if (length > 1000) {
+                measurement = (length / 1000).toFixed(2); // Convert to kilometers
+                measurementUnit = "km";
+            } else {
+                measurement = length.toFixed(2);
+                measurementUnit = "m";
+            }
+
+            lineTooltipElement.innerHTML = `Chiều dài: ${measurement} ${measurementUnit}`;
+
+            // Add a white background to the line tooltip
+            lineTooltipElement.style.backgroundColor = "#ffffff";
+            lineTooltipElement.style.padding = "4px 6px";
+            lineTooltipElement.style.borderRadius = "30px";
+            lineTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
+
+            // Change the font color to Segoe UI (#515151) and set the font size to 12px
+            lineTooltipElement.style.color = "#515151";
+            lineTooltipElement.style.fontFamily = "Segoe UI";
+            lineTooltipElement.style.fontSize = "12px";
+
+            const lineTooltip = new ol.Overlay({
+                element: lineTooltipElement,
+                offset: [0, 0],
+                position: midpoint,
+                positioning: "center-center",
+            });
+
+            lineTooltipElement.addEventListener("mouseover", function () {
+                lineTooltip.setPosition(midpoint);
+            });
+
+            lineTooltipElement.addEventListener("mouseout", function () {
+                lineTooltip.setPosition(midpoint);
+            });
+
+            lineTooltipElement.addEventListener("click", function () {
+                const lineCoordinates = [start, end];
+                const lineString = new ol.geom.LineString(lineCoordinates);
+                const lineFeature = new ol.Feature(lineString);
+                measureAreaSource.addFeature(lineFeature);
+                lineTooltips.push(createLineTooltip(length, midpoint, start, end));
+                map.addOverlay(lineTooltips[lineTooltips.length - 1]);
+            });
+
+            return lineTooltip;
+        }
+
+        function clearLineTooltips() {
+            lineTooltips.forEach(function (tooltip) {
+                map.removeOverlay(tooltip);
+            });
+            lineTooltips = [];
+        }
+
+        // Function to clear length tooltips
+        function clearLengthTooltips() {
+            clearLineTooltips();
+        }
+
+
+
+
+        //MEASURE LENGTH BUTTON FUNCTION
+        let drawLength;
+        let measureLengthSource;
+        let measureLengthTooltipElement;
+        let measureLengthTooltip;
+        let sketchLength;
+
+        function startMeasurementLength() {
+            const measureLengthBtn = document.getElementById("measureLengthBtn");
+            const measureLengthBtnIcon = measureLengthBtn.querySelector("i");
+
+            if (measureLengthBtn.classList.contains("active")) {
+                // Disable measuring length
+                measureLengthBtn.classList.remove("active");
+                map.removeInteraction(drawLength);
+                map.removeOverlay(measureLengthTooltip);
+                measureLengthTooltipElement = null;
+                measureLengthSource.clear();
+
+                // Change the icon back to the "linear_scale" icon
+                measureLengthBtnIcon.textContent = "linear_scale";
+                // Reset the background color to white
+                measureLengthBtn.style.backgroundColor = "#ffffff";
+                // Change the icon color to black
+                measureLengthBtnIcon.style.color = "#515151";
+            } else {
+                // Enable measuring length
+                measureLengthBtn.classList.add("active");
+                measureLengthSource = new ol.source.Vector();
+                map.addLayer(
+                    new ol.layer.Vector({
+                        source: measureLengthSource,
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: "#33ff74",
+                                width: 4,
+                            }),
+                        }),
+                    })
+                );
+                createMeasureLengthTooltip();
+                addLengthInteraction();
+
+                // Change the icon to the "close" icon
+                measureLengthBtnIcon.textContent = "close";
+                // Change the background color to dark red
+                measureLengthBtn.style.backgroundColor = "#FF6666";
+                // Change the icon color to white
+                measureLengthBtnIcon.style.color = "#ffffff";
+
+                // Add floating message
+                const floatingMessage = document.createElement("div");
+                floatingMessage.className = "floating-message";
+                const infoIcon = document.createElement("i");
+                infoIcon.className = "material-icons";
+                infoIcon.textContent = "touch_app";
+                infoIcon.style.fontSize = "25px";
+                floatingMessage.appendChild(infoIcon);
+                floatingMessage.innerHTML += "  Chạm vào màn hình để bắt đầu đo"; //"Tap the screen to start measuring"
+                map.getViewport().appendChild(floatingMessage);
+
+                // Remove floating message after 05 seconds
+                setTimeout(function () {
+                    map.getViewport().removeChild(floatingMessage);
+                }, 5000);
+            }
+        }
+
+        let drawLengthStartListener;
+        let drawLengthEndListener;
+
+        function addLengthInteraction() {
+            drawLength = new ol.interaction.Draw({
+                source: measureLengthSource,
+                type: "LineString",
+                style: new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: "#33ff74",
+                        width: 2,
+                    }),
+                }),
+            });
+            map.addInteraction(drawLength);
+
+            drawLengthEndListener = drawLength.on("drawend", function (evt) {
+                const feature = evt.feature;
+                measureLengthSource.removeFeature(sketchLength);
+                sketchLength = null;
+                measureLengthTooltipElement.className = "ol-tooltip ol-tooltip-static";
+                measureLengthTooltip.setOffset([0, -7]);
+
+                const geom = feature.getGeometry();
+                const length = getLength(geom);
+
+                let measurement = length.toFixed(2);
+                let measurementUnit = "m";
+
+                if (length > 1000) {
+                    measurement = (length / 1000).toFixed(2); // Convert to kilometers
+                    measurementUnit = "km";
+                }
+
+                measureLengthTooltipElement.innerHTML = `Độ dài: <strong>${measurement}</strong> ${measurementUnit}`;
+
+                // Add a white background to the measurement size label
+                measureLengthTooltipElement.style.backgroundColor = "#ffffff";
+                measureLengthTooltipElement.style.padding = "4px 6px";
+                measureLengthTooltipElement.style.borderRadius = "50px";
+                measureLengthTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
+
+
+                // Change the font color to Segoe UI (#515151) and set the font size to 12px
+                measureLengthTooltipElement.style.color = "#515151";
+                measureLengthTooltipElement.style.fontFamily = "Segoe UI";
+                measureLengthTooltipElement.style.fontSize = "16px";
+
+                // Position the measurement tooltip element in the middle of the map
+                measureLengthTooltip.setPosition(geom.getLastCoordinate());
+
+                map.removeInteraction(drawLength);
+                map.un("pointermove", pointerMoveHandler);
+            });
+        }
+
+        let helpMeasureLengthTooltipElement;
+        let helpMeasureLengthTooltip;
+
+        function createHelpLengthTooltip() {
+            if (helpMeasureLengthTooltipElement) {
+                helpMeasureLengthTooltipElement.parentNode.removeChild(helpMeasureLengthTooltipElement);
+            }
+            helpMeasureLengthTooltipElement = document.createElement("div");
+            helpMeasureLengthTooltipElement.className = "ol-tooltip hidden";
+            helpMeasureLengthTooltip = new ol.Overlay({
+                element: helpMeasureLengthTooltipElement,
+                offset: [15, 0],
+                positioning: "center-left",
+            });
+            map.addOverlay(helpMeasureLengthTooltip);
+        }
+
+        function createMeasureLengthTooltip() {
+            if (measureLengthTooltipElement) {
+                measureLengthTooltipElement.parentNode.removeChild(measureLengthTooltipElement);
+            }
+            measureLengthTooltipElement = document.createElement("div");
+            measureLengthTooltipElement.className = "ol-tooltip ol-tooltip-measure";
+            measureLengthTooltip = new ol.Overlay({
+                element: measureLengthTooltipElement,
+                offset: [0, -15],
+                positioning: "bottom-center",
+            });
+            map.addOverlay(measureLengthTooltip);
+        }
+
+        function pointerMoveHandler(evt) {
+            if (evt.dragging) {
+                return;
+            }
+            const helpMsg = "Tap to continue drawing the line";
+            if (sketchLength) {
+                const geom = sketchLength.getGeometry();
+                if (geom instanceof ol.geom.LineString) {
+                    helpMsg = continueLineMsg;
+                }
+            }
+            helpMeasureLengthTooltipElement.innerHTML = helpMsg;
+            helpMeasureLengthTooltip.setPosition(evt.coordinate);
+            helpMeasureLengthTooltipElement.classList.remove("hidden");
+        }
+
+        function getLength(line) {
+            const length = line.getLength();
+            return length;
+        }
+
+
+
+
+
+        //USER LOCATION BUTTON
+        const userLocationLayer = new ol.layer.Vector({
+            source: new ol.source.Vector(),
+            style: new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 8,
+                    fill: new ol.style.Fill({
+                        color: '#1B6B93',
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 3,
+                    }),
+                }),
+            }),
+            name: 'User Location',
+        });
+
+        function getUserLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        const userLocation = ol.proj.fromLonLat([longitude, latitude]);
+
+                        // Remove existing user location feature if it exists
+                        userLocationLayer.getSource().clear();
+
+                        // Create a new user location feature
+                        const userLocationFeature = new ol.Feature({
+                            geometry: new ol.geom.Point(userLocation),
+                        });
+
+                        // Add the feature to the user location layer
+                        userLocationLayer.getSource().addFeature(userLocationFeature);
+
+                        // Add or update the user location layer on the map
+                        const existingUserLocationLayer = map.getLayers().getArray().find(layer => layer.get('name') === 'User Location');
+                        if (existingUserLocationLayer) {
+                            map.removeLayer(existingUserLocationLayer);
+                        }
+                        map.addLayer(userLocationLayer);
+
+                        map.getView().setCenter(userLocation);
+                        map.getView().setZoom(17);
+                    },
+                    (error) => {
+                        console.error("Error getting user location:", error);
+                    }
+                );
+            } else {
+                console.error("Geolocation is not supported by this browser.");
+            }
+        }
+
 
     </script>
 </body>
