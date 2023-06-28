@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OpenLayers 7 Basemap Example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <style>
+        .map {
+            position: relative;
+            width: 375px;
+            height: 350px;
+            /* Adjust the height as needed */
+        }
+
+        .basemapBtn,
+        .locationBtn,
+        .searchBtn,
+        .measureBtn,
+        .drawBtn {
+            background-color: #ffffff;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .basemapBtn i,
+        .locationBtn i,
+        .searchBtn i,
+        .measureBtn i,
+        .drawBtn {
+            font-family: "Material Icons";
+            font-size: 20px;
+            color: #515151;
+        }
+
+        .searchBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .searchBar {
+            display: none;
+            position: absolute;
+            height: 30px;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 2px 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            width: 333px;
+            /* Adjust the width here */
+        }
+
+        .searchInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            padding: 4px;
+        }
+
+        .searchButton {
+            background-color: #ffffff00;
+            border-radius: 0%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        .searchButton i {
+            color: #686868;
+            font-size: 20px;
+        }
+
+        .basemapBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+        }
+
+        .basemapswitcher {
+            position: absolute;
+            top: 40px;
+            right: 0px;
+            z-index: 1;
+        }
+
+        .measureBtn {
+            position: absolute;
+            top: 90px;
+            right: 10px;
+            z-index: 1;
+        }
+
+        .floating-message {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffffff;
+            color: #515151;
+            padding: 6px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 10px;
+        }
+
+        .drawBtn {
+            position: absolute;
+            top: 130px;
+            right: 10px;
+            z-index: 1;
+        }
+
+        .locationBtn {
+            position: absolute;
+            bottom: 50px;
+            right: 10px;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="map">
+        <div id="map" class="map"></div>
+        <div id="basemapswitcher" class="basemapswitcher">
+            <button id="basemapBtn" class="basemapBtn" onclick="cycleBasemap()">
+                <i class="material-icons">layers</i>
+            </button>
+        </div>
+        <button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
+            <i class="material-icons">gps_fixed</i>
+        </button>
+        <button id="searchBtn" class="searchBtn">
+            <i class="material-icons">search</i>
+        </button>
+        <div id="searchBar" class="searchBar">
+            <input id="searchInput" class="searchInput" type="text" placeholder="Search for a place..." />
+            <button id="searchButton" class="searchButton">
+                <i class="material-icons">search</i>
+            </button>
+        </div>
+        <button id="measureBtn" class="measureBtn" onclick="startMeasurement()">
+            <i class="material-icons">straighten</i>
+        </button>
+        <button id="drawBtn" class="drawBtn" onclick="startDrawing()">
+            <i class="material-icons">create</i>
+        </button>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>
+    <script>
+        const map = new ol.Map({
+            target: "map",
+            layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([106.6297, 10.8231]),
+                zoom: 12,
+            }),
+            controls: [],
+        });
+
+        const satelliteLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+            }),
+        });
+
+        const streetLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+            }),
+        });
+
+        map.addLayer(streetLayer);
+
+        let currentBasemap = 1;
+        const basemaps = [satelliteLayer, streetLayer];
+
+        function cycleBasemap() {
+            map.removeLayer(basemaps[currentBasemap]);
+            currentBasemap = (currentBasemap + 1) % basemaps.length;
+            map.addLayer(basemaps[currentBasemap]);
+        }
+
+        const userLocationLayer = new ol.layer.Vector({
+            source: new ol.source.Vector(),
+            style: new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 8,
+                    fill: new ol.style.Fill({
+                        color: '#1B6B93',
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 3,
+                    }),
+                }),
+            }),
+            name: 'User Location',
+        });
+
+        function getUserLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        const userLocation = ol.proj.fromLonLat([longitude, latitude]);
+
+                        // Remove existing user location feature if it exists
+                        userLocationLayer.getSource().clear();
+
+                        // Create a new user location feature
+                        const userLocationFeature = new ol.Feature({
+                            geometry: new ol.geom.Point(userLocation),
+                        });
+
+                        // Add the feature to the user location layer
+                        userLocationLayer.getSource().addFeature(userLocationFeature);
+
+                        // Add or update the user location layer on the map
+                        const existingUserLocationLayer = map.getLayers().getArray().find(layer => layer.get('name') === 'User Location');
+                        if (existingUserLocationLayer) {
+                            map.removeLayer(existingUserLocationLayer);
+                        }
+                        map.addLayer(userLocationLayer);
+
+                        map.getView().setCenter(userLocation);
+                        map.getView().setZoom(17);
+                    },
+                    (error) => {
+                        console.error("Error getting user location:", error);
+                    }
+                );
+            } else {
+                console.error("Geolocation is not supported by this browser.");
+            }
+        }
+
+        const searchBtn = document.getElementById("searchBtn");
+        const searchBar = document.getElementById("searchBar");
+        const searchInput = document.getElementById("searchInput");
+        const searchKeywordBtn = document.getElementById("searchKeywordBtn");
+        const floatingMessage = document.getElementById("floatingMessage");
+
+        searchBtn.addEventListener("click", handleSearchClick);
+        document.addEventListener("click", handleDocumentClick);
+
+        function handleSearchClick(event) {
+            event.stopPropagation(); // Prevent the click event from propagating to the document
+            searchBtn.style.display = "none";
+            searchBar.style.display = "flex";
+            searchKeywordBtn.style.display = "none";
+            searchInput.focus();
+        }
+
+        function handleDocumentClick(event) {
+            if (!searchBar.contains(event.target) && event.target !== searchBtn && event.target !== searchKeywordBtn && event.target !== floatingMessage) {
+                // Clicked outside of the search bar, search button, search keyword button, and floating message
+                searchBtn.style.display = "block";
+                searchBar.style.display = "none";
+                searchKeywordBtn.style.display = "block";
+                searchInput.value = "";
+            }
+        }
+
+        // Hide the search bar on app load
+        searchBar.style.display = "none";
+
+        let draw;
+        let measureSource;
+        let measureTooltipElement;
+        let measureTooltip;
+        let sketch;
+
+        function startMeasurement() {
+            const measureBtn = document.getElementById("measureBtn");
+            const measureBtnIcon = measureBtn.querySelector("i");
+
+            if (measureBtn.classList.contains("active")) {
+                // Disable measuring
+                measureBtn.classList.remove("active");
+                map.removeInteraction(draw);
+                map.removeOverlay(measureTooltip);
+                measureTooltipElement = null;
+                measureSource.clear();
+
+                // Change the icon back to the "straighten" icon
+                measureBtnIcon.textContent = "straighten";
+                // Reset the background color to white
+                measureBtn.style.backgroundColor = "#ffffff";
+                // Change the icon color to black
+                measureBtnIcon.style.color = "#000000";
+            } else {
+                // Enable measuring
+                measureBtn.classList.add("active");
+                measureSource = new ol.source.Vector();
+                map.addLayer(
+                    new ol.layer.Vector({
+                        source: measureSource,
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: "rgba(51, 255, 116, 0.5)", // #33ff74 with 50% transparency
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: "#33ff74",
+                                width: 5,
+                            }),
+                            image: new ol.style.Circle({
+                                radius: 7,
+                                fill: new ol.style.Fill({
+                                    color: "#ffcc33",
+                                }),
+                            }),
+                        }),
+                    })
+                );
+                createMeasureTooltip();
+                addInteraction();
+
+                // Change the icon to the "close" icon
+                measureBtnIcon.textContent = "close";
+                // Change the background color to dark red
+                measureBtn.style.backgroundColor = "#FF6666";
+                // Change the icon color to white
+                measureBtnIcon.style.color = "#ffffff";
+
+                // Add floating message
+                const floatingMessage = document.createElement("div");
+                floatingMessage.className = "floating-message";
+                const infoIcon = document.createElement("i");
+                infoIcon.className = "material-icons";
+                infoIcon.textContent = "info";
+                infoIcon.style.fontSize = "10px"; // Set the font size to 12 pixels
+                floatingMessage.appendChild(infoIcon);
+                floatingMessage.innerHTML += "  Tap the screen to start measuring";
+                map.getViewport().appendChild(floatingMessage);
+
+
+                // Remove floating message after 05 seconds
+                setTimeout(function () {
+                    map.getViewport().removeChild(floatingMessage);
+                }, 5000);
+            }
+        }
+
+        let drawStartListener;
+        let drawEndListener;
+
+        function addInteraction() {
+            draw = new ol.interaction.Draw({
+                source: measureSource,
+                type: "Polygon",
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: "rgba(255, 255, 255, 0.2)",
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "#33ff74",
+                        width: 2,
+                    }),
+                    image: new ol.style.Circle({
+                        radius: 7,
+                        fill: new ol.style.Fill({
+                            color: "#33ff74",
+                        }),
+                    }),
+                }),
+            });
+            map.addInteraction(draw);
+
+            drawEndListener = draw.on("drawend", function (evt) {
+                const feature = evt.feature;
+                measureSource.removeFeature(sketch);
+                sketch = null;
+                measureTooltipElement.className = "ol-tooltip ol-tooltip-static";
+                measureTooltip.setOffset([0, -7]);
+
+                const geom = feature.getGeometry();
+                const extent = geom.getExtent();
+                const center = ol.extent.getCenter(extent);
+                const area = getArea(geom);
+
+                let measurement = area.toFixed(2);
+                let measurementUnit = "sqm";
+
+                if (area > 1000) {
+                    measurement = (area / 10000).toFixed(2); // Convert to hectares
+                    measurementUnit = "ha";
+                }
+
+                measureTooltipElement.innerHTML = `<strong>${measurement}</strong> ${measurementUnit}`;
+
+                // Add a white background to the measurement size label
+                measureTooltipElement.style.backgroundColor = "#ffffff";
+                measureTooltipElement.style.padding = "4px 6px";
+                measureTooltipElement.style.borderRadius = "50px";
+
+                // Change the font color to Segoe UI (#515151) and set the font size to 12px
+                measureTooltipElement.style.color = "#515151";
+                measureTooltipElement.style.fontFamily = "Segoe UI";
+                measureTooltipElement.style.fontSize = "12px";
+
+                // Position the measurement tooltip element in the middle of the map
+                measureTooltip.setPosition(center);
+
+                map.removeInteraction(draw);
+                map.un("pointermove", pointerMoveHandler);
+            });
+        }
+
+        let helpTooltipElement;
+        let helpTooltip;
+
+        function createHelpTooltip() {
+            if (helpTooltipElement) {
+                helpTooltipElement.parentNode.removeChild(helpTooltipElement);
+            }
+            helpTooltipElement = document.createElement("div");
+            helpTooltipElement.className = "ol-tooltip hidden";
+            helpTooltip = new ol.Overlay({
+                element: helpTooltipElement,
+                offset: [15, 0],
+                positioning: "center-left",
+            });
+            map.addOverlay(helpTooltip);
+        }
+
+        function createMeasureTooltip() {
+            if (measureTooltipElement) {
+                measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+            }
+            measureTooltipElement = document.createElement("div");
+            measureTooltipElement.className = "ol-tooltip ol-tooltip-measure";
+            measureTooltip = new ol.Overlay({
+                element: measureTooltipElement,
+                offset: [100, 0],
+                positioning: "bottom-center",
+            });
+            map.addOverlay(measureTooltip);
+        }
+
+        function pointerMoveHandler(evt) {
+            if (evt.dragging) {
+                return;
+            }
+            const helpMsg = "Click to continue drawing the polygon";
+            if (sketch) {
+                const geom = sketch.getGeometry();
+                if (geom instanceof ol.geom.Polygon) {
+                    helpMsg = continuePolygonMsg;
+                }
+            }
+            helpTooltipElement.innerHTML = helpMsg;
+            helpTooltip.setPosition(evt.coordinate);
+            helpTooltipElement.classList.remove("hidden");
+        }
+
+        function getArea(polygon) {
+            const area = polygon.getArea();
+            return area;
+        }
+
+    </script>
+</body>
+
+</html>
