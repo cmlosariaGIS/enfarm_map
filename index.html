@@ -118,6 +118,16 @@
             background-color: #f2f2f2;
         }
 
+        .suggestionItem {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+
+        .gpsIcon {
+            margin-right: 5px;
+        }
+
         .basemapBtn {
             position: absolute;
             top: 10px;
@@ -550,37 +560,38 @@
 
         // Function to display place suggestions below the search bar
         function displayPlaceSuggestions(suggestions) {
-    const suggestionsContainer = document.getElementById('suggestionsContainer');
-    suggestionsContainer.innerHTML = '';
+            const suggestionsContainer = document.getElementById('suggestionsContainer');
+            suggestionsContainer.innerHTML = '';
 
-    suggestions.forEach(suggestion => {
-        const suggestionItem = document.createElement('div');
-        suggestionItem.classList.add('suggestionItem');
+            suggestions.forEach(suggestion => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.classList.add('suggestionItem');
 
-        const gpsIcon = document.createElement('i');
-        gpsIcon.classList.add('material-icons');
-        gpsIcon.textContent = 'place';
+                const gpsIcon = document.createElement('i');
+                gpsIcon.classList.add('material-icons', 'gpsIcon');
+                gpsIcon.textContent = 'gps_fixed';
 
-        const suggestionText = document.createElement('span');
-        suggestionText.textContent = suggestion.display_name;
+                const suggestionText = document.createElement('span');
+                suggestionText.textContent = suggestion.display_name;
 
-        suggestionItem.addEventListener('click', () => {
-            // Handle suggestion click, e.g., set the map view to the selected place
-            const latitude = parseFloat(suggestion.lat);
-            const longitude = parseFloat(suggestion.lon);
-            const center = ol.proj.fromLonLat([longitude, latitude]);
-            map.getView().setCenter(center);
-            map.getView().setZoom(15);
-        });
+                suggestionItem.addEventListener('click', () => {
+                    // Handle suggestion click, e.g., set the map view to the selected place
+                    const latitude = parseFloat(suggestion.lat);
+                    const longitude = parseFloat(suggestion.lon);
+                    const center = ol.proj.fromLonLat([longitude, latitude]);
+                    map.getView().setCenter(center);
+                    map.getView().setZoom(15);
+                });
 
-        suggestionItem.appendChild(gpsIcon);
-        suggestionItem.appendChild(suggestionText);
-        suggestionsContainer.appendChild(suggestionItem);
-    });
+                suggestionItem.appendChild(gpsIcon);
+                suggestionItem.appendChild(suggestionText);
+                suggestionsContainer.appendChild(suggestionItem);
+            });
 
-    // Show the suggestions container
-    suggestionsContainer.style.display = 'block';
-}
+            // Show the suggestions container
+            suggestionsContainer.style.display = 'block';
+        }
+
 
 
         // Function to handle search input
