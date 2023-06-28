@@ -2,15 +2,15 @@
 <html>
 
 <head>
-    <title>OpenLayers 7 Basemap Example</title>
+    <title>Enfarm Map</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <style>
         .map {
             position: relative;
             width: 100%;
-            height: 1000px;
-            /* Adjust the height as needed */
+            height: 400px;
+            /* Set an initial height for the map container */
         }
 
         .basemapBtn,
@@ -189,6 +189,47 @@
             right: 30px;
             z-index: 1;
         }
+
+
+        /* Media query for smaller screens */
+        @media (max-width: 768px) {
+
+            /* Adjust map container height for smaller screens */
+            .map {
+                height: 300px;
+            }
+
+            /* Adjust button styles for smaller screens */
+            .basemapBtn,
+            .locationBtn,
+            .searchBtn,
+            .measureAreaBtn,
+            .measureLengthBtn,
+            .drawBtn {
+                font-size: 20px;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Media query for even smaller screens */
+        @media (max-width: 480px) {
+
+            /* Adjust map container height for even smaller screens */
+            .map {
+                height: 200px;
+            }
+
+            /* Adjust button styles for even smaller screens */
+            .basemapBtn,
+            .locationBtn,
+            .searchBtn,
+            .measureAreaBtn,
+            .measureLengthBtn,
+            .drawBtn {
+                font-size: 16px;
+                padding: 6px 10px;
+            }
+        }
     </style>
 </head>
 
@@ -215,10 +256,7 @@
             <div id="suggestionsContainer" class="suggestionsContainer"></div>
         </div>
 
-
-        <!-- Add a container for the place suggestions -->
         <div id="suggestionsContainer"></div>
-
 
         <button id="measureAreaBtn" class="measureAreaBtn" onclick="startMeasurementArea()">
             <i class="material-icons">square_foot</i>
@@ -227,7 +265,6 @@
         <button id="measureLengthBtn" class="measureLengthBtn" onclick="startMeasurementLength()">
             <i class="material-icons">linear_scale</i>
         </button>
-
 
         <button id="drawBtn" class="drawBtn" onclick="startDrawing()">
             <i class="material-icons">create</i>
