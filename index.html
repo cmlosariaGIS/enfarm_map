@@ -40,7 +40,7 @@
         .searchBtn,
         .measureAreaBtn,
         .measureLengthBtn,
-        .drawBtn,
+        .drawFarmBtn,
         .northArrow {
             background-color: #ffffff;
             border-radius: 50%;
@@ -60,7 +60,7 @@
         .searchBtn i,
         .measureAreaBtn i,
         .measureLengthBtn i,
-        .drawBtn i,
+        .drawFarmBtn i,
         .northArrow i {
             font-family: "Material Icons";
             font-size: 50px;
@@ -216,7 +216,7 @@
             text-align: center;
         }
 
-        .drawBtn {
+        .drawFarmBtn {
             position: absolute;
             top: 430px;
             right: 30px;
@@ -289,6 +289,17 @@
                 padding: 6px 10px;
             }
         }
+
+        .tooltip-overlay {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 35px;
+            color: #333;
+            border-radius: 100px;
+            /* Add a radius value */
+        }
     </style>
 </head>
 
@@ -331,7 +342,7 @@
             <i class="material-icons">linear_scale</i>
         </button>
 
-        <button id="drawBtn" class="drawBtn" onclick="startDrawing()">
+        <button id="drawFarmBtn" class="drawFarmBtn" onclick="startDrawing()">
             <i class="material-icons">create</i>
         </button>
 
@@ -344,6 +355,106 @@
 
     <script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>
     <script>
+
+
+        //DRAW FARM PARCELS
+
+        // Function to draw polygons representing farm parcels
+        function startDrawing() {
+            // Create a vector source for the farm polygons
+            const vectorSource = new ol.source.Vector();
+
+            // Create a vector layer using the vector source
+            const vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0, 128, 0, 0.7)', // Green color with 70% transparency
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#008000', // Green color for the stroke
+                        width: 10,
+                    }),
+                }),
+            });
+
+            // Add the vector layer to the map
+            map.addLayer(vectorLayer);
+
+            // Create a draw interaction for drawing polygons
+            const draw = new ol.interaction.Draw({
+                source: vectorSource,
+                type: 'Polygon',
+            });
+
+            // Activate the draw interaction on the map
+            map.addInteraction(draw);
+
+            draw.on('drawend', function (event) {
+                const feature = event.feature;
+                const geometry = feature.getGeometry();
+                const coordinates = geometry.getCoordinates()[0];
+
+                // Calculate the center point of the polygon
+                const center = ol.extent.getCenter(geometry.getExtent());
+
+                // Create a new point feature for the center point
+                const centerPointFeature = new ol.Feature(new ol.geom.Point(center));
+
+                // Create a style for the center point
+                const centerPointStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 16,
+                        fill: new ol.style.Fill({
+                            color: 'green',
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: 'white',
+                            width: 8,
+                        }),
+                    }),
+                });
+
+                // Set the style for the center point feature
+                centerPointFeature.setStyle(centerPointStyle);
+
+                // Add the center point feature to the vector source
+                vectorSource.addFeature(centerPointFeature);
+
+                // Calculate the farm size
+                const area = ol.sphere.getArea(geometry, {
+                    projection: map.getView().getProjection(),
+                });
+                let farmSize;
+                let unit;
+                if (area < 10000) {
+                    farmSize = Math.round(area); // Keep it in square meters
+                    unit = 'sqm';
+                } else {
+                    farmSize = Math.round(area / 10000); // Convert to hectares
+                    unit = 'ha';
+                }
+
+                // Create a tooltip overlay
+                const tooltipOverlay = new ol.Overlay({
+                    element: document.createElement('div'),
+                    offset: [0, -100], // Offset the tooltip above the point
+                    positioning: 'top-center',
+                    className: 'tooltip-overlay', // Add a custom class for styling
+                });
+
+                // Add the tooltip overlay to the map
+                map.addOverlay(tooltipOverlay);
+
+                // Set the tooltip content with the farm size and unit
+                tooltipOverlay.getElement().innerHTML = `Farm Size: ${farmSize} ${unit}`;
+
+                // Position the tooltip at the center point
+                tooltipOverlay.setPosition(center);
+            });
+        }
+
+
 
 
         //SEARCH BUTTON FUNCTION
