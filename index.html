@@ -13,26 +13,6 @@
             /* Set an initial height for the map container */
         }
 
-        .northArrow {
-  position: absolute;
-  top: 20px;
-  right: 280px;
-  background-color: #fff;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
-}
-
-.northArrow i {
-  font-size: 24px;
-  transform: rotate(0deg);
-  transition: transform 0.3s ease-in-out;
-}
-
         .user-marker {
             width: 20px;
             height: 20px;
@@ -60,7 +40,8 @@
         .searchBtn,
         .measureAreaBtn,
         .measureLengthBtn,
-        .drawBtn {
+        .drawBtn,
+        .northArrow {
             background-color: #ffffff;
             border-radius: 50%;
             width: 90px;
@@ -79,7 +60,8 @@
         .searchBtn i,
         .measureAreaBtn i,
         .measureLengthBtn i,
-        .drawBtn i {
+        .drawBtn i,
+        .northArrow i {
             font-family: "Material Icons";
             font-size: 50px;
             color: #515151;
@@ -248,6 +230,25 @@
             z-index: 1;
         }*/
 
+        .northArrow {
+            position: absolute;
+            bottom: 600px;
+            right: 35px;
+            background-color: #fff;
+            border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .northArrow i {
+            font-size: 50px;
+            transform: rotate(0deg);
+            transition: transform 0.3s ease-in-out;
+        }
 
         /* Media query for smaller screens */
         @media (max-width: 768px) {
@@ -288,27 +289,6 @@
                 padding: 6px 10px;
             }
         }
-
-        .northButton {
-            position: fixed;
-            bottom: 600px;
-            right: 40px;
-            width: 90px;
-            height: 90px;
-            background-color: #fff;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .northButton i {
-            color: #686868;
-            font-size: 50px;
-            transition: transform 0.3s ease-in-out;
-            /* Add transition for smooth rotation */
-        }
     </style>
 </head>
 
@@ -318,8 +298,8 @@
 
 
         <div id="northArrow" class="northArrow">
-            <i class="material-icons">explore</i>
-          </div>
+            <i class="material-icons">north</i>
+        </div>
 
 
         <div id="basemapswitcher" class="basemapswitcher">
@@ -354,12 +334,6 @@
         <button id="drawBtn" class="drawBtn" onclick="startDrawing()">
             <i class="material-icons">create</i>
         </button>
-
-        <button id="northButton" class="northButton">
-            <i class="material-icons">north</i>
-        </button>
-
-
 
         <!--<button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
             <i class="material-icons">gps_fixed</i>
@@ -545,41 +519,53 @@
 
 
 
+        //BASEMAP BUTTON AND NORTH ARROW BUTTON
+        // Get references to the map and north arrow elements
+        const mapElement = document.getElementById("map");
+        const northArrow = document.getElementById("northArrow");
+        const northArrowIcon = northArrow.querySelector("i");
+
+        // Initialize the map
+        const map = new ol.Map({
+            target: mapElement,
+            layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([106.6297, 10.8231]),
+                zoom: 16,
+                //rotation: (25 * Math.PI) / 180 // Rotate the map by 25 degrees
+            }),
+            controls: []
+        });
+
+        // Function to update the rotation of the north arrow based on the map's rotation
+        function updateNorthArrowRotation() {
+            const rotation = map.getView().getRotation();
+            northArrow.style.transform = `rotate(${rotation}rad)`;
+        }
+
+        // Event listener for map view rotation change
+        map.getView().on("change:rotation", updateNorthArrowRotation);
+
+        // Initial rotation update
+        updateNorthArrowRotation();
+
+
+        //NORTH ARROW
+        // Function to reset map rotation to 0 degrees with smooth animation
+        function resetMapRotation() {
+            const view = map.getView();
+            view.animate({
+                rotation: 0,
+                duration: 1000, // Animation duration in milliseconds
+                easing: ol.easing.easeOut // Easing function for smooth animation
+            });
+        }
+        // Event listener for the north arrow click
+        northArrow.addEventListener('click', resetMapRotation);
+
+
+
         //BASEMAP BUTTON FUNCTION
- // Get references to the map and north arrow elements
- const mapElement = document.getElementById("map");
-  const northArrow = document.getElementById("northArrow");
-  const northArrowIcon = northArrow.querySelector("i");
-
-  // Initialize the map
-  const map = new ol.Map({
-    target: mapElement,
-    layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
-    view: new ol.View({
-      center: ol.proj.fromLonLat([106.6297, 10.8231]),
-      zoom: 16,
-      rotation: (95 * Math.PI) / 180 // Rotate the map by 25 degrees
-    }),
-    controls: []
-  });
-
-  // Function to update the rotation of the north arrow based on the map's rotation
-  function updateNorthArrowRotation() {
-    const rotation = map.getView().getRotation();
-    northArrow.style.transform = `rotate(${rotation}rad)`;
-  }
-
-  // Event listener for map view rotation change
-  map.getView().on("change:rotation", updateNorthArrowRotation);
-
-  // Initial rotation update
-  updateNorthArrowRotation();
-
-
-
-
-
-
         const satelliteLayer = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
@@ -647,8 +633,6 @@
         } else {
             console.log("Geolocation is not supported by your browser.");
         }
-
-
 
 
 
@@ -1119,29 +1103,6 @@
             const length = line.getLength();
             return length;
         }
-
-
-
-
-        //NORTH ARROW
-
-        const northButton = document.getElementById('northButton');
-
-        // Function to reset map rotation to 0 degrees with smooth animation
-        function resetMapRotation() {
-            const view = map.getView();
-            view.animate({
-                rotation: 0,
-                duration: 1000, // Animation duration in milliseconds
-                easing: ol.easing.easeOut // Easing function for smooth animation
-            });
-        }
-
-        // Event listener for the north button click
-        northButton.addEventListener('click', resetMapRotation);
-
-
-
 
 
 
