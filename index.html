@@ -98,7 +98,6 @@
             border: none;
             outline: none;
             padding-right: 36px
-            
         }
 
         .searchButton i {
@@ -247,6 +246,27 @@
                 padding: 6px 10px;
             }
         }
+
+        .northButton {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            width: 90px;
+            height: 90px;
+            background-color: #fff;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .northButton i {
+            color: #686868;
+            font-size: 50px;
+            transition: transform 0.3s ease-in-out;
+            /* Add transition for smooth rotation */
+        }
     </style>
 </head>
 
@@ -285,6 +305,11 @@
         <button id="drawBtn" class="drawBtn" onclick="startDrawing()">
             <i class="material-icons">create</i>
         </button>
+
+        <button id="northButton" class="northButton">
+            <i class="material-icons">north</i>
+        </button>
+
 
         <!--<button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
             <i class="material-icons">gps_fixed</i>
@@ -1032,6 +1057,16 @@
                 console.error("Geolocation is not supported by this browser.");
             }
         }
+
+        // Function to rotate the north button icon
+        function rotateNorthButtonIcon(angle) {
+            const icon = document.getElementById('northButtonIcon');
+            icon.style.transform = `rotate(${angle}deg)`;
+        }
+
+        // Example usage: update the rotation based on the map's orientation
+        const mapOrientation = 45; // Replace with the actual map's orientation
+        rotateNorthButtonIcon(mapOrientation);
 
 
     </script>
