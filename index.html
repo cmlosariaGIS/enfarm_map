@@ -13,6 +13,48 @@
             /* Set an initial height for the map container */
         }
 
+        .northArrow {
+  position: absolute;
+  top: 20px;
+  right: 280px;
+  background-color: #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.northArrow i {
+  font-size: 24px;
+  transform: rotate(0deg);
+  transition: transform 0.3s ease-in-out;
+}
+
+        .user-marker {
+            width: 20px;
+            height: 20px;
+            background-color: #007bff;
+            border-radius: 50%;
+            animation: glowing 1s infinite;
+        }
+
+        @keyframes glowing {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(0, 123, 255, 0.7);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+            }
+        }
+
         .basemapBtn,
         .locationBtn,
         .searchBtn,
@@ -249,8 +291,8 @@
 
         .northButton {
             position: fixed;
-            bottom: 120px;
-            right: 30px;
+            bottom: 600px;
+            right: 40px;
             width: 90px;
             height: 90px;
             background-color: #fff;
@@ -273,6 +315,13 @@
 <body>
     <div class="map">
         <div id="map" class="map"></div>
+
+
+        <div id="northArrow" class="northArrow">
+            <i class="material-icons">explore</i>
+          </div>
+
+
         <div id="basemapswitcher" class="basemapswitcher">
             <button id="basemapBtn" class="basemapBtn" onclick="cycleBasemap()">
                 <i class="material-icons">layers</i>
@@ -309,6 +358,7 @@
         <button id="northButton" class="northButton">
             <i class="material-icons">north</i>
         </button>
+
 
 
         <!--<button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
@@ -495,17 +545,40 @@
 
 
 
-
         //BASEMAP BUTTON FUNCTION
-        const map = new ol.Map({
-            target: "map",
-            layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
-            view: new ol.View({
-                center: ol.proj.fromLonLat([106.6297, 10.8231]),
-                zoom: 13,
-            }),
-            controls: [],
-        });
+ // Get references to the map and north arrow elements
+ const mapElement = document.getElementById("map");
+  const northArrow = document.getElementById("northArrow");
+  const northArrowIcon = northArrow.querySelector("i");
+
+  // Initialize the map
+  const map = new ol.Map({
+    target: mapElement,
+    layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
+    view: new ol.View({
+      center: ol.proj.fromLonLat([106.6297, 10.8231]),
+      zoom: 16,
+      rotation: (95 * Math.PI) / 180 // Rotate the map by 25 degrees
+    }),
+    controls: []
+  });
+
+  // Function to update the rotation of the north arrow based on the map's rotation
+  function updateNorthArrowRotation() {
+    const rotation = map.getView().getRotation();
+    northArrow.style.transform = `rotate(${rotation}rad)`;
+  }
+
+  // Event listener for map view rotation change
+  map.getView().on("change:rotation", updateNorthArrowRotation);
+
+  // Initial rotation update
+  updateNorthArrowRotation();
+
+
+
+
+
 
         const satelliteLayer = new ol.layer.Tile({
             source: new ol.source.XYZ({
@@ -529,6 +602,54 @@
             currentBasemap = (currentBasemap + 1) % basemaps.length;
             map.addLayer(basemaps[currentBasemap]);
         }
+
+        // Function to create the user location marker
+        function createUserLocationMarker() {
+            const markerElement = document.createElement("div");
+            markerElement.className = "user-marker";
+
+            const markerOverlay = new ol.Overlay({
+                element: markerElement,
+                positioning: "center-center",
+                stopEvent: false,
+            });
+
+            map.addOverlay(markerOverlay);
+
+            return markerOverlay;
+        }
+
+        // Function to update the user location marker position
+        function updateUserLocationMarker(markerOverlay, position) {
+            const { latitude, longitude } = position.coords;
+            const userLocation = ol.proj.fromLonLat([longitude, latitude]);
+
+            markerOverlay.setPosition(userLocation);
+        }
+
+        // Function to handle errors when geolocation is not available or permission denied
+        function handleGeolocationError(error) {
+            console.error("Error getting user's location:", error);
+        }
+
+        // Check if geolocation is supported by the browser
+        if ("geolocation" in navigator) {
+            const markerOverlay = createUserLocationMarker();
+
+            // Get the user's current location
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    updateUserLocationMarker(markerOverlay, position);
+                    map.getView().animate({ center: markerOverlay.getPosition(), zoom: 21 });
+                },
+                handleGeolocationError
+            );
+        } else {
+            console.log("Geolocation is not supported by your browser.");
+        }
+
+
+
 
 
 
@@ -1002,6 +1123,60 @@
 
 
 
+        //NORTH ARROW
+
+        const northButton = document.getElementById('northButton');
+
+        // Function to reset map rotation to 0 degrees with smooth animation
+        function resetMapRotation() {
+            const view = map.getView();
+            view.animate({
+                rotation: 0,
+                duration: 1000, // Animation duration in milliseconds
+                easing: ol.easing.easeOut // Easing function for smooth animation
+            });
+        }
+
+        // Event listener for the north button click
+        northButton.addEventListener('click', resetMapRotation);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         //USER LOCATION BUTTON
         const userLocationLayer = new ol.layer.Vector({
@@ -1058,15 +1233,10 @@
             }
         }
 
-        // Function to rotate the north button icon
-        function rotateNorthButtonIcon(angle) {
-            const icon = document.getElementById('northButtonIcon');
-            icon.style.transform = `rotate(${angle}deg)`;
-        }
 
-        // Example usage: update the rotation based on the map's orientation
-        const mapOrientation = 45; // Replace with the actual map's orientation
-        rotateNorthButtonIcon(mapOrientation);
+
+
+
 
 
     </script>
