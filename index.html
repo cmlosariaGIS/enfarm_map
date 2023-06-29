@@ -9,7 +9,7 @@
         .map {
             position: relative;
             width: 100%;
-            height: 800px;
+            height: 1000px;
             /* Set an initial height for the map container */
         }
 
@@ -65,7 +65,7 @@
             border-radius: 100px;
             padding: 2px 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            width: 800px;
+            width: 950px;
         }
 
         .searchInput {
@@ -75,8 +75,16 @@
             font-size: 35px;
             color: #515151;
             padding: 10px;
+            padding-left: 30px;
+            /* Add left padding of 30px */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            /* Use flexbox */
+            align-items: center;
+            /* Center vertically */
+            border-radius: 100px;
         }
+
 
         .searchButton {
             background-color: #ffffff00;
@@ -89,19 +97,22 @@
             cursor: pointer;
             border: none;
             outline: none;
+            padding-right: 36px
+            
         }
 
         .searchButton i {
             color: #686868;
-            font-size: 70px;
+            font-size: 50px;
+
         }
 
         .suggestionsContainer {
             position: absolute;
-            top:80px;
+            top: 90px;
             left: 0;
-            width: 800px;
-            max-height: 350px;
+            width: 950px;
+            max-height: 600px;
             overflow-y: auto;
             background-color: #ffffff;
             border-radius: 10px;
@@ -128,9 +139,15 @@
             color: #515151
         }
 
+        .suggestionText {
+            font-size: 30px;
+            /* Adjust the font size as needed */
+        }
+
         .gpsIcon {
             margin-right: 10px;
             color: #a8a8a8;
+            font-size: 30px;
         }
 
         .basemapBtn {
@@ -247,7 +264,8 @@
         </button>
 
         <div id="searchBar" class="searchBar">
-            <input id="searchInput" class="searchInput" type="text" placeholder="  Search for a place..." />
+            <input id="searchInput" class="searchInput" type="text" placeholder="  Tìm kiếm địa điểm..." />
+            <!--Search for a place...-->
             <button id="searchButton" class="searchButton">
                 <i class="material-icons">search</i>
             </button>
@@ -328,13 +346,13 @@
 
             const markerStyle = new ol.style.Style({
                 image: new ol.style.Circle({
-                    radius: 6,
+                    radius: 16,
                     fill: new ol.style.Fill({
                         color: 'rgba(0, 191, 255, 0.8)', // Light blue color
                     }),
                     stroke: new ol.style.Stroke({
-                        color: 'rgba(0, 0, 0, 0.8)',
-                        width: 2,
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        width: 4,
                     }),
                 }),
             });
@@ -355,7 +373,7 @@
         async function fetchPlaceSuggestions(searchText) {
             const baseUrl = 'https://nominatim.openstreetmap.org/search';
             const format = 'json';
-            const limit = 5;
+            const limit = 15;
 
             // Add the 'countrycodes' parameter to filter results to Vietnam (country code: VN)
             const url = `${baseUrl}?q=${encodeURIComponent(searchText)}&format=${format}&limit=${limit}&countrycodes=VN`;
@@ -394,6 +412,7 @@
 
                 const suggestionText = document.createElement('span');
                 suggestionText.textContent = suggestion.display_name;
+                suggestionText.classList.add('suggestionText'); // Add a CSS class to the suggestion text element
 
                 suggestionItem.addEventListener('click', () => {
                     // Handle suggestion click, e.g., set the map view to the selected place
@@ -401,7 +420,7 @@
                     const longitude = parseFloat(suggestion.lon);
                     const center = ol.proj.fromLonLat([longitude, latitude]);
                     map.getView().setCenter(center);
-                    map.getView().setZoom(15);
+                    map.getView().setZoom(19);
 
                     // Create a marker at the selected place
                     const coordinates = ol.proj.fromLonLat([longitude, latitude]);
@@ -416,6 +435,7 @@
             // Show the suggestions container
             suggestionsContainer.style.display = 'block';
         }
+
 
         // Function to handle search input
         function handleSearchInput() {
@@ -451,14 +471,13 @@
 
 
 
-
         //BASEMAP BUTTON FUNCTION
         const map = new ol.Map({
             target: "map",
             layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
             view: new ol.View({
                 center: ol.proj.fromLonLat([106.6297, 10.8231]),
-                zoom: 12,
+                zoom: 13,
             }),
             controls: [],
         });
@@ -616,8 +635,6 @@
                 }
 
                 measureAreaTooltipElement.innerHTML = `<div style="display: flex; align-items: center;"><i class="material-icons" style="margin-right: 5px;">eco</i><span>Khu vực:</span><strong style="margin-left: 5px;">${measurement}</strong> ${measurementUnit}</div>`;
-
-
 
                 // Add a white background to the measurement size label
                 measureAreaTooltipElement.style.backgroundColor = "#ffffff";
