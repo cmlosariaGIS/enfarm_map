@@ -636,7 +636,6 @@
 
 
 
-
         //MEASURE AREA BUTTON FUNCTION
         let drawArea;
         let measureAreaSource;
@@ -677,7 +676,7 @@
                             }),
                             stroke: new ol.style.Stroke({
                                 color: "#33ff74",
-                                width: 2,
+                                width: 8,
                             }),
                             image: new ol.style.Circle({
                                 radius: 7,
@@ -729,7 +728,7 @@
                     }),
                     stroke: new ol.style.Stroke({
                         color: "#33ff74",
-                        width: 2,
+                        width: 8,
                     }),
                     image: new ol.style.Circle({
                         radius: 7,
@@ -768,14 +767,14 @@
 
                 // Add a white background to the measurement size label
                 measureAreaTooltipElement.style.backgroundColor = "#ffffff";
-                measureAreaTooltipElement.style.padding = "4px 6px";
+                measureAreaTooltipElement.style.padding = "10px 20px";
                 measureAreaTooltipElement.style.borderRadius = "50px";
                 measureAreaTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
 
                 // Change the font color to Segoe UI (#515151) and set the font size to 12px
                 measureAreaTooltipElement.style.color = "#515151";
                 measureAreaTooltipElement.style.fontFamily = "Segoe UI";
-                measureAreaTooltipElement.style.fontSize = "16px";
+                measureAreaTooltipElement.style.fontSize = "35px";
 
                 // Position the measurement tooltip element in the middle of the map
                 measureAreaTooltip.setPosition(center);
@@ -878,14 +877,14 @@
 
             // Add a white background to the line tooltip
             lineTooltipElement.style.backgroundColor = "#ffffff";
-            lineTooltipElement.style.padding = "4px 6px";
-            lineTooltipElement.style.borderRadius = "30px";
+            lineTooltipElement.style.padding = "10px 20px";
+            lineTooltipElement.style.borderRadius = "40px";
             lineTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
 
             // Change the font color to Segoe UI (#515151) and set the font size to 12px
             lineTooltipElement.style.color = "#515151";
             lineTooltipElement.style.fontFamily = "Segoe UI";
-            lineTooltipElement.style.fontSize = "12px";
+            lineTooltipElement.style.fontSize = "28px";
 
             const lineTooltip = new ol.Overlay({
                 element: lineTooltipElement,
@@ -963,7 +962,7 @@
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
                                 color: "#33ff74",
-                                width: 4,
+                                width: 8,
                             }),
                         }),
                     })
@@ -1006,7 +1005,7 @@
                 style: new ol.style.Style({
                     stroke: new ol.style.Stroke({
                         color: "#33ff74",
-                        width: 2,
+                        width: 8,
                     }),
                 }),
             });
@@ -1034,7 +1033,7 @@
 
                 // Add a white background to the measurement size label
                 measureLengthTooltipElement.style.backgroundColor = "#ffffff";
-                measureLengthTooltipElement.style.padding = "4px 6px";
+                measureLengthTooltipElement.style.padding = "10px 20px";
                 measureLengthTooltipElement.style.borderRadius = "50px";
                 measureLengthTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
 
@@ -1042,7 +1041,7 @@
                 // Change the font color to Segoe UI (#515151) and set the font size to 12px
                 measureLengthTooltipElement.style.color = "#515151";
                 measureLengthTooltipElement.style.fontFamily = "Segoe UI";
-                measureLengthTooltipElement.style.fontSize = "16px";
+                measureLengthTooltipElement.style.fontSize = "35px";
 
                 // Position the measurement tooltip element in the middle of the map
                 measureLengthTooltip.setPosition(geom.getLastCoordinate());
