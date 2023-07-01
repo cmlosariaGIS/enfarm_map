@@ -460,7 +460,7 @@
 
 
 
-
+        //DRAW FARM PARCEL BUTTON
         // Define a flag variable to track the state of drawing
         let isDrawingActive = false;
 
@@ -634,30 +634,30 @@
 
 
 
-// Event listener for cancel button
-cancelButton.addEventListener("click", function () {
-  // Remove the floating confirm delete container if it exists
-  if (floatingConfirmDelete) {
-    map.getViewport().removeChild(floatingConfirmDelete);
-  }
+                    // Event listener for cancel button
+                    cancelButton.addEventListener("click", function () {
+                        // Remove the floating confirm delete container if it exists
+                        if (floatingConfirmDelete) {
+                            map.getViewport().removeChild(floatingConfirmDelete);
+                        }
 
-  // Check if the drawing is active
-  if (isDrawingActive) {
-    // Deactivate the drawing interaction
-    map.removeInteraction(draw);
-    isDrawingActive = false;
+                        // Check if the drawing is active
+                        if (isDrawingActive) {
+                            // Deactivate the drawing interaction
+                            map.removeInteraction(draw);
+                            isDrawingActive = false;
 
-    // Reset the background color of the drawFarmBtn to white
-    drawFarmBtn.style.backgroundColor = "white";
+                            // Reset the background color of the drawFarmBtn to white
+                            drawFarmBtn.style.backgroundColor = "white";
 
-    // Reset the icon of the drawFarmBtn to the original color
-    drawFarmBtnIcon.style.color = "#515151";
+                            // Reset the icon of the drawFarmBtn to the original color
+                            drawFarmBtnIcon.style.color = "#515151";
 
-    // Change the icon of the drawFarmBtn back to the original icon
-    drawFarmBtnIcon.textContent = "create";
-    drawFarmBtnIcon.style.color = "#515151";
-  }
-});
+                            // Change the icon of the drawFarmBtn back to the original icon
+                            drawFarmBtnIcon.textContent = "create";
+                            drawFarmBtnIcon.style.color = "#515151";
+                        }
+                    });
 
 
 
@@ -882,18 +882,45 @@ cancelButton.addEventListener("click", function () {
         const northArrow = document.getElementById("northArrow");
         const northArrowIcon = northArrow.querySelector("i");
 
-        // Initialize the map
-        const map = new ol.Map({
-            target: mapElement,
-            layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
-            view: new ol.View({
-                center: ol.proj.fromLonLat([106.6297, 10.8231]),
-                zoom: 17,
-                //rotation: (25 * Math.PI) / 180 // Rotate the map by 25 degrees
-            }),
-            controls: []
-        });
+//BASEMAP BUTTON FUNCTION
+const streetLayer = new ol.layer.Tile({
+  source: new ol.source.OSM(),
+});
 
+const satelliteLayer = new ol.layer.Tile({
+  source: new ol.source.XYZ({
+    url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+    useInterimTilesOnError: true, // Prevent prefetching of tiles
+  }),
+});
+
+// Initialize the map
+const map = new ol.Map({
+  target: mapElement,
+  layers: [new ol.layer.Tile({ source: new ol.source.OSM() }), streetLayer], // Add the streetLayer as the second layer
+  view: new ol.View({
+    center: ol.proj.fromLonLat([106.6297, 10.8231]),
+    zoom: 17,
+    //rotation: (25 * Math.PI) / 180 // Rotate the map by 25 degrees
+  }),
+  controls: []
+});
+
+let currentBasemap = 1; // Set the current basemap index to 1 to represent streetLayer
+const basemaps = [satelliteLayer, streetLayer];
+
+function cycleBasemap() {
+  map.removeLayer(basemaps[currentBasemap]);
+  currentBasemap = (currentBasemap + 1) % basemaps.length;
+  map.addLayer(basemaps[currentBasemap]);
+}
+
+
+
+
+
+
+        //NORTH ARROW BUTTON
         // Function to update the rotation of the north arrow based on the map's rotation
         function updateNorthArrowRotation() {
             const rotation = map.getView().getRotation();
@@ -906,8 +933,6 @@ cancelButton.addEventListener("click", function () {
         // Initial rotation update
         updateNorthArrowRotation();
 
-
-        //NORTH ARROW
         // Function to reset map rotation to 0 degrees with smooth animation
         function resetMapRotation() {
             const view = map.getView();
@@ -922,29 +947,7 @@ cancelButton.addEventListener("click", function () {
 
 
 
-        //BASEMAP BUTTON FUNCTION
-        const satelliteLayer = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-            }),
-        });
 
-        const streetLayer = new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-            }),
-        });
-
-        map.addLayer(streetLayer);
-
-        let currentBasemap = 1;
-        const basemaps = [satelliteLayer, streetLayer];
-
-        function cycleBasemap() {
-            map.removeLayer(basemaps[currentBasemap]);
-            currentBasemap = (currentBasemap + 1) % basemaps.length;
-            map.addLayer(basemaps[currentBasemap]);
-        }
 
         // Function to create the user location marker
         function createUserLocationMarker() {
