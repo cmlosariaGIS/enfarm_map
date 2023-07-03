@@ -13,6 +13,15 @@
             /* Set an initial height for the map container */
         }
 
+        .logo {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            width: 360px;
+            height: 150px;
+            z-index: 5;
+        }
+
         .user-marker {
             width: 20px;
             height: 20px;
@@ -501,8 +510,13 @@
 
 <body>
     <div class="map">
-        <div id="map" class="map"></div>
+        <div id="map" class="map">
 
+        </div>
+
+        <div>
+            <img src="https://i.ibb.co/qjzJ56G/en-Farm-logo-gradient-1-2x.png" alt="Logo" class="logo">
+        </div>
 
         <div id="northArrow" class="northArrow">
             <i class="material-icons">north</i>
@@ -1314,7 +1328,7 @@
 
         //BASEMAP BUTTON FUNCTION
         //const streetLayer = new ol.layer.Tile({
-          //  source: new ol.source.OSM(),
+        //  source: new ol.source.OSM(),
         //});
 
         const satelliteLayer = new ol.layer.Tile({
@@ -1326,17 +1340,17 @@
 
         // Initialize the map
         //const map = new ol.Map({
-          //  target: mapElement,
-            //layers: [new ol.layer.Tile({ source: new ol.source.OSM() }), streetLayer], // Add the streetLayer as the second layer
-            //view: new ol.View({
-              //  center: ol.proj.fromLonLat([106.6297, 10.8231]),
-                //zoom: 17,
-                //rotation: (25 * Math.PI) / 180 // Rotate the map by 25 degrees
-           // }),
-           // controls: []
+        //  target: mapElement,
+        //layers: [new ol.layer.Tile({ source: new ol.source.OSM() }), streetLayer], // Add the streetLayer as the second layer
+        //view: new ol.View({
+        //  center: ol.proj.fromLonLat([106.6297, 10.8231]),
+        //zoom: 17,
+        //rotation: (25 * Math.PI) / 180 // Rotate the map by 25 degrees
+        // }),
+        // controls: []
         //});
 
-
+        //Google Street Layer (Temporary)
         const streetLayer = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
@@ -1362,7 +1376,15 @@
             map.removeLayer(basemaps[currentBasemap]);
             currentBasemap = (currentBasemap + 1) % basemaps.length;
             map.addLayer(basemaps[currentBasemap]);
+
+            const logoElement = document.querySelector(".logo");
+            const logoImage = basemaps[currentBasemap] === satelliteLayer
+                ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
+                : "https://i.ibb.co/qjzJ56G/en-Farm-logo-gradient-1-2x.png";
+            logoElement.src = logoImage;
         }
+
+
 
 
 
