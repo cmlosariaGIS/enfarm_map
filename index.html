@@ -496,6 +496,10 @@
         .sync-spin {
             animation: spin 5s infinite linear;
         }
+
+
+
+        
     </style>
 </head>
 
@@ -968,61 +972,61 @@
 
 
         // Function to fetch place suggestions from OSM-Nominatim
-        async function fetchPlaceSuggestions(searchText) {
-            const baseUrl = "https://nominatim.openstreetmap.org/search";
-            const format = "json";
-            const limit = 15;
-            const url = `${baseUrl}?q=${encodeURIComponent(searchText)}&format=${format}&limit=${limit}&countrycodes=VN`;
+async function fetchPlaceSuggestions(searchText) {
+  const baseUrl = "https://nominatim.openstreetmap.org/search";
+  const format = "json";
+  const limit = 15;
+  const url = `${baseUrl}?q=${encodeURIComponent(searchText)}&format=${format}&limit=${limit}&countrycodes=VN`;
 
-            try {
-                const loadingIcon = document.getElementById("loadingIcon");
-                const searchButton = document.getElementById("searchButton");
+  try {
+    const loadingIcon = document.getElementById("loadingIcon");
+    const searchButton = document.getElementById("searchButton");
 
-                loadingIcon.style.visibility = "visible"; // Show the loading icon
-                loadingIcon.classList.add("spin"); // Add the spin class
-                searchButton.style.visibility = "hidden"; // Hide the search icon
+    loadingIcon.style.visibility = "visible"; // Show the loading icon
+    loadingIcon.classList.add("spin"); // Add the spin class
+    searchButton.style.visibility = "hidden"; // Hide the search icon
 
-                const response = await fetch(url);
-                if (response.ok) {
-                    const data = await response.json();
-                    const filteredSuggestions = data.filter(
-                        (place) =>
-                            !historicalPlaces.some(
-                                (historicalPlace) =>
-                                    historicalPlace.display_name === place.display_name
-                            )
-                    );
+    const response = await fetch(url);
+    if (response.ok) {
+      const data = await response.json();
+      const filteredSuggestions = data.filter(
+        (place) =>
+          !historicalPlaces.some(
+            (historicalPlace) =>
+              historicalPlace.display_name === place.display_name
+          )
+      );
 
-                    // Process the suggestions...
+      // Process the suggestions...
 
-                    return filteredSuggestions.map((place) => ({
-                        display_name: place.display_name,
-                        lat: place.lat,
-                        lon: place.lon,
-                    }));
-                } else {
-                    console.error(
-                        "Failed to fetch place suggestions:",
-                        response.status,
-                        response.statusText
-                    );
-                    return [];
-                }
-            } catch (error) {
-                console.error("Failed to fetch place suggestions:", error);
-                return [];
-            } finally {
-                const loadingIcon = document.getElementById("loadingIcon");
-                const searchButton = document.getElementById("searchButton");
+      return filteredSuggestions.map((place) => ({
+        display_name: place.display_name,
+        lat: place.lat,
+        lon: place.lon,
+      }));
+    } else {
+      console.error(
+        "Failed to fetch place suggestions:",
+        response.status,
+        response.statusText
+      );
+      return [];
+    }
+  } catch (error) {
+    console.error("Failed to fetch place suggestions:", error);
+    return [];
+  } finally {
+    const loadingIcon = document.getElementById("loadingIcon");
+    const searchButton = document.getElementById("searchButton");
 
-                // Delay the visibility of the search button for 2 seconds (2000 milliseconds)
-                setTimeout(() => {
-                    loadingIcon.classList.remove("spin"); // Remove the spin class
-                    loadingIcon.style.visibility = "hidden"; // Hide the loading icon
-                    searchButton.style.visibility = "visible"; // Show the search icon
-                }, 3000);
-            }
-        }
+    // Delay the visibility of the search button for 2 seconds (2000 milliseconds)
+    setTimeout(() => {
+      loadingIcon.classList.remove("spin"); // Remove the spin class
+      loadingIcon.style.visibility = "hidden"; // Hide the loading icon
+      searchButton.style.visibility = "visible"; // Show the search icon
+    }, 3000);
+  }
+}
 
 
 
@@ -1331,9 +1335,8 @@
             view: new ol.View({
                 center: ol.proj.fromLonLat([106.6297, 10.8231]),
                 zoom: 17,
-                rotation: (4
-                5 * Math.PI) / 180 // Rotate the map by 25 degrees
-        }),
+                //rotation: (25 * Math.PI) / 180 // Rotate the map by 25 degrees
+            }),
             controls: []
         });
 
