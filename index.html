@@ -496,10 +496,6 @@
         .sync-spin {
             animation: spin 5s infinite linear;
         }
-
-
-
-        
     </style>
 </head>
 
@@ -972,61 +968,61 @@
 
 
         // Function to fetch place suggestions from OSM-Nominatim
-async function fetchPlaceSuggestions(searchText) {
-  const baseUrl = "https://nominatim.openstreetmap.org/search";
-  const format = "json";
-  const limit = 15;
-  const url = `${baseUrl}?q=${encodeURIComponent(searchText)}&format=${format}&limit=${limit}&countrycodes=VN`;
+        async function fetchPlaceSuggestions(searchText) {
+            const baseUrl = "https://nominatim.openstreetmap.org/search";
+            const format = "json";
+            const limit = 15;
+            const url = `${baseUrl}?q=${encodeURIComponent(searchText)}&format=${format}&limit=${limit}&countrycodes=VN`;
 
-  try {
-    const loadingIcon = document.getElementById("loadingIcon");
-    const searchButton = document.getElementById("searchButton");
+            try {
+                const loadingIcon = document.getElementById("loadingIcon");
+                const searchButton = document.getElementById("searchButton");
 
-    loadingIcon.style.visibility = "visible"; // Show the loading icon
-    loadingIcon.classList.add("spin"); // Add the spin class
-    searchButton.style.visibility = "hidden"; // Hide the search icon
+                loadingIcon.style.visibility = "visible"; // Show the loading icon
+                loadingIcon.classList.add("spin"); // Add the spin class
+                searchButton.style.visibility = "hidden"; // Hide the search icon
 
-    const response = await fetch(url);
-    if (response.ok) {
-      const data = await response.json();
-      const filteredSuggestions = data.filter(
-        (place) =>
-          !historicalPlaces.some(
-            (historicalPlace) =>
-              historicalPlace.display_name === place.display_name
-          )
-      );
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    const filteredSuggestions = data.filter(
+                        (place) =>
+                            !historicalPlaces.some(
+                                (historicalPlace) =>
+                                    historicalPlace.display_name === place.display_name
+                            )
+                    );
 
-      // Process the suggestions...
+                    // Process the suggestions...
 
-      return filteredSuggestions.map((place) => ({
-        display_name: place.display_name,
-        lat: place.lat,
-        lon: place.lon,
-      }));
-    } else {
-      console.error(
-        "Failed to fetch place suggestions:",
-        response.status,
-        response.statusText
-      );
-      return [];
-    }
-  } catch (error) {
-    console.error("Failed to fetch place suggestions:", error);
-    return [];
-  } finally {
-    const loadingIcon = document.getElementById("loadingIcon");
-    const searchButton = document.getElementById("searchButton");
+                    return filteredSuggestions.map((place) => ({
+                        display_name: place.display_name,
+                        lat: place.lat,
+                        lon: place.lon,
+                    }));
+                } else {
+                    console.error(
+                        "Failed to fetch place suggestions:",
+                        response.status,
+                        response.statusText
+                    );
+                    return [];
+                }
+            } catch (error) {
+                console.error("Failed to fetch place suggestions:", error);
+                return [];
+            } finally {
+                const loadingIcon = document.getElementById("loadingIcon");
+                const searchButton = document.getElementById("searchButton");
 
-    // Delay the visibility of the search button for 2 seconds (2000 milliseconds)
-    setTimeout(() => {
-      loadingIcon.classList.remove("spin"); // Remove the spin class
-      loadingIcon.style.visibility = "hidden"; // Hide the loading icon
-      searchButton.style.visibility = "visible"; // Show the search icon
-    }, 3000);
-  }
-}
+                // Delay the visibility of the search button for 2 seconds (2000 milliseconds)
+                setTimeout(() => {
+                    loadingIcon.classList.remove("spin"); // Remove the spin class
+                    loadingIcon.style.visibility = "hidden"; // Hide the loading icon
+                    searchButton.style.visibility = "visible"; // Show the search icon
+                }, 3000);
+            }
+        }
 
 
 
@@ -1317,9 +1313,9 @@ async function fetchPlaceSuggestions(searchText) {
         const northArrowIcon = northArrow.querySelector("i");
 
         //BASEMAP BUTTON FUNCTION
-        const streetLayer = new ol.layer.Tile({
-            source: new ol.source.OSM(),
-        });
+        //const streetLayer = new ol.layer.Tile({
+          //  source: new ol.source.OSM(),
+        //});
 
         const satelliteLayer = new ol.layer.Tile({
             source: new ol.source.XYZ({
@@ -1329,16 +1325,35 @@ async function fetchPlaceSuggestions(searchText) {
         });
 
         // Initialize the map
+        //const map = new ol.Map({
+          //  target: mapElement,
+            //layers: [new ol.layer.Tile({ source: new ol.source.OSM() }), streetLayer], // Add the streetLayer as the second layer
+            //view: new ol.View({
+              //  center: ol.proj.fromLonLat([106.6297, 10.8231]),
+                //zoom: 17,
+                //rotation: (25 * Math.PI) / 180 // Rotate the map by 25 degrees
+           // }),
+           // controls: []
+        //});
+
+
+        const streetLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+                useInterimTilesOnError: true, // Prevent prefetching of tiles
+            }),
+        });
+
         const map = new ol.Map({
             target: mapElement,
-            layers: [new ol.layer.Tile({ source: new ol.source.OSM() }), streetLayer], // Add the streetLayer as the second layer
+            layers: [streetLayer], // Use only the streetLayer as the basemap layer
             view: new ol.View({
                 center: ol.proj.fromLonLat([106.6297, 10.8231]),
                 zoom: 17,
-                //rotation: (25 * Math.PI) / 180 // Rotate the map by 25 degrees
             }),
-            controls: []
+            controls: [],
         });
+
 
         let currentBasemap = 1; // Set the current basemap index to 1 to represent streetLayer
         const basemaps = [satelliteLayer, streetLayer];
@@ -1348,9 +1363,6 @@ async function fetchPlaceSuggestions(searchText) {
             currentBasemap = (currentBasemap + 1) % basemaps.length;
             map.addLayer(basemaps[currentBasemap]);
         }
-
-
-
 
 
 
