@@ -283,7 +283,45 @@
             transition: transform 0.3s ease-in-out;
         }
 
-        
+        /* Media query for smaller screens */
+        @media (max-width: 768px) {
+
+            /* Adjust map container height for smaller screens */
+            .map {
+                height: 300px;
+            }
+
+            /* Adjust button styles for smaller screens */
+            .basemapBtn,
+            .locationBtn,
+            .searchBtn,
+            .measureAreaBtn,
+            .measureLengthBtn,
+            .drawBtn {
+                font-size: 20px;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Media query for even smaller screens */
+        @media (max-width: 480px) {
+
+            /* Adjust map container height for even smaller screens */
+            .map {
+                height: 200px;
+            }
+
+            /* Adjust button styles for even smaller screens */
+            .basemapBtn,
+            .locationBtn,
+            .searchBtn,
+            .measureAreaBtn,
+            .measureLengthBtn,
+            .drawBtn {
+                font-size: 16px;
+                padding: 6px 10px;
+            }
+        }
 
         /*Draw Farm Area Size*/
         .tooltip-overlay {
