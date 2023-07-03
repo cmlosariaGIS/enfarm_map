@@ -126,7 +126,8 @@
 
         .searchButton i {
             color: #686868;
-            font-size: 50px;
+            font-size: 80px;
+            padding-right: 20px;
 
         }
 
@@ -440,6 +441,23 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
+
+
+        /*spinning icon on search bar*/
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .sync-spin {
+            animation: spin 5s infinite linear;
+        }
     </style>
 </head>
 
@@ -463,14 +481,38 @@
             <i class="material-icons">search</i>
         </button>
 
+
+
+
+
+
         <div id="searchBar" class="searchBar">
             <input id="searchInput" class="searchInput" type="text" placeholder="  Tìm kiếm địa điểm..."
-                style="font-size: 50px;" /> <!--Search for a place...-->
+                style="font-size: 50px;" />
+            <!--Search for a place...-->
+            <div id="loadingIcon" class="loadingIcon" style="visibility: hidden; margin-left: -30px;">
+                <i class="material-icons"
+                    style="font-size: 80px; color: #515151; animation: spin 1s infinite linear; margin-right: -30px;">
+                    sync
+                </i>
+            </div>
+            <div id="suggestionsContainer" class="suggestionsContainer"></div>
             <button id="searchButton" class="searchButton">
                 <i class="material-icons">search</i>
             </button>
-            <div id="suggestionsContainer" class="suggestionsContainer"></div>
         </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
         <div id="suggestionsContainer"></div>
 
@@ -875,23 +917,46 @@
             map.addLayer(markerLayer);
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
         // Function to fetch place suggestions from OSM-Nominatim
         async function fetchPlaceSuggestions(searchText) {
             const baseUrl = "https://nominatim.openstreetmap.org/search";
             const format = "json";
             const limit = 15;
-            const url = `${baseUrl}?q=${encodeURIComponent(
-                searchText
-            )}&format=${format}&limit=${limit}&countrycodes=VN`;
+            const url = `${baseUrl}?q=${encodeURIComponent(searchText)}&format=${format}&limit=${limit}&countrycodes=VN`;
 
             try {
+                const loadingIcon = document.getElementById("loadingIcon");
+                const searchButton = document.getElementById("searchButton");
+
+                loadingIcon.style.visibility = "visible"; // Show the loading icon
+                loadingIcon.classList.add("spin"); // Add the spin class
+                searchButton.style.visibility = "hidden"; // Hide the search icon
+
                 const response = await fetch(url);
                 if (response.ok) {
                     const data = await response.json();
-                    // Filter out historical places from the suggestions
                     const filteredSuggestions = data.filter(
-                        (place) => !historicalPlaces.some((historicalPlace) => historicalPlace.display_name === place.display_name)
+                        (place) =>
+                            !historicalPlaces.some(
+                                (historicalPlace) =>
+                                    historicalPlace.display_name === place.display_name
+                            )
                     );
+
+                    // Process the suggestions...
+
                     return filteredSuggestions.map((place) => ({
                         display_name: place.display_name,
                         lat: place.lat,
@@ -908,8 +973,29 @@
             } catch (error) {
                 console.error("Failed to fetch place suggestions:", error);
                 return [];
+            } finally {
+                const loadingIcon = document.getElementById("loadingIcon");
+                const searchButton = document.getElementById("searchButton");
+
+                // Delay the visibility of the search button for 2 seconds (2000 milliseconds)
+                setTimeout(() => {
+                    loadingIcon.classList.remove("spin"); // Remove the spin class
+                    loadingIcon.style.visibility = "hidden"; // Hide the loading icon
+                    searchButton.style.visibility = "visible"; // Show the search icon
+                }, 3000);
             }
         }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -924,8 +1010,8 @@
             allSuggestions.forEach((suggestion, index) => {
                 const suggestionItem = document.createElement("div");
                 suggestionItem.classList.add("suggestionItem");
-                suggestionItem.style.paddingTop = "20px"; // Add padding on top
-                suggestionItem.style.paddingBottom = "20px"; // Add padding below
+                suggestionItem.style.paddingTop = "20px";
+                suggestionItem.style.paddingBottom = "20px";
 
                 const gpsIcon = document.createElement("i");
                 gpsIcon.classList.add("material-icons", "gpsIcon");
@@ -953,8 +1039,16 @@
 
                 // Add a horizontal line after displaying suggestions
                 if (index === suggestions.length - 1) {
+                    const separatorContainer = document.createElement("div");
+                    separatorContainer.style.paddingTop = "50px";
+                    separatorContainer.style.paddingBottom = "50px";
+
                     const separatorLine = document.createElement("hr");
-                    suggestionsContainer.appendChild(separatorLine);
+                    separatorLine.style.width = "50%";
+                    separatorLine.style.margin = "0 auto";
+                    separatorContainer.appendChild(separatorLine);
+
+                    suggestionsContainer.appendChild(separatorContainer);
 
                     // Add the text below the line
                     const historicalPlacesText = document.createElement("div");
@@ -970,16 +1064,8 @@
             suggestionsContainer.style.display = "block";
         }
 
-
-
-
-
-
         // Attach event listener to the search input
         searchInput.addEventListener("input", handleSearchInput);
-
-
-
 
         // Function to handle search input
         function handleSearchInput() {
@@ -1004,14 +1090,8 @@
             }
         }
 
-
         // Attach event listener to the search input
         searchInput.addEventListener("input", handleSearchInput);
-
-
-
-
-
 
         function handleSuggestionClick(suggestion) {
             const latitude = parseFloat(suggestion.lat);
@@ -1048,121 +1128,115 @@
             suggestionsContainer.style.display = "none";
         }
 
-
-
-
-
         function displayHistoricalPlaces() {
-    suggestionsContainer.innerHTML = "";
+            suggestionsContainer.innerHTML = "";
 
-    if (historicalPlaces.length > 0 && searchInput.value.trim() === "") {
-        const sortedPlaces = [...historicalPlaces].reverse();
-        const recentPlaces = sortedPlaces.slice(0, 8);
+            if (historicalPlaces.length > 0 && searchInput.value.trim() === "") {
+                const sortedPlaces = [...historicalPlaces].reverse();
+                const recentPlaces = sortedPlaces.slice(0, 8);
 
-        const previousPlacesText = document.createElement("div");
-        //previousPlacesText.textContent = "Địa điểm đã tìm kiếm trước đây"; // Previously searched places
-        previousPlacesText.style.fontSize = "50px";
-        previousPlacesText.style.color = "#515151"; // Set the color to #515151
-        previousPlacesText.style.marginLeft = "20px"; // Add a left margin of 20px
-        suggestionsContainer.appendChild(previousPlacesText);
+                //const previousPlacesText = document.createElement("div");
+                //previousPlacesText.textContent = "Địa điểm đã tìm kiếm trước đây"; // Previously searched places
+                //previousPlacesText.style.fontSize = "50px";
+                //previousPlacesText.style.color = "#515151";
+                //previousPlacesText.style.marginLeft = "20px";
+                //suggestionsContainer.appendChild(previousPlacesText);
 
-        recentPlaces.forEach((place) => {
-            const suggestionItem = document.createElement("div");
-            suggestionItem.classList.add("suggestionItem");
-            suggestionItem.style.paddingTop = "20px"; // Add top padding of 20px
-            suggestionItem.style.paddingBottom = "20px"; // Add bottom padding of 20px
+                recentPlaces.forEach((place) => {
+                    const suggestionItem = document.createElement("div");
+                    suggestionItem.classList.add("suggestionItem");
+                    suggestionItem.style.paddingTop = "20px";
+                    suggestionItem.style.paddingBottom = "20px";
 
-            const gpsIcon = document.createElement("i");
-            gpsIcon.classList.add("material-icons", "gpsIcon");
-            gpsIcon.textContent = "history";
+                    const gpsIcon = document.createElement("i");
+                    gpsIcon.classList.add("material-icons", "gpsIcon");
+                    gpsIcon.textContent = "history";
 
-            const suggestionText = document.createElement("span");
-            suggestionText.textContent = place.display_name;
-            suggestionText.classList.add("suggestionText");
-            suggestionText.style.color = "#515151"; // Set the color to #515151
+                    const suggestionText = document.createElement("span");
+                    suggestionText.textContent = place.display_name;
+                    suggestionText.classList.add("suggestionText");
+                    suggestionText.style.color = "#515151";
 
-            const deleteButton = document.createElement("button");
-            deleteButton.classList.add("deleteButton");
-            deleteButton.innerHTML = '<i class="material-icons" style="font-size: 50px;">close</i>';
+                    const deleteButton = document.createElement("button");
+                    deleteButton.classList.add("deleteButton");
+                    deleteButton.innerHTML = '<i class="material-icons" style="font-size: 50px;">close</i>';
 
-            deleteButton.addEventListener("click", (event) => {
-                event.stopPropagation();
-                deleteHistoricalPlace(place);
-            });
+                    deleteButton.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        deleteHistoricalPlace(place);
+                    });
 
-            suggestionItem.addEventListener("click", () => {
-                handleSuggestionClick(place);
-            });
+                    suggestionItem.addEventListener("click", () => {
+                        handleSuggestionClick(place);
+                    });
 
-            deleteButton.addEventListener("click", (event) => {
-                event.stopPropagation();
-                deleteHistoricalPlace(place);
-            });
+                    deleteButton.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        deleteHistoricalPlace(place);
+                    });
 
-            suggestionItem.appendChild(gpsIcon);
-            suggestionItem.appendChild(suggestionText);
-            suggestionItem.appendChild(deleteButton);
+                    suggestionItem.appendChild(gpsIcon);
+                    suggestionItem.appendChild(suggestionText);
+                    suggestionItem.appendChild(deleteButton);
 
-            suggestionsContainer.appendChild(suggestionItem);
-        });
+                    suggestionsContainer.appendChild(suggestionItem);
+                });
 
-        // Function to delete individual historical place
-        function deleteHistoricalPlace(place) {
-            // Find the index of the place in the historicalPlaces array
-            const index = historicalPlaces.findIndex((p) => p.display_name === place.display_name);
+                // Function to delete individual historical place
+                function deleteHistoricalPlace(place) {
+                    // Find the index of the place in the historicalPlaces array
+                    const index = historicalPlaces.findIndex((p) => p.display_name === place.display_name);
 
-            if (index !== -1) {
-                // Remove the place from the historicalPlaces array
-                historicalPlaces.splice(index, 1);
+                    if (index !== -1) {
+                        // Remove the place from the historicalPlaces array
+                        historicalPlaces.splice(index, 1);
 
-                // Save the updated historicalPlaces in local storage
-                localStorage.setItem("historicalPlaces", JSON.stringify(historicalPlaces));
+                        // Save the updated historicalPlaces in local storage
+                        localStorage.setItem("historicalPlaces", JSON.stringify(historicalPlaces));
 
-                // Re-display the historical places
-                displayHistoricalPlaces();
-            }
-        }
+                        // Re-display the historical places
+                        displayHistoricalPlaces();
+                    }
+                }
 
-
-
-
-
-
-
-                // Create the Clear All button
+                // Create the Clear all search history button
                 const clearAllButton = document.createElement("button");
                 clearAllButton.id = "clearAllBtn";
                 clearAllButton.innerHTML = `
   <div style="display: flex; align-items: center;">
     <i class="material-icons" style="font-size: 50px; margin-right: 10px;">delete</i>
-    <span style="font-size: 50px; color: #515151;">Xóa tất cả tìm kiếm</span>
+    <span style="font-size: 50px; color: #515151;">Xóa tất cả tìm kiếm</span> 
   </div>`;
                 clearAllButton.addEventListener("click", clearAllHistory);
                 suggestionsContainer.appendChild(clearAllButton);
 
             } else {
                 const noResultsText = document.createElement("div");
-                noResultsText.textContent = "Không có địa điểm nào được tìm kiếm trước đó"; // No previously searched places
+                noResultsText.style.display = "flex";
+                noResultsText.style.alignItems = "center";
+                noResultsText.style.fontSize = "50px";
+                noResultsText.style.marginLeft = "20px";
+                noResultsText.style.color = "#515151";
 
                 const historyIcon = document.createElement("i");
                 historyIcon.classList.add("material-icons");
                 historyIcon.textContent = "history";
-                historyIcon.style.fontSize = "60px";
-                
+                historyIcon.style.fontSize = "80px";
+                historyIcon.style.marginRight = "20px"; // Increased separation
 
-                noResultsText.insertBefore(historyIcon, noResultsText.firstChild);
+                const text = document.createElement("span");
+                text.textContent = "Không có địa điểm nào được tìm kiếm trước đó";
 
-                noResultsText.style.fontSize = "50px";
-                noResultsText.style.marginLeft = "20px";
-                noResultsText.style.color = "#515151";
+                noResultsText.appendChild(historyIcon);
+                noResultsText.appendChild(text);
                 suggestionsContainer.appendChild(noResultsText);
+
+
+
             }
 
             suggestionsContainer.style.display = "block";
         }
-
-
-
 
         // Function to clear all historical places
         function clearAllHistory() {
@@ -1179,7 +1253,6 @@
 
         // Attach event listener to the search input
         searchInput.addEventListener("input", handleSearchInput);
-
 
 
 
@@ -1220,8 +1293,9 @@
             view: new ol.View({
                 center: ol.proj.fromLonLat([106.6297, 10.8231]),
                 zoom: 17,
-                //rotation: (25 * Math.PI) / 180 // Rotate the map by 25 degrees
-            }),
+                rotation: (4
+                5 * Math.PI) / 180 // Rotate the map by 25 degrees
+        }),
             controls: []
         });
 
