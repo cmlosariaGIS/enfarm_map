@@ -683,13 +683,6 @@
                 }
             });
 
-
-
-
-
-
-
-
             draw.on('drawend', async function (event) {
                 const feature = event.feature;
                 const geometry = feature.getGeometry();
@@ -841,12 +834,6 @@
 
                 farmParcelDrawn = true; // Set the farmParcelDrawn flag
 
-
-
-
-
-
-
                 // Display the "Finish Drawing" button if at least three points are drawn
                 const coordinatesLength = coordinates.length;
                 if (coordinatesLength === 3) {
@@ -972,10 +959,26 @@
 
 
 
+        // Declare Variable
+        let transformedCoordinates;
+        let convertedSideLengths;
+        let address;
+        let farmSize;
+        let unit;
+        let lon;
+        let lat;
 
+        // Wrap the console log statements in a function
+        function sendConsoleLog(data) {
+            window.postMessage(JSON.stringify({ type: 'consoleLog', data }));
+        }
 
-
-
+        // Replace the console.log statements with the sendConsoleLog function
+        sendConsoleLog("Coordinates: " + JSON.stringify(transformedCoordinates));
+        sendConsoleLog("Side Lengths: " + JSON.stringify(convertedSideLengths));
+        sendConsoleLog("Address: " + address);
+        sendConsoleLog("Farm Size: " + farmSize + unit);
+        sendConsoleLog("Longitude: " + lon + ", Latitude: " + lat);
 
 
 
