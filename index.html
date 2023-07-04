@@ -50,7 +50,7 @@
         .drawFarmBtn i,
         .northArrow i {
             font-family: "Material Icons";
-            font-size: 80px;
+            font-size: 65px;
             color: #515151;
         }
 
@@ -303,13 +303,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 600px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         /*Tap to draw floating message*/
         .floating-message i {
             font-size: 60px;
             animation-name: cycling-animation;
-            animation-duration: 1s;
+            animation-duration: .5s;
             animation-iteration-count: infinite;
             animation-timing-function: ease-in-out;
         }
@@ -561,7 +563,6 @@
             <i class="material-icons">navigation</i>
         </div>
 
-
         <div id="basemapswitcher" class="basemapswitcher">
             <button id="basemapBtn" class="basemapBtn" onclick="cycleBasemap()">
                 <i class="material-icons">layers</i>
@@ -571,11 +572,6 @@
         <button id="searchBtn" class="searchBtn">
             <i class="material-icons">search</i>
         </button>
-
-
-
-
-
 
         <div id="searchBar" class="searchBar">
             <input id="searchInput" class="searchInput" type="text" placeholder="  Tìm kiếm địa điểm..."
@@ -592,18 +588,6 @@
                 <i class="material-icons">search</i>
             </button>
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
 
         <div id="suggestionsContainer"></div>
 
@@ -699,6 +683,13 @@
                 }
             });
 
+
+
+
+
+
+
+
             draw.on('drawend', async function (event) {
                 const feature = event.feature;
                 const geometry = feature.getGeometry();
@@ -757,19 +748,49 @@
 
                 // Set the farm size tooltip content with the farm size and unit
                 tooltipOverlay.getElement().innerHTML = `
-  <div style="display: flex; align-items: center; justify-content: center; text-align: center; font-size: 50px; font-family: 'Segoe UI';">
-    <i class="material-icons" style="margin-right: 8px; font-size: 60px;">agriculture</i>
-    <span>Quy mô trang trại: </span>
-    <strong> ${farmSize}</strong>${unit}
-  </div>
-`;
+    <div style="display: flex; align-items: center; justify-content: center; text-align: center; font-size: 50px; font-family: 'Segoe UI';">
+      <i class="material-icons" style="margin-right: 8px; font-size: 60px;">agriculture</i>
+      <span>Quy mô trang trại: </span>
+      <strong>${farmSize}</strong>${unit}
+    </div>
+  `;
+
+                // Transform the coordinates to EPSG:4326 format
+                const transformedCoordinates = coordinates.map((coord) =>
+                    ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')
+                );
+
+                // Calculate the length of each side of the polygon
+                const sideLengths = [];
+                for (let i = 0; i < transformedCoordinates.length - 1; i++) {
+                    const start = transformedCoordinates[i];
+                    const end = transformedCoordinates[i + 1];
+                    const length = ol.sphere.getLength(new ol.geom.LineString([start, end]), {
+                        projection: 'EPSG:4326',
+                    });
+                    sideLengths.push(length);
+                }
+
+                // Convert side lengths to meters or kilometers if necessary
+                const convertedSideLengths = sideLengths.map((length) => {
+                    if (length >= 1000) {
+                        return (length / 1000).toFixed(2) + ' km';
+                    } else {
+                        return length.toFixed(2) + ' m';
+                    }
+                });
+
+                console.log("Coordinates:", transformedCoordinates);
+                console.log("Side Lengths:", convertedSideLengths);
 
                 // Position the farm size tooltip at the center point
                 tooltipOverlay.setPosition(center);
 
+                // Extract lon and lat from the center point
+                const [lon, lat] = ol.proj.toLonLat(center);
+
                 // Function to fetch place name from OSM Nominatim
-                async function fetchPlaceName(coordinates) {
-                    const [lon, lat] = ol.proj.toLonLat(coordinates);
+                async function fetchPlaceName(lon, lat) {
                     const baseUrl = "https://nominatim.openstreetmap.org/reverse";
                     const format = "json";
                     const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
@@ -791,7 +812,8 @@
                 }
 
                 // Fetch the address data using OSM Nominatim API
-                const address = await fetchPlaceName(center);
+                const address = await fetchPlaceName(lon, lat);
+                console.log("Address:", address); // Log the address to the console
 
                 // Create an address tooltip overlay
                 addressTooltipOverlay = new ol.Overlay({
@@ -814,7 +836,16 @@
                 // Position the address tooltip at the center point
                 addressTooltipOverlay.setPosition(center);
 
+                console.log("Farm Size:", farmSize, unit); // Log the farm size and unit to the console
+                console.log("Longitude:", lon, "Latitude:", lat); // Log the longitude and latitude to the console
+
                 farmParcelDrawn = true; // Set the farmParcelDrawn flag
+
+
+
+
+
+
 
                 // Display the "Finish Drawing" button if at least three points are drawn
                 const coordinatesLength = coordinates.length;
@@ -878,6 +909,8 @@
                         // Hide the "Finish Drawing" button
                         const finishDrawingBtn = document.querySelector(".finish-drawing");
                         finishDrawingBtn.style.display = "none";
+
+                        console.clear(); // Clear the console log
                     });
 
                     // Event listener for cancel button
