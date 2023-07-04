@@ -1302,7 +1302,7 @@
     ],
     view: new ol.View({
         center: ol.proj.fromLonLat([106.6297, 10.8231]),
-        zoom: 17,
+        zoom: 15,
     }),
     controls: [],
 });
@@ -1394,7 +1394,7 @@
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     updateUserLocationMarker(markerOverlay, position);
-                    map.getView().animate({ center: markerOverlay.getPosition(), zoom: 21 });
+                    map.getView().animate({ center: markerOverlay.getPosition(), zoom: 19});
                 },
                 handleGeolocationError
             );
