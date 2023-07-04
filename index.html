@@ -1297,7 +1297,9 @@
     target: mapElement,
     layers: [
         new ol.layer.Tile({
-            source: new ol.source.OSM(), // Use the OpenStreetMap tile source
+            source: new ol.source.XYZ({
+                url: 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            }),
         }),
     ],
     view: new ol.View({
@@ -1306,6 +1308,7 @@
     }),
     controls: [],
 });
+
 
 
 
@@ -1323,7 +1326,6 @@
                 : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
             logoElement.src = logoImage;
         }
-
 
 
 
