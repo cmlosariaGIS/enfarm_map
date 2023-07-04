@@ -298,7 +298,7 @@
             padding: 20px;
             border-radius: 100px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 50px;
+            font-size: 40px;
             text-align: center;
             display: flex;
             align-items: center;
@@ -622,363 +622,7 @@
     <script>
 
 
-        //DRAW FARM PARCEL BUTTON
-
-        // Define a flag variable to track the state of drawing
-        let isDrawingActive = false;
-
-        // Function to draw polygons representing farm parcels
-        function startDrawingFarm() {
-            const drawFarmBtn = document.getElementById("drawFarmBtn");
-            const drawFarmBtnIcon = drawFarmBtn.querySelector("i");
-
-            // Create a vector source for the farm polygons
-            const vectorSource = new ol.source.Vector();
-
-            // Create a vector layer using the vector source
-            const vectorLayer = new ol.layer.Vector({
-                source: vectorSource,
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: 'rgba(0, 128, 0, 0.7)', // Green color with 70% transparency
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: '#008000', // Green color for the stroke
-                        width: 10,
-                    }),
-                }),
-            });
-
-            // Add the vector layer to the map
-            map.addLayer(vectorLayer);
-
-            // Create a draw interaction for drawing polygons
-            const draw = new ol.interaction.Draw({
-                source: vectorSource,
-                type: 'Polygon',
-            });
-
-            // Activate the draw interaction on the map only if drawing is not active
-            if (!isDrawingActive) {
-                map.addInteraction(draw);
-                isDrawingActive = true;
-            }
-
-            let farmParcelDrawn = false; // Track if a farm parcel has been drawn
-
-            let tooltipOverlay; // Variable to store the farm size tooltip overlay
-            let addressTooltipOverlay; // Variable to store the address tooltip overlay
-
-            draw.on('drawstart', function () {
-                // Remove the farm size tooltip overlay if it exists
-                if (tooltipOverlay) {
-                    map.removeOverlay(tooltipOverlay);
-                    tooltipOverlay = null;
-                }
-
-                // Remove the address tooltip overlay if it exists
-                if (addressTooltipOverlay) {
-                    map.removeOverlay(addressTooltipOverlay);
-                    addressTooltipOverlay = null;
-                }
-            });
-
-            draw.on('drawend', async function (event) {
-                const feature = event.feature;
-                const geometry = feature.getGeometry();
-                const coordinates = geometry.getCoordinates()[0];
-
-                // Calculate the center point of the polygon
-                const center = ol.extent.getCenter(geometry.getExtent());
-
-                // Create a new point feature for the center point
-                const centerPointFeature = new ol.Feature(new ol.geom.Point(center));
-
-                // Create a style for the center point
-                const centerPointStyle = new ol.style.Style({
-                    image: new ol.style.Circle({
-                        radius: 16,
-                        fill: new ol.style.Fill({
-                            color: 'green',
-                        }),
-                        stroke: new ol.style.Stroke({
-                            color: 'white',
-                            width: 8,
-                        }),
-                    }),
-                });
-
-                // Set the style for the center point feature
-                centerPointFeature.setStyle(centerPointStyle);
-
-                // Add the center point feature to the vector source
-                vectorSource.addFeature(centerPointFeature);
-
-                // Calculate the farm size
-                const area = ol.sphere.getArea(geometry, {
-                    projection: map.getView().getProjection(),
-                });
-                let farmSize;
-                let unit;
-                if (area < 10000) {
-                    farmSize = Math.round(area); // Keep it in square meters
-                    unit = 'm²';
-                } else {
-                    farmSize = Math.round(area / 10000); // Convert to hectares
-                    unit = 'ha';
-                }
-
-                // Create a farm size tooltip overlay
-                tooltipOverlay = new ol.Overlay({
-                    element: document.createElement('div'),
-                    offset: [0, -150], // Offset the tooltip above the point
-                    positioning: 'top-center',
-                    className: 'tooltip-overlay', // Add a custom class for styling
-                });
-
-                // Add the farm size tooltip overlay to the map
-                map.addOverlay(tooltipOverlay);
-
-                // Set the farm size tooltip content with the farm size and unit
-                tooltipOverlay.getElement().innerHTML = `
-    <div style="display: flex; align-items: center; justify-content: center; text-align: center; font-size: 50px; font-family: 'Segoe UI';">
-      <i class="material-icons" style="margin-right: 8px; font-size: 60px;">agriculture</i>
-      <span>Quy mô trang trại: </span>
-      <strong>${farmSize}</strong>${unit}
-    </div>
-  `;
-
-                // Transform the coordinates to EPSG:4326 format
-                const transformedCoordinates = coordinates.map((coord) =>
-                    ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')
-                );
-
-                // Calculate the length of each side of the polygon
-                const sideLengths = [];
-                for (let i = 0; i < transformedCoordinates.length - 1; i++) {
-                    const start = transformedCoordinates[i];
-                    const end = transformedCoordinates[i + 1];
-                    const length = ol.sphere.getLength(new ol.geom.LineString([start, end]), {
-                        projection: 'EPSG:4326',
-                    });
-                    sideLengths.push(length);
-                }
-
-                // Convert side lengths to meters or kilometers if necessary
-                const convertedSideLengths = sideLengths.map((length) => {
-                    if (length >= 1000) {
-                        return (length / 1000).toFixed(2) + ' km';
-                    } else {
-                        return length.toFixed(2) + ' m';
-                    }
-                });
-
-                console.log("Coordinates:", transformedCoordinates);
-                console.log("Side Lengths:", convertedSideLengths);
-
-                // Position the farm size tooltip at the center point
-                tooltipOverlay.setPosition(center);
-
-                // Extract lon and lat from the center point
-                const [lon, lat] = ol.proj.toLonLat(center);
-
-                // Function to fetch place name from OSM Nominatim
-                async function fetchPlaceName(lon, lat) {
-                    const baseUrl = "https://nominatim.openstreetmap.org/reverse";
-                    const format = "json";
-                    const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
-
-                    try {
-                        const response = await fetch(url);
-                        if (response.ok) {
-                            const data = await response.json();
-                            const placeName = data.display_name || "";
-                            return placeName;
-                        } else {
-                            console.error("Failed to fetch place name:", response.status, response.statusText);
-                            return "";
-                        }
-                    } catch (error) {
-                        console.error("Failed to fetch place name:", error);
-                        return "";
-                    }
-                }
-
-                // Fetch the address data using OSM Nominatim API
-                const address = await fetchPlaceName(lon, lat);
-                console.log("Address:", address); // Log the address to the console
-
-                // Create an address tooltip overlay
-                addressTooltipOverlay = new ol.Overlay({
-                    element: document.createElement('div'),
-                    offset: [0, -680], // Offset the tooltip above the point
-                    positioning: 'top-center',
-                });
-
-                // Add the address tooltip overlay to the map
-                map.addOverlay(addressTooltipOverlay);
-
-                // Set the address tooltip content with the fetched data
-                addressTooltipOverlay.getElement().innerHTML = `
-  <div style="background-color: white; padding: 20px; border-radius: 10px; font-family: 'Segoe UI'; color: #515151; max-width: 600px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center;">
-    <i class="material-icons" style="margin-right: 8px; font-size: 60px;">location_on</i>
-    <span style="font-size: 45px;"> ${address}</span>
-  </div>
-`;
-
-                // Position the address tooltip at the center point
-                addressTooltipOverlay.setPosition(center);
-
-                console.log("Farm Size:", farmSize, unit); // Log the farm size and unit to the console
-                console.log("Longitude:", lon, "Latitude:", lat); // Log the longitude and latitude to the console
-
-                farmParcelDrawn = true; // Set the farmParcelDrawn flag
-
-                // Display the "Finish Drawing" button if at least three points are drawn
-                const coordinatesLength = coordinates.length;
-                if (coordinatesLength === 3) {
-                    const finishDrawingBtn = document.querySelector(".finish-drawing");
-                    finishDrawingBtn.style.display = "block";
-                }
-
-            });
-
-            // Change the background color of the drawFarmBtn to #FF6666
-            drawFarmBtn.style.backgroundColor = "#FF6666";
-
-            // Change the icon of the drawFarmBtn to a white close icon
-            drawFarmBtnIcon.textContent = "delete_forever";
-            drawFarmBtnIcon.style.color = "white";
-
-            // Function to handle the delete button click
-            function handleDeleteClick() {
-                if (farmParcelDrawn) {
-                    const floatingConfirmDelete = document.createElement("div");
-                    floatingConfirmDelete.className = "floating-confirm-delete";
-                    const deleteMessage = document.createElement("span");
-                    deleteMessage.textContent = "Are you sure you want to delete the farm drawing?";
-                    const confirmButton = document.createElement("button");
-                    confirmButton.textContent = "Confirm";
-                    const cancelButton = document.createElement("button");
-                    cancelButton.textContent = "Cancel";
-                    floatingConfirmDelete.appendChild(deleteMessage);
-                    floatingConfirmDelete.appendChild(confirmButton);
-                    floatingConfirmDelete.appendChild(cancelButton);
-                    map.getViewport().appendChild(floatingConfirmDelete);
-
-                    // Event listener for confirm button
-                    confirmButton.addEventListener("click", function () {
-                        // Remove the farm parcel
-                        vectorSource.clear();
-
-                        // Remove the tooltip overlay
-                        if (tooltipOverlay) {
-                            map.removeOverlay(tooltipOverlay);
-                            tooltipOverlay = null;
-                        }
-
-                        // Change the background color of the drawFarmBtn back to its original color
-                        drawFarmBtn.style.backgroundColor = "white";
-
-                        // Change the icon of the drawFarmBtn back to the original icon
-                        drawFarmBtnIcon.textContent = "create";
-                        drawFarmBtnIcon.style.color = "#515151";
-
-                        farmParcelDrawn = false; // Reset the farmParcelDrawn flag
-
-                        // Remove the floating confirm delete container
-                        map.getViewport().removeChild(floatingConfirmDelete);
-
-                        // Deactivate the drawing interaction
-                        map.removeInteraction(draw);
-                        isDrawingActive = false;
-
-                        // Hide the "Finish Drawing" button
-                        const finishDrawingBtn = document.querySelector(".finish-drawing");
-                        finishDrawingBtn.style.display = "none";
-
-                        console.clear(); // Clear the console log
-                    });
-
-                    // Event listener for cancel button
-                    cancelButton.addEventListener("click", function () {
-                        // Remove the floating confirm delete container if it exists
-                        if (floatingConfirmDelete) {
-                            map.getViewport().removeChild(floatingConfirmDelete);
-                        }
-                    });
-                }
-            }
-
-            // Add event listener to the drawFarmBtn
-            drawFarmBtn.addEventListener("click", handleDeleteClick);
-
-            // Add event listener to the finishDrawingBtn
-            const finishDrawingBtn = document.querySelector(".finish-drawing");
-            finishDrawingBtn.addEventListener("click", function () {
-                if (farmParcelDrawn) {
-                    const doubleClickEvent = new MouseEvent("dblclick", {
-                        bubbles: true,
-                        cancelable: true,
-                        view: window,
-                    });
-                    map.getViewport().dispatchEvent(doubleClickEvent);
-                }
-            });
-
-            // Add floating message
-            const floatingMessage = document.createElement("div");
-            floatingMessage.className = "floating-message";
-            const infoIcon = document.createElement("i");
-            infoIcon.className = "material-icons";
-            infoIcon.textContent = "touch_app";
-            infoIcon.style.fontSize = "100px"; // Increase the font size to 70px
-            floatingMessage.appendChild(infoIcon);
-            floatingMessage.innerHTML += "   Chạm vào màn hình để bắt đầu vẽ trang trại"; //"Tap the screen to start drawing farm"
-            map.getViewport().appendChild(floatingMessage);
-
-
-            // Remove floating message after 3 seconds
-            setTimeout(function () {
-                map.getViewport().removeChild(floatingMessage);
-            }, 3000);
-
-            // Count the number of times the map is clicked
-            let clickCount = 0;
-
-            map.on("click", function () {
-                clickCount++;
-
-                // Show the "Finish Drawing" button if the map is clicked three times
-                if (clickCount === 3) {
-                    const finishDrawingBtn = document.querySelector(".finish-drawing");
-                    finishDrawingBtn.style.display = "block";
-                }
-            });
-        }
-
-
-
-        // Declare Variable
-        let transformedCoordinates;
-        let convertedSideLengths;
-        let address;
-        let farmSize;
-        let unit;
-        let lon;
-        let lat;
-
-        // Wrap the console log statements in a function
-        function sendConsoleLog(data) {
-            window.postMessage(JSON.stringify({ type: 'consoleLog', data }));
-        }
-
-        // Replace the console.log statements with the sendConsoleLog function
-        sendConsoleLog("Coordinates: " + JSON.stringify(transformedCoordinates));
-        sendConsoleLog("Side Lengths: " + JSON.stringify(convertedSideLengths));
-        sendConsoleLog("Address: " + address);
-        sendConsoleLog("Farm Size: " + farmSize + unit);
-        sendConsoleLog("Longitude: " + lon + ", Latitude: " + lat);
+       
 
 
 
@@ -989,7 +633,7 @@
         const searchBtn = document.getElementById("searchBtn");
         const searchBar = document.getElementById("searchBar");
         const searchInput = document.getElementById("searchInput");
-        const searchKeywordBtn = document.getElementById("searchKeywordBtn");
+        //const searchKeywordBtn = document.getElementById("searchKeywordBtn");
         const floatingMessage = document.getElementById("floatingMessage");
         const suggestionsContainer = document.getElementById("suggestionsContainer");
 
@@ -1041,7 +685,7 @@
             ) {
                 searchBtn.style.display = "block";
                 searchBar.style.display = "none";
-                searchKeywordBtn.style.display = "block";
+                //searchKeywordBtn.style.display = "block";
                 searchInput.value = "";
 
                 // Hide the suggestions container
@@ -1054,11 +698,6 @@
 
         // Define the marker layer variable
         let markerLayer;
-
-
-
-
-
 
         // Function to create a marker at the specified coordinates
         function createMarker(coordinates) {
@@ -1654,14 +1293,19 @@
         });
 
         const map = new ol.Map({
-            target: mapElement,
-            layers: [streetLayer], // Use only the streetLayer as the basemap layer
-            view: new ol.View({
-                center: ol.proj.fromLonLat([106.6297, 10.8231]),
-                zoom: 17,
-            }),
-            controls: [],
-        });
+    target: mapElement,
+    layers: [
+        new ol.layer.Tile({
+            source: new ol.source.OSM(), // Use the OpenStreetMap tile source
+        }),
+    ],
+    view: new ol.View({
+        center: ol.proj.fromLonLat([106.6297, 10.8231]),
+        zoom: 17,
+    }),
+    controls: [],
+});
+
 
 
         let currentBasemap = 1; // Set the current basemap index to 1 to represent streetLayer
@@ -2243,7 +1887,397 @@
 
 
 
+ 
+ 
+ 
+        //DRAW FARM PARCEL BUTTON
 
+        // Function to send console log data to the parent window (React Native WebView)
+        function sendConsoleLogsToParent(logs) {
+            // Post the console log data to the parent window (React Native WebView)
+            window.parent.postMessage({ type: "consoleLogData", data: logs }, "*");
+        }
+
+
+
+
+        // Define a flag variable to track the state of drawing
+        let isDrawingActive = false;
+
+        // Function to draw polygons representing farm parcels
+        function startDrawingFarm() {
+            const drawFarmBtn = document.getElementById("drawFarmBtn");
+            const drawFarmBtnIcon = drawFarmBtn.querySelector("i");
+
+
+
+
+
+
+
+
+            // Create a vector source for the farm polygons
+            const vectorSource = new ol.source.Vector();
+
+            // Create a vector layer using the vector source
+            const vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0, 128, 0, 0.7)', // Green color with 70% transparency
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#008000', // Green color for the stroke
+                        width: 10,
+                    }),
+                }),
+            });
+
+            // Add the vector layer to the map
+            map.addLayer(vectorLayer);
+
+            // Create a draw interaction for drawing polygons
+            const draw = new ol.interaction.Draw({
+                source: vectorSource,
+                type: 'Polygon',
+            });
+
+            // Activate the draw interaction on the map only if drawing is not active
+            if (!isDrawingActive) {
+                map.addInteraction(draw);
+                isDrawingActive = true;
+            }
+
+            let farmParcelDrawn = false; // Track if a farm parcel has been drawn
+
+            let tooltipOverlay; // Variable to store the farm size tooltip overlay
+            let addressTooltipOverlay; // Variable to store the address tooltip overlay
+
+            draw.on('drawstart', function () {
+                // Remove the farm size tooltip overlay if it exists
+                if (tooltipOverlay) {
+                    map.removeOverlay(tooltipOverlay);
+                    tooltipOverlay = null;
+                }
+
+                // Remove the address tooltip overlay if it exists
+                if (addressTooltipOverlay) {
+                    map.removeOverlay(addressTooltipOverlay);
+                    addressTooltipOverlay = null;
+                }
+            });
+
+            draw.on('drawend', async function (event) {
+                const feature = event.feature;
+                const geometry = feature.getGeometry();
+                const coordinates = geometry.getCoordinates()[0];
+
+                // Calculate the center point of the polygon
+                const center = ol.extent.getCenter(geometry.getExtent());
+
+                // Create a new point feature for the center point
+                const centerPointFeature = new ol.Feature(new ol.geom.Point(center));
+
+                // Create a style for the center point
+                const centerPointStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 16,
+                        fill: new ol.style.Fill({
+                            color: 'green',
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: 'white',
+                            width: 8,
+                        }),
+                    }),
+                });
+
+                // Set the style for the center point feature
+                centerPointFeature.setStyle(centerPointStyle);
+
+                // Add the center point feature to the vector source
+                vectorSource.addFeature(centerPointFeature);
+
+                // Calculate the farm size
+                const area = ol.sphere.getArea(geometry, {
+                    projection: map.getView().getProjection(),
+                });
+                let farmSize;
+                let unit;
+                if (area < 10000) {
+                    farmSize = Math.round(area); // Keep it in square meters
+                    unit = 'm²';
+                } else {
+                    farmSize = Math.round(area / 10000); // Convert to hectares
+                    unit = 'ha';
+                }
+
+                // Create a farm size tooltip overlay
+                tooltipOverlay = new ol.Overlay({
+                    element: document.createElement('div'),
+                    offset: [0, -150], // Offset the tooltip above the point
+                    positioning: 'top-center',
+                    className: 'tooltip-overlay', // Add a custom class for styling
+                });
+
+                // Add the farm size tooltip overlay to the map
+                map.addOverlay(tooltipOverlay);
+
+                // Set the farm size tooltip content with the farm size and unit
+                tooltipOverlay.getElement().innerHTML = `
+    <div style="display: flex; align-items: center; justify-content: center; text-align: center; font-size: 50px; font-family: 'Segoe UI';">
+      <i class="material-icons" style="margin-right: 8px; font-size: 60px;">agriculture</i>
+      <span>Quy mô trang trại: </span>
+      <strong>${farmSize}</strong>${unit}
+    </div>
+  `;
+
+                // Transform the coordinates to EPSG:4326 format
+                const transformedCoordinates = coordinates.map((coord) =>
+                    ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')
+                );
+
+                // Calculate the length of each side of the polygon
+                const sideLengths = [];
+                for (let i = 0; i < transformedCoordinates.length - 1; i++) {
+                    const start = transformedCoordinates[i];
+                    const end = transformedCoordinates[i + 1];
+                    const length = ol.sphere.getLength(new ol.geom.LineString([start, end]), {
+                        projection: 'EPSG:4326',
+                    });
+                    sideLengths.push(length);
+                }
+
+                // Convert side lengths to meters or kilometers if necessary
+                const convertedSideLengths = sideLengths.map((length) => {
+                    if (length >= 1000) {
+                        return (length / 1000).toFixed(2) + ' km';
+                    } else {
+                        return length.toFixed(2) + ' m';
+                    }
+                });
+
+                console.log("Coordinates:", transformedCoordinates);
+                console.log("Side Lengths:", convertedSideLengths);
+
+                // Position the farm size tooltip at the center point
+                tooltipOverlay.setPosition(center);
+
+                // Extract lon and lat from the center point
+                const [lon, lat] = ol.proj.toLonLat(center);
+
+                // Function to fetch place name from OSM Nominatim
+                async function fetchPlaceName(lon, lat) {
+                    const baseUrl = "https://nominatim.openstreetmap.org/reverse";
+                    const format = "json";
+                    const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
+
+                    try {
+                        const response = await fetch(url);
+                        if (response.ok) {
+                            const data = await response.json();
+                            const placeName = data.display_name || "";
+                            return placeName;
+                        } else {
+                            console.error("Failed to fetch place name:", response.status, response.statusText);
+                            return "";
+                        }
+                    } catch (error) {
+                        console.error("Failed to fetch place name:", error);
+                        return "";
+                    }
+                }
+
+                // Fetch the address data using OSM Nominatim API
+                const address = await fetchPlaceName(lon, lat);
+                console.log("Address:", address); // Log the address to the console
+
+                // Create an address tooltip overlay
+                addressTooltipOverlay = new ol.Overlay({
+                    element: document.createElement('div'),
+                    offset: [0, -680], // Offset the tooltip above the point
+                    positioning: 'top-center',
+                });
+
+                // Add the address tooltip overlay to the map
+                map.addOverlay(addressTooltipOverlay);
+
+                // Set the address tooltip content with the fetched data
+                addressTooltipOverlay.getElement().innerHTML = `
+  <div style="background-color: white; padding: 20px; border-radius: 10px; font-family: 'Segoe UI'; color: #515151; max-width: 600px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center;">
+    <i class="material-icons" style="margin-right: 8px; font-size: 60px;">location_on</i>
+    <span style="font-size: 45px;"> ${address}</span>
+  </div>
+`;
+
+                // Position the address tooltip at the center point
+                addressTooltipOverlay.setPosition(center);
+
+                console.log("Farm Size:", farmSize, unit); // Log the farm size and unit to the console
+                console.log("Longitude:", lon, "Latitude:", lat); // Log the longitude and latitude to the console
+
+                farmParcelDrawn = true; // Set the farmParcelDrawn flag
+
+                // Display the "Finish Drawing" button if at least three points are drawn
+                const coordinatesLength = coordinates.length;
+                if (coordinatesLength === 3) {
+                    const finishDrawingBtn = document.querySelector(".finish-drawing");
+                    finishDrawingBtn.style.display = "block";
+                }
+
+            });
+
+            // Change the background color of the drawFarmBtn to #FF6666
+            drawFarmBtn.style.backgroundColor = "#FF6666";
+
+            // Change the icon of the drawFarmBtn to a white close icon
+            drawFarmBtnIcon.textContent = "delete_forever";
+            drawFarmBtnIcon.style.color = "white";
+
+            // Function to handle the delete button click
+            function handleDeleteClick() {
+                if (farmParcelDrawn) {
+                    const floatingConfirmDelete = document.createElement("div");
+                    floatingConfirmDelete.className = "floating-confirm-delete";
+                    const deleteMessage = document.createElement("span");
+                    deleteMessage.textContent = "Are you sure you want to delete the farm drawing?";
+                    const confirmButton = document.createElement("button");
+                    confirmButton.textContent = "Confirm";
+                    const cancelButton = document.createElement("button");
+                    cancelButton.textContent = "Cancel";
+                    floatingConfirmDelete.appendChild(deleteMessage);
+                    floatingConfirmDelete.appendChild(confirmButton);
+                    floatingConfirmDelete.appendChild(cancelButton);
+                    map.getViewport().appendChild(floatingConfirmDelete);
+
+                    // Event listener for confirm button
+                    confirmButton.addEventListener("click", function () {
+                        // Remove the farm parcel
+                        vectorSource.clear();
+
+                        // Remove the tooltip overlay
+                        if (tooltipOverlay) {
+                            map.removeOverlay(tooltipOverlay);
+                            tooltipOverlay = null;
+                        }
+
+                        // Change the background color of the drawFarmBtn back to its original color
+                        drawFarmBtn.style.backgroundColor = "white";
+
+                        // Change the icon of the drawFarmBtn back to the original icon
+                        drawFarmBtnIcon.textContent = "create";
+                        drawFarmBtnIcon.style.color = "#515151";
+
+                        farmParcelDrawn = false; // Reset the farmParcelDrawn flag
+
+                        // Remove the floating confirm delete container
+                        map.getViewport().removeChild(floatingConfirmDelete);
+
+                        // Deactivate the drawing interaction
+                        map.removeInteraction(draw);
+                        isDrawingActive = false;
+
+                        // Hide the "Finish Drawing" button
+                        const finishDrawingBtn = document.querySelector(".finish-drawing");
+                        finishDrawingBtn.style.display = "none";
+
+                        console.clear(); // Clear the console log
+                    });
+
+                    // Event listener for cancel button
+                    cancelButton.addEventListener("click", function () {
+                        // Remove the floating confirm delete container if it exists
+                        if (floatingConfirmDelete) {
+                            map.getViewport().removeChild(floatingConfirmDelete);
+                        }
+                    });
+                }
+            }
+
+            // Add event listener to the drawFarmBtn
+            drawFarmBtn.addEventListener("click", handleDeleteClick);
+
+            // Add event listener to the finishDrawingBtn
+            const finishDrawingBtn = document.querySelector(".finish-drawing");
+            
+            
+            finishDrawingBtn.addEventListener("click", function () {
+    if (farmParcelDrawn) {
+        // End the drawing interaction
+        draw.finishDrawing();
+
+        // Deactivate the drawing interaction
+        map.removeInteraction(draw);
+        isDrawingActive = false;
+
+        // Hide the "Finish Drawing" button
+        finishDrawingBtn.style.display = "none";
+    }
+});
+
+
+
+
+
+            // Add floating message
+            const floatingMessage = document.createElement("div");
+            floatingMessage.className = "floating-message";
+            const infoIcon = document.createElement("i");
+            infoIcon.className = "material-icons";
+            infoIcon.textContent = "touch_app";
+            infoIcon.style.fontSize = "100px"; // Increase the font size to 70px
+            floatingMessage.appendChild(infoIcon);
+            floatingMessage.innerHTML += "   Chạm vào màn hình để bắt đầu vẽ trang trại"; //"Tap the screen to start drawing farm"
+            map.getViewport().appendChild(floatingMessage);
+
+
+            // Remove floating message after 3 seconds
+            setTimeout(function () {
+                map.getViewport().removeChild(floatingMessage);
+            }, 3000);
+
+            // Count the number of times the map is clicked
+            let clickCount = 0;
+
+            map.on("click", function () {
+                clickCount++;
+
+                // Show the "Finish Drawing" button if the map is clicked three times
+                if (clickCount === 3) {
+                    const finishDrawingBtn = document.querySelector(".finish-drawing");
+                    finishDrawingBtn.style.display = "block";
+                }
+            });
+        }
+
+
+        
+
+
+
+
+        
+
+        // Declare Variable
+        let transformedCoordinates;
+        let convertedSideLengths;
+        let address;
+        let farmSize;
+        let unit;
+        let lon;
+        let lat;
+
+        // Wrap the console log statements in a function
+        function sendConsoleLog(data) {
+            window.postMessage(JSON.stringify({ type: 'consoleLog', data }));
+        }
+
+        // Replace the console.log statements with the sendConsoleLog function
+        sendConsoleLog("Coordinates: " + JSON.stringify(transformedCoordinates));
+        sendConsoleLog("Side Lengths: " + JSON.stringify(convertedSideLengths));
+        sendConsoleLog("Address: " + address);
+        sendConsoleLog("Farm Size: " + farmSize + unit);
+        sendConsoleLog("Longitude: " + lon + ", Latitude: " + lat);
 
 
 
