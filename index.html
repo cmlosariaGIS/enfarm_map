@@ -505,6 +505,18 @@
         .sync-spin {
             animation: spin 5s infinite linear;
         }
+
+        .marker-label {
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #000;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+
+
+
     </style>
 </head>
 
@@ -515,7 +527,7 @@
         </div>
 
         <div>
-            <img src="https://i.ibb.co/qjzJ56G/en-Farm-logo-gradient-1-2x.png" alt="Logo" class="logo">
+            <img src="https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png" alt="Logo" class="logo">
         </div>
 
         <div id="northArrow" class="northArrow">
@@ -935,39 +947,219 @@
         // Define the marker layer variable
         let markerLayer;
 
+
+
+
+
+
         // Function to create a marker at the specified coordinates
         function createMarker(coordinates) {
-            if (markerLayer) {
-                map.removeLayer(markerLayer);
-            }
+  if (markerLayer) {
+    map.removeLayer(markerLayer);
+  }
 
-            const marker = new ol.Feature({
-                geometry: new ol.geom.Point(coordinates),
-            });
+  const marker = new ol.Feature({
+  geometry: new ol.geom.Point(coordinates),
+});
 
-            const markerStyle = new ol.style.Style({
-                image: new ol.style.Circle({
-                    radius: 18,
-                    fill: new ol.style.Fill({
-                        color: "rgba(0, 191, 255, 0.8)",
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: "rgba(255, 255, 255, 0.8)",
-                        width: 10,
-                    }),
-                }),
-            });
+const markerStyle = new ol.style.Style({
+  image: new ol.style.Circle({
+    radius: 22,
+    fill: new ol.style.Fill({
+      color: "#ff6666",
+    }),
+    stroke: new ol.style.Stroke({
+      color: "rgba(255, 255, 255, 0.8)",
+      width: 12,
+    }),
+    shadow: new ol.style.Circle({
+      radius: 18,
+      fill: new ol.style.Fill({
+        color: "rgba(0, 0, 0, 0.5)", // Set the shadow color and transparency
+      }),
+    }),
+  }),
+});
 
-            marker.setStyle(markerStyle);
+marker.setStyle(markerStyle);
 
-            markerLayer = new ol.layer.Vector({
-                source: new ol.source.Vector({
-                    features: [marker],
-                }),
-            });
+markerLayer = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    features: [marker],
+  }),
+});
 
-            map.addLayer(markerLayer);
+map.addLayer(markerLayer);
+
+
+
+ // Define the addressParts variable outside the fetchPlaceName function
+let addressParts = [];
+
+// Fetch place name using coordinates from OSM Nominatim
+fetchPlaceName(coordinates)
+  .then((placeName) => {
+    // Create label overlay
+    const label = new ol.Overlay({
+      position: coordinates,
+      element: document.createElement("div"),
+      offset: [0, -45],
+      positioning: "bottom-center",
+    });
+
+    const labelElement = label.getElement();
+
+    // Create the pill-shaped background container
+    const pillContainer = document.createElement("div");
+    pillContainer.style.display = "flex";
+    pillContainer.style.alignItems = "center";
+    pillContainer.style.justifyContent = "space-between";
+    pillContainer.style.background = "#ffffff"; // Set the background color
+    pillContainer.style.padding = "10px 40px"; // Set padding to create a pill shape
+    pillContainer.style.borderRadius = "100px"; // Set border radius to create a pill shape
+    pillContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)"; // Add a shadow effect
+
+    // Create the place name element
+    const placeNameElement = document.createElement("span");
+    placeNameElement.textContent = placeName;
+    placeNameElement.style.fontSize = "50px"; // Set the font size
+    placeNameElement.style.fontFamily = "Segoe UI, Arial, sans-serif"; // Set the font family
+    placeNameElement.style.color = "#515151"; // Set the font color
+    placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)"; // Add a subtle text shadow
+    placeNameElement.style.letterSpacing = "1px"; // Add letter spacing for a modern look
+
+    // Create the chevron_right icon element
+    const chevronIcon = document.createElement("i");
+    chevronIcon.classList.add("material-icons");
+    chevronIcon.textContent = "expand_circle_down";
+    chevronIcon.style.fontSize = "60px"; // Set the font size
+    chevronIcon.style.color = "#515151"; // Set the icon color
+    chevronIcon.style.marginLeft = "15px"; // Nudge the icon to the left by 15px
+
+    // Add hover effect to the chevron icon
+    chevronIcon.style.cursor = "pointer";
+
+    // Append the place name element and chevron icon to the pill container
+    pillContainer.appendChild(placeNameElement);
+    pillContainer.appendChild(chevronIcon);
+
+    // Set the pill container as the label element
+    labelElement.appendChild(pillContainer);
+
+
+
+// Add click event listener to the chevron icon to expand the pill with address details
+chevronIcon.addEventListener("click", () => {
+  if (addressParts.length > 0) {
+    const addressDetails = addressParts.slice(1).join(", "); // Get the address details after the first comma
+    pillContainer.innerHTML = `
+      <span style="font-size: 50px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center;">
+        <strong>${placeName}</strong>, ${addressDetails}
+        <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 330px;">
+          <i class="material-icons" style="transform: rotate(180deg); font-size: inherit;">expand_circle_down</i>
+        </button>
+      </span>`;
+
+    // Adjust the width and height of the pill container
+    pillContainer.style.width = "400px";
+    pillContainer.style.padding = "30px 30px";
+    pillContainer.style.borderRadius = "10px";
+
+    // Add click event listener to the chevron icon in the expanded pill to revert back to the original pill size containing just the place name
+    const chevronUpIcon = pillContainer.querySelector("i.material-icons");
+    chevronUpIcon.addEventListener("click", () => {
+        pillContainer.innerHTML = `
+  <span style="font-size: 50px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
+    <span>${placeName}</span>
+    <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
+      <i class="material-icons" style="transform: rotate(0deg); font-size: inherit;">expand_circle_down</i>
+    </button>
+  </span>`;
+  
+      // Reset the width, padding, and border-radius styles to revert back to the original pill size
+      pillContainer.style.width = "initial";
+      pillContainer.style.padding = "10px 40px";
+      pillContainer.style.borderRadius = "100px";
+    });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Add hover effect to the chevron icon
+    chevronIcon.addEventListener("mouseenter", () => {
+      chevronIcon.style.color = "#999999";
+    });
+
+    chevronIcon.addEventListener("mouseleave", () => {
+      chevronIcon.style.color = "#515151";
+    });
+
+    // Set the pill container as the label element
+    labelElement.appendChild(pillContainer);
+
+    // Add the label overlay to the map
+    map.addOverlay(label);
+  })
+  .catch((error) => {
+    console.error("Failed to fetch place name:", error);
+  });
+
+// Function to fetch place name from OSM Nominatim
+async function fetchPlaceName(coordinates) {
+  const [lon, lat] = ol.proj.toLonLat(coordinates);
+  const baseUrl = "https://nominatim.openstreetmap.org/reverse";
+  const format = "json";
+  const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
+
+  try {
+    const response = await fetch(url);
+    if (response.ok) {
+      const data = await response.json();
+      addressParts = data.display_name.split(",");
+      const placeName = addressParts[0]?.trim() || "";
+      return placeName;
+    } else {
+      console.error("Failed to fetch place name:", response.status, response.statusText);
+      return "";
+    }
+  } catch (error) {
+    console.error("Failed to fetch place name:", error);
+    return "";
+  }
+}
+
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1380,7 +1572,7 @@
             const logoElement = document.querySelector(".logo");
             const logoImage = basemaps[currentBasemap] === satelliteLayer
                 ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
-                : "https://i.ibb.co/qjzJ56G/en-Farm-logo-gradient-1-2x.png";
+                : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
             logoElement.src = logoImage;
         }
 
