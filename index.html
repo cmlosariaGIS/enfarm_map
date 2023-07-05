@@ -315,8 +315,8 @@
 
         .sketchFarmBtn {
             position: absolute;
-            top: 360px;
-            left: 30px;
+            top: 650px;
+            right: 30px;
             z-index: 1;
         }
 
@@ -381,94 +381,10 @@
         }
 
         /*Draw Farm Area Size*/
-        .tooltip-overlay {
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            padding: 16px;
-            font-family: Arial, sans-serif;
-            font-size: 35px;
-            color: #515151;
-            border-radius: 100px;
-        }
-
-        /* Add a blur mask element */
-        .blur-mask {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            z-index: 9998;
-            display: none;
-            /* Initially hidden */
-        }
-
-        .floating-confirm-delete {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 50px;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 9999;
-            width: 600px;
-            backdrop-filter: blur(8px);
-        }
-
-
-        .floating-confirm-delete span {
-            display: block;
-            margin-bottom: 50px;
-            font-size: 50px;
-            font-weight: bold;
-            line-height: 1.2;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #515151;
-        }
-
-        .floating-confirm-delete button {
-            margin-top: 15px;
-            margin-right: 10px;
-            width: 600px;
-            height: 100px;
-            flex: 1;
-            border-radius: 100px;
-            background-color: #ff6666;
-            color: #ffffff;
-            font-size: 50px;
-            font-weight: bold;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .floating-confirm-delete button:first-child {
-            margin-right: 0;
-        }
-
-        .floating-confirm-delete button:hover {
-            background-color: #e65c5c;
-        }
-
-        .floating-confirm-delete button:focus {
-            outline: none;
-        }
-
-        .floating-confirm-delete button:active {
-            transform: translateY(1px);
-        }
 
         .sketch-buttons {
             position: fixed;
-            bottom: 25%;
+            bottom: 50%;
             left: 50%;
             transform: translate(-50%, 50%);
             display: flex;
@@ -480,18 +396,21 @@
 
         .finish-drawing {
             background-color: #ffffff;
-            padding: 25px 50px;
+            padding: 35px 50px;
             border-radius: 10px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 50px;
-            font-weight: bold;
+            font-size: 45px;
             color: #515151;
             outline: none;
             border: none;
             border-radius: 100px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
 
         .finish-drawing:hover {
             cursor: pointer;
@@ -589,7 +508,7 @@
         .hidden {
             display: none;
         }
-        
+
 
         .dialog {
             position: fixed;
@@ -625,7 +544,7 @@
             font-size: 40px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 10px;
-            padding: 10px 80px;
+            padding: 20px 80px;
             /* Padding around the text */
             border-radius: 20px;
             /* Rounded corners */
@@ -673,7 +592,7 @@
 
         <div id="searchBar" class="searchBar">
             <input id="searchInput" class="searchInput" type="text" placeholder="  Tìm kiếm địa điểm..."
-                style="font-size: 50px;" />
+                style="font-size: 45px;" />
             <!--Search for a place...-->
             <div id="loadingIcon" class="loadingIcon" style="visibility: hidden; margin-left: -30px;">
                 <i class="material-icons"
@@ -697,9 +616,9 @@
             <i class="material-icons">linear_scale</i>
         </button>
 
-        <button id="drawFarmBtn" class="drawFarmBtn" onclick="startDrawingFarm()">
+        <!--<button id="drawFarmBtn" class="drawFarmBtn" onclick="startDrawingFarm()">
             <i class="material-icons">create</i>
-        </button>
+        </button>-->
 
         <button id="sketchFarmBtn" class="sketchFarmBtn">
             <i class="material-icons">create</i>
@@ -707,21 +626,21 @@
 
 
         <!--Delete Confirm Dialog Box-->
-        <div id="dialog" class="dialog hiden">
+        <div id="dialog" class="dialog hidden">
             <div class="dialog-content">
-                <p>Do you want to delete the polygon?</p>
-                <button id="deleteYes" class="dialog-button">Yes</button>
-                <button id="deleteNo" class="dialog-button">No</button>
+                <p>Bạn có muốn xóa bản vẽ phác thảo trang trại?</p>
+                <button id="deleteYes" class="dialog-button">Đúng</button>
+                <button id="deleteNo" class="dialog-button">không</button>
             </div>
         </div>
 
 
 
-
+        <!--Finish Sketch Button-->
         <div class="sketch-buttons">
-            <button class="finish-drawing hidden">
-                <span class="check-icon">&#10004;</span>
-                Finish Sketch
+            <button class="finish-drawing hidden" style="font-size: 45px;">
+                <span class="material-icons" style="font-size: 45px;">done_outline</span>
+                Hoàn Thành Bản Vẽ Nông Trại
             </button>
         </div>
 
@@ -1014,7 +933,7 @@
                     // Create the place name element
                     const placeNameElement = document.createElement("span");
                     placeNameElement.textContent = placeName;
-                    placeNameElement.style.fontSize = "50px"; // Set the font size
+                    placeNameElement.style.fontSize = "45px"; // Set the font size
                     placeNameElement.style.fontFamily = "Segoe UI, Arial, sans-serif"; // Set the font family
                     placeNameElement.style.color = "#515151"; // Set the font color
                     placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)"; // Add a subtle text shadow
@@ -2274,7 +2193,7 @@
 
                 // Set the farm size tooltip content with the farm size and unit
                 tooltipOverlay.getElement().innerHTML = `
-      <div style="display: flex; align-items: center; justify-content: center; text-align: center; font-size: 50px; font-family: 'Segoe UI';">
+      <div style="display: flex; align-items: center; justify-content: center; text-align: center; font-size: 45px; font-family: 'Segoe UI';">
         <i class="material-icons" style="margin-right: 8px; font-size: 60px;">agriculture</i>
         <span>Quy mô trang trại: </span>
         <strong>${farmSize}</strong>${unit}
