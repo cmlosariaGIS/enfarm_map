@@ -638,7 +638,7 @@
 
         <!--Finish Sketch Button-->
         <div class="sketch-buttons">
-            <button class="finish-drawing hiden" style="font-size: 40px;">
+            <button class="finish-drawing hidden" style="font-size: 40px;">
                 <span class="material-icons" style="font-size: 40px;">done_outline</span>
                 Hoàn Thành
             </button>
@@ -656,126 +656,126 @@
 
 
 
-        let isSketchActive = false;
-        let draw; // Variable to store the draw interaction
-        let polygonExists = false; // Variable to track whether a polygon has been drawn or there is an ongoing sketch
-        let vectorSource = new ol.source.Vector(); // Vector source for the farm polygons, defined outside the function for global access
+let isSketchActive = false;
+let draw; // Variable to store the draw interaction
+let polygonExists = false; // Variable to track whether a polygon has been drawn or there is an ongoing sketch
+let vectorSource = new ol.source.Vector(); // Vector source for the farm polygons, defined outside the function for global access
 
-        // Function to draw farm polygons
-        function startSketchFarm() {
-            const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-            const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
-            const finishDrawingButton = document.querySelector('.finish-drawing');
-            const dialog = document.getElementById('dialog');
+// Function to draw farm polygons
+function startSketchFarm() {
+    const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+    const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
+    const finishDrawingButton = document.querySelector('.finish-drawing');
+    const dialog = document.getElementById('dialog');
 
-            // Check if sketching is active, then disable the function
-            if (isSketchActive) {
-                // Show the dialog box only if a polygon has been drawn or there is an ongoing sketch
-                if (polygonExists) {
-                    dialog.classList.remove('hidden');
+    // Check if sketching is active, then disable the function
+    if (isSketchActive) {
+        // Show the dialog box only if a polygon has been drawn or there is an ongoing sketch
+        if (polygonExists) {
+            dialog.classList.remove('hidden');
 
-                    // Listen for the Yes button click
-                    document.getElementById('deleteYes').addEventListener('click', function () {
-                        // Deactivate the drawing interaction
-                        map.removeInteraction(draw);
-                        isSketchActive = false;
-                        polygonExists = false; // Reset the variable
-                        // Clear the features in the vector source to remove the polygon from the map
-                        vectorSource.clear();
-                        // Revert button to initial state
-                        sketchFarmBtn.style.backgroundColor = "white";
-                        sketchFarmBtnIcon.textContent = "create";
-                        sketchFarmBtnIcon.style.color = "black";
-                        // Hide the finishDrawingButton
-                        finishDrawingButton.classList.add('hidden');
-                        // Hide the dialog box
-                        dialog.classList.add('hidden');
-                    });
-
-                    // Listen for the No button click
-                    document.getElementById('deleteNo').addEventListener('click', function () {
-                        // Hide the dialog box
-                        dialog.classList.add('hidden');
-                    });
-                } else {
-                    // Reset the state of the button to initial state if there is no polygon drawn or ongoing sketch
-                    map.removeInteraction(draw);
-                    isSketchActive = false;
-                    sketchFarmBtn.style.backgroundColor = "white";
-                    sketchFarmBtnIcon.textContent = "create";
-                    sketchFarmBtnIcon.style.color = "black";
-                    finishDrawingButton.classList.add('hidden');
-                }
-                // Exit the function
-                return;
-            }
-
-            // Create a vector layer using the vector source
-            const vectorLayer = new ol.layer.Vector({
-                source: vectorSource,
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: "rgba(0, 128, 0, 0.8)", // Green color with 80% transparency
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: "green", // Green color for the stroke
-                        width: 2,
-                    }),
-                }),
+            // Listen for the Yes button click
+            document.getElementById('deleteYes').addEventListener('click', function () {
+                // Deactivate the drawing interaction
+                map.removeInteraction(draw);
+                isSketchActive = false;
+                polygonExists = false; // Reset the variable
+                // Clear the features in the vector source to remove the polygon from the map
+                vectorSource.clear();
+                // Revert button to initial state
+                sketchFarmBtn.style.backgroundColor = "white";
+                sketchFarmBtnIcon.textContent = "create";
+                sketchFarmBtnIcon.style.color = "black";
+                // Hide the finishDrawingButton
+                finishDrawingButton.classList.add('hidden');
+                // Hide the dialog box
+                dialog.classList.add('hidden');
             });
 
-            // Add the vector layer to the map
-            map.addLayer(vectorLayer);
-
-            // Create a draw interaction for sketching polygons
-            draw = new ol.interaction.Draw({
-                source: vectorSource,
-                type: "Polygon",
+            // Listen for the No button click
+            document.getElementById('deleteNo').addEventListener('click', function () {
+                // Hide the dialog box
+                dialog.classList.add('hidden');
             });
-
-            // Activate the draw interaction on the map
-            map.addInteraction(draw);
-            isSketchActive = true;
-
-            // Change the background color of the sketchFarmBtn to #FF6666
-            sketchFarmBtn.style.backgroundColor = "#FF6666";
-
-            // Change the icon of the sketchFarmBtn to a white close icon
-            sketchFarmBtnIcon.textContent = "delete_forever";
-            sketchFarmBtnIcon.style.color = "white";
-
-            // Event listener for drawstart event
-            draw.on("drawstart", function (event) {
-                polygonExists = true; // Set the variable to true as the sketch has started
-                // Listen for changes in the geometry (coordinates) of the polygon being drawn
-                event.feature.getGeometry().on("change", function (geomEvent) {
-                    const coordinates = geomEvent.target.getCoordinates()[0];
-                    // If there are 4 or more coordinates (3 vertices and the moving coordinate), display the finishDrawingButton
-                    if (coordinates.length >= 5) {
-                        finishDrawingButton.classList.remove('hidden');
-                    }
-                });
-            });
-
-            // Add event listener to the finishDrawingButton
-            finishDrawingButton.addEventListener('click', function () {
-                // Finish the sketch
-                if (draw) {
-                    draw.finishDrawing();
-                    // Deactivate the drawing interaction
-                    map.removeInteraction(draw);
-                    isSketchActive = false;
-                    // Optionally, you could hide the finishDrawingButton again here:
-                    finishDrawingButton.classList.add('hidden');
-                }
-            });
+        } else {
+            // Reset the state of the button to initial state if there is no polygon drawn or ongoing sketch
+            map.removeInteraction(draw);
+            isSketchActive = false;
+            sketchFarmBtn.style.backgroundColor = "white";
+            sketchFarmBtnIcon.textContent = "create";
+            sketchFarmBtnIcon.style.color = "black";
+            finishDrawingButton.classList.add('hidden');
         }
+        // Exit the function
+        return;
+    }
 
-        // Add event listener to the sketchFarmBtn
-        const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-        sketchFarmBtn.addEventListener("click", function () {
-            startSketchFarm();
+    // Create a vector layer using the vector source
+    const vectorLayer = new ol.layer.Vector({
+        source: vectorSource,
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: "rgba(0, 128, 0, 0.8)", // Green color with 80% transparency
+            }),
+            stroke: new ol.style.Stroke({
+                color: "green", // Green color for the stroke
+                width: 2,
+            }),
+        }),
+    });
+
+    // Add the vector layer to the map
+    map.addLayer(vectorLayer);
+
+    // Create a draw interaction for sketching polygons
+    draw = new ol.interaction.Draw({
+        source: vectorSource,
+        type: "Polygon",
+    });
+
+    // Activate the draw interaction on the map
+    map.addInteraction(draw);
+    isSketchActive = true;
+
+    // Change the background color of the sketchFarmBtn to #FF6666
+    sketchFarmBtn.style.backgroundColor = "#FF6666";
+
+    // Change the icon of the sketchFarmBtn to a white close icon
+    sketchFarmBtnIcon.textContent = "delete_forever";
+    sketchFarmBtnIcon.style.color = "white";
+
+    // Event listener for drawstart event
+    draw.on("drawstart", function (event) {
+        polygonExists = true; // Set the variable to true as the sketch has started
+        // Listen for changes in the geometry (coordinates) of the polygon being drawn
+        event.feature.getGeometry().on("change", function (geomEvent) {
+            const coordinates = geomEvent.target.getCoordinates()[0];
+            // If there are 4 or more coordinates (3 vertices and the moving coordinate), display the finishDrawingButton
+            if (coordinates.length >= 5) {
+                finishDrawingButton.classList.remove('hidden');
+            }
         });
+    });
+}
+
+// Add event listener to the sketchFarmBtn
+const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+sketchFarmBtn.addEventListener("click", function () {
+    startSketchFarm();
+});
+
+// Add event listener to the finishDrawingButton
+const finishDrawingButton = document.querySelector('.finish-drawing');
+finishDrawingButton.addEventListener('click', function () {
+    // Finish the sketch
+    if (draw) {
+        draw.finishDrawing();
+        // Optionally, you could hide the finishDrawingButton again here:
+        finishDrawingButton.classList.add('hidden');
+    }
+});
+
+
 
 
 
