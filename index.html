@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -10,7 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/ol@v7.4.0/dist/ol.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.4.0/ol.css">
 
-    
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <style>
         .map {
@@ -35,6 +36,7 @@
         .measureAreaBtn,
         .measureLengthBtn,
         .drawFarmBtn,
+        .sketchFarmBtn,
         .northArrow {
             position: fixed;
             background-color: #ffffff;
@@ -56,6 +58,7 @@
         .measureAreaBtn i,
         .measureLengthBtn i,
         .drawFarmBtn i,
+        .sketchFarmBtn i,
         .northArrow i {
             font-family: "Material Icons";
             font-size: 65px;
@@ -112,7 +115,7 @@
             border-radius: 100px;
             padding: 2px 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            width: 950px;
+            width: 890px;
             z-index: 3;
         }
 
@@ -120,10 +123,10 @@
             flex: 1;
             border: none;
             outline: none;
-            font-size: 35px;
+            font-size: 40px;
             color: #515151;
-            padding: 10px;
-            padding-left: 30px;
+            padding: 20px;
+            padding-left: 40px;
             /* Add left padding of 30px */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -159,7 +162,7 @@
             position: absolute;
             top: 140px;
             left: 0;
-            width: 950px;
+            width: 890px;
             max-height: 800px;
             overflow-y: auto;
             background-color: #ffffff;
@@ -171,6 +174,25 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
         }
+
+        .suggestionsContainer::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .suggestionsContainer::-webkit-scrollbar-track {
+            border-radius: 10px;
+            background-color: #f1f1f1;
+        }
+
+        .suggestionsContainer::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: #888;
+        }
+
+        .suggestionsContainer::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+
 
         .suggestionsContainer div {
             padding: 5px;
@@ -185,11 +207,12 @@
             display: flex;
             align-items: center;
             padding: 10px;
-            padding-left: 100px color: #515151;
+            padding-left: 100px;
+            color: #515151;
         }
 
         .suggestionText {
-            font-size: 45px;
+            font-size: 40px;
             /* Adjust the font size as needed */
         }
 
@@ -290,6 +313,13 @@
             z-index: 1;
         }
 
+        .sketchFarmBtn {
+            position: absolute;
+            top: 360px;
+            left: 30px;
+            z-index: 1;
+        }
+
         .measureLengthBtn {
             position: absolute;
             top: 500px;
@@ -361,17 +391,18 @@
             border-radius: 100px;
         }
 
-        .floating-confirm-delete {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 9999;
-            width: 600px;
+        /* Add a blur mask element */
+        .blur-mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 9998;
+            display: none;
+            /* Initially hidden */
         }
 
         .floating-confirm-delete {
@@ -379,13 +410,15 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.8);
             padding: 50px;
             border-radius: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 9999;
             width: 600px;
+            backdrop-filter: blur(8px);
         }
+
 
         .floating-confirm-delete span {
             display: block;
@@ -556,13 +589,68 @@
         .hidden {
             display: none;
         }
+        
+
+        .dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .dialog-content {
+            background-color: white;
+            padding: 50px;
+            border-radius: 20px;
+            /* Increased border radius */
+            text-align: center;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            /* Subtle box-shadow for depth */
+            width: 600px;
+            height: 300px;
+            font-size: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 100%;
+            /* Setting max width for mobile responsiveness */
+            box-shadow: #515151;
+        }
+
+        .dialog-button {
+            font-size: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 10px;
+            padding: 10px 80px;
+            /* Padding around the text */
+            border-radius: 20px;
+            /* Rounded corners */
+            border: none;
+            /* Remove border */
+            color: white;
+            /* Text color */
+            cursor: pointer;
+            /* Hand cursor on hover */
+            background: linear-gradient(to bottom, #f2709c, #ff9472);
+            /* Gradient background */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            /* Subtle box-shadow for depth */
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
     <div class="map">
         <div id="map" class="map">
-
+            <div class="blur-mask"></div>
         </div>
 
         <div>
@@ -613,6 +701,23 @@
             <i class="material-icons">create</i>
         </button>
 
+        <button id="sketchFarmBtn" class="sketchFarmBtn">
+            <i class="material-icons">create</i>
+        </button>
+
+
+        <!--Delete Confirm Dialog Box-->
+        <div id="dialog" class="dialog hiden">
+            <div class="dialog-content">
+                <p>Do you want to delete the polygon?</p>
+                <button id="deleteYes" class="dialog-button">Yes</button>
+                <button id="deleteNo" class="dialog-button">No</button>
+            </div>
+        </div>
+
+
+
+
         <div class="sketch-buttons">
             <button class="finish-drawing hidden">
                 <span class="check-icon">&#10004;</span>
@@ -628,10 +733,141 @@
     </div>
     </div>
 
-        <script>
+    <script>
 
 
-       
+
+        let isSketchActive = false;
+        let draw; // Variable to store the draw interaction
+        let polygonExists = false; // Variable to track whether a polygon has been drawn or there is an ongoing sketch
+        let vectorSource = new ol.source.Vector(); // Vector source for the farm polygons, defined outside the function for global access
+
+        // Function to draw farm polygons
+        function startSketchFarm() {
+            const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+            const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
+            const finishDrawingButton = document.querySelector('.finish-drawing');
+            const dialog = document.getElementById('dialog');
+
+            // Check if sketching is active, then disable the function
+            if (isSketchActive) {
+                // Show the dialog box only if a polygon has been drawn or there is an ongoing sketch
+                if (polygonExists) {
+                    dialog.classList.remove('hidden');
+
+                    // Listen for the Yes button click
+                    document.getElementById('deleteYes').addEventListener('click', function () {
+                        // Deactivate the drawing interaction
+                        map.removeInteraction(draw);
+                        isSketchActive = false;
+                        polygonExists = false; // Reset the variable
+                        // Clear the features in the vector source to remove the polygon from the map
+                        vectorSource.clear();
+                        // Revert button to initial state
+                        sketchFarmBtn.style.backgroundColor = "white";
+                        sketchFarmBtnIcon.textContent = "create";
+                        sketchFarmBtnIcon.style.color = "black";
+                        // Hide the finishDrawingButton
+                        finishDrawingButton.classList.add('hidden');
+                        // Hide the dialog box
+                        dialog.classList.add('hidden');
+                    });
+
+                    // Listen for the No button click
+                    document.getElementById('deleteNo').addEventListener('click', function () {
+                        // Hide the dialog box
+                        dialog.classList.add('hidden');
+                    });
+                } else {
+                    // Reset the state of the button to initial state if there is no polygon drawn or ongoing sketch
+                    map.removeInteraction(draw);
+                    isSketchActive = false;
+                    sketchFarmBtn.style.backgroundColor = "white";
+                    sketchFarmBtnIcon.textContent = "create";
+                    sketchFarmBtnIcon.style.color = "black";
+                    finishDrawingButton.classList.add('hidden');
+                }
+                // Exit the function
+                return;
+            }
+
+            // Create a vector layer using the vector source
+            const vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: "rgba(0, 128, 0, 0.8)", // Green color with 80% transparency
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "green", // Green color for the stroke
+                        width: 2,
+                    }),
+                }),
+            });
+
+            // Add the vector layer to the map
+            map.addLayer(vectorLayer);
+
+            // Create a draw interaction for sketching polygons
+            draw = new ol.interaction.Draw({
+                source: vectorSource,
+                type: "Polygon",
+            });
+
+            // Activate the draw interaction on the map
+            map.addInteraction(draw);
+            isSketchActive = true;
+
+            // Change the background color of the sketchFarmBtn to #FF6666
+            sketchFarmBtn.style.backgroundColor = "#FF6666";
+
+            // Change the icon of the sketchFarmBtn to a white close icon
+            sketchFarmBtnIcon.textContent = "delete_forever";
+            sketchFarmBtnIcon.style.color = "white";
+
+            // Event listener for drawstart event
+            draw.on("drawstart", function (event) {
+                polygonExists = true; // Set the variable to true as the sketch has started
+                // Listen for changes in the geometry (coordinates) of the polygon being drawn
+                event.feature.getGeometry().on("change", function (geomEvent) {
+                    const coordinates = geomEvent.target.getCoordinates()[0];
+                    // If there are 4 or more coordinates (3 vertices and the moving coordinate), display the finishDrawingButton
+                    if (coordinates.length >= 5) {
+                        finishDrawingButton.classList.remove('hidden');
+                    }
+                });
+            });
+        }
+
+        // Add event listener to the sketchFarmBtn
+        const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+        sketchFarmBtn.addEventListener("click", function () {
+            startSketchFarm();
+        });
+
+        // Add event listener to the finishDrawingButton
+        const finishDrawingButton = document.querySelector('.finish-drawing');
+        finishDrawingButton.addEventListener('click', function () {
+            // Finish the sketch
+            if (draw) {
+                draw.finishDrawing();
+                // Optionally, you could hide the finishDrawingButton again here:
+                finishDrawingButton.classList.add('hidden');
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1302,18 +1538,18 @@
         });
 
         const map = new ol.Map({
-    target: mapElement,
-    layers: [
-        new ol.layer.Tile({
-            source: new ol.source.OSM(), // Use the OpenStreetMap tile source
-        }),
-    ],
-    view: new ol.View({
-        center: ol.proj.fromLonLat([106.6297, 10.8231]),
-        zoom: 15,
-    }),
-    controls: [],
-});
+            target: mapElement,
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM(), // Use the OpenStreetMap tile source
+                }),
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([106.6297, 10.8231]),
+                zoom: 15,
+            }),
+            controls: [],
+        });
 
 
 
@@ -1401,7 +1637,7 @@
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     updateUserLocationMarker(markerOverlay, position);
-                    map.getView().animate({ center: markerOverlay.getPosition(), zoom: 19});
+                    map.getView().animate({ center: markerOverlay.getPosition(), zoom: 19 });
                 },
                 handleGeolocationError
             );
@@ -1895,149 +2131,149 @@
 
 
 
- 
- 
- 
+
+
+
         //DRAW FARM PARCEL BUTTON
 
-// Function to send console log data to the parent window (React Native WebView)
-function sendConsoleLogsToParent(logs) {
-  // Post the console log data to the parent window (React Native WebView)
-  window.parent.postMessage({ type: "consoleLogData", data: logs }, "*");
-}
+        // Function to send console log data to the parent window (React Native WebView)
+        function sendConsoleLogsToParent(logs) {
+            // Post the console log data to the parent window (React Native WebView)
+            window.parent.postMessage({ type: "consoleLogData", data: logs }, "*");
+        }
 
-// Define a flag variable to track the state of drawing
-let isDrawingActive = false;
+        // Define a flag variable to track the state of drawing
+        let isDrawingActive = false;
 
-// Function to draw polygons representing farm parcels
-function startDrawingFarm() {
-  const drawFarmBtn = document.getElementById("drawFarmBtn");
-  const drawFarmBtnIcon = drawFarmBtn.querySelector("i");
+        // Function to draw polygons representing farm parcels
+        function startDrawingFarm() {
+            const drawFarmBtn = document.getElementById("drawFarmBtn");
+            const drawFarmBtnIcon = drawFarmBtn.querySelector("i");
 
-  // Check if drawing is active and no polygons are drawn, then disable the function
-  if (isDrawingActive && !farmParcelDrawn) {
-    // Deactivate the drawing interaction
-    map.removeInteraction(draw);
-    isDrawingActive = false;
+            // Check if drawing is active and no polygons are drawn, then disable the function
+            if (isDrawingActive && !farmParcelDrawn) {
+                // Deactivate the drawing interaction
+                map.removeInteraction(draw);
+                isDrawingActive = false;
 
-    // Reset the drawFarmBtn styles
-    drawFarmBtn.style.backgroundColor = "white";
-    drawFarmBtnIcon.textContent = "create";
-    drawFarmBtnIcon.style.color = "#515151";
+                // Reset the drawFarmBtn styles
+                drawFarmBtn.style.backgroundColor = "white";
+                drawFarmBtnIcon.textContent = "create";
+                drawFarmBtnIcon.style.color = "#515151";
 
-    // Exit the function
-    return;
-  }
+                // Exit the function
+                return;
+            }
 
-  // Create a vector source for the farm polygons
-  const vectorSource = new ol.source.Vector();
+            // Create a vector source for the farm polygons
+            const vectorSource = new ol.source.Vector();
 
-  // Create a vector layer using the vector source
-  const vectorLayer = new ol.layer.Vector({
-    source: vectorSource,
-    style: new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: 'rgba(0, 128, 0, 0.7)', // Green color with 70% transparency
-      }),
-      stroke: new ol.style.Stroke({
-        color: '#008000', // Green color for the stroke
-        width: 10,
-      }),
-    }),
-  });
+            // Create a vector layer using the vector source
+            const vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: 'rgba(0, 128, 0, 0.7)', // Green color with 70% transparency
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#008000', // Green color for the stroke
+                        width: 10,
+                    }),
+                }),
+            });
 
-  // Add the vector layer to the map
-  map.addLayer(vectorLayer);
+            // Add the vector layer to the map
+            map.addLayer(vectorLayer);
 
-  // Create a draw interaction for drawing polygons
-  const draw = new ol.interaction.Draw({
-    source: vectorSource,
-    type: 'Polygon',
-  });
+            // Create a draw interaction for drawing polygons
+            const draw = new ol.interaction.Draw({
+                source: vectorSource,
+                type: 'Polygon',
+            });
 
-  // Activate the draw interaction on the map only if drawing is not active
-  if (!isDrawingActive) {
-    map.addInteraction(draw);
-    isDrawingActive = true;
-  }
+            // Activate the draw interaction on the map only if drawing is not active
+            if (!isDrawingActive) {
+                map.addInteraction(draw);
+                isDrawingActive = true;
+            }
 
-  let farmParcelDrawn = false; // Track if a farm parcel has been drawn
+            let farmParcelDrawn = false; // Track if a farm parcel has been drawn
 
-  let tooltipOverlay; // Variable to store the farm size tooltip overlay
-  let addressTooltipOverlay; // Variable to store the address tooltip overlay
+            let tooltipOverlay; // Variable to store the farm size tooltip overlay
+            let addressTooltipOverlay; // Variable to store the address tooltip overlay
 
-  draw.on('drawstart', function () {
-    // Remove the farm size tooltip overlay if it exists
-    if (tooltipOverlay) {
-      map.removeOverlay(tooltipOverlay);
-      tooltipOverlay = null;
-    }
+            draw.on('drawstart', function () {
+                // Remove the farm size tooltip overlay if it exists
+                if (tooltipOverlay) {
+                    map.removeOverlay(tooltipOverlay);
+                    tooltipOverlay = null;
+                }
 
-    // Remove the address tooltip overlay if it exists
-    if (addressTooltipOverlay) {
-      map.removeOverlay(addressTooltipOverlay);
-      addressTooltipOverlay = null;
-    }
-  });
+                // Remove the address tooltip overlay if it exists
+                if (addressTooltipOverlay) {
+                    map.removeOverlay(addressTooltipOverlay);
+                    addressTooltipOverlay = null;
+                }
+            });
 
-  draw.on('drawend', async function (event) {
-    const feature = event.feature;
-    const geometry = feature.getGeometry();
-    const coordinates = geometry.getCoordinates()[0];
+            draw.on('drawend', async function (event) {
+                const feature = event.feature;
+                const geometry = feature.getGeometry();
+                const coordinates = geometry.getCoordinates()[0];
 
-    // Calculate the center point of the polygon
-    const center = ol.extent.getCenter(geometry.getExtent());
+                // Calculate the center point of the polygon
+                const center = ol.extent.getCenter(geometry.getExtent());
 
-    // Create a new point feature for the center point
-    const centerPointFeature = new ol.Feature(new ol.geom.Point(center));
+                // Create a new point feature for the center point
+                const centerPointFeature = new ol.Feature(new ol.geom.Point(center));
 
-    // Create a style for the center point
-    const centerPointStyle = new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: 16,
-        fill: new ol.style.Fill({
-          color: 'green',
-        }),
-        stroke: new ol.style.Stroke({
-          color: 'white',
-          width: 8,
-        }),
-      }),
-    });
+                // Create a style for the center point
+                const centerPointStyle = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 16,
+                        fill: new ol.style.Fill({
+                            color: 'green',
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: 'white',
+                            width: 8,
+                        }),
+                    }),
+                });
 
-    // Set the style for the center point feature
-    centerPointFeature.setStyle(centerPointStyle);
+                // Set the style for the center point feature
+                centerPointFeature.setStyle(centerPointStyle);
 
-    // Add the center point feature to the vector source
-    vectorSource.addFeature(centerPointFeature);
+                // Add the center point feature to the vector source
+                vectorSource.addFeature(centerPointFeature);
 
-    // Calculate the farm size
-    const area = ol.sphere.getArea(geometry, {
-      projection: map.getView().getProjection(),
-    });
-    let farmSize;
-    let unit;
-    if (area < 10000) {
-      farmSize = Math.round(area); // Keep it in square meters
-      unit = 'm²';
-    } else {
-      farmSize = Math.round(area / 10000); // Convert to hectares
-      unit = 'ha';
-    }
+                // Calculate the farm size
+                const area = ol.sphere.getArea(geometry, {
+                    projection: map.getView().getProjection(),
+                });
+                let farmSize;
+                let unit;
+                if (area < 10000) {
+                    farmSize = Math.round(area); // Keep it in square meters
+                    unit = 'm²';
+                } else {
+                    farmSize = Math.round(area / 10000); // Convert to hectares
+                    unit = 'ha';
+                }
 
-    // Create a farm size tooltip overlay
-    tooltipOverlay = new ol.Overlay({
-      element: document.createElement('div'),
-      offset: [0, -150], // Offset the tooltip above the point
-      positioning: 'top-center',
-      className: 'tooltip-overlay', // Add a custom class for styling
-    });
+                // Create a farm size tooltip overlay
+                tooltipOverlay = new ol.Overlay({
+                    element: document.createElement('div'),
+                    offset: [0, -150], // Offset the tooltip above the point
+                    positioning: 'top-center',
+                    className: 'tooltip-overlay', // Add a custom class for styling
+                });
 
-    // Add the farm size tooltip overlay to the map
-    map.addOverlay(tooltipOverlay);
+                // Add the farm size tooltip overlay to the map
+                map.addOverlay(tooltipOverlay);
 
-    // Set the farm size tooltip content with the farm size and unit
-    tooltipOverlay.getElement().innerHTML = `
+                // Set the farm size tooltip content with the farm size and unit
+                tooltipOverlay.getElement().innerHTML = `
       <div style="display: flex; align-items: center; justify-content: center; text-align: center; font-size: 50px; font-family: 'Segoe UI';">
         <i class="material-icons" style="margin-right: 8px; font-size: 60px;">agriculture</i>
         <span>Quy mô trang trại: </span>
@@ -2045,236 +2281,263 @@ function startDrawingFarm() {
       </div>
     `;
 
-    // Transform the coordinates to EPSG:4326 format
-    const transformedCoordinates = coordinates.map((coord) =>
-      ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')
-    );
+                // Transform the coordinates to EPSG:4326 format
+                const transformedCoordinates = coordinates.map((coord) =>
+                    ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')
+                );
 
-    // Calculate the length of each side of the polygon
-    const sideLengths = [];
-    for (let i = 0; i < transformedCoordinates.length - 1; i++) {
-      const start = transformedCoordinates[i];
-      const end = transformedCoordinates[i + 1];
-      const length = ol.sphere.getLength(
-        new ol.geom.LineString([start, end]),
-        {
-          projection: 'EPSG:4326',
-        }
-      );
-      sideLengths.push(length);
-    }
+                // Calculate the length of each side of the polygon
+                const sideLengths = [];
+                for (let i = 0; i < transformedCoordinates.length - 1; i++) {
+                    const start = transformedCoordinates[i];
+                    const end = transformedCoordinates[i + 1];
+                    const length = ol.sphere.getLength(
+                        new ol.geom.LineString([start, end]),
+                        {
+                            projection: 'EPSG:4326',
+                        }
+                    );
+                    sideLengths.push(length);
+                }
 
-    // Convert side lengths to meters or kilometers if necessary
-    const convertedSideLengths = sideLengths.map((length) => {
-      if (length >= 1000) {
-        return (length / 1000).toFixed(2) + ' km';
-      } else {
-        return length.toFixed(2) + ' m';
-      }
-    });
+                // Convert side lengths to meters or kilometers if necessary
+                const convertedSideLengths = sideLengths.map((length) => {
+                    if (length >= 1000) {
+                        return (length / 1000).toFixed(2) + ' km';
+                    } else {
+                        return length.toFixed(2) + ' m';
+                    }
+                });
 
-    console.log('Coordinates:', transformedCoordinates);
-    console.log('Side Lengths:', convertedSideLengths);
+                console.log('Coordinates:', transformedCoordinates);
+                console.log('Side Lengths:', convertedSideLengths);
 
-    // Send console logs to the parent window
-    sendConsoleLogsToParent({
-      coordinates: transformedCoordinates,
-      sideLengths: convertedSideLengths,
-      farmSize: { size: farmSize, unit: unit },
-    });
+                // Send console logs to the parent window
+                sendConsoleLogsToParent({
+                    coordinates: transformedCoordinates,
+                    sideLengths: convertedSideLengths,
+                    farmSize: { size: farmSize, unit: unit },
+                });
 
-    // Position the farm size tooltip at the center point
-    tooltipOverlay.setPosition(center);
+                // Position the farm size tooltip at the center point
+                tooltipOverlay.setPosition(center);
 
-    // Extract lon and lat from the center point
-    const [lon, lat] = ol.proj.toLonLat(center);
+                // Extract lon and lat from the center point
+                const [lon, lat] = ol.proj.toLonLat(center);
 
-    // Function to fetch place name from OSM Nominatim
-    async function fetchPlaceName(lon, lat) {
-      const baseUrl = "https://nominatim.openstreetmap.org/reverse";
-      const format = "json";
-      const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
+                // Function to fetch place name from OSM Nominatim
+                async function fetchPlaceName(lon, lat) {
+                    const baseUrl = "https://nominatim.openstreetmap.org/reverse";
+                    const format = "json";
+                    const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
 
-      try {
-        const response = await fetch(url);
-        if (response.ok) {
-          const data = await response.json();
-          const placeName = data.display_name || "";
-          return placeName;
-        } else {
-          console.error(
-            "Failed to fetch place name:",
-            response.status,
-            response.statusText
-          );
-          return "";
-        }
-      } catch (error) {
-        console.error("Failed to fetch place name:", error);
-        return "";
-      }
-    }
+                    try {
+                        const response = await fetch(url);
+                        if (response.ok) {
+                            const data = await response.json();
+                            const placeName = data.display_name || "";
+                            return placeName;
+                        } else {
+                            console.error(
+                                "Failed to fetch place name:",
+                                response.status,
+                                response.statusText
+                            );
+                            return "";
+                        }
+                    } catch (error) {
+                        console.error("Failed to fetch place name:", error);
+                        return "";
+                    }
+                }
 
-    // Fetch the address data using OSM Nominatim API
-    const address = await fetchPlaceName(lon, lat);
-    console.log("Address:", address); // Log the address to the console
+                // Fetch the address data using OSM Nominatim API
+                const address = await fetchPlaceName(lon, lat);
+                console.log("Address:", address); // Log the address to the console
 
-    // Create an address tooltip overlay
-    addressTooltipOverlay = new ol.Overlay({
-      element: document.createElement("div"),
-      offset: [0, -680], // Offset the tooltip above the point
-      positioning: "top-center",
-    });
+                // Create an address tooltip overlay
+                addressTooltipOverlay = new ol.Overlay({
+                    element: document.createElement("div"),
+                    offset: [0, -680], // Offset the tooltip above the point
+                    positioning: "top-center",
+                });
 
-    // Add the address tooltip overlay to the map
-    map.addOverlay(addressTooltipOverlay);
+                // Add the address tooltip overlay to the map
+                map.addOverlay(addressTooltipOverlay);
 
-    // Set the address tooltip content with the fetched data
-    addressTooltipOverlay.getElement().innerHTML = `
+                // Set the address tooltip content with the fetched data
+                addressTooltipOverlay.getElement().innerHTML = `
       <div style="background-color: white; padding: 20px; border-radius: 10px; font-family: 'Segoe UI'; color: #515151; max-width: 600px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center;">
         <i class="material-icons" style="margin-right: 8px; font-size: 60px;">location_on</i>
         <span style="font-size: 45px;"> ${address}</span>
       </div>
     `;
 
-    // Position the address tooltip at the center point
-    addressTooltipOverlay.setPosition(center);
+                // Position the address tooltip at the center point
+                addressTooltipOverlay.setPosition(center);
 
-    console.log("Farm Size:", farmSize, unit); // Log the farm size and unit to the console
-    console.log("Longitude:", lon, "Latitude:", lat); // Log the longitude and latitude to the console
+                console.log("Farm Size:", farmSize, unit); // Log the farm size and unit to the console
+                console.log("Longitude:", lon, "Latitude:", lat); // Log the longitude and latitude to the console
 
-    farmParcelDrawn = true; // Set the farmParcelDrawn flag
+                farmParcelDrawn = true; // Set the farmParcelDrawn flag
 
-    // Display the "Finish Drawing" button if at least three points are drawn
-    const coordinatesLength = coordinates.length;
-    if (coordinatesLength === 3) {
-      const finishDrawingBtn = document.querySelector(".finish-drawing");
-      finishDrawingBtn.style.display = "block";
-    }
-  });
+                // Display the "Finish Drawing" button if at least three points are drawn
+                const coordinatesLength = coordinates.length;
+                if (coordinatesLength === 3) {
+                    const finishDrawingBtn = document.querySelector(".finish-drawing");
+                    finishDrawingBtn.style.display = "block";
+                }
+            });
 
-  // Change the background color of the drawFarmBtn to #FF6666
-  drawFarmBtn.style.backgroundColor = "#FF6666";
+            // Change the background color of the drawFarmBtn to #FF6666
+            drawFarmBtn.style.backgroundColor = "#FF6666";
 
-  // Change the icon of the drawFarmBtn to a white close icon
-  drawFarmBtnIcon.textContent = "delete_forever";
-  drawFarmBtnIcon.style.color = "white";
+            // Change the icon of the drawFarmBtn to a white close icon
+            drawFarmBtnIcon.textContent = "delete_forever";
+            drawFarmBtnIcon.style.color = "white";
 
-  // Function to handle the delete button click
-  function handleDeleteClick() {
-    if (farmParcelDrawn) {
-      const floatingConfirmDelete = document.createElement("div");
-      floatingConfirmDelete.className = "floating-confirm-delete";
-      const deleteMessage = document.createElement("span");
-      deleteMessage.textContent =
-        "Are you sure you want to delete the farm drawing?";
-      const confirmButton = document.createElement("button");
-      confirmButton.textContent = "Confirm";
-      const cancelButton = document.createElement("button");
-      cancelButton.textContent = "Cancel";
-      floatingConfirmDelete.appendChild(deleteMessage);
-      floatingConfirmDelete.appendChild(confirmButton);
-      floatingConfirmDelete.appendChild(cancelButton);
-      map.getViewport().appendChild(floatingConfirmDelete);
+            // Function to handle the delete button click
+            function handleDeleteClick() {
+                if (farmParcelDrawn) {
+                    const floatingConfirmDelete = document.createElement("div");
+                    floatingConfirmDelete.className = "floating-confirm-delete";
+                    const deleteMessage = document.createElement("span");
+                    deleteMessage.textContent =
+                        "Are you sure you want to delete the farm drawing?";
+                    const confirmButton = document.createElement("button");
+                    confirmButton.textContent = "Confirm";
+                    const cancelButton = document.createElement("button");
+                    cancelButton.textContent = "Cancel";
+                    floatingConfirmDelete.appendChild(deleteMessage);
+                    floatingConfirmDelete.appendChild(confirmButton);
+                    floatingConfirmDelete.appendChild(cancelButton);
+                    map.getViewport().appendChild(floatingConfirmDelete);
 
-      // Event listener for confirm button
-      confirmButton.addEventListener("click", function () {
-        // Remove the farm parcel
-        vectorSource.clear();
+                    const blurMask = document.createElement("div");
+                    blurMask.className = "blur-mask";
 
-        // Remove the tooltip overlay
-        if (tooltipOverlay) {
-          map.removeOverlay(tooltipOverlay);
-          tooltipOverlay = null;
+                    // Show the blur mask
+                    document.body.appendChild(blurMask);
+
+                    // Event listener for confirm button
+                    confirmButton.addEventListener("click", function () {
+                        // Remove the farm parcel
+                        vectorSource.clear();
+
+                        // Remove the tooltip overlay
+                        if (tooltipOverlay) {
+                            map.removeOverlay(tooltipOverlay);
+                            tooltipOverlay = null;
+                        }
+
+                        // Change the background color of the drawFarmBtn back to its original color
+                        drawFarmBtn.style.backgroundColor = "white";
+
+                        // Change the icon of the drawFarmBtn back to the original icon
+                        drawFarmBtnIcon.textContent = "create";
+                        drawFarmBtnIcon.style.color = "#515151";
+
+                        farmParcelDrawn = false; // Reset the farmParcelDrawn flag
+
+                        // Remove the floating confirm delete container
+                        map.getViewport().removeChild(floatingConfirmDelete);
+
+                        // Remove the blur mask
+                        document.body.removeChild(blurMask);
+
+                        // Deactivate the drawing interaction
+                        map.removeInteraction(draw);
+                        isDrawingActive = false;
+
+                        // Hide the "Finish Drawing" button
+                        const finishDrawingBtn = document.querySelector(".finish-drawing");
+                        finishDrawingBtn.style.display = "none";
+
+                        console.clear(); // Clear the console log
+                    });
+
+                    // Event listener for cancel button
+                    cancelButton.addEventListener("click", function () {
+                        // Remove the floating confirm delete container if it exists
+                        if (floatingConfirmDelete) {
+                            map.getViewport().removeChild(floatingConfirmDelete);
+                        }
+
+                        // Remove the blur mask
+                        document.body.removeChild(blurMask);
+                    });
+                }
+            }
+
+
+            // Add event listener to the drawFarmBtn
+            drawFarmBtn.addEventListener("click", handleDeleteClick);
+
+            // Add event listener to the finishDrawingBtn
+            const finishDrawingBtn = document.querySelector(".finish-drawing");
+
+            finishDrawingBtn.addEventListener("click", function () {
+                if (farmParcelDrawn) {
+                    // End the drawing interaction
+                    draw.finishDrawing();
+
+                    // Deactivate the drawing interaction
+                    map.removeInteraction(draw);
+                    isDrawingActive = false;
+
+                    // Hide the "Finish Drawing" button
+                    finishDrawingBtn.style.display = "none";
+                }
+            });
+
+            // Add floating message
+            const floatingMessage = document.createElement("div");
+            floatingMessage.className = "floating-message";
+            const infoIcon = document.createElement("i");
+            infoIcon.className = "material-icons";
+            infoIcon.textContent = "touch_app";
+            infoIcon.style.fontSize = "100px"; // Increase the font size to 70px
+            floatingMessage.appendChild(infoIcon);
+            floatingMessage.innerHTML +=
+                "   Chạm vào màn hình để bắt đầu vẽ trang trại"; //"Tap the screen to start drawing farm"
+            map.getViewport().appendChild(floatingMessage);
+
+            // Remove floating message after 3 seconds
+            setTimeout(function () {
+                map.getViewport().removeChild(floatingMessage);
+            }, 3000);
+
+            // Count the number of times the map is clicked
+            let clickCount = 0;
+
+            map.on("click", function () {
+                clickCount++;
+
+                // Show the "Finish Drawing" button if the map is clicked three times
+                if (clickCount === 3) {
+                    const finishDrawingBtn = document.querySelector(".finish-drawing");
+                    finishDrawingBtn.style.display = "block";
+                }
+            });
         }
 
-        // Change the background color of the drawFarmBtn back to its original color
-        drawFarmBtn.style.backgroundColor = "white";
-
-        // Change the icon of the drawFarmBtn back to the original icon
-        drawFarmBtnIcon.textContent = "create";
-        drawFarmBtnIcon.style.color = "#515151";
-
-        farmParcelDrawn = false; // Reset the farmParcelDrawn flag
-
-        // Remove the floating confirm delete container
-        map.getViewport().removeChild(floatingConfirmDelete);
-
-        // Deactivate the drawing interaction
-        map.removeInteraction(draw);
-        isDrawingActive = false;
-
-        // Hide the "Finish Drawing" button
-        const finishDrawingBtn = document.querySelector(".finish-drawing");
-        finishDrawingBtn.style.display = "none";
-
-        console.clear(); // Clear the console log
-      });
-
-      // Event listener for cancel button
-      cancelButton.addEventListener("click", function () {
-        // Remove the floating confirm delete container if it exists
-        if (floatingConfirmDelete) {
-          map.getViewport().removeChild(floatingConfirmDelete);
-        }
-      });
-    }
-  }
-
-  // Add event listener to the drawFarmBtn
-  drawFarmBtn.addEventListener("click", handleDeleteClick);
-
-  // Add event listener to the finishDrawingBtn
-  const finishDrawingBtn = document.querySelector(".finish-drawing");
-
-  finishDrawingBtn.addEventListener("click", function () {
-    if (farmParcelDrawn) {
-      // End the drawing interaction
-      draw.finishDrawing();
-
-      // Deactivate the drawing interaction
-      map.removeInteraction(draw);
-      isDrawingActive = false;
-
-      // Hide the "Finish Drawing" button
-      finishDrawingBtn.style.display = "none";
-    }
-  });
-
-  // Add floating message
-  const floatingMessage = document.createElement("div");
-  floatingMessage.className = "floating-message";
-  const infoIcon = document.createElement("i");
-  infoIcon.className = "material-icons";
-  infoIcon.textContent = "touch_app";
-  infoIcon.style.fontSize = "100px"; // Increase the font size to 70px
-  floatingMessage.appendChild(infoIcon);
-  floatingMessage.innerHTML +=
-    "   Chạm vào màn hình để bắt đầu vẽ trang trại"; //"Tap the screen to start drawing farm"
-  map.getViewport().appendChild(floatingMessage);
-
-  // Remove floating message after 3 seconds
-  setTimeout(function () {
-    map.getViewport().removeChild(floatingMessage);
-  }, 3000);
-
-  // Count the number of times the map is clicked
-  let clickCount = 0;
-
-  map.on("click", function () {
-    clickCount++;
-
-    // Show the "Finish Drawing" button if the map is clicked three times
-    if (clickCount === 3) {
-      const finishDrawingBtn = document.querySelector(".finish-drawing");
-      finishDrawingBtn.style.display = "block";
-    }
-  });
-}
 
 
 
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
