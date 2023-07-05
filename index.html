@@ -630,7 +630,7 @@
             <div class="dialog-content">
                 <p>Bạn có muốn xóa bản vẽ phác thảo trang trại?</p>
                 <button id="deleteYes" class="dialog-button">Đúng</button>
-                <button id="deleteNo" class="dialog-button">không</button>
+                <button id="deleteNo" class="dialog-button">Không</button>
             </div>
         </div>
 
@@ -656,240 +656,255 @@
 
 
 
-        let isSketchActive = false;
-        let draw; // Variable to store the draw interaction
-        let polygonExists = false; // Variable to track whether a polygon has been drawn or there is an ongoing sketch
-        let vectorSource = new ol.source.Vector(); // Vector source for the farm polygons, defined outside the function for global access
+     // Function to fetch place name from OSM Nominatim
+async function fetchPlaceName(lon, lat) {
+  const baseUrl = "https://nominatim.openstreetmap.org/reverse";
+  const format = "json";
+  const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
 
-        // Function to draw farm polygons
-        function startSketchFarm() {
-            const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-            const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
-            const finishDrawingButton = document.querySelector('.finish-drawing');
-            const dialog = document.getElementById('dialog');
+  try {
+    const response = await fetch(url);
+    if (response.ok) {
+      const data = await response.json();
+      const placeName = data.display_name || "";
+      return placeName;
+    } else {
+      console.error(
+        "Failed to fetch place name:",
+        response.status,
+        response.statusText
+      );
+      return "";
+    }
+  } catch (error) {
+    console.error("Failed to fetch place name:", error);
+    return "";
+  }
+}
 
-            // Check if sketching is active, then disable the function
-            if (isSketchActive) {
-                // Show the dialog box only if a polygon has been drawn or there is an ongoing sketch
-                if (polygonExists) {
-                    dialog.classList.remove('hidden');
+let isSketchActive = false;
+let draw;
+let polygonExists = false;
+let vectorSource = new ol.source.Vector();
+let tooltipOverlay; // Declare the tooltipOverlay variable outside the event listener
 
-                    // Listen for the Yes button click
-                    document.getElementById('deleteYes').addEventListener('click', function () {
-                        // Deactivate the drawing interaction
-                        map.removeInteraction(draw);
-                        isSketchActive = false;
-                        polygonExists = false; // Reset the variable
-                        // Clear the features in the vector source to remove the polygon and point from the map
-                        vectorSource.clear();
-                        // Revert button to initial state
-                        sketchFarmBtn.style.backgroundColor = "white";
-                        sketchFarmBtnIcon.textContent = "create";
-                        sketchFarmBtnIcon.style.color = "black";
-                        // Hide the finishDrawingButton
-                        finishDrawingButton.classList.add('hidden');
-                        // Hide the dialog box
-                        dialog.classList.add('hidden');
+async function startSketchFarm() {
+  const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+  const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
+  const finishDrawingButton = document.querySelector('.finish-drawing');
+  const dialog = document.getElementById('dialog');
 
-                        // Clear the console
-                        console.clear();
-                    });
+  if (isSketchActive) {
+    if (polygonExists) {
+      dialog.classList.remove('hidden');
 
-                    // Listen for the No button click
-                    document.getElementById('deleteNo').addEventListener('click', function () {
-                        // Hide the dialog box
-                        dialog.classList.add('hidden');
-                    });
-                } else {
-                    // Reset the state of the button to initial state if there is no polygon drawn or ongoing sketch
-                    map.removeInteraction(draw);
-                    isSketchActive = false;
-                    sketchFarmBtn.style.backgroundColor = "white";
-                    sketchFarmBtnIcon.textContent = "create";
-                    sketchFarmBtnIcon.style.color = "black";
-                    finishDrawingButton.classList.add('hidden');
-                }
-                // Exit the function
-                return;
-            }
-
-            // Create a vector layer using the vector source
-            const vectorLayer = new ol.layer.Vector({
-                source: vectorSource,
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: "rgba(0, 128, 0, 0.7)", // Lighter green color with 70% transparency
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: "rgba(0, 100, 0, 0.8)", // Darker green color with 80% transparency
-                        width: 10, // Increased stroke width to 10 pixels
-                    }),
-                }),
-            });
-
-            // Add the vector layer to the map
-            map.addLayer(vectorLayer);
-
-            // Create a draw interaction for sketching polygons
-            draw = new ol.interaction.Draw({
-                source: vectorSource,
-                type: "Polygon",
-            });
-
-            // Activate the draw interaction on the map
-            map.addInteraction(draw);
-            isSketchActive = true;
-
-            // Change the background color of the sketchFarmBtn to #FF6666
-            sketchFarmBtn.style.backgroundColor = "#FF6666";
-
-            // Change the icon of the sketchFarmBtn to a white close icon
-            sketchFarmBtnIcon.textContent = "delete_forever";
-            sketchFarmBtnIcon.style.color = "white";
-
-            // Event listener for drawstart event
-            draw.on("drawstart", function (event) {
-                polygonExists = true; // Set the variable to true as the sketch has started
-                // Listen for changes in the geometry (coordinates) of the polygon being drawn
-                event.feature.getGeometry().on("change", function (geomEvent) {
-                    const coordinates = geomEvent.target.getCoordinates()[0];
-                    // If there are 4 or more coordinates (3 vertices and the moving coordinate), display the finishDrawingButton
-                    if (coordinates.length >= 5) {
-                        finishDrawingButton.classList.remove('hidden');
-                    }
-                });
-            });
-
-
-
-
-            // Event listener for drawend event
-            draw.on("drawend", function (event) {
-                const polygonGeometry = event.feature.getGeometry();
-                const polygonCenter = polygonGeometry.getInteriorPoint();
-
-                // Create a point feature for the center of the polygon
-                const pointFeature = new ol.Feature({
-                    geometry: polygonCenter,
-                });
-
-                // Style the point feature with a green color and a white stroke
-                pointFeature.setStyle(
-                    new ol.style.Style({
-                        image: new ol.style.Circle({
-                            radius: 16,
-                            fill: new ol.style.Fill({
-                                color: 'green',
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: 'white',
-                                width: 8,
-                            }),
-                        }),
-                    })
-                );
-
-                // Add the point feature to the vector source
-                vectorSource.addFeature(pointFeature);
-
-                // Log the lon and lat of the centerpoint
-                const centerPointCoordinates = ol.proj.transform(polygonCenter.getCoordinates(), 'EPSG:3857', 'EPSG:4326');
-                console.log('Center Point Lon:', centerPointCoordinates[0]);
-                console.log('Center Point Lat:', centerPointCoordinates[1]);
-
-                // Log the coordinates of each mouse click
-                const polygonCoordinates = polygonGeometry.getCoordinates()[0];
-                console.log('Polygon Coordinates:');
-                polygonCoordinates.forEach((coordinate, index) => {
-                    const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-                    console.log(`Point ${index + 1}: Lon ${lonLat[0]}, Lat ${lonLat[1]}`);
-                });
-
-                // Calculate the length of each segment that forms the polygon
-                const segments = [];
-                for (let i = 0; i < polygonCoordinates.length - 1; i++) {
-                    const startPoint = polygonCoordinates[i];
-                    const endPoint = polygonCoordinates[i + 1];
-                    const segment = new ol.geom.LineString([startPoint, endPoint]);
-                    segments.push(segment);
-                }
-
-                // Log the length of each segment in meters
-                console.log('Segment Lengths (m):');
-                segments.forEach((segment, index) => {
-                    const length = ol.sphere.getLength(segment);
-                    console.log(`Segment ${index + 1}: ${length.toFixed(2)} meters`);
-                });
-
-                // Calculate the area of the polygon in square meters and hectares
-                const area = ol.sphere.getArea(polygonGeometry);
-                console.log('Polygon Area:');
-                console.log(`Area (m²): ${area.toFixed(2)} square meters`);
-                if (area > 10000) {
-                    const areaHectares = area / 10000;
-                    console.log(`Area (ha): ${areaHectares.toFixed(2)} hectares`);
-                }
-
-                // Create a floating pill-shaped tooltip inside the polygon
-                const tooltipElement = document.createElement('div');
-                tooltipElement.style.cssText = `
-    position: absolute;
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 1000px;
-    padding: 20px 20px;
-    font-family: Segoe UI, Arial, sans-serif;
-    font-size: 40px;
-    font-color: #515151;
-    font-weight: bold;
-    color: #000000;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 120px;
-    height: 30px;
-`;
-
-                tooltipElement.innerHTML = `<span style="white-space: nowrap">${area.toFixed(2)} m²</span>`;
-
-                // Create a tooltip overlay
-                const tooltipOverlay = new ol.Overlay({
-                    element: tooltipElement,
-                    offset: [0, -120], // Offset the tooltip from the center point
-                    positioning: 'bottom-center',
-                });
-
-                // Set the position of the tooltip overlay
-                tooltipOverlay.setPosition(polygonCenter.getCoordinates());
-
-                // Add the tooltip overlay to the map
-                map.addOverlay(tooltipOverlay);
-
-
-
-            });
-
-
-
+      document.getElementById('deleteYes').addEventListener('click', function () {
+        map.removeInteraction(draw);
+        isSketchActive = false;
+        polygonExists = false;
+        vectorSource.clear();
+        if (tooltipOverlay) {
+          map.removeOverlay(tooltipOverlay);
         }
+        sketchFarmBtn.style.backgroundColor = "white";
+        sketchFarmBtnIcon.textContent = "create";
+        sketchFarmBtnIcon.style.color = "black";
+        finishDrawingButton.classList.add('hidden');
+        dialog.classList.add('hidden');
 
-        // Add event listener to the sketchFarmBtn
-        const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-        sketchFarmBtn.addEventListener("click", function () {
-            startSketchFarm();
-        });
+        console.clear();
+      });
 
-        // Add event listener to the finishDrawingButton
-        const finishDrawingButton = document.querySelector('.finish-drawing');
-        finishDrawingButton.addEventListener('click', function () {
-            // Finish the sketch
-            if (draw) {
-                draw.finishDrawing();
-                // Optionally, you could hide the finishDrawingButton again here:
-                finishDrawingButton.classList.add('hidden');
-            }
-        });
+      document.getElementById('deleteNo').addEventListener('click', function () {
+        dialog.classList.add('hidden');
+      });
+    } else {
+      map.removeInteraction(draw);
+      isSketchActive = false;
+      sketchFarmBtn.style.backgroundColor = "white";
+      sketchFarmBtnIcon.textContent = "create";
+      sketchFarmBtnIcon.style.color = "black";
+      finishDrawingButton.classList.add('hidden');
+    }
+    return;
+  }
+
+  //Sketching Farm Polygon
+  const vectorLayer = new ol.layer.Vector({
+    source: vectorSource,
+    style: new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: "rgba(0, 128, 0, 0.7)",
+      }),
+      stroke: new ol.style.Stroke({
+        color: "rgba(0, 100, 0, 0.8)",
+        width: 10,
+      }),
+    }),
+  });
+
+  map.addLayer(vectorLayer);
+
+  draw = new ol.interaction.Draw({
+    source: vectorSource,
+    type: "Polygon",
+  });
+
+  map.addInteraction(draw);
+  isSketchActive = true;
+
+  sketchFarmBtn.style.backgroundColor = "#FF6666";
+  sketchFarmBtnIcon.textContent = "delete_forever";
+  sketchFarmBtnIcon.style.color = "white";
+
+  draw.on("drawstart", function (event) {
+    polygonExists = true;
+    event.feature.getGeometry().on("change", function (geomEvent) {
+      const coordinates = geomEvent.target.getCoordinates()[0];
+      if (coordinates.length >= 5) {
+        finishDrawingButton.classList.remove('hidden');
+      }
+    });
+  });
+
+  draw.on("drawend", async function (event) {
+    const polygonGeometry = event.feature.getGeometry();
+    const polygonCenter = polygonGeometry.getInteriorPoint();
+
+    const pointFeature = new ol.Feature({
+      geometry: polygonCenter,
+    });
+
+    // Center Point
+    pointFeature.setStyle(
+      new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 16,
+          fill: new ol.style.Fill({
+            color: 'green',
+          }),
+          stroke: new ol.style.Stroke({
+            color: 'white',
+            width: 8,
+          }),
+        }),
+      })
+    );
+
+    vectorSource.addFeature(pointFeature);
+
+    const centerPointCoordinates = ol.proj.transform(polygonCenter.getCoordinates(), 'EPSG:3857', 'EPSG:4326');
+    console.log('Center Point Lon:', centerPointCoordinates[0]);
+    console.log('Center Point Lat:', centerPointCoordinates[1]);
+
+    const polygonCoordinates = polygonGeometry.getCoordinates()[0];
+    console.log('Polygon Coordinates:');
+    const polygonPoints = [];
+    polygonCoordinates.forEach((coordinate, index) => {
+      const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+      polygonPoints.push({lon: lonLat[0], lat: lonLat[1]});
+      console.log(`Point ${index + 1}: Lon ${lonLat[0]}, Lat ${lonLat[1]}`);
+    });
+
+    const segments = [];
+    const segmentLengths = [];
+    for (let i = 0; i < polygonCoordinates.length - 1; i++) {
+      const startPoint = polygonCoordinates[i];
+      const endPoint = polygonCoordinates[i + 1];
+      const segment = new ol.geom.LineString([startPoint, endPoint]);
+      segments.push(segment);
+      const length = ol.sphere.getLength(segment);
+      segmentLengths.push(length.toFixed(2));
+    }
+
+    console.log('Segment Lengths (m):');
+    segmentLengths.forEach((length, index) => {
+      console.log(`Segment ${index + 1}: ${length} meters`);
+    });
+
+    const area = ol.sphere.getArea(polygonGeometry);
+    let areaHectares = null;
+    if (area > 10000) {
+      areaHectares = (area / 10000).toFixed(2);
+    }
+    console.log('Polygon Area:');
+    console.log(`Area (m²): ${area.toFixed(2)} square meters`);
+    if (areaHectares) {
+      console.log(`Area (ha): ${areaHectares} hectares`);
+    }
+
+    const address = await fetchPlaceName(centerPointCoordinates[0], centerPointCoordinates[1]);
+    console.log("Address:", address);
+
+    const tooltipElement = document.createElement('div');
+    tooltipElement.style.cssText = `
+      position: absolute;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 1000px;
+      padding: 20px 30px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 40px;
+      font-weight: bold;
+      color: #000000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      height: 30px;
+    `;
+
+    const areaInHectares = area > 10000 ? (area / 10000).toFixed(2) + ' ha' : area.toFixed(2) + ' m²';
+    tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 50px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
+
+    tooltipOverlay = new ol.Overlay({
+      element: tooltipElement,
+      offset: [0, -120],
+      positioning: 'bottom-center',
+    });
+
+    tooltipOverlay.setPosition(polygonCenter.getCoordinates());
+
+    map.addOverlay(tooltipOverlay);
+
+
+    const dataToPost = {
+      centerPoint: {
+          lon: centerPointCoordinates[0],
+          lat: centerPointCoordinates[1]
+      },
+      polygonCoordinates: polygonPoints,
+      segmentLengths: segmentLengths,
+      area: {
+          squareMeters: area.toFixed(2),
+          hectares: areaHectares
+      },
+      address: address
+    };
+
+    // Send data to React Native App
+    window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
+    //console.log(JSON.stringify(dataToPost));
+
+  });
+}
+
+const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+sketchFarmBtn.addEventListener("click", function () {
+  startSketchFarm();
+});
+
+const finishDrawingButton = document.querySelector('.finish-drawing');
+finishDrawingButton.addEventListener('click', function () {
+  if (draw) {
+    draw.finishDrawing();
+    finishDrawingButton.classList.add('hidden');
+  }
+});
+
+
+
 
 
 
