@@ -381,9 +381,9 @@
         }
 
         /*Draw Farm Area Size*/
-
+        /*Finish Sketch/Drawing Button*/
         .sketch-buttons {
-            position: fixed;
+            position: relative;
             bottom: 50%;
             left: 50%;
             transform: translate(-50%, 50%);
@@ -399,7 +399,7 @@
             padding: 35px 50px;
             border-radius: 10px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 45px;
+            font-size: 40px;
             color: #515151;
             outline: none;
             border: none;
@@ -638,9 +638,9 @@
 
         <!--Finish Sketch Button-->
         <div class="sketch-buttons">
-            <button class="finish-drawing hidden" style="font-size: 45px;">
-                <span class="material-icons" style="font-size: 45px;">done_outline</span>
-                Hoàn Thành Bản Vẽ Nông Trại
+            <button class="finish-drawing hiden" style="font-size: 40px;">
+                <span class="material-icons" style="font-size: 40px;">done_outline</span>
+                Hoàn Thành
             </button>
         </div>
 
@@ -756,6 +756,19 @@
                     }
                 });
             });
+
+            // Add event listener to the finishDrawingButton
+            finishDrawingButton.addEventListener('click', function () {
+                // Finish the sketch
+                if (draw) {
+                    draw.finishDrawing();
+                    // Deactivate the drawing interaction
+                    map.removeInteraction(draw);
+                    isSketchActive = false;
+                    // Optionally, you could hide the finishDrawingButton again here:
+                    finishDrawingButton.classList.add('hidden');
+                }
+            });
         }
 
         // Add event listener to the sketchFarmBtn
@@ -764,16 +777,6 @@
             startSketchFarm();
         });
 
-        // Add event listener to the finishDrawingButton
-        const finishDrawingButton = document.querySelector('.finish-drawing');
-        finishDrawingButton.addEventListener('click', function () {
-            // Finish the sketch
-            if (draw) {
-                draw.finishDrawing();
-                // Optionally, you could hide the finishDrawingButton again here:
-                finishDrawingButton.classList.add('hidden');
-            }
-        });
 
 
 
