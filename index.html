@@ -929,6 +929,7 @@ finishDrawingButton.addEventListener('click', function () {
 
 
 
+
         //SEARCH BUTTON FUNCTION
         const searchBtn = document.getElementById("searchBtn");
         const searchBar = document.getElementById("searchBar");
@@ -2667,6 +2668,10 @@ finishDrawingButton.addEventListener('click', function () {
 
 
 
+// Add this at the end of your script
+window.addEventListener("message", message => {
+    alert(message.data);
+});
 
 
 
