@@ -37,7 +37,8 @@
         .measureLengthBtn,
         .drawFarmBtn,
         .sketchFarmBtn,
-        .northArrow {
+        .northArrow,
+        .resetBtn {
             position: fixed;
             background-color: #ffffff;
             border-radius: 50%;
@@ -59,7 +60,8 @@
         .measureLengthBtn i,
         .drawFarmBtn i,
         .sketchFarmBtn i,
-        .northArrow i {
+        .northArrow i,
+        .resetBtn i {
             font-family: "Material Icons";
             font-size: 65px;
             color: #515151;
@@ -558,6 +560,27 @@
         .hidden {
             display: none;
         }
+
+
+        #resetBtn {
+            position: fixed;
+            bottom: 30vh;
+            left: 35px;
+            background-color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        #resetBtn i.material-icons {
+            font-size: 60px;
+        }
     </style>
 </head>
 
@@ -619,6 +642,9 @@
             <i class="material-icons">create</i>
         </button>
 
+        <button id="resetBtn">
+            <i class="material-icons">restart_alt</i>
+        </button>
 
         <!--Delete Confirm Dialog Box-->
         <div id="dialog" class="dialog hidden">
@@ -651,32 +677,67 @@
         </div>
 
 
-
         <!--<button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
             <i class="material-icons">gps_fixed</i>
         </button>-->
 
 
 
-        
+
     </div>
     </div>
 
     <script>
 
 
-        //SEARCH BUTTON FUNCTION
+
+        // Get the reset button element
+        const resetButton = document.getElementById("resetBtn");
+
+        // Create a function to reset the webpage
+        function resetWebpage() {
+            location.reload();
+        }
+
+        // Add event listener to the reset button
+        resetButton.addEventListener("click", resetWebpage);
+
+
+
+
+        // SEARCH PLACE BUTTON FUNCTION
         const searchBtn = document.getElementById("searchBtn");
         const searchBar = document.getElementById("searchBar");
         const searchInput = document.getElementById("searchInput");
         const searchKeywordBtn = document.getElementById("searchKeywordBtn");
         const floatingMessage = document.getElementById("floatingMessage");
         const suggestionsContainer = document.getElementById("suggestionsContainer");
+        const searchIcon = document.getElementById("searchButton").querySelector(".material-icons");
 
         let historicalPlaces = [];
 
         searchBtn.addEventListener("click", handleSearchClick);
         document.addEventListener("click", handleDocumentClick);
+        searchInput.addEventListener("input", toggleSearchIcon);
+        searchInput.addEventListener("click", displayHistoricalPlacesOnClick);
+        searchIcon.addEventListener("click", handleSearchIconClick);
+
+        function toggleSearchIcon() {
+            if (searchInput.value.length > 0) {
+                searchIcon.textContent = "cancel";
+            } else {
+                searchIcon.textContent = "search";
+            }
+        }
+
+        function handleSearchIconClick() {
+            if (searchIcon.textContent === "cancel") {
+                searchInput.value = "";
+                toggleSearchIcon();
+                clearPlaceSuggestions();
+                displayHistoricalPlaces();
+            }
+        }
 
         function handleSearchClick(event) {
             event.stopPropagation();
@@ -685,10 +746,8 @@
             searchKeywordBtn.style.display = "none";
             searchInput.focus();
 
-            // Display historical places
             displayHistoricalPlaces();
 
-            // Fetch and display place suggestions for the empty search input
             if (searchInput.value.trim().length === 0) {
                 fetchPlaceSuggestions("")
                     .then((suggestions) => {
@@ -699,23 +758,13 @@
                     });
             }
         }
-        
 
-        // Function to display historical places when the Search Input Box is clicked
         function displayHistoricalPlacesOnClick() {
-            // Check if the search input is empty
             if (searchInput.value.trim().length === 0) {
-                // Clear the search input
                 searchInput.value = "";
-
-                // Display historical places
                 displayHistoricalPlaces();
             }
         }
-
-
-        // Attach event listener to the search input box
-        searchInput.addEventListener("click", displayHistoricalPlacesOnClick);
 
         function handleDocumentClick(event) {
             if (
@@ -726,21 +775,22 @@
             ) {
                 searchBtn.style.display = "block";
                 searchBar.style.display = "none";
-                //searchKeywordBtn.style.display = "block";
                 searchInput.value = "";
-
-                // Hide the suggestions container
                 suggestionsContainer.style.display = "none";
             }
         }
 
-        // Hide the search bar on app load
+        function clearPlaceSuggestions() {
+            // Assuming you have a function to clear place suggestions, if not you might need to create one.
+            // It should probably clear or hide elements in suggestionsContainer
+            suggestionsContainer.innerHTML = '';
+        }
+
         searchBar.style.display = "none";
 
-        // Define the marker layer variable
+
         let markerLayer;
 
-        // Function to create a marker at the specified coordinates
         function createMarker(coordinates) {
             if (markerLayer) {
                 map.removeLayer(markerLayer);
@@ -1185,14 +1235,20 @@
                     }
                 }
 
+
+
                 // Create the Clear all search history button
                 const clearAllButton = document.createElement("button");
                 clearAllButton.id = "clearAllBtn";
                 clearAllButton.innerHTML = `
-  <div style="display: flex; align-items: center;">
-    <i class="material-icons" style="font-size: 50px; margin-right: 10px;">delete</i>
-    <span style="font-size: 50px; color: #515151;">Xóa tất cả tìm kiếm</span> 
+  <div style="display: flex; align-items: center; justify-content: center; width: 840px; margin: 0 auto; padding-bottom: 30px; padding-top: 30px">
+    <i class="material-icons" style="font-size: 45px; margin-right: 20px;">delete</i>
+    <span style="font-size: 45px; color: #515151;">Xóa tất cả tìm kiếm</span> 
   </div>`;
+
+
+
+
                 clearAllButton.addEventListener("click", clearAllHistory);
                 suggestionsContainer.appendChild(clearAllButton);
 
@@ -1200,15 +1256,15 @@
                 const noResultsText = document.createElement("div");
                 noResultsText.style.display = "flex";
                 noResultsText.style.alignItems = "center";
-                noResultsText.style.fontSize = "50px";
-                noResultsText.style.marginLeft = "20px";
+                noResultsText.style.fontSize = "45px";
+                noResultsText.style.marginLeft = "40px";
                 noResultsText.style.color = "#515151";
 
                 const historyIcon = document.createElement("i");
                 historyIcon.classList.add("material-icons");
                 historyIcon.textContent = "history";
-                historyIcon.style.fontSize = "80px";
-                historyIcon.style.marginRight = "20px"; // Increased separation
+                historyIcon.style.fontSize = "60px";
+                historyIcon.style.marginRight = "40px"; // Increased separation
 
                 const text = document.createElement("span");
                 text.textContent = "Không có địa điểm nào được tìm kiếm trước đó";
@@ -1782,10 +1838,12 @@
                 floatingMessage.innerHTML += "  Chạm vào màn hình để bắt đầu đo"; //"Tap the screen to start measuring"
                 map.getViewport().appendChild(floatingMessage);
 
-                // Remove floating message after 05 seconds
                 setTimeout(function () {
-                    map.getViewport().removeChild(floatingMessage);
+                    if (floatingMessage.parentNode === map.getViewport()) {
+                        map.getViewport().removeChild(floatingMessage);
+                    }
                 }, 5000);
+
 
             }
         }
