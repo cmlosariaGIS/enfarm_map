@@ -659,7 +659,6 @@
         </div>
 
 
-
         <!--<button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
             <i class="material-icons">gps_fixed</i>
         </button>-->
@@ -2251,8 +2250,8 @@
                 feature.getGeometry().on("change", function (event) {
                     clickCount++;
 
-                    // Check if the user has clicked 3 times
-                    if (clickCount === 3) {
+                    // Check if the user has clicked 2 times
+                    if (clickCount === 2) {
                         // Show the finish button
                         const finishDrawingButton = document.getElementById("finishDrawingButton");
                         if (finishDrawingButton) {
