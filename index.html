@@ -504,11 +504,11 @@
         /***** END MOBILE RESPONSIVENESS *****/
 
 
-
+        /*
         .hidden {
             display: none;
         }
-
+        */
 
         .dialog {
             position: fixed;
@@ -525,7 +525,7 @@
 
         .dialog-content {
             background-color: white;
-            padding: 50px;
+            padding: 30px;
             border-radius: 20px;
             /* Increased border radius */
             text-align: center;
@@ -535,29 +535,24 @@
             height: 300px;
             font-size: 40px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #515151;
             max-width: 100%;
             /* Setting max width for mobile responsiveness */
             box-shadow: #515151;
         }
-
+        /* Yes and Cancel Button*/
         .dialog-button {
             font-size: 40px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 10px;
-            padding: 20px 80px;
-            /* Padding around the text */
+            padding: 20px 40px;
             border-radius: 20px;
-            /* Rounded corners */
             border: none;
-            /* Remove border */
             color: white;
-            /* Text color */
             cursor: pointer;
-            /* Hand cursor on hover */
-            background: linear-gradient(to bottom, #f2709c, #ff9472);
-            /* Gradient background */
+            /*background: linear-gradient(to bottom, #f2709c, #ff9472);*/
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            /* Subtle box-shadow for depth */
+
         }
 
         .hidden {
@@ -625,14 +620,23 @@
         </button>
 
 
-        <!--Delete Confirm Dialog Box-->
-        <div id="dialog" class="dialog hidden">
-            <div class="dialog-content">
-                <p>Bạn có muốn xóa bản vẽ phác thảo trang trại?</p>
-                <button id="deleteYes" class="dialog-button">Đúng</button>
-                <button id="deleteNo" class="dialog-button">Không</button>
-            </div>
+
+<!--Delete Confirm Dialog Box-->
+<div id="dialog" class="dialog hiden">
+    <div class="dialog-content">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <i class="material-icons" style="font-size: 100px; color: #FF6666; margin-bottom: 10px;">warning</i>
+            <p style="margin: 0; margin-bottom: 20px;">Bạn có muốn xóa bản vẽ?</p>
         </div>
+        <div style="display: flex; justify-content: center;">
+            <button id="deleteYes" class="dialog-button" style="background-color: #FF6666; color: white; display: flex; align-items: center;">
+                <i class="material-icons" style="font-size: 50px; margin-right: 8px;">delete_forever</i>
+                <span>Đúng</span>
+            </button>        
+            <button id="deleteNo" class="dialog-button" style="background-color: white; color: #515151;">Không</button>
+        </div>
+    </div>
+</div>
 
 
 
