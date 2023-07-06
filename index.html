@@ -166,7 +166,7 @@
             max-height: 800px;
             overflow-y: auto;
             background-color: #ffffff;
-            border-radius: 10px;
+            border-radius: 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             padding: 10px;
             z-index: 5;
@@ -313,16 +313,9 @@
             z-index: 1;
         }
 
-        .sketchFarmBtn {
-            position: absolute;
-            top: 650px;
-            right: 30px;
-            z-index: 1;
-        }
-
         .measureLengthBtn {
             position: absolute;
-            top: 500px;
+            top: 510px;
             right: 30px;
             z-index: 1;
         }
@@ -372,10 +365,11 @@
 
         /***** END MEASURE AREA AND LINE BUTTON FUNCTION *****/
 
-        /***** START DRAW FARM BUTTON FUNCTION *****/
-        .drawFarmBtn {
+        /***** START SKETCH FARM BUTTON FUNCTION *****/
+
+        .sketchFarmBtn {
             position: absolute;
-            top: 650px;
+            top: 660px;
             right: 30px;
             z-index: 1;
         }
@@ -578,7 +572,7 @@
         </div>
 
         <div id="northArrow" class="northArrow">
-            <i class="material-icons">navigation</i>
+            <i class="material-icons" style="color: #FF6666;">navigation</i>
         </div>
 
         <div id="basemapswitcher" class="basemapswitcher">
@@ -668,333 +662,6 @@
     <script>
 
 
-        //SKETCH FARM BUTTON FUNCTION
-        // Function to fetch place name from OSM Nominatim
-        async function fetchPlaceName(lon, lat) {
-            const baseUrl = "https://nominatim.openstreetmap.org/reverse";
-            const format = "json";
-            const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
-
-            try {
-                const response = await fetch(url);
-                if (response.ok) {
-                    const data = await response.json();
-                    const placeName = data.display_name || "";
-                    return placeName;
-                } else {
-                    console.error(
-                        "Failed to fetch place name:",
-                        response.status,
-                        response.statusText
-                    );
-                    return "";
-                }
-            } catch (error) {
-                console.error("Failed to fetch place name:", error);
-                return "";
-            }
-        }
-
-        let isSketchActive = false;
-        let draw;
-        let polygonExists = false;
-        let vectorSource = new ol.source.Vector();
-        let tooltipOverlay; // Declare the tooltipOverlay variable outside the event listener
-        let timeoutId = null; // Move timeoutId declaration outside the function
-
-        async function startSketchFarm() {
-            const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-            const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
-            const finishDrawingButton = document.querySelector('.finish-drawing');
-            const dialog = document.getElementById('dialog');
-
-            if (isSketchActive) {
-                // Dismiss floating message if it's still visible
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                    const existingFloatingMessage = document.querySelector('.floating-message');
-                    if (existingFloatingMessage) {
-                        map.getViewport().removeChild(existingFloatingMessage);
-                    }
-                    timeoutId = null; // Reset the timeoutId
-                }
-
-                if (polygonExists) {
-                    dialog.classList.remove('hidden');
-
-                    document.getElementById('deleteYes').addEventListener('click', function () {
-                        map.removeInteraction(draw);
-                        isSketchActive = false;
-                        polygonExists = false;
-                        vectorSource.clear();
-                        if (tooltipOverlay) {
-                            map.removeOverlay(tooltipOverlay);
-                        }
-                        sketchFarmBtn.style.backgroundColor = "white";
-                        sketchFarmBtnIcon.textContent = "create";
-                        sketchFarmBtnIcon.style.color = "black";
-                        finishDrawingButton.classList.add('hidden');
-                        dialog.classList.add('hidden');
-
-                        console.clear();
-                    });
-
-                    document.getElementById('deleteNo').addEventListener('click', function () {
-                        dialog.classList.add('hidden');
-                    });
-                } else {
-                    map.removeInteraction(draw);
-                    isSketchActive = false;
-                    sketchFarmBtn.style.backgroundColor = "white";
-                    sketchFarmBtnIcon.textContent = "create";
-                    sketchFarmBtnIcon.style.color = "black";
-                    finishDrawingButton.classList.add('hidden');
-                }
-                return;
-            }
-
-            // Add floating message
-            const floatingMessage = document.createElement("div");
-            floatingMessage.className = "floating-message";
-            const infoIcon = document.createElement("i");
-            infoIcon.className = "material-icons";
-            infoIcon.textContent = "touch_app";
-            infoIcon.style.fontSize = "100px";
-            floatingMessage.appendChild(infoIcon);
-            floatingMessage.innerHTML +=
-                "   Chạm vào màn hình để bắt đầu vẽ trang trại"; // "Tap the screen to start drawing farm"
-            map.getViewport().appendChild(floatingMessage);
-
-            // Remove floating message after 3 seconds
-            timeoutId = setTimeout(function () {
-                map.getViewport().removeChild(floatingMessage);
-            }, 3000);
-
-            //Sketching Farm Polygon
-            const vectorLayer = new ol.layer.Vector({
-                source: vectorSource,
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: "rgba(56, 108, 52, 0.2)", // 80% transparent fill
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: "#386c34", // solid color for the stroke
-                        width: 10,
-                    }),
-                }),
-            });
-
-
-            map.addLayer(vectorLayer);
-
-            draw = new ol.interaction.Draw({
-                source: vectorSource,
-                type: "Polygon",
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: "rgba(255, 255, 255, 0.2)",
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: "#386c34",
-                        width: 10,
-                    }),
-                    image: new ol.style.Circle({
-                        radius: 18,
-                        fill: new ol.style.Fill({
-                            color: "#386c34",
-                        }),
-                        stroke: new ol.style.Stroke({
-                            color: "#ffffff",
-                            width: 9,
-                        }),
-                    }),
-                }),
-            });
-
-
-            map.addInteraction(draw);
-            isSketchActive = true;
-
-            sketchFarmBtn.style.backgroundColor = "#FF6666";
-            sketchFarmBtnIcon.textContent = "delete_forever";
-            sketchFarmBtnIcon.style.color = "white";
-
-            draw.on("drawstart", function (event) {
-                polygonExists = true;
-                event.feature.getGeometry().on("change", function (geomEvent) {
-                    const coordinates = geomEvent.target.getCoordinates()[0];
-                    if (coordinates.length >= 5) {
-                        finishDrawingButton.classList.remove('hidden');
-                    }
-                });
-            });
-
-            draw.on("drawend", async function (event) {
-                const polygonGeometry = event.feature.getGeometry();
-                const polygonCenter = polygonGeometry.getInteriorPoint();
-
-                const pointFeature = new ol.Feature({
-                    geometry: polygonCenter,
-                });
-
-                // Center Point
-                pointFeature.setStyle(
-                    new ol.style.Style({
-                        image: new ol.style.Circle({
-                            radius: 16,
-                            fill: new ol.style.Fill({
-                                color: '#386c34',
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: 'white',
-                                width: 8,
-                            }),
-                        }),
-                    })
-                );
-
-                vectorSource.addFeature(pointFeature);
-
-                const centerPointCoordinates = ol.proj.transform(polygonCenter.getCoordinates(), 'EPSG:3857', 'EPSG:4326');
-                console.log('Center Point Lon:', centerPointCoordinates[0]);
-                console.log('Center Point Lat:', centerPointCoordinates[1]);
-
-                const polygonCoordinates = polygonGeometry.getCoordinates()[0];
-                console.log('Polygon Coordinates:');
-                const polygonPoints = [];
-                polygonCoordinates.forEach((coordinate, index) => {
-                    const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-                    polygonPoints.push({ lon: lonLat[0], lat: lonLat[1] });
-                    console.log(`Point ${index + 1}: Lon ${lonLat[0]}, Lat ${lonLat[1]}`);
-                });
-
-                const segments = [];
-                const segmentLengths = [];
-                for (let i = 0; i < polygonCoordinates.length - 1; i++) {
-                    const startPoint = polygonCoordinates[i];
-                    const endPoint = polygonCoordinates[i + 1];
-                    const segment = new ol.geom.LineString([startPoint, endPoint]);
-                    segments.push(segment);
-                    const length = ol.sphere.getLength(segment);
-                    segmentLengths.push(length.toFixed(2));
-                }
-
-                console.log('Segment Lengths (m):');
-                segmentLengths.forEach((length, index) => {
-                    console.log(`Segment ${index + 1}: ${length} meters`);
-                });
-
-                const area = ol.sphere.getArea(polygonGeometry);
-                let areaHectares = null;
-                if (area > 10000) {
-                    areaHectares = (area / 10000).toFixed(2);
-                }
-                console.log('Polygon Area:');
-                console.log(`Area (m²): ${area.toFixed(2)} square meters`);
-                if (areaHectares) {
-                    console.log(`Area (ha): ${areaHectares} hectares`);
-                }
-
-                const address = await fetchPlaceName(centerPointCoordinates[0], centerPointCoordinates[1]);
-                console.log("Address:", address);
-
-                const tooltipElement = document.createElement('div');
-                tooltipElement.style.cssText = `
-      position: absolute;
-      background-color: #ffffff;
-      border: 1px solid #ccc;
-      border-radius: 1000px;
-      padding: 20px 30px;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      font-size: 40px;
-      font-weight: bold;
-      color: #000000;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 120px;
-      height: 30px;
-    `;
-
-                const areaInHectares = area > 10000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
-                tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 50px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
-
-                tooltipOverlay = new ol.Overlay({
-                    element: tooltipElement,
-                    offset: [0, -120],
-                    positioning: 'bottom-center',
-                });
-
-                tooltipOverlay.setPosition(polygonCenter.getCoordinates());
-
-                map.addOverlay(tooltipOverlay);
-
-
-                const dataToPost = {
-                    centerPoint: {
-                        lon: centerPointCoordinates[0],
-                        lat: centerPointCoordinates[1]
-                    },
-                    polygonCoordinates: polygonPoints,
-                    segmentLengths: segmentLengths,
-                    area: {
-                        squareMeters: area.toFixed(2),
-                        hectares: areaHectares
-                    },
-                    address: address
-                };
-
-                // Send data to React Native App
-                window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
-                //console.log(JSON.stringify(dataToPost));
-
-            });
-        }
-
-        const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-        sketchFarmBtn.addEventListener("click", function () {
-            startSketchFarm();
-        });
-
-        const finishDrawingButton = document.querySelector('.finish-drawing');
-        finishDrawingButton.addEventListener('click', function () {
-            if (draw) {
-                draw.finishDrawing();
-                finishDrawingButton.classList.add('hidden');
-            }
-        });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         //SEARCH BUTTON FUNCTION
         const searchBtn = document.getElementById("searchBtn");
         const searchBar = document.getElementById("searchBar");
@@ -1029,15 +696,20 @@
                     });
             }
         }
+        
 
         // Function to display historical places when the Search Input Box is clicked
         function displayHistoricalPlacesOnClick() {
-            // Clear the search input
-            searchInput.value = "";
+            // Check if the search input is empty
+            if (searchInput.value.trim().length === 0) {
+                // Clear the search input
+                searchInput.value = "";
 
-            // Display historical places
-            displayHistoricalPlaces();
+                // Display historical places
+                displayHistoricalPlaces();
+            }
         }
+
 
         // Attach event listener to the search input box
         searchInput.addEventListener("click", displayHistoricalPlacesOnClick);
@@ -1250,34 +922,6 @@
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         // Function to fetch place suggestions from OSM-Nominatim
         async function fetchPlaceSuggestions(searchText) {
             const baseUrl = "https://nominatim.openstreetmap.org/search";
@@ -1336,19 +980,6 @@
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         // Function to display place suggestions below the search bar
         function displayPlaceSuggestions(suggestions) {
             suggestionsContainer.innerHTML = "";
@@ -1368,10 +999,10 @@
                 // Use "history" icon for historical places
                 if (historicalPlaces.includes(suggestion)) {
                     gpsIcon.textContent = "history";
-                    gpsIcon.style.fontSize = "80px"
+                    gpsIcon.style.fontSize = "60px"
                 } else {
                     gpsIcon.textContent = "gps_fixed";
-                    gpsIcon.style.fontSize = "80px"
+                    gpsIcon.style.fontSize = "60px"
                 }
 
                 const suggestionText = document.createElement("span");
@@ -1404,7 +1035,7 @@
                     // Add the text below the line
                     const historicalPlacesText = document.createElement("div");
                     //historicalPlacesText.textContent = "Địa điểm đã tìm kiếm trước đây";
-                    historicalPlacesText.style.fontSize = "50px";
+                    historicalPlacesText.style.fontSize = "40px";
                     historicalPlacesText.style.color = "#515151";
                     historicalPlacesText.style.marginLeft = "20px";
                     historicalPlacesText.style.fontFamily = "Segoe UI";
@@ -1502,7 +1133,7 @@
                     const gpsIcon = document.createElement("i");
                     gpsIcon.classList.add("material-icons", "gpsIcon");
                     gpsIcon.textContent = "history";
-                    gpsIcon.style.fontSize = "80px"; //adjust history icon size
+                    gpsIcon.style.fontSize = "60px"; //adjust history icon size
 
                     const suggestionText = document.createElement("span");
                     suggestionText.textContent = place.display_name;
@@ -1610,17 +1241,9 @@
 
 
 
+        <!------------------------------------------------------------------------------------------------>
 
-
-
-
-
-
-
-
-
-
-        //BASEMAP BUTTON AND NORTH ARROW BUTTON
+        //BASEMAP SWITCHER BUTTON
         const mapElement = document.getElementById("map");
 
         // Layers
@@ -1640,24 +1263,10 @@
             visible: true // set visibility to true initially for default basemap
         });
 
-
-        const vectorLayer = new ol.layer.Vector({
-            source: vectorSource,
-            style: new ol.style.Style({
-                fill: new ol.style.Fill({
-                    color: "rgba(0, 128, 0, 0.7)",
-                }),
-                stroke: new ol.style.Stroke({
-                    color: "rgba(0, 100, 0, 0.8)",
-                    width: 10,
-                }),
-            }),
-        });
-
         // Initialize the map
         const map = new ol.Map({
             target: mapElement,
-            layers: [satelliteLayer, streetLayer, vectorLayer], // add both basemap layers initially
+            layers: [satelliteLayer, streetLayer], // add both basemap layers initially
             view: new ol.View({
                 center: ol.proj.fromLonLat([106.6297, 10.8231]),
                 zoom: 15,
@@ -1685,53 +1294,6 @@
                 : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
             logoElement.src = logoImage;
         }
-
-
-
-
-
-
-
-
-        //NORTH ARROW BUTTON
-        // Function to update the rotation of the north arrow based on the map's rotation
-        function updateNorthArrowRotation() {
-            const rotation = map.getView().getRotation();
-
-            // Check if the rotation is not equal to 0
-            if (rotation !== 0) {
-                northArrow.style.display = "block";
-            } else {
-                northArrow.style.display = "none";
-            }
-
-            northArrow.style.transform = `rotate(${rotation}rad)`;
-        }
-
-        // Event listener for map view rotation change
-        map.getView().on("change:rotation", updateNorthArrowRotation);
-
-        // Initial rotation update
-        updateNorthArrowRotation();
-
-        // Function to reset map rotation to 0 degrees with smooth animation
-        function resetMapRotation() {
-            const view = map.getView();
-            view.animate({
-                rotation: 0,
-                duration: 1000, // Animation duration in milliseconds
-                easing: ol.easing.easeOut // Easing function for smooth animation
-            });
-
-            // Hide the north arrow after reset
-            northArrow.style.display = "none";
-        }
-
-        // Event listener for the north arrow click
-        northArrow.addEventListener('click', resetMapRotation);
-
-
-
 
 
 
@@ -1779,12 +1341,6 @@
         } else {
             console.log("Geolocation is not supported by your browser.");
         }
-
-
-
-
-
-
 
 
 
@@ -2145,18 +1701,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
         //MEASURE LENGTH BUTTON FUNCTION
         let drawLength;
         let measureLengthSource;
@@ -2403,6 +1947,302 @@
 
 
 
+        //SKETCH FARM BUTTON FUNCTION
+        // Function to fetch place name from OSM Nominatim
+        async function fetchPlaceName(lon, lat) {
+            const baseUrl = "https://nominatim.openstreetmap.org/reverse";
+            const format = "json";
+            const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
+
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    const placeName = data.display_name || "";
+                    return placeName;
+                } else {
+                    console.error(
+                        "Failed to fetch place name:",
+                        response.status,
+                        response.statusText
+                    );
+                    return "";
+                }
+            } catch (error) {
+                console.error("Failed to fetch place name:", error);
+                return "";
+            }
+        }
+
+        let isSketchActive = false;
+        let draw;
+        let polygonExists = false;
+        let vectorSource = new ol.source.Vector();
+        let tooltipOverlay; // Declare the tooltipOverlay variable outside the event listener
+        let timeoutId = null; // Move timeoutId declaration outside the function
+
+        async function startSketchFarm() {
+            const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+            const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
+            const finishDrawingButton = document.querySelector('.finish-drawing');
+            const dialog = document.getElementById('dialog');
+
+            if (isSketchActive) {
+                // Dismiss floating message if it's still visible
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                    const existingFloatingMessage = document.querySelector('.floating-message');
+                    if (existingFloatingMessage) {
+                        map.getViewport().removeChild(existingFloatingMessage);
+                    }
+                    timeoutId = null; // Reset the timeoutId
+                }
+
+                if (polygonExists) {
+                    dialog.classList.remove('hidden');
+
+                    document.getElementById('deleteYes').addEventListener('click', function () {
+                        map.removeInteraction(draw);
+                        isSketchActive = false;
+                        polygonExists = false;
+                        vectorSource.clear();
+                        if (tooltipOverlay) {
+                            map.removeOverlay(tooltipOverlay);
+                        }
+                        sketchFarmBtn.style.backgroundColor = "white";
+                        sketchFarmBtnIcon.textContent = "create";
+                        sketchFarmBtnIcon.style.color = "black";
+                        finishDrawingButton.classList.add('hidden');
+                        dialog.classList.add('hidden');
+
+                        console.clear();
+                    });
+
+                    document.getElementById('deleteNo').addEventListener('click', function () {
+                        dialog.classList.add('hidden');
+                    });
+                } else {
+                    map.removeInteraction(draw);
+                    isSketchActive = false;
+                    sketchFarmBtn.style.backgroundColor = "white";
+                    sketchFarmBtnIcon.textContent = "create";
+                    sketchFarmBtnIcon.style.color = "black";
+                    finishDrawingButton.classList.add('hidden');
+                }
+                return;
+            }
+
+            // Add floating message
+            const floatingMessage = document.createElement("div");
+            floatingMessage.className = "floating-message";
+            const infoIcon = document.createElement("i");
+            infoIcon.className = "material-icons";
+            infoIcon.textContent = "touch_app";
+            infoIcon.style.fontSize = "100px";
+            floatingMessage.appendChild(infoIcon);
+            floatingMessage.innerHTML +=
+                "   Chạm vào màn hình để bắt đầu vẽ trang trại"; // "Tap the screen to start drawing farm"
+            map.getViewport().appendChild(floatingMessage);
+
+            // Remove floating message after 3 seconds
+            timeoutId = setTimeout(function () {
+                map.getViewport().removeChild(floatingMessage);
+            }, 3000);
+
+            //Sketching Farm Polygon
+            const vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: "rgba(56, 108, 52, 0.5)", // 80% transparent fill
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "#386c34", // solid color for the stroke
+                        width: 10,
+                    }),
+                }),
+            });
+
+
+            map.addLayer(vectorLayer);
+
+            draw = new ol.interaction.Draw({
+                source: vectorSource,
+                type: "Polygon",
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: "rgba(255, 255, 255, 0.1)",
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "#386c34",
+                        width: 10,
+                    }),
+                    image: new ol.style.Circle({
+                        radius: 18,
+                        fill: new ol.style.Fill({
+                            color: "#386c34",
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: "#ffffff",
+                            width: 9,
+                        }),
+                    }),
+                }),
+            });
+
+
+            map.addInteraction(draw);
+            isSketchActive = true;
+
+            sketchFarmBtn.style.backgroundColor = "#FF6666";
+            sketchFarmBtnIcon.textContent = "delete_forever";
+            sketchFarmBtnIcon.style.color = "white";
+
+            draw.on("drawstart", function (event) {
+                polygonExists = true;
+                event.feature.getGeometry().on("change", function (geomEvent) {
+                    const coordinates = geomEvent.target.getCoordinates()[0];
+                    if (coordinates.length >= 5) {
+                        finishDrawingButton.classList.remove('hidden');
+                    }
+                });
+            });
+
+            draw.on("drawend", async function (event) {
+                const polygonGeometry = event.feature.getGeometry();
+                const polygonCenter = polygonGeometry.getInteriorPoint();
+
+                const pointFeature = new ol.Feature({
+                    geometry: polygonCenter,
+                });
+
+                // Center Point
+                pointFeature.setStyle(
+                    new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 16,
+                            fill: new ol.style.Fill({
+                                color: '#386c34',
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: 'white',
+                                width: 8,
+                            }),
+                        }),
+                    })
+                );
+
+                vectorSource.addFeature(pointFeature);
+
+                const centerPointCoordinates = ol.proj.transform(polygonCenter.getCoordinates(), 'EPSG:3857', 'EPSG:4326');
+                console.log('Center Point Lon:', centerPointCoordinates[0]);
+                console.log('Center Point Lat:', centerPointCoordinates[1]);
+
+                const polygonCoordinates = polygonGeometry.getCoordinates()[0];
+                console.log('Polygon Coordinates:');
+                const polygonPoints = [];
+                polygonCoordinates.forEach((coordinate, index) => {
+                    const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+                    polygonPoints.push({ lon: lonLat[0], lat: lonLat[1] });
+                    console.log(`Point ${index + 1}: Lon ${lonLat[0]}, Lat ${lonLat[1]}`);
+                });
+
+                const segments = [];
+                const segmentLengths = [];
+                for (let i = 0; i < polygonCoordinates.length - 1; i++) {
+                    const startPoint = polygonCoordinates[i];
+                    const endPoint = polygonCoordinates[i + 1];
+                    const segment = new ol.geom.LineString([startPoint, endPoint]);
+                    segments.push(segment);
+                    const length = ol.sphere.getLength(segment);
+                    segmentLengths.push(length.toFixed(2));
+                }
+
+                console.log('Segment Lengths (m):');
+                segmentLengths.forEach((length, index) => {
+                    console.log(`Segment ${index + 1}: ${length} meters`);
+                });
+
+                const area = ol.sphere.getArea(polygonGeometry);
+                let areaHectares = null;
+                if (area > 10000) {
+                    areaHectares = (area / 10000).toFixed(2);
+                }
+                console.log('Polygon Area:');
+                console.log(`Area (m²): ${area.toFixed(2)} square meters`);
+                if (areaHectares) {
+                    console.log(`Area (ha): ${areaHectares} hectares`);
+                }
+
+                const address = await fetchPlaceName(centerPointCoordinates[0], centerPointCoordinates[1]);
+                console.log("Address:", address);
+
+                const tooltipElement = document.createElement('div');
+                tooltipElement.style.cssText = `
+      position: absolute;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 1000px;
+      padding: 20px 30px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 40px;
+      font-weight: bold;
+      color: #000000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      height: 30px;
+    `;
+
+                const areaInHectares = area > 10000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
+                tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 50px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
+
+                tooltipOverlay = new ol.Overlay({
+                    element: tooltipElement,
+                    offset: [0, -120],
+                    positioning: 'bottom-center',
+                });
+
+                tooltipOverlay.setPosition(polygonCenter.getCoordinates());
+
+                map.addOverlay(tooltipOverlay);
+
+
+                const dataToPost = {
+                    centerPoint: {
+                        lon: centerPointCoordinates[0],
+                        lat: centerPointCoordinates[1]
+                    },
+                    polygonCoordinates: polygonPoints,
+                    segmentLengths: segmentLengths,
+                    area: {
+                        squareMeters: area.toFixed(2),
+                        hectares: areaHectares
+                    },
+                    address: address
+                };
+
+                // Send data to React Native App
+                window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
+                //console.log(JSON.stringify(dataToPost));
+
+            });
+        }
+
+        const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+        sketchFarmBtn.addEventListener("click", function () {
+            startSketchFarm();
+        });
+
+        const finishDrawingButton = document.querySelector('.finish-drawing');
+        finishDrawingButton.addEventListener('click', function () {
+            if (draw) {
+                draw.finishDrawing();
+                finishDrawingButton.classList.add('hidden');
+            }
+        });
 
 
 
@@ -2411,24 +2251,42 @@
 
 
 
+        //NORTH ARROW BUTTON
+        // Function to update the rotation of the north arrow based on the map's rotation
+        function updateNorthArrowRotation() {
+            const rotation = map.getView().getRotation();
 
+            // Check if the rotation is not equal to 0
+            if (rotation !== 0) {
+                northArrow.style.display = "block";
+            } else {
+                northArrow.style.display = "none";
+            }
 
+            northArrow.style.transform = `rotate(${rotation}rad)`;
+        }
 
+        // Event listener for map view rotation change
+        map.getView().on("change:rotation", updateNorthArrowRotation);
 
+        // Initial rotation update
+        updateNorthArrowRotation();
 
+        // Function to reset map rotation to 0 degrees with smooth animation
+        function resetMapRotation() {
+            const view = map.getView();
+            view.animate({
+                rotation: 0,
+                duration: 1000, // Animation duration in milliseconds
+                easing: ol.easing.easeOut // Easing function for smooth animation
+            });
 
+            // Hide the north arrow after reset
+            northArrow.style.display = "none";
+        }
 
-
-
-
-
-
-
-
-
-
-
-
+        // Event listener for the north arrow click
+        northArrow.addEventListener('click', resetMapRotation);
 
 
 
