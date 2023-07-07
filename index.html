@@ -561,12 +561,11 @@
             display: none;
         }
 
-
         #resetBtn {
             position: fixed;
             bottom: 10vh;
-            left: 35px;
-            background-color: #fff;
+            left: 40px;
+            background-color: #ffffff;
             border: none;
             border-radius: 50%;
             width: 120px;
@@ -580,7 +579,7 @@
         }
 
         #resetBtn i.material-icons {
-            font-size: 60px;
+            font-size: 65px;
             color: #515151;
         }
     </style>
@@ -943,9 +942,6 @@
                         });
                     }
 
-
-
-
                     // Set the pill container as the label element
                     labelElement.appendChild(pillContainer);
 
@@ -1063,7 +1059,7 @@
                     gpsIcon.textContent = "history";
                     gpsIcon.style.fontSize = "60px"
                 } else {
-                    gpsIcon.textContent = "gps_fixed";
+                    gpsIcon.textContent = "north_east";
                     gpsIcon.style.fontSize = "60px"
                 }
 
@@ -1178,13 +1174,6 @@
             if (historicalPlaces.length > 0 && searchInput.value.trim() === "") {
                 const sortedPlaces = [...historicalPlaces].reverse();
                 const recentPlaces = sortedPlaces.slice(0, 8);
-
-                //const previousPlacesText = document.createElement("div");
-                //previousPlacesText.textContent = "Địa điểm đã tìm kiếm trước đây"; // Previously searched places
-                //previousPlacesText.style.fontSize = "50px";
-                //previousPlacesText.style.color = "#515151";
-                //previousPlacesText.style.marginLeft = "20px";
-                //suggestionsContainer.appendChild(previousPlacesText);
 
                 recentPlaces.forEach((place) => {
                     const suggestionItem = document.createElement("div");
@@ -2181,7 +2170,7 @@
                         }
                         sketchFarmBtn.style.backgroundColor = "white";
                         sketchFarmBtnIcon.textContent = "create";
-                        sketchFarmBtnIcon.style.color = "black";
+                        sketchFarmBtnIcon.style.color = "#515151";
                         finishDrawingButton.classList.add('hidden');
                         dialog.classList.add('hidden');
 
@@ -2196,7 +2185,7 @@
                     isSketchActive = false;
                     sketchFarmBtn.style.backgroundColor = "white";
                     sketchFarmBtnIcon.textContent = "create";
-                    sketchFarmBtnIcon.style.color = "black";
+                    sketchFarmBtnIcon.style.color = "#515151";
                     finishDrawingButton.classList.add('hidden');
                 }
                 return;
@@ -2393,7 +2382,7 @@
   height: 30px;
 `;
 
-                const areaInHectares = area > 10000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
+                const areaInHectares = area > 1000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
                 tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 50px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
 
                 tooltipOverlay = new ol.Overlay({
@@ -2449,7 +2438,7 @@
                 sketchFarmBtn.style.backgroundColor = "white";
                 const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
                 sketchFarmBtnIcon.textContent = "create";
-                sketchFarmBtnIcon.style.color = "black";
+                sketchFarmBtnIcon.style.color = "#515151";
 
                 // Remove sketching interaction
                 if (draw) {
