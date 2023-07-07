@@ -633,7 +633,7 @@
         </button>
 
         <button id="measureLengthBtn" class="measureLengthBtn" onclick="startMeasurementLength()">
-            <i class="material-icons">linear_scale</i>
+            <i class="material-icons">straighten</i>
         </button>
 
         <!--<button id="drawFarmBtn" class="drawFarmBtn" onclick="startDrawingFarm()">
@@ -1789,8 +1789,8 @@ if (pillContainer) {
                 measureLengthTooltipElement = null;
                 measureLengthSource.clear();
 
-                // Change the icon back to the "linear_scale" icon
-                measureLengthBtnIcon.textContent = "linear_scale";
+                // Change the icon back to the "straighten" icon
+                measureLengthBtnIcon.textContent = "straighten";
                 // Reset the background color to white
                 measureLengthBtn.style.backgroundColor = "#ffffff";
                 // Change the icon color to black
@@ -1935,7 +1935,7 @@ if (pillContainer) {
 
                 // Add a white background to the measurement size label
                 measureLengthTooltipElement.style.backgroundColor = "#ffffff";
-                measureLengthTooltipElement.style.padding = "10px 20px";
+                measureLengthTooltipElement.style.padding = "10px 30px";
                 measureLengthTooltipElement.style.borderRadius = "40px";
                 measureLengthTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
 
