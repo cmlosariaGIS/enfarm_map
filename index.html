@@ -611,7 +611,7 @@
         </button>
 
         <div id="searchBar" class="searchBar">
-            <input id="searchInput" class="searchInput" type="text" placeholder="  Tìm kiếm địa điểm..."
+            <input id="searchInput" class="searchInput" type="text" placeholder="  Tra Cứu.."
                 style="font-size: 45px;" />
             <!--Search for a place...-->
             <div id="loadingIcon" class="loadingIcon" style="visibility: hidden; margin-left: -30px;">
@@ -783,8 +783,6 @@
         }
 
         function clearPlaceSuggestions() {
-            // Assuming you have a function to clear place suggestions, if not you might need to create one.
-            // It should probably clear or hide elements in suggestionsContainer
             suggestionsContainer.innerHTML = '';
         }
 
@@ -854,27 +852,27 @@
                     pillContainer.style.display = "flex";
                     pillContainer.style.alignItems = "center";
                     pillContainer.style.justifyContent = "space-between";
-                    pillContainer.style.background = "#ffffff"; // Set the background color
-                    pillContainer.style.padding = "10px 40px"; // Set padding to create a pill shape
-                    pillContainer.style.borderRadius = "100px"; // Set border radius to create a pill shape
-                    pillContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)"; // Add a shadow effect
+                    pillContainer.style.background = "#ffffff"; 
+                    pillContainer.style.padding = "10px 40px"; 
+                    pillContainer.style.borderRadius = "100px"; 
+                    pillContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)"; 
 
                     // Create the place name element
                     const placeNameElement = document.createElement("span");
                     placeNameElement.textContent = placeName;
-                    placeNameElement.style.fontSize = "45px"; // Set the font size
-                    placeNameElement.style.fontFamily = "Segoe UI, Arial, sans-serif"; // Set the font family
-                    placeNameElement.style.color = "#515151"; // Set the font color
-                    placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)"; // Add a subtle text shadow
-                    placeNameElement.style.letterSpacing = "1px"; // Add letter spacing for a modern look
+                    placeNameElement.style.fontSize = "45px"; 
+                    placeNameElement.style.fontFamily = "Segoe UI, Arial, sans-serif"; 
+                    placeNameElement.style.color = "#515151"; 
+                    placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)"; 
+                    placeNameElement.style.letterSpacing = "1px";
 
                     // Create the chevron_right icon element
                     const chevronIcon = document.createElement("i");
                     chevronIcon.classList.add("material-icons");
                     chevronIcon.textContent = "expand_circle_down";
-                    chevronIcon.style.fontSize = "60px"; // Set the font size
-                    chevronIcon.style.color = "#515151"; // Set the icon color
-                    chevronIcon.style.marginLeft = "15px"; // Nudge the icon to the left by 15px
+                    chevronIcon.style.fontSize = "60px"; 
+                    chevronIcon.style.color = "#515151";
+                    chevronIcon.style.marginLeft = "15px";
 
                     // Add hover effect to the chevron icon
                     chevronIcon.style.cursor = "pointer";
@@ -888,53 +886,65 @@
 
 
 
-                    // Add click event listener to the chevron icon to expand the pill with address details
-                    chevronIcon.addEventListener("click", () => {
-                        if (addressParts.length > 0) {
-                            const addressDetails = addressParts.slice(1).join(", "); // Get the address details after the first comma
-                            pillContainer.innerHTML = `
-      <span style="font-size: 50px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center;">
-        <strong>${placeName}</strong>, ${addressDetails}
-        <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 430px;">
-          <i class="material-icons" style="transform: rotate(180deg); font-size: inherit;">expand_circle_down</i>
+// Ensure that 'pillContainer' is defined before this block
+
+// Check that pillContainer is not null before adding an event listener
+if (pillContainer) {
+    // Add transition effect to the pillContainer
+    pillContainer.style.transition = "all 0.3s ease-in-out";
+
+    pillContainer.addEventListener("click", event => {
+        if (event.target.classList.contains('material-icons')) {
+            const addressDetails = addressParts.slice(1).join(", ");
+            
+            // Add hover effect and transition to the chevron icon
+            const chevronIcon = pillContainer.querySelector("i.material-icons");
+            if (chevronIcon) {
+                chevronIcon.style.transition = "transform 0.3s ease-in-out"; // Add transition effect to the chevron icon
+                
+                chevronIcon.addEventListener("mouseenter", () => {
+                    chevronIcon.style.color = "#999999";
+                });
+
+                chevronIcon.addEventListener("mouseleave", () => {
+                    chevronIcon.style.color = "#515151";
+                });
+            }
+            
+            if (pillContainer.getAttribute('data-expanded') === 'true') {
+                pillContainer.innerHTML = `
+      <span style="font-size: 40px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
+        <span>${placeName}</span>
+        <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
+          <i class="material-icons" style="transform: rotate(0deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
         </button>
       </span>`;
-
-                            // Adjust the width and height of the pill container
-                            pillContainer.style.width = "500px";
-                            pillContainer.style.padding = "30px 30px";
-                            pillContainer.style.borderRadius = "10px";
-
-                            // Add click event listener to the chevron icon in the expanded pill to revert back to the original pill size containing just the place name
-                            const chevronUpIcon = pillContainer.querySelector("i.material-icons");
-                            chevronUpIcon.addEventListener("click", () => {
-                                pillContainer.innerHTML = `
-  <span style="font-size: 50px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
-    <span>${placeName}</span>
-    <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
-      <i class="material-icons" style="transform: rotate(0deg); font-size: inherit;">expand_circle_down</i>
-    </button>
-  </span>`;
-
-                                // Reset the width, padding, and border-radius styles to revert back to the original pill size
-                                pillContainer.style.width = "initial";
-                                pillContainer.style.padding = "10px 40px";
-                                pillContainer.style.borderRadius = "100px";
-                            });
-                        }
-                    });
-
+                
+                pillContainer.style.width = "initial";
+                pillContainer.style.padding = "10px 40px";
+                pillContainer.style.borderRadius = "100px";
+                pillContainer.setAttribute('data-expanded', 'false');
+                
+            } else if (addressParts.length > 0) {
+                pillContainer.innerHTML = `
+      <span style="font-size: 40px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center;">
+        <strong>${placeName}</strong>, ${addressDetails}
+        <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 430px;">
+          <i class="material-icons" style="transform: rotate(180deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
+        </button>
+      </span>`;
+                
+                pillContainer.style.width = "500px";
+                pillContainer.style.padding = "30px 30px";
+                pillContainer.style.borderRadius = "20px";
+                pillContainer.setAttribute('data-expanded', 'true');
+            }
+        }
+    });
+}
 
 
 
-                    // Add hover effect to the chevron icon
-                    chevronIcon.addEventListener("mouseenter", () => {
-                        chevronIcon.style.color = "#999999";
-                    });
-
-                    chevronIcon.addEventListener("mouseleave", () => {
-                        chevronIcon.style.color = "#515151";
-                    });
 
                     // Set the pill container as the label element
                     labelElement.appendChild(pillContainer);
@@ -945,9 +955,6 @@
                 .catch((error) => {
                     console.error("Failed to fetch place name:", error);
                 });
-
-
-
 
 
             // Function to fetch place name from OSM Nominatim
@@ -1586,7 +1593,7 @@
                     measurementUnit = "m²";
                 }
 
-                measureAreaTooltipElement.innerHTML = `<div style="display: flex; align-items: center;"><i class="material-icons" style="margin-right: 5px;">eco</i><span>Khu vực:</span><strong style="margin-left: 5px;">${measurement}</strong> ${measurementUnit}</div>`;
+                measureAreaTooltipElement.innerHTML = `<div style="display: flex; align-items: center;"><i class="material-icons" style="margin-right: 10px;"></i><span>Khu vực:</span><strong style="margin-left: 10px;">${measurement}${measurementUnit}</strong></div>`;
 
 
                 // Hide the finish button
@@ -2425,7 +2432,7 @@
 
 
 
-        // Add this at the end of your script
+        // For Listening to react native app data
         window.addEventListener("message", message => {
             alert(message.data);
         });
