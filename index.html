@@ -576,7 +576,7 @@
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             cursor: pointer;
-        
+
         }
 
         #resetBtn i.material-icons {
@@ -852,25 +852,25 @@
                     pillContainer.style.display = "flex";
                     pillContainer.style.alignItems = "center";
                     pillContainer.style.justifyContent = "space-between";
-                    pillContainer.style.background = "#ffffff"; 
-                    pillContainer.style.padding = "10px 40px"; 
-                    pillContainer.style.borderRadius = "100px"; 
-                    pillContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)"; 
+                    pillContainer.style.background = "#ffffff";
+                    pillContainer.style.padding = "10px 40px";
+                    pillContainer.style.borderRadius = "100px";
+                    pillContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)";
 
                     // Create the place name element
                     const placeNameElement = document.createElement("span");
                     placeNameElement.textContent = placeName;
-                    placeNameElement.style.fontSize = "45px"; 
-                    placeNameElement.style.fontFamily = "Segoe UI, Arial, sans-serif"; 
-                    placeNameElement.style.color = "#515151"; 
-                    placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)"; 
+                    placeNameElement.style.fontSize = "45px";
+                    placeNameElement.style.fontFamily = "Segoe UI, Arial, sans-serif";
+                    placeNameElement.style.color = "#515151";
+                    placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)";
                     placeNameElement.style.letterSpacing = "1px";
 
                     // Create the chevron_right icon element
                     const chevronIcon = document.createElement("i");
                     chevronIcon.classList.add("material-icons");
                     chevronIcon.textContent = "expand_circle_down";
-                    chevronIcon.style.fontSize = "60px"; 
+                    chevronIcon.style.fontSize = "60px";
                     chevronIcon.style.color = "#515151";
                     chevronIcon.style.marginLeft = "15px";
 
@@ -886,62 +886,62 @@
 
 
 
-// Ensure that 'pillContainer' is defined before this block
+                    // Ensure that 'pillContainer' is defined before this block
 
-// Check that pillContainer is not null before adding an event listener
-if (pillContainer) {
-    // Add transition effect to the pillContainer
-    pillContainer.style.transition = "all 0.3s ease-in-out";
+                    // Check that pillContainer is not null before adding an event listener
+                    if (pillContainer) {
+                        // Add transition effect to the pillContainer
+                        pillContainer.style.transition = "all 0.3s ease-in-out";
 
-    pillContainer.addEventListener("click", event => {
-        if (event.target.classList.contains('material-icons')) {
-            const addressDetails = addressParts.slice(1).join(", ");
-            
-            // Add hover effect and transition to the chevron icon
-            const chevronIcon = pillContainer.querySelector("i.material-icons");
-            if (chevronIcon) {
-                chevronIcon.style.transition = "transform 0.3s ease-in-out"; // Add transition effect to the chevron icon
-                
-                chevronIcon.addEventListener("mouseenter", () => {
-                    chevronIcon.style.color = "#999999";
-                });
+                        pillContainer.addEventListener("click", event => {
+                            if (event.target.classList.contains('material-icons')) {
+                                const addressDetails = addressParts.slice(1).join(", ");
 
-                chevronIcon.addEventListener("mouseleave", () => {
-                    chevronIcon.style.color = "#515151";
-                });
-            }
-            
-            if (pillContainer.getAttribute('data-expanded') === 'true') {
-                pillContainer.innerHTML = `
+                                // Add hover effect and transition to the chevron icon
+                                const chevronIcon = pillContainer.querySelector("i.material-icons");
+                                if (chevronIcon) {
+                                    chevronIcon.style.transition = "transform 0.3s ease-in-out"; // Add transition effect to the chevron icon
+
+                                    chevronIcon.addEventListener("mouseenter", () => {
+                                        chevronIcon.style.color = "#999999";
+                                    });
+
+                                    chevronIcon.addEventListener("mouseleave", () => {
+                                        chevronIcon.style.color = "#515151";
+                                    });
+                                }
+
+                                if (pillContainer.getAttribute('data-expanded') === 'true') {
+                                    pillContainer.innerHTML = `
       <span style="font-size: 40px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
         <span>${placeName}</span>
         <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
           <i class="material-icons" style="transform: rotate(0deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
         </button>
       </span>`;
-                
-                pillContainer.style.width = "initial";
-                pillContainer.style.padding = "10px 40px";
-                pillContainer.style.borderRadius = "100px";
-                pillContainer.setAttribute('data-expanded', 'false');
-                
-            } else if (addressParts.length > 0) {
-                pillContainer.innerHTML = `
+
+                                    pillContainer.style.width = "initial";
+                                    pillContainer.style.padding = "10px 40px";
+                                    pillContainer.style.borderRadius = "100px";
+                                    pillContainer.setAttribute('data-expanded', 'false');
+
+                                } else if (addressParts.length > 0) {
+                                    pillContainer.innerHTML = `
       <span style="font-size: 40px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center;">
         <strong>${placeName}</strong>, ${addressDetails}
         <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 430px;">
           <i class="material-icons" style="transform: rotate(180deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
         </button>
       </span>`;
-                
-                pillContainer.style.width = "500px";
-                pillContainer.style.padding = "30px 30px";
-                pillContainer.style.borderRadius = "20px";
-                pillContainer.setAttribute('data-expanded', 'true');
-            }
-        }
-    });
-}
+
+                                    pillContainer.style.width = "500px";
+                                    pillContainer.style.padding = "30px 30px";
+                                    pillContainer.style.borderRadius = "20px";
+                                    pillContainer.setAttribute('data-expanded', 'true');
+                                }
+                            }
+                        });
+                    }
 
 
 
@@ -1765,10 +1765,6 @@ if (pillContainer) {
 
 
 
-
-
-
-
         //MEASURE LENGTH BUTTON FUNCTION
         let drawLength;
         let measureLengthSource;
@@ -2133,7 +2129,6 @@ if (pillContainer) {
                 }),
             });
 
-
             map.addLayer(vectorLayer);
 
             draw = new ol.interaction.Draw({
@@ -2160,9 +2155,39 @@ if (pillContainer) {
                 }),
             });
 
-
             map.addInteraction(draw);
             isSketchActive = true;
+
+            // Create a custom canvas pattern for diagonal lines with transparency
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            const size = 10; // Size of each pattern element
+            const spacing = 8; // Spacing between pattern elements
+            canvas.width = size;
+            canvas.height = size;
+            context.strokeStyle = "rgba(56, 108, 52, 0.5)"; // Color of the lines with transparency
+            context.lineWidth = 2;
+            context.beginPath();
+            context.moveTo(0, 0);
+            context.lineTo(size, size);
+            context.stroke();
+
+            const pattern = context.createPattern(canvas, "repeat");
+
+            // Apply the custom pattern as the fill style for the polygon
+            vectorLayer.setStyle(
+                new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: pattern,
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "#386c34",
+                        width: 10,
+                    }),
+                })
+            );
+
+
 
             sketchFarmBtn.style.backgroundColor = "#FF6666";
             sketchFarmBtnIcon.textContent = "delete_forever";
