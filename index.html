@@ -1,22 +1,2599 @@
-function deactivateSketchFarm() {
-    const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-    if (isSketchActive) {
-        // Set sketchFarmBtn to inactive state
-        sketchFarmBtn.style.backgroundColor = "white";
-        const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
-        sketchFarmBtnIcon.textContent = "create";
-        sketchFarmBtnIcon.style.color = "black";
+<!DOCTYPE html>
+<html>
 
-        // Remove sketching interaction
-        if (draw) {
-            map.removeInteraction(draw);
-            draw = null;
+<head>
+    <meta charset="UTF-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">-->
+    <title>enfarm Map</title>
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css" />-->
+    <!--<script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>-->
+
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.4.0/dist/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.4.0/ol.css">
+
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <style>
+        .map {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            /* Set an initial height for the map container */
         }
 
-        // Clear floating message timeout
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-            timeoutId = null;
+        .logo {
+            position: absolute;
+            top: 45px;
+            left: 44px;
+            width: 320px;
+            height: 130px;
+            z-index: 1;
         }
-    }
-}
+
+        .basemapBtn,
+        .locationBtn,
+        .searchBtn,
+        .measureAreaBtn,
+        .measureLengthBtn,
+        .drawFarmBtn,
+        .sketchFarmBtn,
+        .northArrow,
+        .resetBtn {
+            position: fixed;
+            background-color: #ffffff;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .basemapBtn i,
+        .locationBtn i,
+        .searchBtn i,
+        .measureAreaBtn i,
+        .measureLengthBtn i,
+        .drawFarmBtn i,
+        .sketchFarmBtn i,
+        .northArrow i,
+        .resetBtn i {
+            font-family: "Material Icons";
+            font-size: 65px;
+            color: #515151;
+        }
+
+
+        /***** START AUTO-DETECT USER LOCATION *****/
+        .user-marker {
+            width: 20px;
+            height: 20px;
+            background-color: #007bff;
+            border-radius: 50%;
+            animation: glowing 1s infinite;
+        }
+
+        @keyframes glowing {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(0, 123, 255, 0.7);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+            }
+        }
+
+        /***** END AUTO-DETECT USER LOCATION *****/
+
+
+        /***** START SEARCH BUTTON FUNCTION *****/
+        .searchBtn {
+            position: absolute;
+            top: 60px;
+            right: 30px;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .searchBar {
+            display: none;
+            position: absolute;
+            height: 120px;
+            top: 60px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 100px;
+            padding: 2px 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            width: 890px;
+            z-index: 3;
+        }
+
+        .searchInput {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 40px;
+            color: #515151;
+            padding: 20px;
+            padding-left: 40px;
+            /* Add left padding of 30px */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            /* Use flexbox */
+            align-items: center;
+            /* Center vertically */
+            border-radius: 100px;
+        }
+
+
+        .searchButton {
+            background-color: #ffffff00;
+            border-radius: 0%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            padding-right: 36px
+        }
+
+        .searchButton i {
+            color: #686868;
+            font-size: 80px;
+            padding-right: 20px;
+
+        }
+
+        .suggestionsContainer {
+            position: absolute;
+            top: 140px;
+            left: 0;
+            width: 890px;
+            max-height: 800px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            z-index: 5;
+            display: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+        }
+
+        .suggestionsContainer::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .suggestionsContainer::-webkit-scrollbar-track {
+            border-radius: 10px;
+            background-color: #f1f1f1;
+        }
+
+        .suggestionsContainer::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: #888;
+        }
+
+        .suggestionsContainer::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+
+
+        .suggestionsContainer div {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .suggestionsContainer div:hover {
+            background-color: #f2f2f2;
+        }
+
+        .suggestionItem {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            padding-left: 100px;
+            color: #515151;
+        }
+
+        .suggestionText {
+            font-size: 40px;
+            /* Adjust the font size as needed */
+        }
+
+        /* Add a new class to style the historical search places */
+        .historicalPlace {
+            font-style: italic;
+            color: #888888;
+        }
+
+        .gpsIcon {
+            margin-right: 30px;
+            margin-left: 20px;
+            color: #a8a8a8;
+            font-size: 60px;
+        }
+
+        /*spinning icon on search bar*/
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .sync-spin {
+            animation: spin 5s infinite linear;
+        }
+
+
+        /*Search results POI label*/
+        .marker-label {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+
+        .suggestionItem .deleteButton {
+            width: 80px;
+            height: 80px;
+            border: none;
+            background-color: transparent;
+            color: #777;
+            font-size: 40px;
+            cursor: pointer;
+            transition: color 0.3s ease-in-out;
+            margin-left: auto;
+        }
+
+        .deleteButton:hover {
+            color: #ff4d4d;
+        }
+
+        #clearAllBtn {
+            font-size: 40px;
+            background-color: #ffffff;
+            color: #515151;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+
+        /***** END SEARCH BUTTON FUNCTION *****/
+
+
+        /***** START SWITCH BASEMAP BUTTON FUNCTION *****/
+        .basemapBtn {
+            position: absolute;
+            top: 10px;
+            right: 30px;
+            z-index: 1;
+        }
+
+        .basemapswitcher {
+            position: absolute;
+            top: 200px;
+            right: 0px;
+            z-index: 1;
+        }
+
+        /***** END SWITCH BASEMAP BUTTON FUNCTION *****/
+
+        /***** START MEASURE AREA AND LINE BUTTON FUNCTION *****/
+
+        .measureAreaBtn {
+            position: absolute;
+            top: 360px;
+            right: 30px;
+            z-index: 1;
+        }
+
+        .measureLengthBtn {
+            position: absolute;
+            top: 510px;
+            right: 30px;
+            z-index: 1;
+        }
+
+        .floating-message {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffffff;
+            color: #515151;
+            padding: 20px;
+            border-radius: 100px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 40px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 600px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 3;
+        }
+
+        /*Tap to draw floating message*/
+        .floating-message i {
+            font-size: 60px;
+            animation-name: cycling-animation;
+            animation-duration: 1s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+
+        @keyframes cycling-animation {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(0.8);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /***** END MEASURE AREA AND LINE BUTTON FUNCTION *****/
+
+        /***** START SKETCH FARM BUTTON FUNCTION *****/
+
+        .sketchFarmBtn {
+            position: absolute;
+            top: 660px;
+            right: 30px;
+            z-index: 1;
+        }
+
+        /*Draw Farm Area Size*/
+        /*Finish Sketch/Drawing Button*/
+        .sketch-buttons {
+            position: relative;
+            bottom: 25%;
+            left: 50%;
+            transform: translate(-50%, 50%);
+            display: flex;
+            justify-content: center;
+            width: 900px;
+            flex-wrap: nowrap;
+            gap: 50px;
+        }
+
+        .finish-drawing {
+            background-color: #ffffff;
+            padding: 35px 50px;
+            border-radius: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 40px;
+            color: #515151;
+            outline: none;
+            border: none;
+            border-radius: 100px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+
+        .finish-drawing:hover {
+            cursor: pointer;
+            background-color: #f1f1f1;
+        }
+
+
+        /*finish drawing check icon*/
+        .check-icon {
+            margin-right: 10px;
+            font-family: 'Material Icons', sans-serif;
+        }
+
+        /***** END DRAW FARM BUTTON FUNCTION *****/
+
+
+        /***** START USER LOCATION BUTTON *****/
+        /*.locationBtn {
+            position: absolute;
+            bottom: 50px;
+            right: 30px;
+            z-index: 1;
+        }*/
+
+        /***** END USER LOCATION BUTTON *****/
+
+        /***** START NORTH ARROW BUTTON FUNCTION *****/
+        .northArrow {
+            position: absolute;
+            top: 950px;
+            right: 35px;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            z-index: 1;
+            box-sizing: border-box;
+        }
+
+        .northArrow .material-icons {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 65px;
+        }
+
+        .northArrow i {
+            transform: rotate(0deg);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /***** END NORTH ARROW BUTTON FUNCTION *****/
+
+        /***** START MOBILE RESPONSIVENESS *****/
+
+        /* Media query for smaller screens */
+        @media (max-width: 768px) {
+
+            /* Adjust map container height for smaller screens */
+            .map {
+                height: 300px;
+            }
+
+            /* Adjust button styles for smaller screens */
+            .basemapBtn,
+            .locationBtn,
+            .searchBtn,
+            .measureAreaBtn,
+            .measureLengthBtn,
+            .drawBtn {
+                font-size: 20px;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Media query for even smaller screens */
+        @media (max-width: 480px) {
+
+            /* Adjust map container height for even smaller screens */
+            .map {
+                height: 200px;
+            }
+
+            /* Adjust button styles for even smaller screens */
+            .basemapBtn,
+            .locationBtn,
+            .searchBtn,
+            .measureAreaBtn,
+            .measureLengthBtn,
+            .drawBtn {
+                font-size: 16px;
+                padding: 6px 10px;
+            }
+        }
+
+        /***** END MOBILE RESPONSIVENESS *****/
+
+
+        /*
+        .hidden {
+            display: none;
+        }
+        */
+
+        .dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .dialog-content {
+            background-color: white;
+            padding: 80px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            /* Subtle box-shadow for depth */
+            width: 600px;
+            height: 300px;
+            font-size: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #515151;
+            max-width: 100%;
+            box-shadow: #515151;
+        }
+
+        /* Yes and Cancel Button*/
+        .dialog-button {
+            font-size: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 10px;
+            padding: 20px 70px;
+            border-radius: 20px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            /*background: linear-gradient(to bottom, #f2709c, #ff9472);*/
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
+        }
+
+        .hidden {
+            display: none;
+        }
+
+
+        #resetBtn {
+            position: fixed;
+            bottom: 10vh;
+            left: 35px;
+            background-color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+
+        }
+
+        #resetBtn i.material-icons {
+            font-size: 60px;
+            color: #515151;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="map">
+        <div id="map" class="map">
+            <div class="blur-mask"></div>
+        </div>
+
+        <div>
+            <img src="https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png" alt="Logo" class="logo">
+        </div>
+
+        <div id="northArrow" class="northArrow">
+            <i class="material-icons" style="color: #FF6666;">navigation</i>
+        </div>
+
+        <div id="basemapswitcher" class="basemapswitcher">
+            <button id="basemapBtn" class="basemapBtn" onclick="cycleBasemap()">
+                <i class="material-icons">layers</i>
+            </button>
+        </div>
+
+        <button id="searchBtn" class="searchBtn">
+            <i class="material-icons">search</i>
+        </button>
+
+        <div id="searchBar" class="searchBar">
+            <input id="searchInput" class="searchInput" type="text" placeholder="  Tra Cứu.."
+                style="font-size: 45px;" />
+            <!--Search for a place...-->
+            <div id="loadingIcon" class="loadingIcon" style="visibility: hidden; margin-left: -30px;">
+                <i class="material-icons"
+                    style="font-size: 80px; color: #515151; animation: spin 1s infinite linear; margin-right: -30px;">
+                    sync
+                </i>
+            </div>
+            <div id="suggestionsContainer" class="suggestionsContainer"></div>
+            <button id="searchButton" class="searchButton">
+                <i class="material-icons">search</i>
+            </button>
+        </div>
+
+        <div id="suggestionsContainer"></div>
+
+        <button id="measureAreaBtn" class="measureAreaBtn" onclick="startMeasurementArea()">
+            <i class="material-icons">square_foot</i>
+        </button>
+
+        <button id="measureLengthBtn" class="measureLengthBtn" onclick="startMeasurementLength()">
+            <i class="material-icons">straighten</i>
+        </button>
+
+        <!--<button id="drawFarmBtn" class="drawFarmBtn" onclick="startDrawingFarm()">
+            <i class="material-icons">create</i>
+        </button>-->
+
+        <button id="sketchFarmBtn" class="sketchFarmBtn">
+            <i class="material-icons">create</i>
+        </button>
+
+        <button id="resetBtn">
+            <i class="material-icons">restart_alt</i>
+        </button>
+
+        <!--Delete Confirm Dialog Box-->
+        <div id="dialog" class="dialog hidden">
+            <div class="dialog-content">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <i class="material-icons" style="font-size: 120px; color: #FF6666; margin-bottom: 10px;">warning</i>
+                    <p style="margin: 0; margin-bottom: 30px;">Bạn có muốn xóa bản vẽ?</p>
+                </div>
+                <div style="display: flex; justify-content: center;">
+                    <button id="deleteYes" class="dialog-button"
+                        style="background-color: #FF6666; color: white; display: flex; align-items: center;">
+                        <i class="material-icons" style="font-size: 50px; margin-right: 8px;">delete_forever</i>
+                        <span>Đúng</span>
+                    </button>
+                    <button id="deleteNo" class="dialog-button"
+                        style="background-color: white; color: #515151; border: 2px solid #A9A9A9;">Không</button>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!--Finish Sketch Button-->
+        <div class="sketch-buttons">
+            <button id="finishDrawingButton" class="finish-drawing hidden"
+                style="font-size: 40px; background-color: #386c34; color: white;">
+                <span class="material-icons" style="font-size: 40px;">done_outline</span>
+                Hoàn Thành
+            </button>
+        </div>
+
+
+        <!--<button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
+            <i class="material-icons">gps_fixed</i>
+        </button>-->
+
+
+
+
+    </div>
+    </div>
+
+    <script>
+
+
+
+        // Get the reset button element
+        const resetButton = document.getElementById("resetBtn");
+
+        // Create a function to reset the webpage
+        function resetWebpage() {
+            location.reload();
+        }
+
+        // Add event listener to the reset button
+        resetButton.addEventListener("click", resetWebpage);
+
+
+
+
+        // SEARCH PLACE BUTTON FUNCTION
+        const searchBtn = document.getElementById("searchBtn");
+        const searchBar = document.getElementById("searchBar");
+        const searchInput = document.getElementById("searchInput");
+        const searchKeywordBtn = document.getElementById("searchKeywordBtn");
+        const floatingMessage = document.getElementById("floatingMessage");
+        const suggestionsContainer = document.getElementById("suggestionsContainer");
+        const searchIcon = document.getElementById("searchButton").querySelector(".material-icons");
+
+        let historicalPlaces = [];
+
+        searchBtn.addEventListener("click", handleSearchClick);
+        document.addEventListener("click", handleDocumentClick);
+        searchInput.addEventListener("input", toggleSearchIcon);
+        searchInput.addEventListener("click", displayHistoricalPlacesOnClick);
+        searchIcon.addEventListener("click", handleSearchIconClick);
+
+        function toggleSearchIcon() {
+            if (searchInput.value.length > 0) {
+                searchIcon.textContent = "cancel";
+            } else {
+                searchIcon.textContent = "search";
+            }
+        }
+
+        function handleSearchIconClick() {
+            if (searchIcon.textContent === "cancel") {
+                searchInput.value = "";
+                toggleSearchIcon();
+                clearPlaceSuggestions();
+                displayHistoricalPlaces();
+            }
+        }
+
+        function handleSearchClick(event) {
+            event.stopPropagation();
+            searchBtn.style.display = "none";
+            searchBar.style.display = "flex";
+            searchKeywordBtn.style.display = "none";
+            searchInput.focus();
+
+            displayHistoricalPlaces();
+
+            if (searchInput.value.trim().length === 0) {
+                fetchPlaceSuggestions("")
+                    .then((suggestions) => {
+                        displayPlaceSuggestions(suggestions);
+                    })
+                    .catch((error) => {
+                        console.error("Failed to fetch place suggestions:", error);
+                    });
+            }
+        }
+
+        function displayHistoricalPlacesOnClick() {
+            if (searchInput.value.trim().length === 0) {
+                searchInput.value = "";
+                displayHistoricalPlaces();
+            }
+        }
+
+        function handleDocumentClick(event) {
+            if (
+                !searchBar.contains(event.target) &&
+                event.target !== searchBtn &&
+                event.target !== searchKeywordBtn &&
+                event.target !== floatingMessage
+            ) {
+                searchBtn.style.display = "block";
+                searchBar.style.display = "none";
+                searchInput.value = "";
+                suggestionsContainer.style.display = "none";
+            }
+        }
+
+        function clearPlaceSuggestions() {
+            suggestionsContainer.innerHTML = '';
+        }
+
+        searchBar.style.display = "none";
+
+
+        let markerLayer;
+
+        function createMarker(coordinates) {
+            if (markerLayer) {
+                map.removeLayer(markerLayer);
+            }
+
+            const marker = new ol.Feature({
+                geometry: new ol.geom.Point(coordinates),
+            });
+
+            const markerStyle = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 22,
+                    fill: new ol.style.Fill({
+                        color: "#ff6666",
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "rgba(255, 255, 255, 0.8)",
+                        width: 12,
+                    }),
+                    shadow: new ol.style.Circle({
+                        radius: 18,
+                        fill: new ol.style.Fill({
+                            color: "rgba(0, 0, 0, 0.5)", // Set the shadow color and transparency
+                        }),
+                    }),
+                }),
+            });
+
+            marker.setStyle(markerStyle);
+
+            markerLayer = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    features: [marker],
+                }),
+            });
+
+            map.addLayer(markerLayer);
+
+
+
+            // Define the addressParts variable outside the fetchPlaceName function
+            let addressParts = [];
+
+            // Fetch place name using coordinates from OSM Nominatim
+            fetchPlaceName(coordinates)
+                .then((placeName) => {
+                    // Create label overlay
+                    const label = new ol.Overlay({
+                        position: coordinates,
+                        element: document.createElement("div"),
+                        offset: [0, -45],
+                        positioning: "bottom-center",
+                    });
+
+                    const labelElement = label.getElement();
+
+                    // Create the pill-shaped background container
+                    const pillContainer = document.createElement("div");
+                    pillContainer.style.display = "flex";
+                    pillContainer.style.alignItems = "center";
+                    pillContainer.style.justifyContent = "space-between";
+                    pillContainer.style.background = "#ffffff";
+                    pillContainer.style.padding = "10px 40px";
+                    pillContainer.style.borderRadius = "100px";
+                    pillContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)";
+
+                    // Create the place name element
+                    const placeNameElement = document.createElement("span");
+                    placeNameElement.textContent = placeName;
+                    placeNameElement.style.fontSize = "45px";
+                    placeNameElement.style.fontFamily = "Segoe UI, Arial, sans-serif";
+                    placeNameElement.style.color = "#515151";
+                    placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)";
+                    placeNameElement.style.letterSpacing = "1px";
+
+                    // Create the chevron_right icon element
+                    const chevronIcon = document.createElement("i");
+                    chevronIcon.classList.add("material-icons");
+                    chevronIcon.textContent = "expand_circle_down";
+                    chevronIcon.style.fontSize = "60px";
+                    chevronIcon.style.color = "#515151";
+                    chevronIcon.style.marginLeft = "15px";
+
+                    // Add hover effect to the chevron icon
+                    chevronIcon.style.cursor = "pointer";
+
+                    // Append the place name element and chevron icon to the pill container
+                    pillContainer.appendChild(placeNameElement);
+                    pillContainer.appendChild(chevronIcon);
+
+                    // Set the pill container as the label element
+                    labelElement.appendChild(pillContainer);
+
+
+
+                    // Ensure that 'pillContainer' is defined before this block
+
+                    // Check that pillContainer is not null before adding an event listener
+                    if (pillContainer) {
+                        // Add transition effect to the pillContainer
+                        pillContainer.style.transition = "all 0.3s ease-in-out";
+
+                        pillContainer.addEventListener("click", event => {
+                            if (event.target.classList.contains('material-icons')) {
+                                const addressDetails = addressParts.slice(1).join(", ");
+
+                                // Add hover effect and transition to the chevron icon
+                                const chevronIcon = pillContainer.querySelector("i.material-icons");
+                                if (chevronIcon) {
+                                    chevronIcon.style.transition = "transform 0.3s ease-in-out"; // Add transition effect to the chevron icon
+
+                                    chevronIcon.addEventListener("mouseenter", () => {
+                                        chevronIcon.style.color = "#999999";
+                                    });
+
+                                    chevronIcon.addEventListener("mouseleave", () => {
+                                        chevronIcon.style.color = "#515151";
+                                    });
+                                }
+
+                                if (pillContainer.getAttribute('data-expanded') === 'true') {
+                                    pillContainer.innerHTML = `
+      <span style="font-size: 40px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
+        <span>${placeName}</span>
+        <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
+          <i class="material-icons" style="transform: rotate(0deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
+        </button>
+      </span>`;
+
+                                    pillContainer.style.width = "initial";
+                                    pillContainer.style.padding = "10px 40px";
+                                    pillContainer.style.borderRadius = "100px";
+                                    pillContainer.setAttribute('data-expanded', 'false');
+
+                                } else if (addressParts.length > 0) {
+                                    pillContainer.innerHTML = `
+      <span style="font-size: 40px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center;">
+        <strong>${placeName}</strong>, ${addressDetails}
+        <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 430px;">
+          <i class="material-icons" style="transform: rotate(180deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
+        </button>
+      </span>`;
+
+                                    pillContainer.style.width = "500px";
+                                    pillContainer.style.padding = "30px 30px";
+                                    pillContainer.style.borderRadius = "20px";
+                                    pillContainer.setAttribute('data-expanded', 'true');
+                                }
+                            }
+                        });
+                    }
+
+
+
+
+                    // Set the pill container as the label element
+                    labelElement.appendChild(pillContainer);
+
+                    // Add the label overlay to the map
+                    map.addOverlay(label);
+                })
+                .catch((error) => {
+                    console.error("Failed to fetch place name:", error);
+                });
+
+
+            // Function to fetch place name from OSM Nominatim
+            async function fetchPlaceName(coordinates) {
+                const [lon, lat] = ol.proj.toLonLat(coordinates);
+                const baseUrl = "https://nominatim.openstreetmap.org/reverse";
+                const format = "json";
+                const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
+
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const data = await response.json();
+                        addressParts = data.display_name.split(",");
+                        const placeName = addressParts[0]?.trim() || "";
+                        return placeName;
+                    } else {
+                        console.error("Failed to fetch place name:", response.status, response.statusText);
+                        return "";
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch place name:", error);
+                    return "";
+                }
+            }
+
+        }
+
+
+        // Function to fetch place suggestions from OSM-Nominatim
+        async function fetchPlaceSuggestions(searchText) {
+            const baseUrl = "https://nominatim.openstreetmap.org/search";
+            const format = "json";
+            const limit = 15;
+            const url = `${baseUrl}?q=${encodeURIComponent(searchText)}&format=${format}&limit=${limit}&countrycodes=VN`;
+
+            try {
+                const loadingIcon = document.getElementById("loadingIcon");
+                const searchButton = document.getElementById("searchButton");
+
+                loadingIcon.style.visibility = "visible"; // Show the loading icon
+                loadingIcon.classList.add("spin"); // Add the spin class
+                searchButton.style.visibility = "hidden"; // Hide the search icon
+
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    const filteredSuggestions = data.filter(
+                        (place) =>
+                            !historicalPlaces.some(
+                                (historicalPlace) =>
+                                    historicalPlace.display_name === place.display_name
+                            )
+                    );
+
+                    // Process the suggestions...
+
+                    return filteredSuggestions.map((place) => ({
+                        display_name: place.display_name,
+                        lat: place.lat,
+                        lon: place.lon,
+                    }));
+                } else {
+                    console.error(
+                        "Failed to fetch place suggestions:",
+                        response.status,
+                        response.statusText
+                    );
+                    return [];
+                }
+            } catch (error) {
+                console.error("Failed to fetch place suggestions:", error);
+                return [];
+            } finally {
+                const loadingIcon = document.getElementById("loadingIcon");
+                const searchButton = document.getElementById("searchButton");
+
+                // Delay the visibility of the search button for 2 seconds (2000 milliseconds)
+                setTimeout(() => {
+                    loadingIcon.classList.remove("spin"); // Remove the spin class
+                    loadingIcon.style.visibility = "hidden"; // Hide the loading icon
+                    searchButton.style.visibility = "visible"; // Show the search icon
+                }, 3000);
+            }
+        }
+
+
+        // Function to display place suggestions below the search bar
+        function displayPlaceSuggestions(suggestions) {
+            suggestionsContainer.innerHTML = "";
+
+            // Combine historical places with fetched suggestions
+            const allSuggestions = [...suggestions, ...historicalPlaces];
+
+            allSuggestions.forEach((suggestion, index) => {
+                const suggestionItem = document.createElement("div");
+                suggestionItem.classList.add("suggestionItem");
+                suggestionItem.style.paddingTop = "20px";
+                suggestionItem.style.paddingBottom = "20px";
+
+                const gpsIcon = document.createElement("i");
+                gpsIcon.classList.add("material-icons", "gpsIcon");
+
+                // Use "history" icon for historical places
+                if (historicalPlaces.includes(suggestion)) {
+                    gpsIcon.textContent = "history";
+                    gpsIcon.style.fontSize = "60px"
+                } else {
+                    gpsIcon.textContent = "gps_fixed";
+                    gpsIcon.style.fontSize = "60px"
+                }
+
+                const suggestionText = document.createElement("span");
+                suggestionText.textContent = suggestion.display_name;
+                suggestionText.classList.add("suggestionText");
+                suggestionText.style.color = "#515151";
+                suggestionText.style.fontFamily = "Segoe UI";
+
+                suggestionItem.addEventListener("click", () => {
+                    handleSuggestionClick(suggestion);
+                });
+
+                suggestionItem.appendChild(gpsIcon);
+                suggestionItem.appendChild(suggestionText);
+                suggestionsContainer.appendChild(suggestionItem);
+
+                // Add a horizontal line after displaying suggestions
+                if (index === suggestions.length - 1) {
+                    const separatorContainer = document.createElement("div");
+                    separatorContainer.style.paddingTop = "50px";
+                    separatorContainer.style.paddingBottom = "50px";
+
+                    const separatorLine = document.createElement("hr");
+                    separatorLine.style.width = "50%";
+                    separatorLine.style.margin = "0 auto";
+                    separatorContainer.appendChild(separatorLine);
+
+                    suggestionsContainer.appendChild(separatorContainer);
+
+                    // Add the text below the line
+                    const historicalPlacesText = document.createElement("div");
+                    //historicalPlacesText.textContent = "Địa điểm đã tìm kiếm trước đây";
+                    historicalPlacesText.style.fontSize = "40px";
+                    historicalPlacesText.style.color = "#515151";
+                    historicalPlacesText.style.marginLeft = "20px";
+                    historicalPlacesText.style.fontFamily = "Segoe UI";
+                    suggestionsContainer.appendChild(historicalPlacesText);
+                }
+            });
+
+            suggestionsContainer.style.display = "block";
+        }
+
+        // Attach event listener to the search input
+        searchInput.addEventListener("input", handleSearchInput);
+
+        // Function to handle search input
+        function handleSearchInput() {
+            const searchText = searchInput.value.trim();
+
+            if (searchText.length > 0) {
+                fetchPlaceSuggestions(searchText)
+                    .then((suggestions) => {
+                        displayPlaceSuggestions(suggestions);
+                    })
+                    .catch((error) => {
+                        console.error("Failed to fetch place suggestions:", error);
+                    });
+
+                // Hide historical places list
+                suggestionsContainer.style.display = "block";
+                historicalPlacesContainer.style.display = "none";
+            } else {
+                // If the search input is empty, hide historical places and suggestions container
+                suggestionsContainer.style.display = "none";
+                historicalPlacesContainer.style.display = "none";
+            }
+        }
+
+        // Attach event listener to the search input
+        searchInput.addEventListener("input", handleSearchInput);
+
+        function handleSuggestionClick(suggestion) {
+            const latitude = parseFloat(suggestion.lat);
+            const longitude = parseFloat(suggestion.lon);
+            const center = ol.proj.fromLonLat([longitude, latitude]);
+            map.getView().setCenter(center);
+            map.getView().setZoom(21);
+
+            const coordinates = ol.proj.fromLonLat([longitude, latitude]);
+            createMarker(coordinates);
+
+            // Check if the selected place already exists in historicalPlaces
+            const existingPlaceIndex = historicalPlaces.findIndex(
+                (place) => place.display_name === suggestion.display_name
+            );
+
+            if (existingPlaceIndex === -1) {
+                // Add the selected place to the historicalPlaces array
+                historicalPlaces.push(suggestion);
+
+                // Save the historicalPlaces in local storage
+                localStorage.setItem("historicalPlaces", JSON.stringify(historicalPlaces));
+            } else {
+                // If the place already exists, move it to the end of the array
+                const existingPlace = historicalPlaces.splice(existingPlaceIndex, 1);
+                historicalPlaces.push(existingPlace[0]);
+            }
+
+            // Display historical places
+            displayHistoricalPlaces();
+
+            // Clear the search input
+            searchInput.value = "";
+            suggestionsContainer.style.display = "none";
+        }
+
+        function displayHistoricalPlaces() {
+            suggestionsContainer.innerHTML = "";
+
+            if (historicalPlaces.length > 0 && searchInput.value.trim() === "") {
+                const sortedPlaces = [...historicalPlaces].reverse();
+                const recentPlaces = sortedPlaces.slice(0, 8);
+
+                //const previousPlacesText = document.createElement("div");
+                //previousPlacesText.textContent = "Địa điểm đã tìm kiếm trước đây"; // Previously searched places
+                //previousPlacesText.style.fontSize = "50px";
+                //previousPlacesText.style.color = "#515151";
+                //previousPlacesText.style.marginLeft = "20px";
+                //suggestionsContainer.appendChild(previousPlacesText);
+
+                recentPlaces.forEach((place) => {
+                    const suggestionItem = document.createElement("div");
+                    suggestionItem.classList.add("suggestionItem");
+                    suggestionItem.style.paddingTop = "20px";
+                    suggestionItem.style.paddingBottom = "20px";
+
+                    const gpsIcon = document.createElement("i");
+                    gpsIcon.classList.add("material-icons", "gpsIcon");
+                    gpsIcon.textContent = "history";
+                    gpsIcon.style.fontSize = "60px"; //adjust history icon size
+
+                    const suggestionText = document.createElement("span");
+                    suggestionText.textContent = place.display_name;
+                    suggestionText.classList.add("suggestionText");
+                    suggestionText.style.color = "#515151";
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.classList.add("deleteButton");
+                    deleteButton.innerHTML = '<i class="material-icons" style="font-size: 50px;">close</i>';
+
+                    deleteButton.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        deleteHistoricalPlace(place);
+                    });
+
+                    suggestionItem.addEventListener("click", () => {
+                        handleSuggestionClick(place);
+                    });
+
+                    deleteButton.addEventListener("click", (event) => {
+                        event.stopPropagation();
+                        deleteHistoricalPlace(place);
+                    });
+
+                    suggestionItem.appendChild(gpsIcon);
+                    suggestionItem.appendChild(suggestionText);
+                    suggestionItem.appendChild(deleteButton);
+
+                    suggestionsContainer.appendChild(suggestionItem);
+                });
+
+                // Function to delete individual historical place
+                function deleteHistoricalPlace(place) {
+                    // Find the index of the place in the historicalPlaces array
+                    const index = historicalPlaces.findIndex((p) => p.display_name === place.display_name);
+
+                    if (index !== -1) {
+                        // Remove the place from the historicalPlaces array
+                        historicalPlaces.splice(index, 1);
+
+                        // Save the updated historicalPlaces in local storage
+                        localStorage.setItem("historicalPlaces", JSON.stringify(historicalPlaces));
+
+                        // Re-display the historical places
+                        displayHistoricalPlaces();
+                    }
+                }
+
+
+
+                // Create the Clear all search history button
+                const clearAllButton = document.createElement("button");
+                clearAllButton.id = "clearAllBtn";
+                clearAllButton.innerHTML = `
+  <div style="display: flex; align-items: center; justify-content: center; width: 840px; margin: 0 auto; padding-bottom: 30px; padding-top: 30px">
+    <i class="material-icons" style="font-size: 45px; margin-right: 20px;">delete</i>
+    <span style="font-size: 45px; color: #515151;">Xóa tất cả tìm kiếm</span> 
+  </div>`;
+
+
+
+
+                clearAllButton.addEventListener("click", clearAllHistory);
+                suggestionsContainer.appendChild(clearAllButton);
+
+            } else {
+                const noResultsText = document.createElement("div");
+                noResultsText.style.display = "flex";
+                noResultsText.style.alignItems = "center";
+                noResultsText.style.fontSize = "45px";
+                noResultsText.style.marginLeft = "40px";
+                noResultsText.style.color = "#515151";
+
+                const historyIcon = document.createElement("i");
+                historyIcon.classList.add("material-icons");
+                historyIcon.textContent = "history";
+                historyIcon.style.fontSize = "60px";
+                historyIcon.style.marginRight = "40px"; // Increased separation
+
+                const text = document.createElement("span");
+                text.textContent = "Không có địa điểm nào được tìm kiếm trước đó";
+
+                noResultsText.appendChild(historyIcon);
+                noResultsText.appendChild(text);
+                suggestionsContainer.appendChild(noResultsText);
+
+
+
+            }
+
+            suggestionsContainer.style.display = "block";
+        }
+
+        // Function to clear all historical places
+        function clearAllHistory() {
+            historicalPlaces = [];
+            localStorage.removeItem("historicalPlaces");
+            displayHistoricalPlaces();
+        }
+
+        // Retrieve historical places from local storage
+        const savedHistoricalPlaces = localStorage.getItem("historicalPlaces");
+        if (savedHistoricalPlaces) {
+            historicalPlaces = JSON.parse(savedHistoricalPlaces);
+        }
+
+        // Attach event listener to the search input
+        searchInput.addEventListener("input", handleSearchInput);
+
+
+
+
+
+        <!------------------------------------------------------------------------------------------------>
+
+        //BASEMAP SWITCHER BUTTON
+        const mapElement = document.getElementById("map");
+
+        // Layers
+        const satelliteLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+                useInterimTilesOnError: true,
+            }),
+            visible: false // set visibility to false initially
+        });
+
+        const streetLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+                useInterimTilesOnError: true,
+            }),
+            visible: true // set visibility to true initially for default basemap
+        });
+
+        // Initialize the map
+        const map = new ol.Map({
+            target: mapElement,
+            layers: [satelliteLayer, streetLayer], // add both basemap layers initially
+            view: new ol.View({
+                center: ol.proj.fromLonLat([106.6297, 10.8231]),
+                zoom: 15,
+                rotation: Math.PI / 4 // 45 degrees in radians
+            }),
+            controls: [],
+        });
+
+        let currentBasemap = 1; // Set the current basemap index to 1 to represent streetLayer
+        const basemaps = [satelliteLayer, streetLayer];
+
+        function cycleBasemap() {
+            // Cycle through the basemaps
+            currentBasemap = (currentBasemap + 1) % basemaps.length;
+
+            // Set the new basemap layer as visible and hide the other one
+            basemaps.forEach((layer, index) => {
+                layer.setVisible(index === currentBasemap);
+            });
+
+            // Update the logo
+            const logoElement = document.querySelector(".logo");
+            const logoImage = basemaps[currentBasemap] === satelliteLayer
+                ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
+                : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
+            logoElement.src = logoImage;
+        }
+
+
+
+        // Function to create the user location marker
+        function createUserLocationMarker() {
+            const markerElement = document.createElement("div");
+            markerElement.className = "user-marker";
+
+            const markerOverlay = new ol.Overlay({
+                element: markerElement,
+                positioning: "center-center",
+                stopEvent: false,
+            });
+
+            map.addOverlay(markerOverlay);
+
+            return markerOverlay;
+        }
+
+        // Function to update the user location marker position
+        function updateUserLocationMarker(markerOverlay, position) {
+            const { latitude, longitude } = position.coords;
+            const userLocation = ol.proj.fromLonLat([longitude, latitude]);
+
+            markerOverlay.setPosition(userLocation);
+        }
+
+        // Function to handle errors when geolocation is not available or permission denied
+        function handleGeolocationError(error) {
+            console.error("Error getting user's location:", error);
+        }
+
+        // Check if geolocation is supported by the browser
+        if ("geolocation" in navigator) {
+            const markerOverlay = createUserLocationMarker();
+
+            // Get the user's current location
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    updateUserLocationMarker(markerOverlay, position);
+                    map.getView().animate({ center: markerOverlay.getPosition(), zoom: 19 });
+                },
+                handleGeolocationError
+            );
+        } else {
+            console.log("Geolocation is not supported by your browser.");
+        }
+
+
+
+
+
+        //MEASURE AREA BUTTON FUNCTION
+        let drawArea;
+        let measureAreaSource;
+        let measureAreaTooltipElement;
+        let measureAreaTooltip;
+        let sketchArea;
+        let lineTooltips = [];
+        let floatingMessageAreaTimeoutId;
+
+        function startMeasurementArea() {
+            const measureAreaBtn = document.getElementById("measureAreaBtn");
+            const measureAreaBtnIcon = measureAreaBtn.querySelector("i");
+
+            if (measureAreaBtn.classList.contains("active")) {
+                // Disable measuring area
+                measureAreaBtn.classList.remove("active");
+                map.removeInteraction(drawArea);
+                map.removeOverlay(measureAreaTooltip);
+                measureAreaTooltipElement = null;
+                measureAreaSource.clear();
+                clearLineTooltips(); // Clear length tooltips
+
+                // Change the icon back to the "square_foot" icon
+                measureAreaBtnIcon.textContent = "square_foot";
+                // Reset the background color to white
+                measureAreaBtn.style.backgroundColor = "#ffffff";
+                // Change the icon color to black
+                measureAreaBtnIcon.style.color = "#515151";
+
+                // Clear timeout and hide the floating message immediately
+                clearTimeout(floatingMessageAreaTimeoutId);
+                const floatingMessage = document.getElementById("floatingMessageArea");
+                if (floatingMessage && floatingMessage.parentNode) {
+                    floatingMessage.parentNode.removeChild(floatingMessage);
+                }
+
+                // Hide the finish drawing button
+                const finishDrawingButton = document.getElementById("finishDrawingButton");
+                if (finishDrawingButton) {
+                    finishDrawingButton.classList.add("hidden");
+                }
+            } else {
+                // Enable measuring area
+                measureAreaBtn.classList.add("active");
+                measureAreaSource = new ol.source.Vector();
+                map.addLayer(
+                    new ol.layer.Vector({
+                        source: measureAreaSource,
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: "rgba(56, 108, 52, 0.8)", // 80% transparent fill
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: "#386c34",
+                                width: 10,
+                            }),
+                            image: new ol.style.Circle({
+                                radius: 7,
+                                fill: new ol.style.Fill({
+                                    color: "#386c34",
+                                }),
+                            }),
+                        }),
+                    })
+                );
+                createMeasureAreaTooltip();
+                addAreaInteraction();
+
+                // Change the icon to the "close" icon
+                measureAreaBtnIcon.textContent = "close";
+                // Change the background color to dark red
+                measureAreaBtn.style.backgroundColor = "#FF6666";
+                // Change the icon color to white
+                measureAreaBtnIcon.style.color = "#ffffff";
+
+                // Add floating message
+                const floatingMessage = document.createElement("div");
+                floatingMessage.className = "floating-message";
+                floatingMessage.id = "floatingMessageArea";
+                const infoIcon = document.createElement("i");
+                infoIcon.className = "material-icons";
+                infoIcon.textContent = "touch_app";
+                infoIcon.style.fontSize = "100px";
+                floatingMessage.appendChild(infoIcon);
+                floatingMessage.innerHTML += "  Chạm vào màn hình để bắt đầu đo"; // "Tap the screen to start measuring"
+                map.getViewport().appendChild(floatingMessage);
+
+                // Remove floating message after 05 seconds
+                floatingMessageAreaTimeoutId = setTimeout(function () {
+                    map.getViewport().removeChild(floatingMessage);
+                }, 5000);
+            }
+        }
+
+        let drawAreaStartListener;
+        let drawAreaEndListener;
+
+        function addAreaInteraction() {
+            drawArea = new ol.interaction.Draw({
+                source: measureAreaSource,
+                type: "Polygon",
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: "rgba(255, 255, 255, 0.2)",
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "#386c34",
+                        width: 10,
+                    }),
+                    image: new ol.style.Circle({
+                        radius: 18,
+                        fill: new ol.style.Fill({
+                            color: "#386c34",
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: "#ffffff",
+                            width: 9,
+                        }),
+                    }),
+                }),
+            });
+            map.addInteraction(drawArea);
+
+            // Declare a variable to count how many points have been clicked
+            let clickCount = 0;
+
+            drawAreaStartListener = drawArea.on("drawstart", function (evt) {
+                const feature = evt.feature;
+                sketchArea = feature;
+                createHelpAreaTooltip();
+                map.on("pointermove", pointerMoveHandler);
+
+                // Reset click count
+                clickCount = 0;
+
+                // Add a vertex listener to count clicks
+                feature.getGeometry().on("change", function (event) {
+                    clickCount++;
+
+                    // Check if the user has clicked 3 times
+                    if (clickCount === 3) {
+                        // Show the finish button
+                        const finishDrawingButton = document.getElementById("finishDrawingButton");
+                        if (finishDrawingButton) {
+                            finishDrawingButton.classList.remove("hidden");
+                        }
+                    }
+                });
+            });
+
+            document.getElementById('finishDrawingButton').addEventListener('click', function () {
+                drawArea.finishDrawing();
+            });
+
+
+
+            drawAreaEndListener = drawArea.on("drawend", function (evt) {
+                const feature = evt.feature;
+                measureAreaSource.removeFeature(sketchArea);
+                sketchArea = null;
+                measureAreaTooltipElement.className = "ol-tooltip ol-tooltip-static";
+                measureAreaTooltip.setOffset([0, -7]);
+
+                const geom = feature.getGeometry();
+                const extent = geom.getExtent();
+                const center = ol.extent.getCenter(extent);
+                const area = getArea(geom);
+
+                let measurement;
+                let measurementUnit;
+
+                if (area > 1000) {
+                    measurement = (area / 10000).toFixed(2); // Convert to hectares (ha)
+                    measurementUnit = "ha";
+                } else {
+                    measurement = area.toFixed(2);
+                    measurementUnit = "m²";
+                }
+
+                measureAreaTooltipElement.innerHTML = `<div style="display: flex; align-items: center;"><i class="material-icons" style="margin-right: 10px;"></i><span>Khu vực:</span><strong style="margin-left: 10px;">${measurement}${measurementUnit}</strong></div>`;
+
+
+                // Hide the finish button
+                const finishDrawingButton = document.getElementById("finishDrawingButton");
+                if (finishDrawingButton) {
+                    finishDrawingButton.classList.add("hidden");
+                }
+
+
+                // Add a white background to the measurement size label
+                measureAreaTooltipElement.style.backgroundColor = "#ffffff";
+                measureAreaTooltipElement.style.padding = "10px 20px";
+                measureAreaTooltipElement.style.borderRadius = "50px";
+                measureAreaTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
+
+                // Change the font color to Segoe UI (#515151) and set the font size to 12px
+                measureAreaTooltipElement.style.color = "#515151";
+                measureAreaTooltipElement.style.fontFamily = "Segoe UI";
+                measureAreaTooltipElement.style.fontSize = "35px";
+
+                // Position the measurement tooltip element in the middle of the map
+                measureAreaTooltip.setPosition(center);
+
+                // Create tooltips for each edge of the polygon
+                const coordinates = geom.getCoordinates()[0];
+                const numEdges = coordinates.length;
+                clearLineTooltips();
+                for (let i = 0; i < numEdges - 1; i++) {
+                    const start = coordinates[i];
+                    const end = coordinates[i + 1];
+                    const midpoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
+                    const length = ol.sphere.getLength(new ol.geom.LineString([start, end]));
+
+                    const lineTooltip = createLineTooltip(length, midpoint, start, end);
+                    lineTooltips.push(lineTooltip);
+                    map.addOverlay(lineTooltip);
+                }
+
+                map.removeInteraction(drawArea);
+                map.un("pointermove", pointerMoveHandler);
+            });
+
+            drawAreaStartListener = drawArea.on("drawstart", function (evt) {
+                const feature = evt.feature;
+                sketchArea = feature;
+                createHelpAreaTooltip();
+                map.on("pointermove", pointerMoveHandler);
+            });
+        }
+
+        let helpMeasureAreaTooltipElement;
+        let helpMeasureAreaTooltip;
+
+        function createHelpAreaTooltip() {
+            if (helpMeasureAreaTooltipElement) {
+                helpMeasureAreaTooltipElement.parentNode.removeChild(helpMeasureAreaTooltipElement);
+            }
+            helpMeasureAreaTooltipElement = document.createElement("div");
+            helpMeasureAreaTooltipElement.className = "ol-tooltip hidden";
+            helpMeasureAreaTooltip = new ol.Overlay({
+                element: helpMeasureAreaTooltipElement,
+                offset: [15, 0],
+                positioning: "center-left",
+            });
+            map.addOverlay(helpMeasureAreaTooltip);
+        }
+
+        function createMeasureAreaTooltip() {
+            if (measureAreaTooltipElement) {
+                measureAreaTooltipElement.parentNode.removeChild(measureAreaTooltipElement);
+            }
+            measureAreaTooltipElement = document.createElement("div");
+            measureAreaTooltipElement.className = "ol-tooltip ol-tooltip-measure";
+            measureAreaTooltip = new ol.Overlay({
+                element: measureAreaTooltipElement,
+                offset: [100, 0],
+                positioning: "bottom-center",
+            });
+            map.addOverlay(measureAreaTooltip);
+        }
+
+        function pointerMoveHandler(evt) {
+            if (evt.dragging) {
+                return;
+            }
+            const helpMsg = "Click to continue drawing the polygon";
+            if (sketchArea) {
+                const geom = sketchArea.getGeometry();
+                if (geom instanceof ol.geom.Polygon) {
+                    helpMsg = continuePolygonMsg;
+                }
+            }
+            helpMeasureAreaTooltipElement.innerHTML = helpMsg;
+            helpMeasureAreaTooltip.setPosition(evt.coordinate);
+            helpMeasureAreaTooltipElement.classList.remove("hidden");
+        }
+
+        function getArea(polygon) {
+            const area = polygon.getArea();
+            return area;
+        }
+
+        function createLineTooltip(length, midpoint, start, end) {
+            const lineTooltipElement = document.createElement("div");
+            lineTooltipElement.className = "ol-tooltip ol-tooltip-line";
+
+            let measurement;
+            let measurementUnit;
+
+            if (length > 1000) {
+                measurement = (length / 1000).toFixed(2); // Convert to kilometers
+                measurementUnit = "km";
+            } else {
+                measurement = length.toFixed(2);
+                measurementUnit = "m";
+            }
+
+            lineTooltipElement.innerHTML = `Chiều dài: ${measurement}${measurementUnit}`;
+
+            // Add a white background to the line tooltip
+            lineTooltipElement.style.backgroundColor = "#ffffff";
+            lineTooltipElement.style.padding = "10px 20px";
+            lineTooltipElement.style.borderRadius = "40px";
+            lineTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
+
+            // Change the font color to Segoe UI (#515151) and set the font size to 12px
+            lineTooltipElement.style.color = "#515151";
+            lineTooltipElement.style.fontFamily = "Segoe UI";
+            lineTooltipElement.style.fontSize = "28px";
+
+            const lineTooltip = new ol.Overlay({
+                element: lineTooltipElement,
+                offset: [0, 0],
+                position: midpoint,
+                positioning: "center-center",
+            });
+
+            lineTooltipElement.addEventListener("mouseover", function () {
+                lineTooltip.setPosition(midpoint);
+            });
+
+            lineTooltipElement.addEventListener("mouseout", function () {
+                lineTooltip.setPosition(midpoint);
+            });
+
+            lineTooltipElement.addEventListener("click", function () {
+                const lineCoordinates = [start, end];
+                const lineString = new ol.geom.LineString(lineCoordinates);
+                const lineFeature = new ol.Feature(lineString);
+                measureAreaSource.addFeature(lineFeature);
+                lineTooltips.push(createLineTooltip(length, midpoint, start, end));
+                map.addOverlay(lineTooltips[lineTooltips.length - 1]);
+            });
+
+            return lineTooltip;
+        }
+
+        function clearLineTooltips() {
+            lineTooltips.forEach(function (tooltip) {
+                map.removeOverlay(tooltip);
+            });
+            lineTooltips = [];
+        }
+
+        // Function to clear length tooltips
+        function clearLengthTooltips() {
+            clearLineTooltips();
+        }
+
+
+        // Handle clicks on the measureLengthBtn and sketchFarmBtn buttons
+        document.getElementById("measureLengthBtn").addEventListener("click", deactivateMeasurementArea);
+        document.getElementById("sketchFarmBtn").addEventListener("click", deactivateMeasurementArea);
+
+        function deactivateMeasurementArea() {
+            const measureAreaBtn = document.getElementById("measureAreaBtn");
+            if (measureAreaBtn.classList.contains("active")) {
+                // Set measureAreaBtn to inactive state
+                measureAreaBtn.classList.remove("active");
+
+                // Change the icon back to the "square_foot" icon
+                const measureAreaBtnIcon = measureAreaBtn.querySelector("i");
+                measureAreaBtnIcon.textContent = "square_foot";
+
+                // Reset the background color to white
+                measureAreaBtn.style.backgroundColor = "#ffffff";
+
+                // Change the icon color to black
+                measureAreaBtnIcon.style.color = "#515151";
+
+                // Remove interactions
+                if (drawArea) {
+                    map.removeInteraction(drawArea);
+                    drawArea = null;
+                }
+
+                // Remove listeners
+                if (drawAreaStartListener) {
+                    ol.Observable.unByKey(drawAreaStartListener);
+                    drawAreaStartListener = null;
+                }
+                if (drawAreaEndListener) {
+                    ol.Observable.unByKey(drawAreaEndListener);
+                    drawAreaEndListener = null;
+                }
+
+                // Clear timeout and hide the floating message immediately
+                clearTimeout(floatingMessageAreaTimeoutId);
+                const floatingMessage = document.getElementById("floatingMessageArea");
+                if (floatingMessage && floatingMessage.parentNode) {
+                    floatingMessage.parentNode.removeChild(floatingMessage);
+                }
+
+                // Hide the finish drawing button
+                const finishDrawingButton = document.getElementById("finishDrawingButton");
+                if (finishDrawingButton) {
+                    finishDrawingButton.classList.add("hidden");
+                }
+
+                // Note: We are not clearing the source or removing the overlay, so the drawn polygons and tooltips should remain visible.
+            }
+        }
+
+
+
+
+        //MEASURE LENGTH BUTTON FUNCTION
+        let drawLength;
+        let measureLengthSource;
+        let measureLengthTooltipElement;
+        let measureLengthTooltip;
+        let sketchLength;
+        let floatingMessageTimeoutId;
+
+        function startMeasurementLength() {
+            const measureLengthBtn = document.getElementById("measureLengthBtn");
+            const measureLengthBtnIcon = measureLengthBtn.querySelector("i");
+
+            if (measureLengthBtn.classList.contains("active")) {
+                // Disable measuring length
+                measureLengthBtn.classList.remove("active");
+                map.removeInteraction(drawLength);
+                map.removeOverlay(measureLengthTooltip);
+                measureLengthTooltipElement = null;
+                measureLengthSource.clear();
+
+                // Change the icon back to the "straighten" icon
+                measureLengthBtnIcon.textContent = "straighten";
+                // Reset the background color to white
+                measureLengthBtn.style.backgroundColor = "#ffffff";
+                // Change the icon color to black
+                measureLengthBtnIcon.style.color = "#515151";
+
+                // Hide the finish button
+                const finishDrawingButton = document.getElementById("finishDrawingButton");
+                if (finishDrawingButton) {
+                    finishDrawingButton.classList.add("hidden");
+                }
+
+                // Clear timeout and hide the floating message immediately
+                clearTimeout(floatingMessageTimeoutId);
+                const floatingMessage = document.getElementById("floatingMessage");
+                if (floatingMessage && floatingMessage.parentNode) {
+                    floatingMessage.parentNode.removeChild(floatingMessage);
+                }
+
+
+            } else {
+                // Enable measuring length
+                measureLengthBtn.classList.add("active");
+                measureLengthSource = new ol.source.Vector();
+                map.addLayer(
+                    new ol.layer.Vector({
+                        source: measureLengthSource,
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: "#386c34",
+                                width: 8,
+                            }),
+                        }),
+                    })
+                );
+                createMeasureLengthTooltip();
+                addLengthInteraction();
+
+                // Change the icon to the "close" icon
+                measureLengthBtnIcon.textContent = "close";
+                // Change the background color to dark red
+                measureLengthBtn.style.backgroundColor = "#FF6666";
+                // Change the icon color to white
+                measureLengthBtnIcon.style.color = "#ffffff";
+
+                // Add floating message
+                const floatingMessage = document.createElement("div");
+                floatingMessage.className = "floating-message";
+                floatingMessage.id = "floatingMessage"; // Assign an ID to the floating message element
+                const infoIcon = document.createElement("i");
+                infoIcon.className = "material-icons";
+                infoIcon.textContent = "touch_app";
+                infoIcon.style.fontSize = "100px";
+                floatingMessage.appendChild(infoIcon);
+                floatingMessage.innerHTML += "  Chạm vào màn hình để bắt đầu đo"; //"Tap the screen to start measuring"
+                map.getViewport().appendChild(floatingMessage);
+
+                setTimeout(function () {
+                    if (floatingMessage.parentNode === map.getViewport()) {
+                        map.getViewport().removeChild(floatingMessage);
+                    }
+                }, 5000);
+
+
+            }
+        }
+
+        let drawLengthStartListener;
+        let drawLengthEndListener;
+
+        function addLengthInteraction() {
+            drawLength = new ol.interaction.Draw({
+                source: measureLengthSource,
+                type: "LineString",
+                style: new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: "#386c34",
+                        width: 8,
+                    }),
+                    image: new ol.style.Circle({
+                        radius: 18,
+                        fill: new ol.style.Fill({
+                            color: "#386c34",
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: "#ffffff",
+                            width: 9,
+                        }),
+                    }),
+                }),
+            });
+            map.addInteraction(drawLength);
+
+            // Declare a variable to count how many points have been clicked
+            let clickCount = 0;
+
+            drawLength.on("drawstart", function (evt) {
+                const feature = evt.feature;
+                sketchLength = feature;
+
+                // Reset click count
+                clickCount = 0;
+
+                // Add a vertex listener to count clicks
+                feature.getGeometry().on("change", function (event) {
+                    clickCount++;
+
+                    // Check if the user has clicked 2 times
+                    if (clickCount === 2) {
+                        // Show the finish button
+                        const finishDrawingButton = document.getElementById("finishDrawingButton");
+                        if (finishDrawingButton) {
+                            finishDrawingButton.classList.remove("hidden");
+                        }
+                    }
+                });
+            });
+            // Add event listener to the finish button
+            document.getElementById('finishDrawingButton').addEventListener('click', function () {
+                drawLength.finishDrawing();
+            });
+
+            drawLengthEndListener = drawLength.on("drawend", function (evt) {
+                const feature = evt.feature;
+                measureLengthSource.removeFeature(sketchLength);
+                sketchLength = null;
+                measureLengthTooltipElement.className = "ol-tooltip ol-tooltip-static";
+                measureLengthTooltip.setOffset([0, -7]);
+
+                const geom = feature.getGeometry();
+                const length = getLength(geom);
+
+                let measurement = length.toFixed(2);
+                let measurementUnit = "m";
+
+                if (length > 1000) {
+                    measurement = (length / 1000).toFixed(2); // Convert to kilometers
+                    measurementUnit = "km";
+                }
+
+                measureLengthTooltipElement.innerHTML = `Độ dài: <strong>${measurement}</strong>${measurementUnit}`;
+
+
+                // Add a white background to the measurement size label
+                measureLengthTooltipElement.style.backgroundColor = "#ffffff";
+                measureLengthTooltipElement.style.padding = "10px 30px";
+                measureLengthTooltipElement.style.borderRadius = "40px";
+                measureLengthTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
+
+
+                // Change the font color to Segoe UI (#515151) and set the font size to 35px
+                measureLengthTooltipElement.style.color = "#515151";
+                measureLengthTooltipElement.style.fontFamily = "Segoe UI";
+                measureLengthTooltipElement.style.fontSize = "35px";
+
+                // Position the measurement tooltip element in the middle of the map
+                measureLengthTooltip.setPosition(geom.getLastCoordinate());
+
+                map.removeInteraction(drawLength);
+                map.un("pointermove", pointerMoveHandler);
+
+                // Hide the finish button
+                const finishDrawingButton = document.getElementById("finishDrawingButton");
+                if (finishDrawingButton) {
+                    finishDrawingButton.classList.add("hidden");
+                }
+            });
+        }
+
+        let helpMeasureLengthTooltipElement;
+        let helpMeasureLengthTooltip;
+
+        function createHelpLengthTooltip() {
+            if (helpMeasureLengthTooltipElement) {
+                helpMeasureLengthTooltipElement.parentNode.removeChild(helpMeasureLengthTooltipElement);
+            }
+            helpMeasureLengthTooltipElement = document.createElement("div");
+            helpMeasureLengthTooltipElement.className = "ol-tooltip hidden";
+            helpMeasureLengthTooltip = new ol.Overlay({
+                element: helpMeasureLengthTooltipElement,
+                offset: [15, 0],
+                positioning: "center-left",
+            });
+            map.addOverlay(helpMeasureLengthTooltip);
+        }
+
+        function createMeasureLengthTooltip() {
+            if (measureLengthTooltipElement) {
+                measureLengthTooltipElement.parentNode.removeChild(measureLengthTooltipElement);
+            }
+            measureLengthTooltipElement = document.createElement("div");
+            measureLengthTooltipElement.className = "ol-tooltip ol-tooltip-measure";
+            measureLengthTooltip = new ol.Overlay({
+                element: measureLengthTooltipElement,
+                offset: [0, -15],
+                positioning: "bottom-center",
+            });
+            map.addOverlay(measureLengthTooltip);
+        }
+
+        function pointerMoveHandler(evt) {
+            if (evt.dragging) {
+                return;
+            }
+            const helpMsg = "Tap to continue drawing the line";
+            if (sketchLength) {
+                const geom = sketchLength.getGeometry();
+                if (geom instanceof ol.geom.LineString) {
+                    helpMsg = continueLineMsg;
+                }
+            }
+            helpMeasureLengthTooltipElement.innerHTML = helpMsg;
+            helpMeasureLengthTooltip.setPosition(evt.coordinate);
+            helpMeasureLengthTooltipElement.classList.remove("hidden");
+        }
+
+        function getLength(line) {
+            const length = line.getLength();
+            return length;
+        }
+
+
+        function deactivateMeasurementLength() {
+            const measureLengthBtn = document.getElementById("measureLengthBtn");
+            if (measureLengthBtn.classList.contains("active")) {
+                // Set measureLengthBtn to inactive state
+                measureLengthBtn.classList.remove("active");
+
+                // Change the icon back to the "straighten" icon
+                const measureLengthBtnIcon = measureLengthBtn.querySelector("i");
+                measureLengthBtnIcon.textContent = "straighten";
+
+                // Reset the background color to white
+                measureLengthBtn.style.backgroundColor = "#ffffff";
+
+                // Change the icon color to black
+                measureLengthBtnIcon.style.color = "#515151";
+
+                // Remove interactions
+                if (drawLength) {
+                    map.removeInteraction(drawLength);
+                    drawLength = null;
+                }
+
+                // Remove listeners
+                if (drawLengthStartListener) {
+                    ol.Observable.unByKey(drawLengthStartListener);
+                    drawLengthStartListener = null;
+                }
+                if (drawLengthEndListener) {
+                    ol.Observable.unByKey(drawLengthEndListener);
+                    drawLengthEndListener = null;
+                }
+
+                // Clear timeout and hide the floating message immediately
+                clearTimeout(floatingMessageTimeoutId);
+                const floatingMessage = document.getElementById("floatingMessage");
+                if (floatingMessage && floatingMessage.parentNode) {
+                    floatingMessage.parentNode.removeChild(floatingMessage);
+                }
+
+                // Note: We are not clearing the source or removing the overlay, so the drawn lines and tooltips should remain visible.
+            }
+        }
+
+        document.getElementById("measureAreaBtn").addEventListener("click", deactivateMeasurementLength);
+        document.getElementById("sketchFarmBtn").addEventListener("click", deactivateMeasurementLength);
+
+
+
+
+
+
+
+
+        //SKETCH FARM BUTTON FUNCTION
+        // Function to fetch place name from OSM Nominatim
+        async function fetchPlaceName(lon, lat) {
+            const baseUrl = "https://nominatim.openstreetmap.org/reverse";
+            const format = "json";
+            const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
+
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    const placeName = data.display_name || "";
+                    return placeName;
+                } else {
+                    console.error(
+                        "Failed to fetch place name:",
+                        response.status,
+                        response.statusText
+                    );
+                    return "";
+                }
+            } catch (error) {
+                console.error("Failed to fetch place name:", error);
+                return "";
+            }
+        }
+
+        let isSketchActive = false;
+        let draw;
+        let polygonExists = false;
+        let vectorSource = new ol.source.Vector();
+        let tooltipOverlay; // Declare the tooltipOverlay variable outside the event listener
+        let tooltipOverlays = []; // Store the tooltip overlays
+        let timeoutId = null; // Move timeoutId declaration outside the function
+
+        async function startSketchFarm() {
+            const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+            const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
+            const finishDrawingButton = document.querySelector('.finish-drawing');
+            const dialog = document.getElementById('dialog');
+
+            if (isSketchActive) {
+                // Dismiss floating message if it's still visible
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                    const existingFloatingMessage = document.querySelector('.floating-message');
+                    if (existingFloatingMessage) {
+                        map.getViewport().removeChild(existingFloatingMessage);
+                    }
+                    timeoutId = null; // Reset the timeoutId
+                }
+
+                if (polygonExists) {
+                    dialog.classList.remove('hidden');
+
+                    document.getElementById('deleteYes').addEventListener('click', function () {
+                        map.removeInteraction(draw);
+                        isSketchActive = false;
+                        polygonExists = false;
+                        vectorSource.clear();
+                        for (const overlay of tooltipOverlays) {
+                            map.removeOverlay(overlay); // Remove all tooltip overlays
+                        }
+                        sketchFarmBtn.style.backgroundColor = "white";
+                        sketchFarmBtnIcon.textContent = "create";
+                        sketchFarmBtnIcon.style.color = "black";
+                        finishDrawingButton.classList.add('hidden');
+                        dialog.classList.add('hidden');
+
+                        console.clear();
+                    });
+
+                    document.getElementById('deleteNo').addEventListener('click', function () {
+                        dialog.classList.add('hidden');
+                    });
+                } else {
+                    map.removeInteraction(draw);
+                    isSketchActive = false;
+                    sketchFarmBtn.style.backgroundColor = "white";
+                    sketchFarmBtnIcon.textContent = "create";
+                    sketchFarmBtnIcon.style.color = "black";
+                    finishDrawingButton.classList.add('hidden');
+                }
+                return;
+            }
+
+            // Add floating message
+            const floatingMessage = document.createElement("div");
+            floatingMessage.className = "floating-message";
+            const infoIcon = document.createElement("i");
+            infoIcon.className = "material-icons";
+            infoIcon.textContent = "touch_app";
+            infoIcon.style.fontSize = "100px";
+            floatingMessage.appendChild(infoIcon);
+            floatingMessage.innerHTML +=
+                "   Chạm vào màn hình để bắt đầu vẽ trang trại"; // "Tap the screen to start drawing farm"
+            map.getViewport().appendChild(floatingMessage);
+
+            // Remove floating message after 3 seconds
+            timeoutId = setTimeout(function () {
+                map.getViewport().removeChild(floatingMessage);
+            }, 3000);
+
+            //Sketching Farm Polygon
+            const vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: "rgba(56, 108, 52, 0.5)", // 80% transparent fill
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "#386c34", // solid color for the stroke
+                        width: 10,
+                    }),
+                }),
+            });
+
+            map.addLayer(vectorLayer);
+
+            draw = new ol.interaction.Draw({
+                source: vectorSource,
+                type: "Polygon",
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: "rgba(255, 255, 255, 0.1)",
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "#386c34",
+                        width: 10,
+                    }),
+                    image: new ol.style.Circle({
+                        radius: 18,
+                        fill: new ol.style.Fill({
+                            color: "#386c34",
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: "#ffffff",
+                            width: 9,
+                        }),
+                    }),
+                }),
+            });
+
+            map.addInteraction(draw);
+            isSketchActive = true;
+
+            // Create a custom canvas pattern for diagonal lines with transparency
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            const size = 10; // Size of each pattern element
+            const spacing = 8; // Spacing between pattern elements
+            canvas.width = size;
+            canvas.height = size;
+            context.strokeStyle = "rgba(56, 108, 52, 0.5)"; // Color of the lines with transparency
+            context.lineWidth = 2;
+            context.beginPath();
+            context.moveTo(0, 0);
+            context.lineTo(size, size);
+            context.stroke();
+
+            const pattern = context.createPattern(canvas, "repeat");
+
+            // Apply the custom pattern as the fill style for the polygon
+            vectorLayer.setStyle(
+                new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: pattern,
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: "#386c34",
+                        width: 10,
+                    }),
+                })
+            );
+
+            sketchFarmBtn.style.backgroundColor = "#FF6666";
+            sketchFarmBtnIcon.textContent = "delete_forever";
+            sketchFarmBtnIcon.style.color = "white";
+
+            draw.on("drawstart", function (event) {
+                polygonExists = true;
+                event.feature.getGeometry().on("change", function (geomEvent) {
+                    const coordinates = geomEvent.target.getCoordinates()[0];
+                    if (coordinates.length >= 5) {
+                        finishDrawingButton.classList.remove('hidden');
+                    }
+                });
+            });
+
+            draw.on("drawend", async function (event) {
+                const polygonGeometry = event.feature.getGeometry();
+                const polygonCenter = polygonGeometry.getInteriorPoint();
+
+                const pointFeature = new ol.Feature({
+                    geometry: polygonCenter,
+                });
+
+                // Center Point
+                pointFeature.setStyle(
+                    new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 16,
+                            fill: new ol.style.Fill({
+                                color: '#386c34',
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: 'white',
+                                width: 8,
+                            }),
+                        }),
+                    })
+                );
+
+                vectorSource.addFeature(pointFeature);
+
+                const centerPointCoordinates = ol.proj.transform(polygonCenter.getCoordinates(), 'EPSG:3857', 'EPSG:4326');
+                console.log('Center Point Lon:', centerPointCoordinates[0]);
+                console.log('Center Point Lat:', centerPointCoordinates[1]);
+
+                const polygonCoordinates = polygonGeometry.getCoordinates()[0];
+                console.log('Polygon Coordinates:');
+                const polygonPoints = [];
+                polygonCoordinates.forEach((coordinate, index) => {
+                    const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+                    polygonPoints.push({ lon: lonLat[0], lat: lonLat[1] });
+                    console.log(`Point ${index + 1}: Lon ${lonLat[0]}, Lat ${lonLat[1]}`);
+                });
+
+                const segments = [];
+                const segmentLengths = [];
+                for (let i = 0; i < polygonCoordinates.length - 1; i++) {
+                    const startPoint = polygonCoordinates[i];
+                    const endPoint = polygonCoordinates[i + 1];
+                    const segment = new ol.geom.LineString([startPoint, endPoint]);
+                    segments.push(segment);
+                    const length = ol.sphere.getLength(segment);
+                    segmentLengths.push(length.toFixed(2));
+                }
+
+                console.log('Segment Lengths (m):');
+                segmentLengths.forEach((length, index) => {
+                    console.log(`Segment ${index + 1}: ${length} meters`);
+                });
+
+                const area = ol.sphere.getArea(polygonGeometry);
+                let areaHectares = null;
+                if (area > 10000) {
+                    areaHectares = (area / 10000).toFixed(2);
+                }
+                console.log('Polygon Area:');
+                console.log(`Area (m²): ${area.toFixed(2)} square meters`);
+                if (areaHectares) {
+                    console.log(`Area (ha): ${areaHectares} hectares`);
+                }
+
+                const address = await fetchPlaceName(centerPointCoordinates[0], centerPointCoordinates[1]);
+                console.log("Address:", address);
+
+                const tooltipElement = document.createElement('div');
+                tooltipElement.style.cssText = `
+  position: absolute;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 1000px;
+  padding: 20px 30px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 40px;
+  font-weight: bold;
+  color: #000000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  height: 30px;
+`;
+
+                const areaInHectares = area > 10000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
+                tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 50px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
+
+                tooltipOverlay = new ol.Overlay({
+                    element: tooltipElement,
+                    offset: [0, -120],
+                    positioning: 'bottom-center',
+                });
+
+                tooltipOverlay.setPosition(polygonCenter.getCoordinates());
+
+                map.addOverlay(tooltipOverlay);
+                tooltipOverlays.push(tooltipOverlay); // Push the tooltip overlay to the array
+
+
+                const dataToPost = {
+                    centerPoint: {
+                        lon: centerPointCoordinates[0],
+                        lat: centerPointCoordinates[1]
+                    },
+                    polygonCoordinates: polygonPoints,
+                    segmentLengths: segmentLengths,
+                    area: {
+                        squareMeters: area.toFixed(2),
+                        hectares: areaHectares
+                    },
+                    address: address
+                };
+
+                // Send data to React Native App
+                window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
+                //console.log(JSON.stringify(dataToPost));
+
+            });
+        }
+
+        const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+        sketchFarmBtn.addEventListener("click", function () {
+            startSketchFarm();
+        });
+
+        const finishDrawingButton = document.querySelector('.finish-drawing');
+        finishDrawingButton.addEventListener('click', function () {
+            if (draw) {
+                draw.finishDrawing();
+                finishDrawingButton.classList.add('hidden');
+            }
+        });
+
+        function deactivateSketchFarm() {
+            const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+            if (isSketchActive) {
+                // Set sketchFarmBtn to inactive state
+                sketchFarmBtn.style.backgroundColor = "white";
+                const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
+                sketchFarmBtnIcon.textContent = "create";
+                sketchFarmBtnIcon.style.color = "black";
+
+                // Remove sketching interaction
+                if (draw) {
+                    map.removeInteraction(draw);
+                    draw = null;
+                }
+
+                // Clear floating message timeout
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                    timeoutId = null;
+                }
+            }
+        }
+
+        document.getElementById("measureAreaBtn").addEventListener("click", deactivateSketchFarm);
+        document.getElementById("measureLengthBtn").addEventListener("click", deactivateSketchFarm);
+
+
+
+
+
+
+
+
+        //NORTH ARROW BUTTON
+        // Function to update the rotation of the north arrow based on the map's rotation
+        function updateNorthArrowRotation() {
+            const rotation = map.getView().getRotation();
+
+            // Check if the rotation is not equal to 0
+            if (rotation !== 0) {
+                northArrow.style.display = "block";
+            } else {
+                northArrow.style.display = "none";
+            }
+
+            northArrow.style.transform = `rotate(${rotation}rad)`;
+        }
+
+        // Event listener for map view rotation change
+        map.getView().on("change:rotation", updateNorthArrowRotation);
+
+        // Initial rotation update
+        updateNorthArrowRotation();
+
+        // Function to reset map rotation to 0 degrees with smooth animation
+        function resetMapRotation() {
+            const view = map.getView();
+            view.animate({
+                rotation: 0,
+                duration: 1000, // Animation duration in milliseconds
+                easing: ol.easing.easeOut // Easing function for smooth animation
+            });
+
+            // Hide the north arrow after reset
+            northArrow.style.display = "none";
+        }
+
+        // Event listener for the north arrow click
+        northArrow.addEventListener('click', resetMapRotation);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //USER LOCATION BUTTON
+        const userLocationLayer = new ol.layer.Vector({
+            source: new ol.source.Vector(),
+            style: new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 8,
+                    fill: new ol.style.Fill({
+                        color: '#1B6B93',
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: 'white',
+                        width: 3,
+                    }),
+                }),
+            }),
+            name: 'User Location',
+        });
+
+        function getUserLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        const userLocation = ol.proj.fromLonLat([longitude, latitude]);
+
+                        // Remove existing user location feature if it exists
+                        userLocationLayer.getSource().clear();
+
+                        // Create a new user location feature
+                        const userLocationFeature = new ol.Feature({
+                            geometry: new ol.geom.Point(userLocation),
+                        });
+
+                        // Add the feature to the user location layer
+                        userLocationLayer.getSource().addFeature(userLocationFeature);
+
+                        // Add or update the user location layer on the map
+                        const existingUserLocationLayer = map.getLayers().getArray().find(layer => layer.get('name') === 'User Location');
+                        if (existingUserLocationLayer) {
+                            map.removeLayer(existingUserLocationLayer);
+                        }
+                        map.addLayer(userLocationLayer);
+
+                        map.getView().setCenter(userLocation);
+                        map.getView().setZoom(17);
+                    },
+                    (error) => {
+                        console.error("Error getting user location:", error);
+                    }
+                );
+            } else {
+                console.error("Geolocation is not supported by this browser.");
+            }
+        }
+
+
+
+
+        // For Listening to react native app data
+        window.addEventListener("message", message => {
+            alert(message.data);
+        });
+
+
+
+    </script>
+</body>
+
+</html>
