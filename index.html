@@ -38,7 +38,8 @@
         .drawFarmBtn,
         .sketchFarmBtn,
         .northArrow,
-        .resetBtn {
+        .resetBtn,
+        .addSensorBtn {
             position: fixed;
             background-color: #ffffff;
             border-radius: 50%;
@@ -61,7 +62,8 @@
         .drawFarmBtn i,
         .sketchFarmBtn i,
         .northArrow i,
-        .resetBtn i {
+        .resetBtn i,
+        .addSensorBtn i {
             font-family: "Material Icons";
             font-size: 65px;
             color: #515151;
@@ -104,6 +106,7 @@
             justify-content: center;
             align-items: center;
         }
+
 
         .searchBar {
             display: none;
@@ -583,6 +586,18 @@
             color: #515151;
         }
 
+        .addSensorBtn {
+            position: absolute;
+            top: 810px;
+            right: 30px;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        /*Search Lodaing icon */
         #loadingIcon {
             display: none;
         }
@@ -650,6 +665,10 @@
             <i class="material-icons">create</i>
         </button>
 
+        <button type="addSensorBtn" class="addSensorBtn">
+            <i class="material-icons">sensors</i>
+        </button>
+
         <button id="resetBtn">
             <i class="material-icons">restart_alt</i>
         </button>
@@ -683,6 +702,8 @@
                 Hoàn Thành
             </button>
         </div>
+
+
 
 
         <!--<button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
@@ -2526,6 +2547,212 @@
 
 
 
+        //ADD SENSORS BUTTON
+// Define a custom style for the point features resembling a GPS icon
+const pointStyle = new ol.style.Style({
+  image: new ol.style.Icon({
+    src: 'https://i.ibb.co/qkPRcx1/icons8-location-25.png', // Icon URL for the GPS icon
+    anchor: [0.5, 1], // Set the anchor point to the bottom center
+    scale: 3, // Adjust the scale as needed
+    rotateWithView: true, // Allow the icon to rotate with the map view
+  }),
+});
+
+// Create a variable to track the draw interaction status and store the draw interaction instance
+let drawInteractionActive = false;
+let drawInteraction;
+let deleteConfirmDialog;
+let vectorLayer; // Keep track of the vector layer
+
+// Function to enable draw interaction and update button styles
+function enableDrawInteraction() {
+  // Change the icon to the "delete_forever" icon
+  addSensorBtnIcon.textContent = "delete_forever";
+  // Change the background color to red
+  addSensorBtn.style.backgroundColor = "#FF6666";
+  // Change the icon color to white
+  addSensorBtnIcon.style.color = "white";
+
+  // Add floating message
+  const floatingMessage = document.createElement("div");
+  floatingMessage.className = "floating-message";
+  floatingMessage.id = "floatingMessageArea";
+  const infoIcon = document.createElement("i");
+  infoIcon.className = "material-icons";
+  infoIcon.textContent = "touch_app";
+  infoIcon.style.fontSize = "100px";
+  floatingMessage.appendChild(infoIcon);
+  floatingMessage.innerHTML += "  Nhấn vào màn hình để thêm/các cảm biến enfarm"; // "Tap the screen to add enfarm sensor/s"
+  map.getViewport().appendChild(floatingMessage);
+
+  // Remove floating message after 5 seconds
+  const floatingMessageAreaTimeoutId = setTimeout(function () {
+    if (floatingMessage.parentNode === map.getViewport()) {
+      map.getViewport().removeChild(floatingMessage);
+    }
+  }, 5000);
+
+  // Define the source to store the drawn features
+  const source = new ol.source.Vector();
+
+  // Create a vector layer to display the drawn features
+  vectorLayer = new ol.layer.Vector({
+    source: source,
+    style: pointStyle, // Apply the custom style to the features
+  });
+
+  // Add the vector layer to the map
+  map.addLayer(vectorLayer);
+
+  // Create the Draw interaction
+  drawInteraction = new ol.interaction.Draw({
+    source: source,
+    type: 'Point',
+  });
+
+  // Add the Draw interaction to the map
+  map.addInteraction(drawInteraction);
+
+  // Set drawInteractionActive to true
+  drawInteractionActive = true;
+}
+
+// Function to disable draw interaction and revert button styles
+function disableDrawInteraction() {
+  // Deactivate the draw interaction
+  map.removeInteraction(drawInteraction);
+
+  // Reset the button styles
+  addSensorBtnIcon.textContent = "sensors";
+  addSensorBtn.style.backgroundColor = "";
+  addSensorBtnIcon.style.color = "";
+
+  // Remove the floating message if it exists
+  const floatingMessage = document.getElementById("floatingMessageArea");
+  if (floatingMessage && floatingMessage.parentNode === map.getViewport()) {
+    map.getViewport().removeChild(floatingMessage);
+  }
+
+  // Remove the vector layer from the map if it exists
+  if (vectorLayer) {
+    map.removeLayer(vectorLayer);
+    vectorLayer = null;
+  }
+
+  // Set drawInteractionActive to false
+  drawInteractionActive = false;
+}
+
+// Function to handle the delete confirmation
+function handleDeleteConfirm() {
+  // Show the dialog box only if there are points on the map
+  const vectorLayers = map.getLayers().getArray();
+  const hasPoints = vectorLayers.some(layer => layer === vectorLayer && layer.getSource().getFeatures().length > 0);
+  if (hasPoints) {
+    deleteConfirmDialog.style.display = "flex";
+  } else {
+    disableDrawInteraction();
+  }
+}
+
+// Function to handle the delete confirmation dialog buttons
+function handleDeleteConfirmationButtons(event) {
+  if (event.target.id === "deleteYes") {
+    // Handle delete confirmation
+    // Remove the drawn points on the map
+    if (vectorLayer) {
+      const source = vectorLayer.getSource();
+      source.clear(); // Clear the features from the source
+      disableDrawInteraction(); // Disable draw interaction after clearing the points
+    }
+  }
+
+  // Hide the dialog box
+  deleteConfirmDialog.style.display = "none";
+
+  // If "deleteYes" button was clicked, disable draw interaction and revert button styles
+  if (event.target.id === "deleteYes") {
+    disableDrawInteraction();
+  } else {
+    // Only enable draw interaction if there are no points on the map
+    const vectorLayers = map.getLayers().getArray();
+    const hasPoints = vectorLayers.some(layer => layer === vectorLayer && layer.getSource().getFeatures().length > 0);
+    if (!hasPoints) {
+      enableDrawInteraction();
+    }
+  }
+}
+
+// Get the button element
+const addSensorBtn = document.querySelector(".addSensorBtn");
+const addSensorBtnIcon = addSensorBtn.querySelector("i");
+
+// Create the delete confirmation dialog reference
+deleteConfirmDialog = document.getElementById("dialog");
+
+// Get the delete buttons in the dialog
+const deleteYesBtn = document.getElementById("deleteYes");
+const deleteNoBtn = document.getElementById("deleteNo");
+
+// Add a click event listener to the button
+addSensorBtn.addEventListener("click", function () {
+  if (drawInteractionActive) {
+    handleDeleteConfirm();
+  } else {
+    enableDrawInteraction();
+  }
+});
+
+// Add event listeners to the delete confirmation dialog buttons
+deleteYesBtn.addEventListener("click", handleDeleteConfirmationButtons);
+deleteNoBtn.addEventListener("click", handleDeleteConfirmationButtons);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2566,6 +2793,9 @@
 
         // Event listener for the north arrow click
         northArrow.addEventListener('click', resetMapRotation);
+
+
+
 
 
 
