@@ -1190,7 +1190,9 @@
             const message = {
                 actionType: 'Search',
                 event: 'select',
-                locationText: suggestion.display_name
+                locationText: suggestion.display_name,
+                latitude: latitude,
+                longitude: longitude
             };
             window.ReactNativeWebView.postMessage(JSON.stringify(message));
 
