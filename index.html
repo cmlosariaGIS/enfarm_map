@@ -689,13 +689,6 @@
             <i class="material-icons">gps_fixed</i>
         </button>-->
 
-        <div id="floatingMessage" class="popup" style="display: none;">
-            <h3>Popup Message</h3>
-            <p>This is a popup message.</p>
-        </div>
-
-        <input type="hidden" id="hiddenInput">
-
 
 
 
@@ -766,8 +759,8 @@
             }
         }
 
-        function handleSearchClick(clickEvent) {
-            clickEvent.stopPropagation();
+        function handleSearchClick(event) {
+            event.stopPropagation();
             searchBtn.style.display = "none";
             searchBar.style.display = "flex";
             searchKeywordBtn.style.display = "none";
@@ -779,23 +772,10 @@
 
             displayHistoricalPlaces();
 
-            // Store the message data in a hidden input element
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.id = 'hiddenInput';
-            hiddenInput.value = JSON.stringify({ actionType: 'Search', event: 'click' });
-            document.body.appendChild(hiddenInput);
-
-            // Dispatch a custom event to notify the React Native app
-            const customEvent = new CustomEvent('ReactNativeWebViewMessage', {
-                detail: hiddenInput.value
-            });
-            document.dispatchEvent(customEvent);
-
-            // Hide the popup message
-            floatingMessage.style.display = "none";
+            // Post a message to the React Native app
+            const message = { actionType: 'Search', event: 'click' };
+            window.ReactNativeWebView.postMessage(JSON.stringify(message));
         }
-
 
         function handleSearchInput() {
             const searchText = searchInput.value.trim();
@@ -1206,31 +1186,13 @@
             const coordinates = ol.proj.fromLonLat([longitude, latitude]);
             createMarker(coordinates);
 
-            // Post a message to the React Native app without showing a pop-up
+            // Post a message to the React Native app
             const message = {
                 actionType: 'Search',
                 event: 'select',
-                locationText: suggestion.display_name,
-                latitude: latitude,
-                longitude: longitude
+                locationText: suggestion.display_name
             };
-
-            // Store the message data in a hidden input element
-            const hiddenInput = document.getElementById('hiddenInput');
-            hiddenInput.value = JSON.stringify(message);
-
-            // Dispatch a custom event to notify the React Native app
-            const event = new CustomEvent('ReactNativeWebViewMessage', {
-                detail: hiddenInput.value
-            });
-            document.dispatchEvent(event);
-
-
-
-
-
-
-
+            window.ReactNativeWebView.postMessage(JSON.stringify(message));
 
             // Log the address and lon/lat to the console
             const address = suggestion.display_name;
@@ -2673,8 +2635,6 @@
                 console.error("Geolocation is not supported by this browser.");
             }
         }
-
-
 
 
         // For Listening to react native app data
