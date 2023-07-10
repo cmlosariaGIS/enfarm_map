@@ -582,6 +582,10 @@
             font-size: 65px;
             color: #515151;
         }
+
+        #loadingIcon {
+            display: none;
+        }
     </style>
 </head>
 
@@ -609,7 +613,7 @@
             <i class="material-icons">search</i>
         </button>
 
-        <div id="searchBar" class="searchBar">
+        <div id="searchBar" class="searchBar" style="display: none;">
             <input id="searchInput" class="searchInput" type="text" placeholder="  Tra Cứu.."
                 style="font-size: 45px;" />
             <!--Search for a place...-->
@@ -624,6 +628,9 @@
                 <i class="material-icons">search</i>
             </button>
         </div>
+
+        <button id="searchKeywordBtn" class="searchKeywordBtn">Search Keyword Button</button>
+
 
         <div id="suggestionsContainer"></div>
 
@@ -691,7 +698,7 @@
     <script>
 
 
-
+        //RESET BUTTON FUNCTION
         // Get the reset button element
         const resetButton = document.getElementById("resetBtn");
 
@@ -710,18 +717,30 @@
         const searchBtn = document.getElementById("searchBtn");
         const searchBar = document.getElementById("searchBar");
         const searchInput = document.getElementById("searchInput");
-        const searchKeywordBtn = document.getElementById("searchKeywordBtn");
+        //const searchKeywordBtn = document.getElementById("searchKeywordBtn");
         const floatingMessage = document.getElementById("floatingMessage");
         const suggestionsContainer = document.getElementById("suggestionsContainer");
         const searchIcon = document.getElementById("searchButton").querySelector(".material-icons");
 
         let historicalPlaces = [];
 
+        // Declare and define searchKeywordBtn variable
+        const searchKeywordBtn = document.getElementById("searchKeywordBtn");
+
+        // Set the display of searchKeywordBtn to "none"
+        searchKeywordBtn.style.display = "none";
+
+
+        // Declare historicalPlacesContainer variable
+        const historicalPlacesContainer = document.getElementById("historicalPlacesContainer");
+
+
         searchBtn.addEventListener("click", handleSearchClick);
         document.addEventListener("click", handleDocumentClick);
         searchInput.addEventListener("input", toggleSearchIcon);
         searchInput.addEventListener("click", displayHistoricalPlacesOnClick);
         searchIcon.addEventListener("click", handleSearchIconClick);
+
 
         function toggleSearchIcon() {
             if (searchInput.value.length > 0) {
@@ -747,18 +766,44 @@
             searchKeywordBtn.style.display = "none";
             searchInput.focus();
 
+            // Clear the search input and suggestions
+            searchInput.value = "";
+            clearPlaceSuggestions();
+
             displayHistoricalPlaces();
 
-            if (searchInput.value.trim().length === 0) {
-                fetchPlaceSuggestions("")
+            // Post a message to the React Native app
+            const message = { actionType: 'Search', event: 'click' };
+            window.postMessage(JSON.stringify(message));
+        }
+
+        function handleSearchInput() {
+            const searchText = searchInput.value.trim();
+
+            if (searchText.length > 0) {
+                const loadingIcon = document.getElementById("loadingIcon");
+                loadingIcon.style.display = "block"; // Show the loading icon
+
+                fetchPlaceSuggestions(searchText)
                     .then((suggestions) => {
                         displayPlaceSuggestions(suggestions);
                     })
                     .catch((error) => {
                         console.error("Failed to fetch place suggestions:", error);
+                    })
+                    .finally(() => {
+                        loadingIcon.style.display = "none"; // Hide the loading icon
                     });
+            } else {
+                clearPlaceSuggestions();
             }
         }
+
+        // Attach event listener to the search input
+        searchInput.addEventListener("input", handleSearchInput);
+
+
+
 
         function displayHistoricalPlacesOnClick() {
             if (searchInput.value.trim().length === 0) {
@@ -1120,13 +1165,11 @@
                         console.error("Failed to fetch place suggestions:", error);
                     });
 
-                // Hide historical places list
+                // Show suggestions container
                 suggestionsContainer.style.display = "block";
-                historicalPlacesContainer.style.display = "none";
             } else {
-                // If the search input is empty, hide historical places and suggestions container
+                // Hide suggestions container if the search input is empty
                 suggestionsContainer.style.display = "none";
-                historicalPlacesContainer.style.display = "none";
             }
         }
 
@@ -1143,6 +1186,22 @@
             const coordinates = ol.proj.fromLonLat([longitude, latitude]);
             createMarker(coordinates);
 
+            // Post a message to the React Native app
+            const message = {
+                actionType: 'Search',
+                event: 'select',
+                locationText: suggestion.display_name
+            };
+            window.postMessage(JSON.stringify(message));
+
+            // Log the address and lon/lat to the console
+            const address = suggestion.display_name;
+            const lon = suggestion.lon;
+            const lat = suggestion.lat;
+            console.log('Selected Place:');
+            console.log('Address:', address);
+            console.log('Lon/Lat:', lon, lat);
+
             // Check if the selected place already exists in historicalPlaces
             const existingPlaceIndex = historicalPlaces.findIndex(
                 (place) => place.display_name === suggestion.display_name
@@ -1154,6 +1213,10 @@
 
                 // Save the historicalPlaces in local storage
                 localStorage.setItem("historicalPlaces", JSON.stringify(historicalPlaces));
+
+                // Log the searched place history
+                console.log('Searched Places History:');
+                console.log(historicalPlaces);
             } else {
                 // If the place already exists, move it to the end of the array
                 const existingPlace = historicalPlaces.splice(existingPlaceIndex, 1);
@@ -1167,6 +1230,7 @@
             searchInput.value = "";
             suggestionsContainer.style.display = "none";
         }
+
 
         function displayHistoricalPlaces() {
             suggestionsContainer.innerHTML = "";
@@ -2571,8 +2635,6 @@
                 console.error("Geolocation is not supported by this browser.");
             }
         }
-
-
 
 
         // For Listening to react native app data
