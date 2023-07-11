@@ -1234,64 +1234,68 @@ searchInput.addEventListener("blur", () => {
         searchInput.addEventListener("input", handleSearchInput);
 
         function handleSuggestionClick(suggestion) {
-            const latitude = parseFloat(suggestion.lat);
-            const longitude = parseFloat(suggestion.lon);
-            const center = ol.proj.fromLonLat([longitude, latitude]);
-            map.getView().setCenter(center);
-            map.getView().setZoom(21);
+  const latitude = parseFloat(suggestion.lat);
+  const longitude = parseFloat(suggestion.lon);
+  const center = ol.proj.fromLonLat([longitude, latitude]);
+  
+  // Smoothly animate the zoom and centering
+  map.getView().animate({
+    center: center,
+    zoom: 21,
+    duration: 1000, // Adjust the duration as needed
+    easing: ol.easing.easeOut // Use a suitable easing function for smooth animation
+  });
 
-            const coordinates = ol.proj.fromLonLat([longitude, latitude]);
-            createMarker(coordinates);
+  const coordinates = ol.proj.fromLonLat([longitude, latitude]);
+  createMarker(coordinates);
 
-            // Post a message to the React Native app
-            const message = {
-                actionType: 'Search',
-                event: 'select',
-                locationText: suggestion.display_name,
-                latitude: latitude,
-                longitude: longitude
-            };
-            //window.ReactNativeWebView.postMessage(JSON.stringify(message));
+  // Post a message to the React Native app
+  const message = {
+    actionType: 'Search',
+    event: 'select',
+    locationText: suggestion.display_name,
+    latitude: latitude,
+    longitude: longitude
+  };
+  try {
+    window.ReactNativeWebView.postMessage(JSON.stringify(message));
+  } catch (error) {
+    // Handle the error (or do nothing to prevent logging)
+  }
 
-            try {
-                window.ReactNativeWebView.postMessage(JSON.stringify(message));
-            } catch (error) {
-                // Handle the error (or do nothing to prevent logging)
-            }
+  // Log the address and lon/lat to the console
+  const address = suggestion.display_name;
+  const lon = suggestion.lon;
+  const lat = suggestion.lat;
+  console.log('Selected Place:');
+  console.log('Address:', address);
+  console.log('Lon/Lat:', lon, lat);
 
+  // Check if the selected place already exists in historicalPlaces
+  const existingPlaceIndex = historicalPlaces.findIndex(
+    (place) => place.display_name === suggestion.display_name
+  );
 
-            // Log the address and lon/lat to the console
-            const address = suggestion.display_name;
-            const lon = suggestion.lon;
-            const lat = suggestion.lat;
-            console.log('Selected Place:');
-            console.log('Address:', address);
-            console.log('Lon/Lat:', lon, lat);
+  if (existingPlaceIndex === -1) {
+    // Add the selected place to the historicalPlaces array
+    historicalPlaces.push(suggestion);
 
-            // Check if the selected place already exists in historicalPlaces
-            const existingPlaceIndex = historicalPlaces.findIndex(
-                (place) => place.display_name === suggestion.display_name
-            );
+    // Save the historicalPlaces in local storage
+    localStorage.setItem("historicalPlaces", JSON.stringify(historicalPlaces));
+  } else {
+    // If the place already exists, move it to the end of the array
+    const existingPlace = historicalPlaces.splice(existingPlaceIndex, 1);
+    historicalPlaces.push(existingPlace[0]);
+  }
 
-            if (existingPlaceIndex === -1) {
-                // Add the selected place to the historicalPlaces array
-                historicalPlaces.push(suggestion);
+  // Display historical places
+  displayHistoricalPlaces();
 
-                // Save the historicalPlaces in local storage
-                localStorage.setItem("historicalPlaces", JSON.stringify(historicalPlaces));
-            } else {
-                // If the place already exists, move it to the end of the array
-                const existingPlace = historicalPlaces.splice(existingPlaceIndex, 1);
-                historicalPlaces.push(existingPlace[0]);
-            }
+  // Clear the search input
+  searchInput.value = "";
+  suggestionsContainer.style.display = "none";
+}
 
-            // Display historical places
-            displayHistoricalPlaces();
-
-            // Clear the search input
-            searchInput.value = "";
-            suggestionsContainer.style.display = "none";
-        }
 
         function displayHistoricalPlaces() {
             suggestionsContainer.innerHTML = "";
