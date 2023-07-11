@@ -644,6 +644,7 @@
             </button>
         </div>
 
+
         <button id="searchKeywordBtn" class="searchKeywordBtn">Search Keyword Button</button>
 
 
@@ -719,6 +720,14 @@
     <script>
 
 
+
+
+
+
+
+
+
+
         //RESET BUTTON FUNCTION
         // Get the reset button element
         const resetButton = document.getElementById("resetBtn");
@@ -750,6 +759,58 @@
         searchInput.addEventListener("input", toggleSearchIcon);
         searchInput.addEventListener("click", displayHistoricalPlacesOnClick);
         searchIcon.addEventListener("click", handleSearchIconClick);
+
+
+        //const searchInput = document.getElementById("searchInput");
+const placeholderTexts = [
+  "  Tra Cứu..",
+  "  Tra Cứu Cho Một Mốc",
+  "  Tra Cứu Cho Một Huyện",
+  "  Tra Cứu Cho Một Xã",
+  "  Tra Cứu.."
+];
+let placeholderIndex = 0;
+let placeholderTimeout;
+
+function showNextPlaceholder() {
+  const placeholder = placeholderTexts[placeholderIndex];
+  let i = 0;
+
+  const typingInterval = setInterval(() => {
+    if (i < placeholder.length) {
+      searchInput.setAttribute("placeholder", placeholder.substring(0, i + 1));
+      i++;
+    } else {
+      clearInterval(typingInterval);
+      if (placeholderIndex < placeholderTexts.length - 1) {
+        placeholderIndex++;
+        placeholderTimeout = setTimeout(showNextPlaceholder, 1000);
+      }
+    }
+  }, 15);
+}
+
+// Add event listener to start the transition when the search input is focused
+searchInput.addEventListener("focus", () => {
+  // Start the placeholder transition if it hasn't been started yet
+  if (!placeholderTimeout) {
+    showNextPlaceholder();
+  }
+});
+
+// Add event listener to stop the transition when the search input is blurred
+searchInput.addEventListener("blur", () => {
+  clearTimeout(placeholderTimeout);
+  placeholderTimeout = null;
+  searchInput.setAttribute("placeholder", "");
+});
+
+
+
+
+
+
+
 
         function toggleSearchIcon() {
             if (searchInput.value.length > 0) {
