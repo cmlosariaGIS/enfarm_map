@@ -722,27 +722,6 @@
 
 
 
-
-
-
-
-
-
-        //RESET BUTTON FUNCTION
-        // Get the reset button element
-        const resetButton = document.getElementById("resetBtn");
-
-        // Create a function to reset the webpage
-        function resetWebpage() {
-            location.reload();
-        }
-
-        // Add event listener to the reset button
-        resetButton.addEventListener("click", resetWebpage);
-
-
-
-
         // SEARCH PLACE BUTTON FUNCTION
         const searchBtn = document.getElementById("searchBtn");
         const searchBar = document.getElementById("searchBar");
@@ -1386,7 +1365,7 @@ searchInput.addEventListener("blur", () => {
                 clearAllButton.id = "clearAllBtn";
                 clearAllButton.innerHTML = `
   <div style="display: flex; align-items: center; justify-content: center; width: 840px; margin: 0 auto; padding-bottom: 30px; padding-top: 30px">
-    <i class="material-icons" style="font-size: 45px; margin-right: 20px;">delete</i>
+    <i class="material-icons" style="font-size: 70px; margin-right: 20px;">delete</i>
     <span style="font-size: 45px; color: #515151;">Xóa tất cả tìm kiếm</span> 
   </div>`;
 
@@ -2959,6 +2938,17 @@ searchInput.addEventListener("blur", () => {
 
 
 
+        //RESET BUTTON FUNCTION
+        // Get the reset button element
+        const resetButton = document.getElementById("resetBtn");
+
+        // Create a function to reset the webpage
+        function resetWebpage() {
+            location.reload();
+        }
+
+        // Add event listener to the reset button
+        resetButton.addEventListener("click", resetWebpage);
 
 
 
@@ -3028,6 +3018,7 @@ searchInput.addEventListener("blur", () => {
                 console.error("Geolocation is not supported by this browser.");
             }
         }
+
 
 
         // For Listening to react native app data
