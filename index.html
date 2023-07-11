@@ -1034,7 +1034,7 @@ searchInput.addEventListener("blur", () => {
                 const [lon, lat] = ol.proj.toLonLat(coordinates);
                 const baseUrl = "https://nominatim.openstreetmap.org/reverse";
                 const format = "json";
-                const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
+                const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18&addressdetails=1`;
 
                 try {
                     const response = await fetch(url);
@@ -1060,7 +1060,7 @@ searchInput.addEventListener("blur", () => {
         async function fetchPlaceSuggestions(searchText) {
             const baseUrl = "https://nominatim.openstreetmap.org/search";
             const format = "json";
-            const limit = 15;
+            const limit = 25;
             const url = `${baseUrl}?q=${encodeURIComponent(searchText)}&format=${format}&limit=${limit}&countrycodes=VN`;
 
             try {
@@ -1182,6 +1182,17 @@ searchInput.addEventListener("blur", () => {
 
         // Attach event listener to the search input
         searchInput.addEventListener("input", handleSearchInput);
+
+        let searchTimeout;
+
+// Attach event listener to the search input
+searchInput.addEventListener("input", handleSearchInputWithDelay);
+
+function handleSearchInputWithDelay() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(handleSearchInput, 1000); // Adjust the delay duration as needed (in milliseconds)
+}
+
 
         // Function to handle search input
         function handleSearchInput() {
@@ -1582,16 +1593,16 @@ searchInput.addEventListener("blur", () => {
                         source: measureAreaSource,
                         style: new ol.style.Style({
                             fill: new ol.style.Fill({
-                                color: "rgba(56, 108, 52, 0.8)", // 80% transparent fill
+                                color: "rgba(247, 200, 21, 0.8)", // 80% transparent fill
                             }),
                             stroke: new ol.style.Stroke({
-                                color: "#386c34",
+                                color: "#F7C815",
                                 width: 10,
                             }),
                             image: new ol.style.Circle({
                                 radius: 7,
                                 fill: new ol.style.Fill({
-                                    color: "#386c34",
+                                    color: "#F7C815",
                                 }),
                             }),
                         }),
@@ -1638,13 +1649,13 @@ searchInput.addEventListener("blur", () => {
                         color: "rgba(255, 255, 255, 0.2)",
                     }),
                     stroke: new ol.style.Stroke({
-                        color: "#386c34",
+                        color: "#F7C815",
                         width: 10,
                     }),
                     image: new ol.style.Circle({
                         radius: 18,
                         fill: new ol.style.Fill({
-                            color: "#386c34",
+                            color: "#F7C815",
                         }),
                         stroke: new ol.style.Stroke({
                             color: "#ffffff",
@@ -2239,7 +2250,7 @@ searchInput.addEventListener("blur", () => {
         async function fetchPlaceName(lon, lat) {
             const baseUrl = "https://nominatim.openstreetmap.org/reverse";
             const format = "json";
-            const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18`;
+            const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18&addressdetails=1`;
 
             try {
                 const response = await fetch(url);
