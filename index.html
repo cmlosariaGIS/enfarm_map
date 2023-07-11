@@ -1843,6 +1843,7 @@
         // Handle clicks on the measureLengthBtn and sketchFarmBtn buttons
         document.getElementById("measureLengthBtn").addEventListener("click", deactivateMeasurementArea);
         document.getElementById("sketchFarmBtn").addEventListener("click", deactivateMeasurementArea);
+        document.getElementById("addSensorBtn").addEventListener("click", deactivateMeasurementArea);
 
         function deactivateMeasurementArea() {
             const measureAreaBtn = document.getElementById("measureAreaBtn");
@@ -2184,6 +2185,7 @@
 
         document.getElementById("measureAreaBtn").addEventListener("click", deactivateMeasurementLength);
         document.getElementById("sketchFarmBtn").addEventListener("click", deactivateMeasurementLength);
+        document.getElementById("addSensorBtn").addEventListener("click", deactivateMeasurementLength);
 
 
 
@@ -2832,10 +2834,16 @@
             }
         }
 
+        document.getElementById("measureAreaBtn").addEventListener("click", disableDrawInteraction);
+        document.getElementById("measureLengthBtn").addEventListener("click", disableDrawInteraction);
+        document.getElementById("sketchFarmBtn").addEventListener("click", disableDrawInteraction);
 
 
 
-        //NORTH ARROW BUTTON
+
+
+        ///// NORTH ARROW BUTTON \\\\\
+
         // Function to update the rotation of the north arrow based on the map's rotation
         function updateNorthArrowRotation() {
             const rotation = map.getView().getRotation();
