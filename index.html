@@ -2497,11 +2497,11 @@
                 };
 
                 try {
-    // Send data to React Native App
-    window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
-} catch (error) {
-    // Handle the error (or do nothing to prevent logging)
-}
+                    // Send data to React Native App
+                    window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
+                } catch (error) {
+                    // Handle the error (or do nothing to prevent logging)
+                }
 
 
             });
@@ -2513,61 +2513,57 @@
         });
 
         const finishDrawingButton = document.querySelector('.finish-drawing');
- finishDrawingButton.addEventListener('click', function () {
-    if (draw) {
-        draw.finishDrawing();
-        finishDrawingButton.classList.add('hidden');
-        map.removeInteraction(draw); // Disable further drawing
-        isSketchActive = false; // Set the sketching state to inactive
-    }
-});
+        finishDrawingButton.addEventListener('click', function () {
+            if (draw) {
+                draw.finishDrawing();
+                finishDrawingButton.classList.add('hidden');
+                map.removeInteraction(draw); // Disable further drawing
+                isSketchActive = false; // Set the sketching state to inactive
+            }
+        });
 
-function deactivateSketchFarm() {
-    const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-    if (isSketchActive) {
-        // Set sketchFarmBtn to inactive state
-        sketchFarmBtn.style.backgroundColor = "white";
-        const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
-        sketchFarmBtnIcon.textContent = "create";
-        sketchFarmBtnIcon.style.color = "#515151";
+        function deactivateSketchFarm() {
+            const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+            if (isSketchActive) {
+                // Set sketchFarmBtn to inactive state
+                sketchFarmBtn.style.backgroundColor = "white";
+                const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
+                sketchFarmBtnIcon.textContent = "create";
+                sketchFarmBtnIcon.style.color = "#515151";
 
-        // Remove sketching interaction
-        if (draw) {
-            map.removeInteraction(draw);
-            draw = null;
+                // Remove sketching interaction
+                if (draw) {
+                    map.removeInteraction(draw);
+                    draw = null;
+                }
+
+                // Clear floating message timeout
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                    timeoutId = null;
+                }
+
+                isSketchActive = false; // Set the sketching state to inactive
+            }
         }
 
-        // Clear floating message timeout
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-            timeoutId = null;
-        }
-
-        isSketchActive = false; // Set the sketching state to inactive
-    }
-}
-
-document.getElementById("measureAreaBtn").addEventListener("click", deactivateSketchFarm);
-document.getElementById("measureLengthBtn").addEventListener("click", deactivateSketchFarm);
-document.getElementById("addSensorBtn").addEventListener("click", deactivateSketchFarm);
+        document.getElementById("measureAreaBtn").addEventListener("click", deactivateSketchFarm);
+        document.getElementById("measureLengthBtn").addEventListener("click", deactivateSketchFarm);
+        document.getElementById("addSensorBtn").addEventListener("click", deactivateSketchFarm);
 
 
 
 
-
-
-
-
-        //ADD SENSORS BUTTON
+        ///// ADD SENSORS BUTTON \\\\\
 
         let sensorDrawCount = 0;
 
         // Define a custom style for the point features resembling a GPS icon
-        const pointStyle = new ol.style.Style({
+        const sensorPointStyle = new ol.style.Style({
             image: new ol.style.Icon({
-                src: 'https://i.ibb.co/qkPRcx1/icons8-location-25.png',
+                src: 'https://i.ibb.co/gWyRjHP/icons8-pin-96-xxhdpi.png',
                 anchor: [0.5, 1],
-                scale: 3,
+                scale: 1.10,
                 rotateWithView: true,
             }),
         });
@@ -2612,7 +2608,7 @@ document.getElementById("addSensorBtn").addEventListener("click", deactivateSket
             // Create a vector layer to display the drawn features
             sensorVectorLayer = new ol.layer.Vector({
                 source: source,
-                style: pointStyle, // Apply the custom style to the features
+                style: sensorPointStyle,
             });
 
             // Add the vector layer to the map
@@ -2761,139 +2757,80 @@ document.getElementById("addSensorBtn").addEventListener("click", deactivateSket
         });
 
         const finishButton = document.getElementById("finishDrawingButton");
-const enfarm_sensor_coordinates = []; // Declare the variable outside the event listener
+        const enfarm_sensor_coordinates = []; // Declare the variable outside the event listener
 
-finishButton.addEventListener("click", function () {
-    // Check if the sensorVectorLayer is defined
-    if (sensorVectorLayer) {
-        const source = sensorVectorLayer.getSource();
-        const features = source.getFeatures();
+        finishButton.addEventListener("click", function () {
+            // Check if the sensorVectorLayer is defined
+            if (sensorVectorLayer) {
+                const source = sensorVectorLayer.getSource();
+                const features = source.getFeatures();
 
-        // Clear the array before adding new coordinate values
-        enfarm_sensor_coordinates.length = 0;
+                // Clear the array before adding new coordinate values
+                enfarm_sensor_coordinates.length = 0;
 
-        // Iterate through each feature to get the coordinates
-        features.forEach(function (feature) {
-            const geometry = feature.getGeometry();
-            const coordinate = geometry.getCoordinates();
+                // Iterate through each feature to get the coordinates
+                features.forEach(function (feature) {
+                    const geometry = feature.getGeometry();
+                    const coordinate = geometry.getCoordinates();
 
-            // Transform the coordinates to EPSG:4326
-            const transformedCoordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-            const enfarm_sensor_lat = transformedCoordinate[1];
-            const enfarm_sensor_lon = transformedCoordinate[0];
+                    // Transform the coordinates to EPSG:4326
+                    const transformedCoordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+                    const enfarm_sensor_lat = transformedCoordinate[1];
+                    const enfarm_sensor_lon = transformedCoordinate[0];
 
-            // Push the coordinates to the array
-            enfarm_sensor_coordinates.push({ enfarm_sensor_lat, enfarm_sensor_lon });
+                    // Push the coordinates to the array
+                    enfarm_sensor_coordinates.push({ enfarm_sensor_lat, enfarm_sensor_lon });
+                });
+
+                // Log the coordinates to the console along with the variable name
+                console.log("enfarm_sensor_coordinates:", enfarm_sensor_coordinates);
+
+                // Disable draw interaction and revert button styles
+                disableDrawInteraction();
+            }
         });
 
-        // Log the coordinates to the console along with the variable name
-        console.log("enfarm_sensor_coordinates:", enfarm_sensor_coordinates);
 
-        // Disable draw interaction and revert button styles
-        disableDrawInteraction();
-    }
-});
+        // Function to disable draw interaction and revert button styles
+        function disableDrawInteraction() {
+            // Deactivate the draw interaction
+            map.removeInteraction(drawInteraction);
 
+            // Reset the button styles
+            addSensorBtnIcon.textContent = "sensors";
+            addSensorBtn.style.backgroundColor = "";
+            addSensorBtnIcon.style.color = "";
 
-       // Function to disable draw interaction and revert button styles
-function disableDrawInteraction() {
-    // Deactivate the draw interaction
-    map.removeInteraction(drawInteraction);
+            // Remove the floating message if it exists
+            const floatingMessage = document.getElementById("floatingMessageArea");
+            if (floatingMessage && floatingMessage.parentNode === map.getViewport()) {
+                map.getViewport().removeChild(floatingMessage);
+            }
 
-    // Reset the button styles
-    addSensorBtnIcon.textContent = "sensors";
-    addSensorBtn.style.backgroundColor = "";
-    addSensorBtnIcon.style.color = "";
+            // Set drawInteractionActive to false
+            drawInteractionActive = false;
 
-    // Remove the floating message if it exists
-    const floatingMessage = document.getElementById("floatingMessageArea");
-    if (floatingMessage && floatingMessage.parentNode === map.getViewport()) {
-        map.getViewport().removeChild(floatingMessage);
-    }
+            // Hide the "Finish Sketch" button
+            finishButton.classList.add("hidden");
 
-    // Set drawInteractionActive to false
-    drawInteractionActive = false;
+            // Check if there are points on the map
+            const sensorVectorLayers = map.getLayers().getArray();
+            const hasPoints = sensorVectorLayers.some(
+                (layer) =>
+                    layer instanceof ol.layer.Vector &&
+                    layer.getSource().getFeatures().length > 0
+            );
 
-    // Hide the "Finish Sketch" button
-    finishButton.classList.add("hidden");
-
-    // Check if there are points on the map
-    const sensorVectorLayers = map.getLayers().getArray();
-    const hasPoints = sensorVectorLayers.some(
-        (layer) =>
-            layer instanceof ol.layer.Vector &&
-            layer.getSource().getFeatures().length > 0
-    );
-
-// Post a message to the React Native app if there are points
-if (hasPoints) {
-        try {
-            const message = { enfarm_sensor_coordinates };
-            window.ReactNativeWebView.postMessage(JSON.stringify(message));
-        } catch (error) {
-            // Handle the error (or do nothing to prevent logging)
+            // Post a message to the React Native app if there are points
+            if (hasPoints) {
+                try {
+                    const message = { enfarm_sensor_coordinates };
+                    window.ReactNativeWebView.postMessage(JSON.stringify(message));
+                } catch (error) {
+                    // Handle the error (or do nothing to prevent logging)
+                }
+            }
         }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2935,7 +2872,7 @@ if (hasPoints) {
         // Event listener for the north arrow click
         northArrow.addEventListener('click', resetMapRotation);
 
-        
+
 
 
 
