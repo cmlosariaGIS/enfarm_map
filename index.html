@@ -21,6 +21,14 @@
             /* Set an initial height for the map container */
         }
 
+        .modal {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+
         .logo {
             position: absolute;
             top: 45px;
@@ -650,11 +658,12 @@
         .basemapSelector {
             position: absolute;
             left: 50%;
+            height: 100%;
+            top: 0;
             bottom: 0;
             transform: translateX(-50%) translateY(100%);
             width: 100%;
             max-height: calc(100% - 20px);
-            /* Subtract any desired margin/padding */
             border-radius: 20px 20px 0 0;
             background-color: rgba(255, 255, 255);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
@@ -1565,29 +1574,29 @@
 
         <!------------------------------------------------------------------------------------------------>
 
-// BASEMAP SWITCHER BUTTON
-function cycleBasemap() {
-  const basemapSelector = document.getElementById("basemapSelector");
+        // BASEMAP SWITCHER BUTTON
+        function cycleBasemap() {
+            const basemapSelector = document.getElementById("basemapSelector");
 
-  if (basemapSelector.style.display === "block") {
-    // If basemapSelector is already displayed, dismiss it
-    basemapSelector.style.transform = "translateX(-50%) translateY(100%)";
-    setTimeout(() => {
-      basemapSelector.style.display = "none";
-    }, 300);
-  } else {
-    // If basemapSelector is not displayed, call it
-    basemapSelector.style.display = "block";
+            if (basemapSelector.style.display === "block") {
+                // If basemapSelector is already displayed, dismiss it
+                basemapSelector.style.transform = "translateX(-50%) translateY(100%)";
+                setTimeout(() => {
+                    basemapSelector.style.display = "none";
+                }, 300);
+            } else {
+                // If basemapSelector is not displayed, call it
+                basemapSelector.style.display = "block";
 
-    // Move the basemapSelector up slightly to avoid scrolling
-    basemapSelector.style.transform = "translateX(-50%) translateY(-10px)";
+                // Move the basemapSelector up slightly to avoid scrolling
+                basemapSelector.style.transform = "translateX(-50%) translateY(-10px)";
 
-    // Trigger the animation by setting the transform property to 0
-    setTimeout(() => {
-      basemapSelector.style.transform = "translateX(-50%) translateY(0)";
-    }, 0);
-  }
-}
+                // Trigger the animation by setting the transform property to 0
+                setTimeout(() => {
+                    basemapSelector.style.transform = "translateX(-50%) translateY(0)";
+                }, 0);
+            }
+        }
 
 
         // BASEMAP SELECTION FUNCTIONALITY
