@@ -604,7 +604,7 @@
         /****** Start Scale line Styles *******/
         .ol-scale-line {
             position: fixed;
-            bottom: 12%;
+            bottom: 10%;
             left: 30px;
             background: none;
             border: none;
@@ -648,19 +648,20 @@
 
 
         .basemapSelector {
-            position: fixed;
-            bottom: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            height: 920px;
-            border-radius: 20px;
-            background-color: rgba(255, 255, 255);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            z-index: 9999;
-            display: none;
-            transition: transform 0.5s;
-        }
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%;
+  max-height: calc(100% - 20px); /* Subtract any desired margin/padding */
+  border-radius: 20px 20px 0 0;
+  background-color: rgba(255, 255, 255);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  overflow: auto;
+  transition: transform 0.3s;
+}
+
 
 
 
@@ -1566,26 +1567,27 @@
 
         <!------------------------------------------------------------------------------------------------>
 
-        // BASEMAP SWITCHER BUTTON
-        function cycleBasemap() {
-            const basemapSelector = document.getElementById("basemapSelector");
+// BASEMAP SWITCHER BUTTON
+function cycleBasemap() {
+  const basemapSelector = document.getElementById("basemapSelector");
 
-            if (basemapSelector.style.display === "block") {
-                // If basemapSelector is already displayed, dismiss it
-                basemapSelector.style.transform = "translateX(-50%) translateY(0)";
-                setTimeout(() => {
-                    basemapSelector.style.display = "none";
-                }, 500);
-            } else {
-                // If basemapSelector is not displayed, call it
-                basemapSelector.style.display = "block";
+  if (basemapSelector.style.display === "block") {
+    // If basemapSelector is already displayed, dismiss it
+    basemapSelector.style.transform = "translateX(-50%) translateY(100%)";
+    setTimeout(() => {
+      basemapSelector.style.display = "none";
+    }, 300);
+  } else {
+    // If basemapSelector is not displayed, call it
+    basemapSelector.style.display = "block";
 
-                // Trigger the animation by setting the transform property to 0
-                setTimeout(() => {
-                    basemapSelector.style.transform = "translateX(-50%) translateY(-100%)";
-                }, 0);
-            }
-        }
+    // Trigger the animation by setting the transform property to 0
+    setTimeout(() => {
+      basemapSelector.style.transform = "translateX(-50%) translateY(0)";
+    }, 0);
+  }
+}
+
 
         // BASEMAP SELECTION FUNCTIONALITY
         const mapElement = document.getElementById("map");
@@ -1684,12 +1686,11 @@
             }, 500);
         }
 
-        // Hide the basemapSelector on map load
-        window.addEventListener("DOMContentLoaded", function () {
-            const basemapSelector = document.getElementById("basemapSelector");
-            basemapSelector.style.display = "none";
-        });
-
+// Hide the basemapSelector on map load
+window.addEventListener("DOMContentLoaded", function () {
+  const basemapSelector = document.getElementById("basemapSelector");
+  basemapSelector.style.display = "none";
+});
 
 
 
