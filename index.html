@@ -603,7 +603,8 @@
 
         /****** Start Scale line Styles *******/
         .ol-scale-line {
-            bottom: 8%;
+            position: fixed;
+            bottom: 12%;
             left: 30px;
             background: none;
             border: none;
@@ -647,19 +648,19 @@
 
 
         .basemapSelector {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  height: 920px;
-  border-radius: 20px;
-  background-color: rgba(255, 255, 255);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  z-index: 9999;
-  display: none;
-  transition: transform 0.5s;
-}
+            position: fixed;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 920px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            display: none;
+            transition: transform 0.5s;
+        }
 
 
 
@@ -829,7 +830,7 @@
         </div>
 
 
-     
+
 
 
         <!--<button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
@@ -1565,129 +1566,129 @@
 
         <!------------------------------------------------------------------------------------------------>
 
-// BASEMAP SWITCHER BUTTON
-function cycleBasemap() {
-  const basemapSelector = document.getElementById("basemapSelector");
+        // BASEMAP SWITCHER BUTTON
+        function cycleBasemap() {
+            const basemapSelector = document.getElementById("basemapSelector");
 
-  if (basemapSelector.style.display === "block") {
-    // If basemapSelector is already displayed, dismiss it
-    basemapSelector.style.transform = "translateX(-50%) translateY(0)";
-    setTimeout(() => {
-      basemapSelector.style.display = "none";
-    }, 500);
-  } else {
-    // If basemapSelector is not displayed, call it
-    basemapSelector.style.display = "block";
+            if (basemapSelector.style.display === "block") {
+                // If basemapSelector is already displayed, dismiss it
+                basemapSelector.style.transform = "translateX(-50%) translateY(0)";
+                setTimeout(() => {
+                    basemapSelector.style.display = "none";
+                }, 500);
+            } else {
+                // If basemapSelector is not displayed, call it
+                basemapSelector.style.display = "block";
 
-    // Trigger the animation by setting the transform property to 0
-    setTimeout(() => {
-      basemapSelector.style.transform = "translateX(-50%) translateY(-100%)";
-    }, 0);
-  }
-}
+                // Trigger the animation by setting the transform property to 0
+                setTimeout(() => {
+                    basemapSelector.style.transform = "translateX(-50%) translateY(-100%)";
+                }, 0);
+            }
+        }
 
-// BASEMAP SELECTION FUNCTIONALITY
-const mapElement = document.getElementById("map");
+        // BASEMAP SELECTION FUNCTIONALITY
+        const mapElement = document.getElementById("map");
 
-// Layers
-const satelliteLayer = new ol.layer.Tile({
-  source: new ol.source.XYZ({
-    url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-    useInterimTilesOnError: true,
-  }),
-  visible: false // set visibility to false initially
-});
+        // Layers
+        const satelliteLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+                useInterimTilesOnError: true,
+            }),
+            visible: false // set visibility to false initially
+        });
 
-const streetLayer = new ol.layer.Tile({
-  source: new ol.source.XYZ({
-    url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-    useInterimTilesOnError: true,
-  }),
-  visible: true // set visibility to true initially for default basemap
-});
+        const streetLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+                useInterimTilesOnError: true,
+            }),
+            visible: true // set visibility to true initially for default basemap
+        });
 
-const soilLayer = new ol.layer.Tile({
-  source: new ol.source.TileWMS({
-    url: "https://data.opendevelopmentmekong.net/geoserver/ODVietnam/Soil%20map/wms",
-    params: {
-      'LAYERS': 'ODVietnam:Soil map',
-    },
-    projection: "EPSG:4326"
-  }),
-  visible: false // set visibility to false initially
-});
+        const soilLayer = new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: "https://data.opendevelopmentmekong.net/geoserver/ODVietnam/Soil%20map/wms",
+                params: {
+                    'LAYERS': 'ODVietnam:Soil map',
+                },
+                projection: "EPSG:4326"
+            }),
+            visible: false // set visibility to false initially
+        });
 
-const phLayer = new ol.layer.Tile({
-  source: new ol.source.TileWMS({
-    url: "https://maps.isric.org/mapserv?map=/map/phh2o.map",
-    params: {
-      'LAYERS': 'phh2o_0-5cm_mean',
-    },
-    projection: "EPSG:152160"
-  }),
-  visible: false // set visibility to false initially
-});
+        const phLayer = new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: "https://maps.isric.org/mapserv?map=/map/phh2o.map",
+                params: {
+                    'LAYERS': 'phh2o_0-5cm_mean',
+                },
+                projection: "EPSG:152160"
+            }),
+            visible: false // set visibility to false initially
+        });
 
-const nitrogenLayer = new ol.layer.Tile({
-  source: new ol.source.TileWMS({
-    url: "https://maps.isric.org/mapserv?map=/map/nitrogen.map",
-    params: {
-      'LAYERS': 'nitrogen_0-5cm_mean',
-    },
-    projection: "EPSG:152160"
-  }),
-  visible: false // set visibility to false initially
-});
+        const nitrogenLayer = new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: "https://maps.isric.org/mapserv?map=/map/nitrogen.map",
+                params: {
+                    'LAYERS': 'nitrogen_0-5cm_mean',
+                },
+                projection: "EPSG:152160"
+            }),
+            visible: false // set visibility to false initially
+        });
 
-// Initialize the map
-const map = new ol.Map({
-  target: mapElement,
-  layers: [satelliteLayer, streetLayer, soilLayer, phLayer, nitrogenLayer], // add all basemap layers initially
-  view: new ol.View({
-    center: ol.proj.fromLonLat([106.6297, 10.8231]),
-    zoom: 15,
-  }),
-  controls: [],
-});
+        // Initialize the map
+        const map = new ol.Map({
+            target: mapElement,
+            layers: [satelliteLayer, streetLayer, soilLayer, phLayer, nitrogenLayer], // add all basemap layers initially
+            view: new ol.View({
+                center: ol.proj.fromLonLat([106.6297, 10.8231]),
+                zoom: 15,
+            }),
+            controls: [],
+        });
 
-let currentBasemap = 1; // Set the current basemap index to 1 to represent streetLayer
-const basemaps = [soilLayer, streetLayer, satelliteLayer, phLayer, nitrogenLayer];
+        let currentBasemap = 1; // Set the current basemap index to 1 to represent streetLayer
+        const basemaps = [soilLayer, streetLayer, satelliteLayer, phLayer, nitrogenLayer];
 
-function selectBasemap(index) {
-  // Check if the selected basemap is not currently visible
-  if (!basemaps[index].getVisible()) {
-    // Set the new basemap layer as visible and hide the other ones
-    basemaps.forEach((layer, i) => {
-      layer.setVisible(i === index);
-    });
+        function selectBasemap(index) {
+            // Check if the selected basemap is not currently visible
+            if (!basemaps[index].getVisible()) {
+                // Set the new basemap layer as visible and hide the other ones
+                basemaps.forEach((layer, i) => {
+                    layer.setVisible(i === index);
+                });
 
-    // Update the currentBasemap index
-    currentBasemap = index;
+                // Update the currentBasemap index
+                currentBasemap = index;
 
-    // Update the logo
-    const logoElement = document.querySelector(".logo");
-    const logoImage =
-      basemaps[currentBasemap] === satelliteLayer
-        ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
-        : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
-    logoElement.src = logoImage;
-  }
+                // Update the logo
+                const logoElement = document.querySelector(".logo");
+                const logoImage =
+                    basemaps[currentBasemap] === satelliteLayer
+                        ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
+                        : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
+                logoElement.src = logoImage;
+            }
 
-  // Hide the basemapSelector after selecting a basemap
-  const basemapSelector = document.getElementById("basemapSelector");
-  basemapSelector.style.transform = "translateX(-50%) translateY(0)";
+            // Hide the basemapSelector after selecting a basemap
+            const basemapSelector = document.getElementById("basemapSelector");
+            basemapSelector.style.transform = "translateX(-50%) translateY(0)";
 
-  // Delay hiding the basemapSelector to allow the slide animation
-  setTimeout(() => {
-    basemapSelector.style.display = "none";
-  }, 500);
-}
+            // Delay hiding the basemapSelector to allow the slide animation
+            setTimeout(() => {
+                basemapSelector.style.display = "none";
+            }, 500);
+        }
 
-// Hide the basemapSelector on map load
-window.addEventListener("DOMContentLoaded", function () {
-  const basemapSelector = document.getElementById("basemapSelector");
-  basemapSelector.style.display = "none";
-});
+        // Hide the basemapSelector on map load
+        window.addEventListener("DOMContentLoaded", function () {
+            const basemapSelector = document.getElementById("basemapSelector");
+            basemapSelector.style.display = "none";
+        });
 
 
 
