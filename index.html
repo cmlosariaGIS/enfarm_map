@@ -14,6 +14,24 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <style>
+        @font-face {
+            font-family: 'Be Vietnam Pro';
+            src: url('fonts/BeVietnamPro-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Be Vietnam Pro';
+            src: url('fonts/BeVietnamPro-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+        }
+
         .map {
             position: relative;
             width: 100%;
@@ -21,13 +39,6 @@
             /* Set an initial height for the map container */
         }
 
-        .modal {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-        }
 
         .logo {
             position: absolute;
@@ -140,12 +151,9 @@
             color: #515151;
             padding: 20px;
             padding-left: 40px;
-            /* Add left padding of 30px */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
             display: flex;
-            /* Use flexbox */
             align-items: center;
-            /* Center vertically */
             border-radius: 100px;
         }
 
@@ -184,7 +192,6 @@
             padding: 10px;
             z-index: 5;
             display: none;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
         }
 
@@ -342,7 +349,6 @@
             color: #515151;
             padding: 20px;
             border-radius: 100px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 40px;
             text-align: center;
             display: flex;
@@ -405,7 +411,6 @@
             background-color: #ffffff;
             padding: 35px 50px;
             border-radius: 10px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 40px;
             color: #515151;
             outline: none;
@@ -547,7 +552,6 @@
             width: 600px;
             height: 300px;
             font-size: 40px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #515151;
             max-width: 100%;
             box-shadow: #515151;
@@ -556,7 +560,6 @@
         /* Yes and Cancel Button*/
         .dialog-button {
             font-size: 40px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 10px;
             padding: 20px 70px;
             border-radius: 20px;
@@ -618,7 +621,6 @@
             border: none;
             box-shadow: none;
             color: #515151;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1;
             margin: 0;
             padding: 0;
@@ -676,7 +678,6 @@
             padding: 20px;
             text-align: center;
             font-size: 25px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #515151;
         }
 
@@ -701,7 +702,6 @@
             font-size: 30px;
             font-weight: bold;
             margin-top: 5px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #515151;
         }
     </style>
@@ -921,10 +921,6 @@
 
 
 
-
-
-
-
         function toggleSearchIcon() {
             if (searchInput.value.length > 0) {
                 searchIcon.textContent = "cancel";
@@ -1070,7 +1066,7 @@
                     const placeNameElement = document.createElement("span");
                     placeNameElement.textContent = placeName;
                     placeNameElement.style.fontSize = "45px";
-                    placeNameElement.style.fontFamily = "Segoe UI, Arial, sans-serif";
+                    placeNameElement.style.fontFamily = "Be Vietnam Pro', Arial, sans-serif";
                     placeNameElement.style.color = "#515151";
                     placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)";
                     placeNameElement.style.letterSpacing = "1px";
@@ -1122,7 +1118,7 @@
 
                                 if (pillContainer.getAttribute('data-expanded') === 'true') {
                                     pillContainer.innerHTML = `
-      <span style="font-size: 40px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
+      <span style="font-size: 40px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
         <span>${placeName}</span>
         <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
           <i class="material-icons" style="transform: rotate(0deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
@@ -1136,7 +1132,7 @@
 
                                 } else if (addressParts.length > 0) {
                                     pillContainer.innerHTML = `
-      <span style="font-size: 40px; font-family: 'Segoe UI', Arial, sans-serif; color: #515151; text-align: center;">
+      <span style="font-size: 40px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center;">
         <strong>${placeName}</strong>, ${addressDetails}
         <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 430px;">
           <i class="material-icons" style="transform: rotate(180deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
@@ -1277,7 +1273,7 @@
                 suggestionText.textContent = suggestion.display_name;
                 suggestionText.classList.add("suggestionText");
                 suggestionText.style.color = "#515151";
-                suggestionText.style.fontFamily = "Segoe UI";
+                suggestionText.style.fontFamily = "Be Vietnam Pro', Arial, sans-serif";
 
                 suggestionItem.addEventListener("click", () => {
                     handleSuggestionClick(suggestion);
@@ -1306,7 +1302,7 @@
                     historicalPlacesText.style.fontSize = "40px";
                     historicalPlacesText.style.color = "#515151";
                     historicalPlacesText.style.marginLeft = "20px";
-                    historicalPlacesText.style.fontFamily = "Segoe UI";
+                    historicalPlacesText.style.fontFamily = "Be Vietnam Pro', Arial, sans-serif";
                     suggestionsContainer.appendChild(historicalPlacesText);
                 }
             });
@@ -1947,8 +1943,6 @@
                 measureAreaTooltipElement.style.padding = "10px 20px";
                 measureAreaTooltipElement.style.borderRadius = "50px";
                 measureAreaTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
-
-                // Change the font color to Segoe UI (#515151) and set the font size to 12px
                 measureAreaTooltipElement.style.color = "#515151";
                 measureAreaTooltipElement.style.fontFamily = "Segoe UI";
                 measureAreaTooltipElement.style.fontSize = "35px";
@@ -2721,7 +2715,7 @@ background-color: #ffffff;
 border: 1px solid #ccc;
 border-radius: 1000px;
 padding: 20px 30px;
-font-family: 'Segoe UI', Arial, sans-serif;
+font-family: 'Be Vietnam Pro', Arial, sans-serif;
 font-size: 40px;
 font-weight: bold;
 color: #000000;
