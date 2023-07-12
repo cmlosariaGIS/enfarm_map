@@ -1839,6 +1839,60 @@ map.once('rendercomplete', function() {
     });
 });
 
+// After the map is loaded and rendered
+map.once('rendercomplete', function() {
+    phLayer.on('change:visible', function() {
+        const legendImg = document.getElementById('legendImage');
+
+        if (phLayer.getVisible()) {
+            if (!legendImg) {
+                const newLegendImg = document.createElement('img');
+                newLegendImg.id = 'legendImage';
+                newLegendImg.src = 'https://i.ibb.co/JdrP605/legend-ph.png';
+                newLegendImg.alt = 'legend-ph';
+                newLegendImg.style.position = 'absolute';
+                newLegendImg.style.top = '200px';
+                newLegendImg.style.left = '50px';
+                newLegendImg.style.width = '100px';
+                newLegendImg.style.height = '900px';
+                newLegendImg.style.boxShadow = '2px 2px 4px rgba(0, 0, 0, 0.5)';
+                document.getElementById('map').appendChild(newLegendImg);
+            }
+        } else {
+            if (legendImg) {
+                legendImg.parentNode.removeChild(legendImg);
+            }
+        }
+    });
+});
+
+
+// After the map is loaded and rendered
+map.once('rendercomplete', function() {
+    nitrogenLayer.on('change:visible', function() {
+        const legendImg = document.getElementById('legendImage');
+
+        if (nitrogenLayer.getVisible()) {
+            if (!legendImg) {
+                const newLegendImg = document.createElement('img');
+                newLegendImg.id = 'legendImage';
+                newLegendImg.src = 'https://i.ibb.co/z6p3NVc/legend-nitrogen.png';
+                newLegendImg.alt = 'legend-nitrogen';
+                newLegendImg.style.position = 'absolute';
+                newLegendImg.style.top = '200px';
+                newLegendImg.style.left = '50px';
+                newLegendImg.style.width = '100px';
+                newLegendImg.style.height = '900px';
+                newLegendImg.style.boxShadow = '2px 2px 4px rgba(0, 0, 0, 0.5)';
+                document.getElementById('map').appendChild(newLegendImg);
+            }
+        } else {
+            if (legendImg) {
+                legendImg.parentNode.removeChild(legendImg);
+            }
+        }
+    });
+});
 
 
 
