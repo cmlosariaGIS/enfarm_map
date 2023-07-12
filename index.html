@@ -738,6 +738,21 @@
         }
 
         /****** End Scale line Styles *******/
+
+
+
+
+        .close-bm-button {
+            position: absolute;
+            top: 42px;
+            right: 30px;
+            cursor: pointer;
+            color: #515151;
+        }
+
+        .close-bm-button i {
+            font-size: 60px;
+        }
     </style>
 </head>
 
@@ -764,6 +779,9 @@
         <div class="basemapSelector" id="basemapSelector">
             <div class="container-content">
                 <h2>Chọn Bản đồ cơ sở</h2>
+                <div class="close-bm-button" onclick="closeBasemapSelector()">
+                    <i class="material-icons">cancel</i>
+                </div>
                 <div class="image-container">
                     <div onclick="selectBasemap(1)">
                         <img src="https://i.ibb.co/Jjg7bMD/bm-street.png" alt="Bản đồ đường phố">
@@ -773,11 +791,6 @@
                     <div onclick="selectBasemap(2)">
                         <img src="https://i.ibb.co/j3fq23k/bm-imagery.png" alt="Hình ảnh" border="0">
                         <div class="caption">Hình ảnh</div>
-                        <div class="selected-basemap-circle"></div>
-                    </div>
-                    <div onclick="selectBasemap(0)">
-                        <img src="https://i.ibb.co/vYWN6F0/bm-soil.png" alt="Lớp đất" border="0">
-                        <div class="caption">Lớp đất</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
                     <div onclick="selectBasemap(3)">
@@ -790,6 +803,14 @@
                         <div class="caption">Nito</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
+
+                    <!--<div onclick="selectBasemap(0)">
+                        <img src="https://i.ibb.co/vYWN6F0/bm-soil.png" alt="Lớp đất" border="0">
+                        <div class="caption">Lớp đất</div>
+                        <div class="selected-basemap-circle"></div>
+                    </div>-->
+
+
                 </div>
             </div>
         </div>
@@ -1629,37 +1650,41 @@
             }
         }
 
-
         // BASEMAP SELECTION FUNCTIONALITY
         const mapElement = document.getElementById("map");
 
         // Layers
         const satelliteLayer = new ol.layer.Tile({
             source: new ol.source.XYZ({
-                url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-                useInterimTilesOnError: true,
+                url: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw',
+                tileSize: 512,
+                maxZoom: 22,
+                attribution: '© <a href="https://www.mapbox.com">Mapbox</a>',
+                crossOrigin: 'anonymous'
             }),
             visible: false // set visibility to false initially
         });
 
         const streetLayer = new ol.layer.Tile({
             source: new ol.source.XYZ({
-                url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-                useInterimTilesOnError: true,
+                url: "https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                attributions: '© <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors',
+                maxZoom: 19,
             }),
             visible: true // set visibility to true initially for default basemap
         });
 
-        const soilLayer = new ol.layer.Tile({
-            source: new ol.source.TileWMS({
-                url: "https://data.opendevelopmentmekong.net/geoserver/ODVietnam/Soil%20map/wms",
-                params: {
-                    'LAYERS': 'ODVietnam:Soil map',
-                },
-                projection: "EPSG:4326"
-            }),
-            visible: false // set visibility to false initially
-        });
+
+        //const soilLayer = new ol.layer.Tile({
+        //  source: new ol.source.TileWMS({
+        //    url: "https://data.opendevelopmentmekong.net/geoserver/ODVietnam/Soil%20map/wms",
+        //  params: {
+        //    'LAYERS': 'ODVietnam:Soil map',
+        //},
+        // projection: "EPSG:4326"
+        //}),
+        //visible: false // set visibility to false initially
+        //});
 
         const phLayer = new ol.layer.Tile({
             source: new ol.source.TileWMS({
@@ -1686,7 +1711,7 @@
         // Initialize the map
         const map = new ol.Map({
             target: mapElement,
-            layers: [satelliteLayer, streetLayer, soilLayer, phLayer, nitrogenLayer], // add all basemap layers initially
+            layers: [satelliteLayer, streetLayer, phLayer, nitrogenLayer], //soilLayer,
             view: new ol.View({
                 center: ol.proj.fromLonLat([106.6297, 10.8231]),
                 zoom: 15,
@@ -1695,7 +1720,7 @@
         });
 
         let currentBasemap = 1; // Set the current basemap index to 1 to represent streetLayer
-        const basemaps = [streetLayer, satelliteLayer, soilLayer, phLayer, nitrogenLayer];
+        const basemaps = [streetLayer, satelliteLayer, phLayer, nitrogenLayer]; //soilLayer, 
 
         function selectBasemap(index) {
             // Check if the selected basemap is not currently visible
@@ -1750,6 +1775,12 @@
             });
         });
 
+        // Show the .selected-basemap-circle for the default basemap (streetLayer)
+        const defaultBasemapImage = basemapImages[0]; // Index 0 represents streetLayer
+        const defaultBasemapCircle = defaultBasemapImage.querySelector(
+            ".selected-basemap-circle"
+        );
+        defaultBasemapCircle.style.display = "block";
 
         // Hide the basemapSelector on map load
         window.addEventListener("DOMContentLoaded", function () {
@@ -1757,11 +1788,13 @@
             basemapSelector.style.display = "none";
         });
 
-
-
-
-
-
+        function closeBasemapSelector() {
+            const basemapSelector = document.getElementById("basemapSelector");
+            basemapSelector.style.transform = "translateX(-50%) translateY(100%)";
+            setTimeout(() => {
+                basemapSelector.style.display = "none";
+            }, 300);
+        }
 
 
 
