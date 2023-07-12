@@ -648,22 +648,20 @@
 
 
         .basemapSelector {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%) translateY(100%);
-  width: 100%;
-  max-height: calc(100% - 20px); /* Subtract any desired margin/padding */
-  border-radius: 20px 20px 0 0;
-  background-color: rgba(255, 255, 255);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  z-index: 9999;
-  overflow: auto;
-  transition: transform 0.3s;
-}
-
-
-
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-height: calc(100% - 20px);
+            /* Subtract any desired margin/padding */
+            border-radius: 20px 20px 0 0;
+            background-color: rgba(255, 255, 255);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            overflow: auto;
+            transition: transform 0.3s;
+        }
 
         .container-content {
             padding: 20px;
@@ -1581,6 +1579,9 @@ function cycleBasemap() {
     // If basemapSelector is not displayed, call it
     basemapSelector.style.display = "block";
 
+    // Move the basemapSelector up slightly to avoid scrolling
+    basemapSelector.style.transform = "translateX(-50%) translateY(-10px)";
+
     // Trigger the animation by setting the transform property to 0
     setTimeout(() => {
       basemapSelector.style.transform = "translateX(-50%) translateY(0)";
@@ -1686,11 +1687,11 @@ function cycleBasemap() {
             }, 500);
         }
 
-// Hide the basemapSelector on map load
-window.addEventListener("DOMContentLoaded", function () {
-  const basemapSelector = document.getElementById("basemapSelector");
-  basemapSelector.style.display = "none";
-});
+        // Hide the basemapSelector on map load
+        window.addEventListener("DOMContentLoaded", function () {
+            const basemapSelector = document.getElementById("basemapSelector");
+            basemapSelector.style.display = "none";
+        });
 
 
 
