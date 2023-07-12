@@ -564,21 +564,9 @@
             display: none;
         }
 
-
-        .addSensorBtn {
-            position: absolute;
-            top: 810px;
-            right: 30px;
-            z-index: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /****** Start Reset Button *******/
         #resetBtn {
             position: fixed;
-            bottom: 15%;
+            bottom: 10vh;
             left: 40px;
             background-color: #ffffff;
             border: none;
@@ -597,99 +585,16 @@
             font-size: 65px;
             color: #515151;
         }
-        /****** End Reset Button *******/
 
-
-        /****** Start Scale line Styles *******/
-        .ol-scale-line {
-            bottom: 8%;
-            left: 30px;
-            background: none;
-            border: none;
-            box-shadow: none;
-            color: #515151;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1;
-            margin: 0;
-            padding: 0;
-        }
-
-        .ol-scale-line-inner {
-            position: relative;
-            background: #fff;
-            border-radius: 3px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-            color: #333;
-            padding: 3px 6px;
-            font-size: 30px;
-        }
-
-        .ol-scale-line-inner::before,
-        .ol-scale-line-inner::after {
-            content: "";
+        .addSensorBtn {
             position: absolute;
-            bottom: 0;
-            width: 1px;
-            height: 50%;
-            background-color: #fff;
+            top: 810px;
+            right: 30px;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-
-        .ol-scale-line-inner::before {
-            left: 25%;
-        }
-
-        .ol-scale-line-inner::after {
-            right: 25%;
-        }
-        /****** End Scale line Styles *******/
-
-
-        .basemapSelector {
-            position: relative;
-            bottom: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: 920px;
-            border-radius: 20px;
-            background-color: rgba(255, 255, 255);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            z-index: 9999;
-        }
-
-        .container-content {
-            padding: 20px;
-            text-align: center;
-            font-size: 25px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #515151;
-        }
-
-        /* Styles for the images */
-        .container-content .image-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .container-content .image-container img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            border-radius: 50px;
-        }
-
-        .container-content .image-container .caption {
-            font-size: 30px;
-            font-weight: bold;
-            margin-top: 5px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #515151;
-        }
-
 
 
     </style>
@@ -796,37 +701,6 @@
         </div>
 
 
-        <div class="basemapSelector">
-            <div class="container-content">
-                <h2>Select Basemap</h2>
-                <div class="image-container">
-                    <div>
-                        <img src="https://i.ibb.co/Jjg7bMD/bm-street.png" alt="Street Map">
-                        <div class="caption">Street Map</div>
-                    </div>
-                    <div>
-                        <img src="https://i.ibb.co/j3fq23k/bm-imagery.png" alt="Imagery" border="0">
-                        <div class="caption">Imagery</div>
-                    </div>
-                    <div>
-                        <img src="https://i.ibb.co/vYWN6F0/bm-soil.png" alt="Soil Class" border="0">
-                        <div class="caption">Soil Class</div>
-                    </div>
-                    <div>
-                        <img src="https://i.ibb.co/Krtp9sf/bm-nitrogen.png" alt="Nitrogen" border="0">
-                        <div class="caption">Nitrogen</div>
-                    </div>
-                    <div>
-                        <img src="https://i.ibb.co/n73N7QY/bm-ph.png" alt="pH Map" border="0">
-                        <div class="caption">pH Map</div>
-                    </div>
-                    <div>
-                        <img src="https://i.ibb.co/n73N7QY/bm-ph.png" alt="pH Map" border="0">
-                        <div class="caption">pH Map</div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
         <!--<button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
@@ -863,48 +737,48 @@
 
 
         //const searchInput = document.getElementById("searchInput");
-        const placeholderTexts = [
-            "  Tra Cứu..",
-            "  Tra Cứu Cho Một Mốc",
-            "  Tra Cứu Cho Một Huyện",
-            "  Tra Cứu Cho Một Xã",
-            "  Tra Cứu.."
-        ];
-        let placeholderIndex = 0;
-        let placeholderTimeout;
+const placeholderTexts = [
+  "  Tra Cứu..",
+  "  Tra Cứu Cho Một Mốc",
+  "  Tra Cứu Cho Một Huyện",
+  "  Tra Cứu Cho Một Xã",
+  "  Tra Cứu.."
+];
+let placeholderIndex = 0;
+let placeholderTimeout;
 
-        function showNextPlaceholder() {
-            const placeholder = placeholderTexts[placeholderIndex];
-            let i = 0;
+function showNextPlaceholder() {
+  const placeholder = placeholderTexts[placeholderIndex];
+  let i = 0;
 
-            const typingInterval = setInterval(() => {
-                if (i < placeholder.length) {
-                    searchInput.setAttribute("placeholder", placeholder.substring(0, i + 1));
-                    i++;
-                } else {
-                    clearInterval(typingInterval);
-                    if (placeholderIndex < placeholderTexts.length - 1) {
-                        placeholderIndex++;
-                        placeholderTimeout = setTimeout(showNextPlaceholder, 1000);
-                    }
-                }
-            }, 15);
-        }
+  const typingInterval = setInterval(() => {
+    if (i < placeholder.length) {
+      searchInput.setAttribute("placeholder", placeholder.substring(0, i + 1));
+      i++;
+    } else {
+      clearInterval(typingInterval);
+      if (placeholderIndex < placeholderTexts.length - 1) {
+        placeholderIndex++;
+        placeholderTimeout = setTimeout(showNextPlaceholder, 1000);
+      }
+    }
+  }, 15);
+}
 
-        // Add event listener to start the transition when the search input is focused
-        searchInput.addEventListener("focus", () => {
-            // Start the placeholder transition if it hasn't been started yet
-            if (!placeholderTimeout) {
-                showNextPlaceholder();
-            }
-        });
+// Add event listener to start the transition when the search input is focused
+searchInput.addEventListener("focus", () => {
+  // Start the placeholder transition if it hasn't been started yet
+  if (!placeholderTimeout) {
+    showNextPlaceholder();
+  }
+});
 
-        // Add event listener to stop the transition when the search input is blurred
-        searchInput.addEventListener("blur", () => {
-            clearTimeout(placeholderTimeout);
-            placeholderTimeout = null;
-            searchInput.setAttribute("placeholder", "");
-        });
+// Add event listener to stop the transition when the search input is blurred
+searchInput.addEventListener("blur", () => {
+  clearTimeout(placeholderTimeout);
+  placeholderTimeout = null;
+  searchInput.setAttribute("placeholder", "");
+});
 
 
 
@@ -1307,13 +1181,13 @@
 
         let searchTimeout;
 
-        // Attach event listener to the search input
-        searchInput.addEventListener("input", handleSearchInputWithDelay);
+// Attach event listener to the search input
+searchInput.addEventListener("input", handleSearchInputWithDelay);
 
-        function handleSearchInputWithDelay() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(handleSearchInput, 1000); // Adjust the delay duration as needed (in milliseconds)
-        }
+function handleSearchInputWithDelay() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(handleSearchInput, 1000); // Adjust the delay duration as needed (in milliseconds)
+}
 
 
         // Function to handle search input
@@ -1367,67 +1241,67 @@
         searchInput.addEventListener("input", handleSearchInput);
 
         function handleSuggestionClick(suggestion) {
-            const latitude = parseFloat(suggestion.lat);
-            const longitude = parseFloat(suggestion.lon);
-            const center = ol.proj.fromLonLat([longitude, latitude]);
+  const latitude = parseFloat(suggestion.lat);
+  const longitude = parseFloat(suggestion.lon);
+  const center = ol.proj.fromLonLat([longitude, latitude]);
+  
+  // Smoothly animate the zoom and centering
+  map.getView().animate({
+    center: center,
+    zoom: 21,
+    duration: 1000, // Adjust the duration as needed
+    easing: ol.easing.easeOut // Use a suitable easing function for smooth animation
+  });
 
-            // Smoothly animate the zoom and centering
-            map.getView().animate({
-                center: center,
-                zoom: 21,
-                duration: 1000, // Adjust the duration as needed
-                easing: ol.easing.easeOut // Use a suitable easing function for smooth animation
-            });
+  const coordinates = ol.proj.fromLonLat([longitude, latitude]);
+  createMarker(coordinates);
 
-            const coordinates = ol.proj.fromLonLat([longitude, latitude]);
-            createMarker(coordinates);
+  // Post a message to the React Native app
+  const message = {
+    actionType: 'Search',
+    event: 'select',
+    locationText: suggestion.display_name,
+    latitude: latitude,
+    longitude: longitude
+  };
+  try {
+    window.ReactNativeWebView.postMessage(JSON.stringify(message));
+  } catch (error) {
+    // Handle the error (or do nothing to prevent logging)
+  }
 
-            // Post a message to the React Native app
-            const message = {
-                actionType: 'Search',
-                event: 'select',
-                locationText: suggestion.display_name,
-                latitude: latitude,
-                longitude: longitude
-            };
-            try {
-                window.ReactNativeWebView.postMessage(JSON.stringify(message));
-            } catch (error) {
-                // Handle the error (or do nothing to prevent logging)
-            }
+  // Log the address and lon/lat to the console
+  const address = suggestion.display_name;
+  const lon = suggestion.lon;
+  const lat = suggestion.lat;
+  console.log('Selected Place:');
+  console.log('Address:', address);
+  console.log('Lon/Lat:', lon, lat);
 
-            // Log the address and lon/lat to the console
-            const address = suggestion.display_name;
-            const lon = suggestion.lon;
-            const lat = suggestion.lat;
-            console.log('Selected Place:');
-            console.log('Address:', address);
-            console.log('Lon/Lat:', lon, lat);
+  // Check if the selected place already exists in historicalPlaces
+  const existingPlaceIndex = historicalPlaces.findIndex(
+    (place) => place.display_name === suggestion.display_name
+  );
 
-            // Check if the selected place already exists in historicalPlaces
-            const existingPlaceIndex = historicalPlaces.findIndex(
-                (place) => place.display_name === suggestion.display_name
-            );
+  if (existingPlaceIndex === -1) {
+    // Add the selected place to the historicalPlaces array
+    historicalPlaces.push(suggestion);
 
-            if (existingPlaceIndex === -1) {
-                // Add the selected place to the historicalPlaces array
-                historicalPlaces.push(suggestion);
+    // Save the historicalPlaces in local storage
+    localStorage.setItem("historicalPlaces", JSON.stringify(historicalPlaces));
+  } else {
+    // If the place already exists, move it to the end of the array
+    const existingPlace = historicalPlaces.splice(existingPlaceIndex, 1);
+    historicalPlaces.push(existingPlace[0]);
+  }
 
-                // Save the historicalPlaces in local storage
-                localStorage.setItem("historicalPlaces", JSON.stringify(historicalPlaces));
-            } else {
-                // If the place already exists, move it to the end of the array
-                const existingPlace = historicalPlaces.splice(existingPlaceIndex, 1);
-                historicalPlaces.push(existingPlace[0]);
-            }
+  // Display historical places
+  displayHistoricalPlaces();
 
-            // Display historical places
-            displayHistoricalPlaces();
-
-            // Clear the search input
-            searchInput.value = "";
-            suggestionsContainer.style.display = "none";
-        }
+  // Clear the search input
+  searchInput.value = "";
+  suggestionsContainer.style.display = "none";
+}
 
 
         function displayHistoricalPlaces() {
@@ -1567,64 +1441,74 @@ const mapElement = document.getElementById("map");
 
 // Layers
 const satelliteLayer = new ol.layer.Tile({
-  source: new ol.source.XYZ({
-    url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-    useInterimTilesOnError: true,
-  }),
-  visible: false // set visibility to false initially
+    source: new ol.source.XYZ({
+        url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+        useInterimTilesOnError: true,
+    }),
+    visible: false // set visibility to false initially
 });
 
 const streetLayer = new ol.layer.Tile({
-  source: new ol.source.XYZ({
-    url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
-    useInterimTilesOnError: true,
-  }),
-  visible: true // set visibility to true initially for default basemap
+    source: new ol.source.XYZ({
+        url: "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+        useInterimTilesOnError: true,
+    }),
+    visible: true // set visibility to true initially for default basemap
 });
 
-const soilLayer = new ol.layer.Tile({
-  source: new ol.source.TileWMS({
-    url: "https://data.opendevelopmentmekong.net/geoserver/ODVietnam/Soil%20map/wms",
-    params: {
-      'LAYERS': 'ODVietnam:Soil map',
-    },
-    projection: "EPSG:4326"
-  }),
-  visible: false // set visibility to false initially
+
+const soilLayerNitrogen = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+        url: "https://maps.isric.org/mapserv",
+        params: {
+            'MAP': '/map/nitrogen.map',
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetMap',
+            'BBOX': '-19948500.0,-6147449.0951699,19688885.757062882,8361000.0',
+            'CRS': 'EPSG:152160',
+            'WIDTH': 1426,
+            'HEIGHT': 895,
+            'LAYERS': 'nitrogen_0-5cm_mean',
+            'STYLES': '',
+            'FORMAT': 'image/png'
+        },
+        projection: "EPSG:152160"
+    }),
+    visible: false // set visibility to false initially
 });
 
 // Initialize the map
 const map = new ol.Map({
-  target: mapElement,
-  layers: [satelliteLayer, streetLayer, soilLayer], // add all basemap layers initially
-  view: new ol.View({
-    center: ol.proj.fromLonLat([106.6297, 10.8231]),
-    zoom: 15,
-    //rotation: Math.PI / 4 // 45 degrees in radians
-  }),
-  controls: [],
+    target: mapElement,
+    layers: [satelliteLayer, streetLayer, soilLayerNitrogen], // add all basemap layers initially
+    view: new ol.View({
+        center: ol.proj.fromLonLat([106.6297, 10.8231]),
+        zoom: 15,
+        //rotation: Math.PI / 4 // 45 degrees in radians
+    }),
+    controls: [],
 });
 
 let currentBasemap = 1; // Set the current basemap index to 1 to represent streetLayer
-const basemaps = [soilLayer, streetLayer, satelliteLayer];
+const basemaps = [soilLayerNitrogen, streetLayer, satelliteLayer];
 
 function cycleBasemap() {
-  // Cycle through the basemaps
-  currentBasemap = (currentBasemap + 1) % basemaps.length;
+    // Cycle through the basemaps
+    currentBasemap = (currentBasemap + 1) % basemaps.length;
 
-  // Set the new basemap layer as visible and hide the other ones
-  basemaps.forEach((layer, index) => {
-    layer.setVisible(index === currentBasemap);
-  });
+    // Set the new basemap layer as visible and hide the other ones
+    basemaps.forEach((layer, index) => {
+        layer.setVisible(index === currentBasemap);
+    });
 
-  // Update the logo
-  const logoElement = document.querySelector(".logo");
-  const logoImage = basemaps[currentBasemap] === satelliteLayer
-    ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
-    : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
-  logoElement.src = logoImage;
+    // Update the logo
+    const logoElement = document.querySelector(".logo");
+    const logoImage = basemaps[currentBasemap] === satelliteLayer
+        ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
+        : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
+    logoElement.src = logoImage;
 }
-
 
 
 
@@ -2379,268 +2263,268 @@ function cycleBasemap() {
 
 
 
-        //SKETCH FARM BUTTON FUNCTION
-        // Function to fetch place name from OSM Nominatim
-        async function fetchPlaceName(lon, lat) {
-            const baseUrl = "https://nominatim.openstreetmap.org/reverse";
-            const format = "json";
-            const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18&addressdetails=1`;
+//SKETCH FARM BUTTON FUNCTION
+// Function to fetch place name from OSM Nominatim
+async function fetchPlaceName(lon, lat) {
+    const baseUrl = "https://nominatim.openstreetmap.org/reverse";
+    const format = "json";
+    const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18&addressdetails=1`;
 
-            try {
-                const response = await fetch(url);
-                if (response.ok) {
-                    const data = await response.json();
-                    const placeName = data.display_name || "";
-                    return placeName;
-                } else {
-                    console.error(
-                        "Failed to fetch place name:",
-                        response.status,
-                        response.statusText
-                    );
-                    return "";
-                }
-            } catch (error) {
-                console.error("Failed to fetch place name:", error);
-                return "";
+    try {
+        const response = await fetch(url);
+        if (response.ok) {
+            const data = await response.json();
+            const placeName = data.display_name || "";
+            return placeName;
+        } else {
+            console.error(
+                "Failed to fetch place name:",
+                response.status,
+                response.statusText
+            );
+            return "";
+        }
+    } catch (error) {
+        console.error("Failed to fetch place name:", error);
+        return "";
+    }
+}
+
+let isSketchActive = false;
+let draw;
+let polygonExists = false;
+let vectorSource = new ol.source.Vector();
+let tooltipOverlay; // Declare the tooltipOverlay variable outside the event listener
+let tooltipOverlays = []; // Store the tooltip overlays
+let timeoutId = null; // Move timeoutId declaration outside the function
+
+async function startSketchFarm() {
+    const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+    const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
+    const finishDrawingButton = document.querySelector('.finish-drawing');
+    const dialog = document.getElementById('dialog');
+
+    if (isSketchActive) {
+        // Dismiss floating message if it's still visible
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            const existingFloatingMessage = document.querySelector('.floating-message');
+            if (existingFloatingMessage) {
+                map.getViewport().removeChild(existingFloatingMessage);
             }
+            timeoutId = null; // Reset the timeoutId
         }
 
-        let isSketchActive = false;
-        let draw;
-        let polygonExists = false;
-        let vectorSource = new ol.source.Vector();
-        let tooltipOverlay; // Declare the tooltipOverlay variable outside the event listener
-        let tooltipOverlays = []; // Store the tooltip overlays
-        let timeoutId = null; // Move timeoutId declaration outside the function
+        if (polygonExists) {
+            dialog.classList.remove('hidden');
 
-        async function startSketchFarm() {
-            const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-            const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
-            const finishDrawingButton = document.querySelector('.finish-drawing');
-            const dialog = document.getElementById('dialog');
-
-            if (isSketchActive) {
-                // Dismiss floating message if it's still visible
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                    const existingFloatingMessage = document.querySelector('.floating-message');
-                    if (existingFloatingMessage) {
-                        map.getViewport().removeChild(existingFloatingMessage);
-                    }
-                    timeoutId = null; // Reset the timeoutId
+            document.getElementById('deleteYes').addEventListener('click', function () {
+                map.removeInteraction(draw);
+                isSketchActive = false;
+                polygonExists = false;
+                vectorSource.clear();
+                for (const overlay of tooltipOverlays) {
+                    map.removeOverlay(overlay); // Remove all tooltip overlays
                 }
+                sketchFarmBtn.style.backgroundColor = "white";
+                sketchFarmBtnIcon.textContent = "create";
+                sketchFarmBtnIcon.style.color = "#515151";
+                finishDrawingButton.classList.add('hidden');
+                dialog.classList.add('hidden');
 
-                if (polygonExists) {
-                    dialog.classList.remove('hidden');
+                console.clear();
+            });
 
-                    document.getElementById('deleteYes').addEventListener('click', function () {
-                        map.removeInteraction(draw);
-                        isSketchActive = false;
-                        polygonExists = false;
-                        vectorSource.clear();
-                        for (const overlay of tooltipOverlays) {
-                            map.removeOverlay(overlay); // Remove all tooltip overlays
-                        }
-                        sketchFarmBtn.style.backgroundColor = "white";
-                        sketchFarmBtnIcon.textContent = "create";
-                        sketchFarmBtnIcon.style.color = "#515151";
-                        finishDrawingButton.classList.add('hidden');
-                        dialog.classList.add('hidden');
+            document.getElementById('deleteNo').addEventListener('click', function () {
+                dialog.classList.add('hidden');
+            });
+        } else {
+            map.removeInteraction(draw);
+            isSketchActive = false;
+            sketchFarmBtn.style.backgroundColor = "white";
+            sketchFarmBtnIcon.textContent = "create";
+            sketchFarmBtnIcon.style.color = "#515151";
+            finishDrawingButton.classList.add('hidden');
+        }
+        return;
+    }
 
-                        console.clear();
-                    });
+    // Add floating message
+    const floatingMessage = document.createElement("div");
+    floatingMessage.className = "floating-message";
+    const infoIcon = document.createElement("i");
+    infoIcon.className = "material-icons";
+    infoIcon.textContent = "touch_app";
+    infoIcon.style.fontSize = "100px";
+    floatingMessage.appendChild(infoIcon);
+    floatingMessage.innerHTML +=
+        "   Chạm vào màn hình để bắt đầu vẽ trang trại"; // "Tap the screen to start drawing farm"
+    map.getViewport().appendChild(floatingMessage);
 
-                    document.getElementById('deleteNo').addEventListener('click', function () {
-                        dialog.classList.add('hidden');
-                    });
-                } else {
-                    map.removeInteraction(draw);
-                    isSketchActive = false;
-                    sketchFarmBtn.style.backgroundColor = "white";
-                    sketchFarmBtnIcon.textContent = "create";
-                    sketchFarmBtnIcon.style.color = "#515151";
-                    finishDrawingButton.classList.add('hidden');
-                }
-                return;
+    // Remove floating message after 3 seconds
+    timeoutId = setTimeout(function () {
+        map.getViewport().removeChild(floatingMessage);
+    }, 3000);
+
+    //Sketching Farm Polygon
+    const farmVectorLayer = new ol.layer.Vector({
+        source: vectorSource,
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: "rgba(56, 108, 52, 0.5)", // 80% transparent fill
+            }),
+            stroke: new ol.style.Stroke({
+                color: "#386c34", // solid color for the stroke
+                width: 10,
+            }),
+        }),
+    });
+
+    map.addLayer(farmVectorLayer);
+
+    draw = new ol.interaction.Draw({
+        source: vectorSource,
+        type: "Polygon",
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: "rgba(255, 255, 255, 0.1)",
+            }),
+            stroke: new ol.style.Stroke({
+                color: "#386c34",
+                width: 10,
+            }),
+            image: new ol.style.Circle({
+                radius: 18,
+                fill: new ol.style.Fill({
+                    color: "#386c34",
+                }),
+                stroke: new ol.style.Stroke({
+                    color: "#ffffff",
+                    width: 9,
+                }),
+            }),
+        }),
+    });
+
+    map.addInteraction(draw);
+    isSketchActive = true;
+
+    // Create a custom canvas pattern for diagonal lines with transparency
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    const size = 10; // Size of each pattern element
+    const spacing = 8; // Spacing between pattern elements
+    canvas.width = size;
+    canvas.height = size;
+    context.strokeStyle = "rgba(56, 108, 52, 0.5)"; // Color of the lines with transparency
+    context.lineWidth = 2;
+    context.beginPath();
+    context.moveTo(0, 0);
+    context.lineTo(size, size);
+    context.stroke();
+
+    const pattern = context.createPattern(canvas, "repeat");
+
+    // Apply the custom pattern as the fill style for the polygon
+    farmVectorLayer.setStyle(
+        new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: pattern,
+            }),
+            stroke: new ol.style.Stroke({
+                color: "#386c34",
+                width: 10,
+            }),
+        })
+    );
+
+    sketchFarmBtn.style.backgroundColor = "#FF6666";
+    sketchFarmBtnIcon.textContent = "delete_forever";
+    sketchFarmBtnIcon.style.color = "white";
+
+    draw.on("drawstart", function (event) {
+        polygonExists = true;
+        event.feature.getGeometry().on("change", function (geomEvent) {
+            const coordinates = geomEvent.target.getCoordinates()[0];
+            if (coordinates.length >= 5) {
+                finishDrawingButton.classList.remove('hidden');
             }
+        });
+    });
 
-            // Add floating message
-            const floatingMessage = document.createElement("div");
-            floatingMessage.className = "floating-message";
-            const infoIcon = document.createElement("i");
-            infoIcon.className = "material-icons";
-            infoIcon.textContent = "touch_app";
-            infoIcon.style.fontSize = "100px";
-            floatingMessage.appendChild(infoIcon);
-            floatingMessage.innerHTML +=
-                "   Chạm vào màn hình để bắt đầu vẽ trang trại"; // "Tap the screen to start drawing farm"
-            map.getViewport().appendChild(floatingMessage);
+    draw.on("drawend", async function (event) {
+        const polygonGeometry = event.feature.getGeometry();
+        const centroid = ol.extent.getCenter(polygonGeometry.getExtent());
+        const farmCenterLon = centroid[0];
+        const farmCenterLat = centroid[1];
 
-            // Remove floating message after 3 seconds
-            timeoutId = setTimeout(function () {
-                map.getViewport().removeChild(floatingMessage);
-            }, 3000);
+        const pointFeature = new ol.Feature({
+            geometry: new ol.geom.Point(centroid),
+        });
 
-            //Sketching Farm Polygon
-            const farmVectorLayer = new ol.layer.Vector({
-                source: vectorSource,
-                style: new ol.style.Style({
+        // Center Point
+        pointFeature.setStyle(
+            new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 16,
                     fill: new ol.style.Fill({
-                        color: "rgba(56, 108, 52, 0.5)", // 80% transparent fill
+                        color: '#386c34',
                     }),
                     stroke: new ol.style.Stroke({
-                        color: "#386c34", // solid color for the stroke
-                        width: 10,
+                        color: 'white',
+                        width: 8,
                     }),
                 }),
-            });
+            })
+        );
 
-            map.addLayer(farmVectorLayer);
+        vectorSource.addFeature(pointFeature);
 
-            draw = new ol.interaction.Draw({
-                source: vectorSource,
-                type: "Polygon",
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: "rgba(255, 255, 255, 0.1)",
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: "#386c34",
-                        width: 10,
-                    }),
-                    image: new ol.style.Circle({
-                        radius: 18,
-                        fill: new ol.style.Fill({
-                            color: "#386c34",
-                        }),
-                        stroke: new ol.style.Stroke({
-                            color: "#ffffff",
-                            width: 9,
-                        }),
-                    }),
-                }),
-            });
+        const centerPointCoordinates = ol.proj.transform([farmCenterLon, farmCenterLat], 'EPSG:3857', 'EPSG:4326');
+        console.log('Center Point Lon:', centerPointCoordinates[0]);
+        console.log('Center Point Lat:', centerPointCoordinates[1]);
 
-            map.addInteraction(draw);
-            isSketchActive = true;
+        const polygonCoordinates = polygonGeometry.getCoordinates()[0];
+        console.log('Polygon Coordinates:');
+        const polygonPoints = [];
+        polygonCoordinates.forEach((coordinate, index) => {
+            const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+            polygonPoints.push({ lon: lonLat[0], lat: lonLat[1] });
+            console.log(`Point ${index + 1}: Lon ${lonLat[0]}, Lat ${lonLat[1]}`);
+        });
 
-            // Create a custom canvas pattern for diagonal lines with transparency
-            const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d");
-            const size = 10; // Size of each pattern element
-            const spacing = 8; // Spacing between pattern elements
-            canvas.width = size;
-            canvas.height = size;
-            context.strokeStyle = "rgba(56, 108, 52, 0.5)"; // Color of the lines with transparency
-            context.lineWidth = 2;
-            context.beginPath();
-            context.moveTo(0, 0);
-            context.lineTo(size, size);
-            context.stroke();
+        const segments = [];
+        const segmentLengths = [];
+        for (let i = 0; i < polygonCoordinates.length - 1; i++) {
+            const startPoint = polygonCoordinates[i];
+            const endPoint = polygonCoordinates[i + 1];
+            const segment = new ol.geom.LineString([startPoint, endPoint]);
+            segments.push(segment);
+            const length = ol.sphere.getLength(segment);
+            segmentLengths.push(length.toFixed(2));
+        }
 
-            const pattern = context.createPattern(canvas, "repeat");
+        console.log('Segment Lengths (m):');
+        segmentLengths.forEach((length, index) => {
+            console.log(`Segment ${index + 1}: ${length} meters`);
+        });
 
-            // Apply the custom pattern as the fill style for the polygon
-            farmVectorLayer.setStyle(
-                new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: pattern,
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: "#386c34",
-                        width: 10,
-                    }),
-                })
-            );
+        const area = ol.sphere.getArea(polygonGeometry);
+        let areaHectares = null;
+        if (area > 10000) {
+            areaHectares = (area / 10000).toFixed(2);
+        }
+        console.log('Polygon Area:');
+        console.log(`Area (m²): ${area.toFixed(2)} square meters`);
+        if (areaHectares) {
+            console.log(`Area (ha): ${areaHectares} hectares`);
+        }
 
-            sketchFarmBtn.style.backgroundColor = "#FF6666";
-            sketchFarmBtnIcon.textContent = "delete_forever";
-            sketchFarmBtnIcon.style.color = "white";
+        const address = await fetchPlaceName(centerPointCoordinates[0], centerPointCoordinates[1]);
+        console.log("Address:", address);
 
-            draw.on("drawstart", function (event) {
-                polygonExists = true;
-                event.feature.getGeometry().on("change", function (geomEvent) {
-                    const coordinates = geomEvent.target.getCoordinates()[0];
-                    if (coordinates.length >= 5) {
-                        finishDrawingButton.classList.remove('hidden');
-                    }
-                });
-            });
-
-            draw.on("drawend", async function (event) {
-                const polygonGeometry = event.feature.getGeometry();
-                const centroid = ol.extent.getCenter(polygonGeometry.getExtent());
-                const farmCenterLon = centroid[0];
-                const farmCenterLat = centroid[1];
-
-                const pointFeature = new ol.Feature({
-                    geometry: new ol.geom.Point(centroid),
-                });
-
-                // Center Point
-                pointFeature.setStyle(
-                    new ol.style.Style({
-                        image: new ol.style.Circle({
-                            radius: 16,
-                            fill: new ol.style.Fill({
-                                color: '#386c34',
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: 'white',
-                                width: 8,
-                            }),
-                        }),
-                    })
-                );
-
-                vectorSource.addFeature(pointFeature);
-
-                const centerPointCoordinates = ol.proj.transform([farmCenterLon, farmCenterLat], 'EPSG:3857', 'EPSG:4326');
-                console.log('Center Point Lon:', centerPointCoordinates[0]);
-                console.log('Center Point Lat:', centerPointCoordinates[1]);
-
-                const polygonCoordinates = polygonGeometry.getCoordinates()[0];
-                console.log('Polygon Coordinates:');
-                const polygonPoints = [];
-                polygonCoordinates.forEach((coordinate, index) => {
-                    const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-                    polygonPoints.push({ lon: lonLat[0], lat: lonLat[1] });
-                    console.log(`Point ${index + 1}: Lon ${lonLat[0]}, Lat ${lonLat[1]}`);
-                });
-
-                const segments = [];
-                const segmentLengths = [];
-                for (let i = 0; i < polygonCoordinates.length - 1; i++) {
-                    const startPoint = polygonCoordinates[i];
-                    const endPoint = polygonCoordinates[i + 1];
-                    const segment = new ol.geom.LineString([startPoint, endPoint]);
-                    segments.push(segment);
-                    const length = ol.sphere.getLength(segment);
-                    segmentLengths.push(length.toFixed(2));
-                }
-
-                console.log('Segment Lengths (m):');
-                segmentLengths.forEach((length, index) => {
-                    console.log(`Segment ${index + 1}: ${length} meters`);
-                });
-
-                const area = ol.sphere.getArea(polygonGeometry);
-                let areaHectares = null;
-                if (area > 10000) {
-                    areaHectares = (area / 10000).toFixed(2);
-                }
-                console.log('Polygon Area:');
-                console.log(`Area (m²): ${area.toFixed(2)} square meters`);
-                if (areaHectares) {
-                    console.log(`Area (ha): ${areaHectares} hectares`);
-                }
-
-                const address = await fetchPlaceName(centerPointCoordinates[0], centerPointCoordinates[1]);
-                console.log("Address:", address);
-
-                const tooltipElement = document.createElement('div');
-                tooltipElement.style.cssText = `
+        const tooltipElement = document.createElement('div');
+        tooltipElement.style.cssText = `
 position: absolute;
 background-color: #ffffff;
 border: 1px solid #ccc;
@@ -2658,127 +2542,127 @@ min-width: 120px;
 height: 30px;
 `;
 
-                const areaInHectares = area > 1000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
-                tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 50px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
+        const areaInHectares = area > 1000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
+        tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 50px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
 
-                tooltipOverlay = new ol.Overlay({
-                    element: tooltipElement,
-                    offset: [0, -120],
-                    positioning: 'bottom-center',
-                });
-
-                tooltipOverlay.setPosition(centroid);
-
-                map.addOverlay(tooltipOverlay);
-                tooltipOverlays.push(tooltipOverlay); // Push the tooltip overlay to the array
-
-
-
-
-                //Get Elevation Values from Map Box Elevation
-                async function getElevationFromMapbox(centerPointCoordinates) {
-                    const accessToken = 'pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw';
-
-                    let centerElevation;
-
-                    try {
-                        const centerPointLon = centerPointCoordinates[0];
-                        const centerPointLat = centerPointCoordinates[1];
-                        const centerUrl = `https://api.mapbox.com/v4/mapbox.mapbox-terrain-v2/tilequery/${centerPointLon},${centerPointLat}.json?layers=contour&access_token=${accessToken}`;
-                        const centerResponse = await fetch(centerUrl);
-                        if (centerResponse.ok) {
-                            const centerData = await centerResponse.json();
-                            if (centerData.features && centerData.features.length > 0) {
-                                centerElevation = centerData.features[0].properties.ele; // Update the assignment statement
-                                console.log("Elevation (meters):", centerElevation);
-                            } else {
-                                console.error("No elevation data found for the center point.");
-                            }
-                        } else {
-                            console.error("Failed to fetch elevation data for the center point:", centerResponse.status, centerResponse.statusText);
-                        }
-                    } catch (error) {
-                        console.error("Failed to fetch elevation data for the center point:", error);
-                    }
-
-                    // Send to React Native App
-                    const dataToPost = {
-                        centerPoint: {
-                            lon: centerPointCoordinates[0],
-                            lat: centerPointCoordinates[1],
-                            elevation: centerElevation
-                        },
-                        polygonCoordinates: polygonPoints,
-                        segmentLengths: segmentLengths,
-                        area: {
-                            squareMeters: area.toFixed(2),
-                            hectares: areaHectares
-                        },
-                        address: address
-                    };
-
-                    try {
-                        // Send data to React Native App
-                        window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
-                    } catch (error) {
-                        // Handle the error (or do nothing to prevent logging)
-                    }
-                }
-
-                // Usage example:
-                // Assuming you have the centerPointCoordinates from your existing code
-                getElevationFromMapbox(centerPointCoordinates);
-
-
-
-            });
-        }
-
-
-
-        const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-        sketchFarmBtn.addEventListener("click", function () {
-            startSketchFarm();
+        tooltipOverlay = new ol.Overlay({
+            element: tooltipElement,
+            offset: [0, -120],
+            positioning: 'bottom-center',
         });
 
-        const finishDrawingButton = document.querySelector('.finish-drawing');
-        finishDrawingButton.addEventListener('click', function () {
-            if (draw) {
-                draw.finishDrawing();
-                finishDrawingButton.classList.add('hidden');
-                map.removeInteraction(draw); // Disable further drawing
-                isSketchActive = false; // Set the sketching state to inactive
-            }
-        });
+        tooltipOverlay.setPosition(centroid);
 
-        function deactivateSketchFarm() {
-            const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-            if (isSketchActive) {
-                // Set sketchFarmBtn to inactive state
-                sketchFarmBtn.style.backgroundColor = "white";
-                const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
-                sketchFarmBtnIcon.textContent = "create";
-                sketchFarmBtnIcon.style.color = "#515151";
+        map.addOverlay(tooltipOverlay);
+        tooltipOverlays.push(tooltipOverlay); // Push the tooltip overlay to the array
 
-                // Remove sketching interaction
-                if (draw) {
-                    map.removeInteraction(draw);
-                    draw = null;
-                }
 
-                // Clear floating message timeout
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                    timeoutId = null;
-                }
 
-                isSketchActive = false; // Set the sketching state to inactive
-            }
+
+//Get Elevation Values from Map Box Elevation
+        async function getElevationFromMapbox(centerPointCoordinates) {
+  const accessToken = 'pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw';
+  
+  let centerElevation;
+
+  try {
+    const centerPointLon = centerPointCoordinates[0];
+    const centerPointLat = centerPointCoordinates[1];
+    const centerUrl = `https://api.mapbox.com/v4/mapbox.mapbox-terrain-v2/tilequery/${centerPointLon},${centerPointLat}.json?layers=contour&access_token=${accessToken}`;
+    const centerResponse = await fetch(centerUrl);
+    if (centerResponse.ok) {
+      const centerData = await centerResponse.json();
+      if (centerData.features && centerData.features.length > 0) {
+        centerElevation = centerData.features[0].properties.ele; // Update the assignment statement
+        console.log("Elevation (meters):", centerElevation);
+      } else {
+        console.error("No elevation data found for the center point.");
+      }
+    } else {
+      console.error("Failed to fetch elevation data for the center point:", centerResponse.status, centerResponse.statusText);
+    }
+  } catch (error) {
+    console.error("Failed to fetch elevation data for the center point:", error);
+  }
+
+  // Send to React Native App
+  const dataToPost = {
+    centerPoint: {
+      lon: centerPointCoordinates[0],
+      lat: centerPointCoordinates[1],
+      elevation: centerElevation
+    },
+    polygonCoordinates: polygonPoints,
+    segmentLengths: segmentLengths,
+    area: {
+      squareMeters: area.toFixed(2),
+      hectares: areaHectares
+    },
+    address: address
+  };
+
+  try {
+    // Send data to React Native App
+    window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
+  } catch (error) {
+    // Handle the error (or do nothing to prevent logging)
+  }
+}
+
+// Usage example:
+// Assuming you have the centerPointCoordinates from your existing code
+getElevationFromMapbox(centerPointCoordinates);
+
+
+
+    });
+}
+
+
+
+const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+sketchFarmBtn.addEventListener("click", function () {
+    startSketchFarm();
+});
+
+const finishDrawingButton = document.querySelector('.finish-drawing');
+finishDrawingButton.addEventListener('click', function () {
+    if (draw) {
+        draw.finishDrawing();
+        finishDrawingButton.classList.add('hidden');
+        map.removeInteraction(draw); // Disable further drawing
+        isSketchActive = false; // Set the sketching state to inactive
+    }
+});
+
+function deactivateSketchFarm() {
+    const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+    if (isSketchActive) {
+        // Set sketchFarmBtn to inactive state
+        sketchFarmBtn.style.backgroundColor = "white";
+        const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
+        sketchFarmBtnIcon.textContent = "create";
+        sketchFarmBtnIcon.style.color = "#515151";
+
+        // Remove sketching interaction
+        if (draw) {
+            map.removeInteraction(draw);
+            draw = null;
         }
 
-        document.getElementById("measureAreaBtn").addEventListener("click", deactivateSketchFarm);
-        document.getElementById("measureLengthBtn").addEventListener("click", deactivateSketchFarm);
-        document.getElementById("addSensorBtn").addEventListener("click", deactivateSketchFarm);
+        // Clear floating message timeout
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+            timeoutId = null;
+        }
+
+        isSketchActive = false; // Set the sketching state to inactive
+    }
+}
+
+document.getElementById("measureAreaBtn").addEventListener("click", deactivateSketchFarm);
+document.getElementById("measureLengthBtn").addEventListener("click", deactivateSketchFarm);
+document.getElementById("addSensorBtn").addEventListener("click", deactivateSketchFarm);
 
 
 
@@ -3130,7 +3014,7 @@ height: 30px;
 
 
 
-        ///// RESET BUTTON FUNCTION \\\\\
+        //RESET BUTTON FUNCTION
         // Get the reset button element
         const resetButton = document.getElementById("resetBtn");
 
@@ -3144,19 +3028,10 @@ height: 30px;
 
 
 
-        ///// SCALE BAR \\\\\
-        var scale_line = new ol.control.ScaleLine({
-            units: 'metric',
-            bar: false,
-            steps: 6,
-            text: true,
-            minWidth: 240,
-            fontSize: 40,
-            target: 'scale_bar',
-        });
-        map.addControl(scale_line);
 
-        //custom Scale
+
+
+
 
 
 
