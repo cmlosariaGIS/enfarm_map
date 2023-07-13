@@ -1002,9 +1002,6 @@
         </div>
 
 
-
-
-
         <!--<button id="locationBtn" class="locationBtn" onclick="getUserLocation()">
             <i class="material-icons">gps_fixed</i>
         </button>-->
@@ -1017,147 +1014,144 @@
 
     <script>
 
-        // Ensure Shepherd.js is loaded before using it
-        window.addEventListener('DOMContentLoaded', () => {
-            // Create a new instance of Shepherd
-            const tour = new Shepherd.Tour({
-                useModalOverlay: true,
-                defaultStepOptions: {
-                    classes: 'shadow-md bg-purple-dark',
-                    scrollTo: true,
-                },
-            });
+        //MAP PRODUCT TOUR
+        // Check if the tour has already been shown
+        const tourShown = localStorage.getItem('tourShown');
 
-            // Define the steps of the tour
-            tour.addStep({
-                id: 'step-search',
-                text: '<span style="font-size: 40px;">Nhấp vào nút này để tìm kiếm các địa điểm.</span>', //Click this button to search for places.
-                attachTo: {
-                    element: '#searchBtn',
-                    on: 'left',
-                },
-                buttons: [
-                    {
-                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
-                        action: tour.next,
+        if (!tourShown) {
+            // Ensure Shepherd.js is loaded before using it
+            window.addEventListener('DOMContentLoaded', () => {
+                // Create a new instance of Shepherd
+                const tour = new Shepherd.Tour({
+                    useModalOverlay: true,
+                    defaultStepOptions: {
+                        classes: 'shadow-md bg-purple-dark',
+                        scrollTo: true,
                     },
-                ],
-            });
-
-
-            tour.addStep({
-                id: 'step-basemap',
-                text: '<span style="font-size: 40px;">Nhấp vào nút này để chuyển đổi bản đồ cơ sở.</span>', //Click this button to switch basemaps.
-                attachTo: {
-                    element: '#basemapBtn',
-                    on: 'left',
-                },
-                buttons: [
-                    {
-                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
-                        action: tour.next,
+                });
+                // Define the steps of the tour
+                tour.addStep({
+                    id: 'step-search',
+                    text: '<span style="font-size: 40px;">Nhấp vào nút này để tìm kiếm các địa điểm.</span>', //Click this button to search for places.
+                    attachTo: {
+                        element: '#searchBtn',
+                        on: 'left',
                     },
-                ],
-            });
-
-            tour.addStep({
-                id: 'step-measure-area',
-                text: '<span style="font-size: 40px;">Bấm vào nút này để đo diện tích.</span>', //Click this button to measure area.
-                attachTo: {
-                    element: '#measureAreaBtn',
-                    on: 'left',
-                },
-                buttons: [
-                    {
-                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
-                        action: tour.next,
-                    },
-                ],
-            });
-
-            tour.addStep({
-                id: 'step-measure-length',
-                text: '<span style="font-size: 40px;">Bấm vào nút này để đo chiều dài.</span>', //Click this button to measure length.
-                attachTo: {
-                    element: '#measureLengthBtn',
-                    on: 'left',
-                },
-                buttons: [
-                    {
-                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
-                        action: tour.next,
-                    },
-                ],
-            });
-
-            tour.addStep({
-                id: 'step-sketch-farm',
-                text: '<span style="font-size: 40px;">Nhấp vào nút này để phác thảo trang trại của bạn.</span>', //Click this button to sketch your farms.
-                attachTo: {
-                    element: '#sketchFarmBtn',
-                    on: 'left',
-                },
-                buttons: [
-                    {
-                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
-                        action: tour.next,
-                    },
-                ],
-            });
-
-            tour.addStep({
-                id: 'step-add-sensor',
-                text: '<span style="font-size: 40px;">Nhấp vào nút này để thêm/các cảm biến enfarm.</span>', //Click this button to add enfarm sensor/s.
-                attachTo: {
-                    element: '#addSensorBtn',
-                    on: 'left',
-                },
-                buttons: [
-                    {
-                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
-                        action: tour.next,
-                    },
-                ],
-            });
-
-
-            tour.addStep({
-                id: 'step-reset',
-                text: '<span style="font-size: 40px;">Nhấp vào nút này để đặt lại bản đồ.</span>', //Click this button to reset the map.
-                attachTo: {
-                    element: '#resetBtn',
-                    on: 'left',
-                },
-                buttons: [
-                    {
-                        text: '<span style="font-size: 40px;">Làm lại</span>', //Repeat
-                        action: () => {
-                            tour.show('step-search');
+                    buttons: [
+                        {
+                            text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                            action: tour.next,
                         },
-                        classes: 'shepherd-button-secondary',
+                    ],
+                });
+
+
+                tour.addStep({
+                    id: 'step-basemap',
+                    text: '<span style="font-size: 40px;">Nhấp vào nút này để chuyển đổi bản đồ cơ sở.</span>', //Click this button to switch basemaps.
+                    attachTo: {
+                        element: '#basemapBtn',
+                        on: 'left',
                     },
-                    {
-                        text: '<span style="font-size: 40px;">Xong</span>', //Done
-                        action: tour.complete,
+                    buttons: [
+                        {
+                            text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                            action: tour.next,
+                        },
+                    ],
+                });
+
+                tour.addStep({
+                    id: 'step-measure-area',
+                    text: '<span style="font-size: 40px;">Bấm vào nút này để đo diện tích.</span>', //Click this button to measure area.
+                    attachTo: {
+                        element: '#measureAreaBtn',
+                        on: 'left',
                     },
-                ],
+                    buttons: [
+                        {
+                            text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                            action: tour.next,
+                        },
+                    ],
+                });
+
+                tour.addStep({
+                    id: 'step-measure-length',
+                    text: '<span style="font-size: 40px;">Bấm vào nút này để đo chiều dài.</span>', //Click this button to measure length.
+                    attachTo: {
+                        element: '#measureLengthBtn',
+                        on: 'left',
+                    },
+                    buttons: [
+                        {
+                            text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                            action: tour.next,
+                        },
+                    ],
+                });
+
+                tour.addStep({
+                    id: 'step-sketch-farm',
+                    text: '<span style="font-size: 40px;">Nhấp vào nút này để phác thảo trang trại của bạn.</span>', //Click this button to sketch your farms.
+                    attachTo: {
+                        element: '#sketchFarmBtn',
+                        on: 'left',
+                    },
+                    buttons: [
+                        {
+                            text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                            action: tour.next,
+                        },
+                    ],
+                });
+
+                tour.addStep({
+                    id: 'step-add-sensor',
+                    text: '<span style="font-size: 40px;">Nhấp vào nút này để thêm/các cảm biến enfarm.</span>', //Click this button to add enfarm sensor/s.
+                    attachTo: {
+                        element: '#addSensorBtn',
+                        on: 'left',
+                    },
+                    buttons: [
+                        {
+                            text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                            action: tour.next,
+                        },
+                    ],
+                });
+
+
+                tour.addStep({
+                    id: 'step-reset',
+                    text: '<span style="font-size: 40px;">Nhấp vào nút này để đặt lại bản đồ.</span>', //Click this button to reset the map.
+                    attachTo: {
+                        element: '#resetBtn',
+                        on: 'left',
+                    },
+                    buttons: [
+                        {
+                            text: '<span style="font-size: 40px;">Làm lại</span>', //Repeat
+                            action: () => {
+                                tour.show('step-search');
+                            },
+                            classes: 'shepherd-button-secondary',
+                        },
+                        {
+                            text: '<span style="font-size: 40px;">Xong</span>', //Done
+                            action: () => {
+                                // Mark the tour as shown in the browser storage
+                                localStorage.setItem('tourShown', true);
+                                tour.complete();
+                            },
+                        },
+                    ],
+                });
+
+                // Start the tour
+                tour.start();
             });
-
-            // Start the tour
-            tour.start();
-        });
-
-
-
-
-
-
-
-
-
-
-
-
+        }
 
 
         // SEARCH PLACE BUTTON FUNCTION
