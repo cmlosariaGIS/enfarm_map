@@ -11,6 +11,14 @@
     <script src="https://cdn.jsdelivr.net/npm/ol@v7.4.0/dist/ol.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.4.0/ol.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css" />
+
+
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
+
+
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <style>
@@ -35,7 +43,7 @@
         .map {
             position: relative;
             width: 100%;
-            height: 100vh;
+            height: 50vh;
             /* Set an initial height for the map container */
         }
 
@@ -400,6 +408,18 @@
             }
         }
 
+        .close-bm-button {
+            position: absolute;
+            top: 42px;
+            right: 30px;
+            cursor: pointer;
+            color: #515151;
+        }
+
+        .close-bm-button i {
+            font-size: 60px;
+        }
+
 
 
 
@@ -575,7 +595,11 @@
             .searchBtn,
             .measureAreaBtn,
             .measureLengthBtn,
-            .drawBtn {
+            .drawFarmBtn,
+            .sketchFarmBtn,
+            .northArrow,
+            .resetBtn,
+            .addSensorBtn {
                 font-size: 20px;
                 padding: 8px 12px;
             }
@@ -595,7 +619,11 @@
             .searchBtn,
             .measureAreaBtn,
             .measureLengthBtn,
-            .drawBtn {
+            .drawFarmBtn,
+            .sketchFarmBtn,
+            .northArrow,
+            .resetBtn,
+            .addSensorBtn {
                 font-size: 16px;
                 padding: 6px 10px;
             }
@@ -669,8 +697,8 @@
 
         /****** Start Reset Button *******/
         #resetBtn {
-            position: fixed;
-            bottom: 15%;
+            position: relative;
+            bottom: 25%;
             left: 40px;
             background-color: #ffffff;
             border: none;
@@ -695,8 +723,8 @@
 
         /****** Start Scale line Styles *******/
         .ol-scale-line {
-            position: fixed;
-            bottom: 10%;
+            position: absolute;
+            bottom: 3%;
             left: 30px;
             background: none;
             border: none;
@@ -739,24 +767,93 @@
 
         /****** End Scale line Styles *******/
 
-
-
-
-        .close-bm-button {
-            position: absolute;
-            top: 42px;
-            right: 30px;
+        /***** Start Product Tour *****/
+        /*Next Button*/
+        .shepherd-button {
+            background: green;
+            font-weight: bold;
+            border: 0;
+            border-radius: 10px;
+            color: white;
             cursor: pointer;
-            color: #515151;
+            margin-right: .5rem;
+            padding: 1rem 2.5rem;
+            transition: all .5s ease
         }
 
-        .close-bm-button i {
-            font-size: 60px;
+        .shepherd-button:not(:disabled):hover {
+            background: green;
+            color: hsla(0, 0%, 100%, .75)
+        }
+
+        /*Modal*/
+        .shepherd-element {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+            max-width: 800px;
+            max-height: 300px;
+            opacity: 0;
+            outline: none;
+            padding-left: 10px;
+            padding-top: 20px;
+            transition: opacity .3s, visibility .3s;
+            visibility: hidden;
+            width: 100%;
+            z-index: 9999
+        }
+
+        .shepherd-button.shepherd-button-secondary {
+            background: #3288e6;
+            color: white;
+            font-weight: bold;
+        }
+
+        .shepherd-button.shepherd-button-secondary:not(:disabled):hover {
+            background: #196fcc;
+            color: hsla(0, 0%, 100%, .75);
+        }
+
+        .shepherd-button:disabled {
+            cursor: not-allowed
+        }
+
+        .shepherd-button {
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+        }
+
+        .shepherd-text p {
+            margin-bottom: 20px;
+        }
+
+
+
+        .shepherd-has-title .shepherd-content .shepherd-header {
+            background: #e6e6e6;
+            padding: 1em
+        }
+
+        .shepherd-text {
+            color: rgba(0, 0, 0, .75);
+            font-size: 1rem;
+            line-height: 2.5em;
+            padding: .75em
+        }
+
+        .shepherd-text p:last-child {
+            margin-bottom: 0
+        }
+
+        .shepherd-content {
+            border-radius: 5px;
+            outline: none;
+            padding: 0
         }
     </style>
 </head>
 
 <body>
+
     <div class="map">
         <div id="map" class="map">
             <div class="blur-mask"></div>
@@ -916,7 +1013,135 @@
 
     <script>
 
+        // Ensure Shepherd.js is loaded before using it
+        window.addEventListener('DOMContentLoaded', () => {
+            // Create a new instance of Shepherd
+            const tour = new Shepherd.Tour({
+                useModalOverlay: true,
+                defaultStepOptions: {
+                    classes: 'shadow-md bg-purple-dark',
+                    scrollTo: true,
+                },
+            });
 
+            // Define the steps of the tour
+            tour.addStep({
+                id: 'step-search',
+                text: '<span style="font-size: 40px;">Nhấp vào nút này để tìm kiếm các địa điểm.</span>', //Click this button to search for places.
+                attachTo: {
+                    element: '#searchBtn',
+                    on: 'left',
+                },
+                buttons: [
+                    {
+                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                        action: tour.next,
+                    },
+                ],
+            });
+
+
+            tour.addStep({
+                id: 'step-basemap',
+                text: '<span style="font-size: 40px;">Nhấp vào nút này để chuyển đổi bản đồ cơ sở.</span>', //Click this button to switch basemaps.
+                attachTo: {
+                    element: '#basemapBtn',
+                    on: 'left',
+                },
+                buttons: [
+                    {
+                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                        action: tour.next,
+                    },
+                ],
+            });
+
+            tour.addStep({
+                id: 'step-measure-area',
+                text: '<span style="font-size: 40px;">Bấm vào nút này để đo diện tích.</span>', //Click this button to measure area.
+                attachTo: {
+                    element: '#measureAreaBtn',
+                    on: 'left',
+                },
+                buttons: [
+                    {
+                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                        action: tour.next,
+                    },
+                ],
+            });
+
+            tour.addStep({
+                id: 'step-measure-length',
+                text: '<span style="font-size: 40px;">Bấm vào nút này để đo chiều dài.</span>', //Click this button to measure length.
+                attachTo: {
+                    element: '#measureLengthBtn',
+                    on: 'left',
+                },
+                buttons: [
+                    {
+                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                        action: tour.next,
+                    },
+                ],
+            });
+
+            tour.addStep({
+                id: 'step-sketch-farm',
+                text: '<span style="font-size: 40px;">Nhấp vào nút này để phác thảo trang trại của bạn.</span>', //Click this button to sketch your farms.
+                attachTo: {
+                    element: '#sketchFarmBtn',
+                    on: 'left',
+                },
+                buttons: [
+                    {
+                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                        action: tour.next,
+                    },
+                ],
+            });
+
+            tour.addStep({
+                id: 'step-add-sensor',
+                text: '<span style="font-size: 40px;">Nhấp vào nút này để thêm/các cảm biến enfarm.</span>', //Click this button to add enfarm sensor/s.
+                attachTo: {
+                    element: '#addSensorBtn',
+                    on: 'left',
+                },
+                buttons: [
+                    {
+                        text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                        action: tour.next,
+                    },
+                ],
+            });
+
+
+            tour.addStep({
+                id: 'step-reset',
+                text: '<span style="font-size: 40px;">Nhấp vào nút này để đặt lại bản đồ.</span>', //Click this button to reset the map.
+                attachTo: {
+                    element: '#resetBtn',
+                    on: 'left',
+                },
+                buttons: [
+                    {
+                        text: '<span style="font-size: 40px;">Làm lại</span>', //Repeat
+                        action: () => {
+                            tour.show('step-search');
+                        },
+                        classes: 'shepherd-button-secondary',
+                    },
+                    {
+                        text: '<span style="font-size: 40px;">Xong</span>', //Done
+                        action: tour.complete,
+                    },
+                ],
+            });
+
+            // Start the tour
+            tour.start();
+        });
 
 
         // SEARCH PLACE BUTTON FUNCTION
@@ -1570,10 +1795,11 @@
                 const clearAllButton = document.createElement("button");
                 clearAllButton.id = "clearAllBtn";
                 clearAllButton.innerHTML = `
-  <div style="display: flex; align-items: center; justify-content: center; width: 840px; margin: 0 auto; padding-bottom: 30px; padding-top: 30px">
-    <i class="material-icons" style="font-size: 70px; margin-right: 20px;">delete</i>
-    <span style="font-size: 45px; color: #515151;">Xóa tất cả tìm kiếm</span> 
-  </div>`;
+<div style="display: flex; align-items: center; justify-content: center; width: 840px; margin: 0 auto; padding-bottom: 30px; padding-top: 30px; font-family: 'Be Vietnam Pro', Arial, sans-serif;">
+  <i class="material-icons" style="font-size: 70px; margin-right: 20px;">delete</i>
+  <span style="font-size: 45px; color: #515151;">Xóa tất cả tìm kiếm</span> 
+</div>`;
+
 
 
 
@@ -1680,11 +1906,11 @@
         });
 
         const carbonLayer = new ol.layer.Tile({
-    source: new ol.source.TileWMS({
-        url: "https://maps.isric.org/mapserv?map=/map/ocs.map&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-19948500.0,-6147449.0951699,19688885.757062882,8361000.0&CRS=EPSG:152160&WIDTH=1426&HEIGHT=895&LAYERS=ocs_0-30cm_mean&STYLES=&FORMAT=application/openlayers",
-    }),
-    visible: false // set visibility to false initially
-});
+            source: new ol.source.TileWMS({
+                url: "https://maps.isric.org/mapserv?map=/map/ocs.map&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&BBOX=-19948500.0,-6147449.0951699,19688885.757062882,8361000.0&CRS=EPSG:152160&WIDTH=1426&HEIGHT=895&LAYERS=ocs_0-30cm_mean&STYLES=&FORMAT=application/openlayers",
+            }),
+            visible: false // set visibility to false initially
+        });
 
 
 
@@ -1702,29 +1928,28 @@
         const phLayer = new ol.layer.Tile({
             source: new ol.source.TileWMS({
                 url: "https://maps.isric.org/mapserv?map=/map/phh2o.map",
-                params: {
-                    'LAYERS': 'phh2o_0-5cm_mean',
-                },
+                params: { 'LAYERS': 'phh2o_0-5cm_mean' },
                 projection: "EPSG:152160"
             }),
-            visible: false // set visibility to false initially
+            visible: false
         });
+
 
         const nitrogenLayer = new ol.layer.Tile({
             source: new ol.source.TileWMS({
                 url: "https://maps.isric.org/mapserv?map=/map/nitrogen.map",
-                params: {
-                    'LAYERS': 'nitrogen_0-5cm_mean',
-                },
+                params: { 'LAYERS': 'nitrogen_0-5cm_mean' },
                 projection: "EPSG:152160"
             }),
-            visible: false // set visibility to false initially
+            visible: false
         });
+
+
 
         // Initialize the map
         const map = new ol.Map({
             target: mapElement,
-            layers: [satelliteLayer, streetLayer, carbonLayer, phLayer, nitrogenLayer], //soilLayer,
+            layers: [satelliteLayer, streetLayer, carbonLayer, phLayer, nitrogenLayer],
             view: new ol.View({
                 center: ol.proj.fromLonLat([106.6297, 10.8231]),
                 zoom: 15,
@@ -1732,55 +1957,39 @@
             controls: [],
         });
 
-        let currentBasemap = 1; // Set the current basemap index to 1 to represent streetLayer
-        const basemaps = [streetLayer, satelliteLayer, carbonLayer, phLayer, nitrogenLayer]; //soilLayer, 
+        let currentBasemap = 1;
+        const basemaps = [streetLayer, satelliteLayer, carbonLayer, phLayer, nitrogenLayer];
 
         function selectBasemap(index) {
-            // Check if the selected basemap is not currently visible
             if (!basemaps[index].getVisible()) {
-                // Set the new basemap layer as visible and hide the other ones
                 basemaps.forEach((layer, i) => {
                     layer.setVisible(i === index);
                 });
 
-                // Update the currentBasemap index
                 currentBasemap = index;
 
-                // Update the logo
                 const logoElement = document.querySelector(".logo");
-                const logoImage =
-                    basemaps[currentBasemap] === satelliteLayer
-                        ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
-                        : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
+                const logoImage = basemaps[currentBasemap] === satelliteLayer
+                    ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
+                    : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
                 logoElement.src = logoImage;
             }
 
-            // Remove the selected class from all basemap images
             const basemapImages = document.querySelectorAll(".image-container > div");
             basemapImages.forEach((image, i) => {
                 const circle = image.querySelector(".selected-basemap-circle");
-                if (i === index) {
-                    // Add the selected class to the clicked basemap image
-                    image.classList.add("selected");
-                    circle.style.display = "block"; // Show the selected circle
-                } else {
-                    // Remove the selected class from other basemap images
-                    image.classList.remove("selected");
-                    circle.style.display = "none"; // Hide the circle
-                }
+                image.classList.toggle("selected", i === index);
+                circle.style.display = i === index ? "block" : "none";
             });
 
-            // Hide the basemapSelector after selecting a basemap
             const basemapSelector = document.getElementById("basemapSelector");
             basemapSelector.style.transform = "translateX(-50%) translateY(0)";
 
-            // Delay hiding the basemapSelector to allow the slide animation
             setTimeout(() => {
                 basemapSelector.style.display = "none";
             }, 500);
         }
 
-        // Add event listener to the basemap images for selecting a basemap
         const basemapImages = document.querySelectorAll(".image-container > div");
         basemapImages.forEach((image, index) => {
             image.addEventListener("click", () => {
@@ -1788,14 +1997,10 @@
             });
         });
 
-        // Show the .selected-basemap-circle for the default basemap (streetLayer)
-        const defaultBasemapImage = basemapImages[0]; // Index 0 represents streetLayer
-        const defaultBasemapCircle = defaultBasemapImage.querySelector(
-            ".selected-basemap-circle"
-        );
+        const defaultBasemapImage = basemapImages[0];
+        const defaultBasemapCircle = defaultBasemapImage.querySelector(".selected-basemap-circle");
         defaultBasemapCircle.style.display = "block";
 
-        // Hide the basemapSelector on map load
         window.addEventListener("DOMContentLoaded", function () {
             const basemapSelector = document.getElementById("basemapSelector");
             basemapSelector.style.display = "none";
@@ -1812,87 +2017,34 @@
 
 
 
-// After the map is loaded and rendered
-map.once('rendercomplete', function() {
-    carbonLayer.on('change:visible', function() {
-        const legendImg = document.getElementById('legendImage');
+        // Function to handle layer visibility change and add/remove legend image
+        function handleLayerVisibilityChange(layer, legendSrc, legendAlt, legendTop, legendWidth, legendHeight) {
+            const mapElement = document.getElementById('map');
 
-        if (carbonLayer.getVisible()) {
-            if (!legendImg) {
-                const newLegendImg = document.createElement('img');
-                newLegendImg.id = 'legendImage';
-                newLegendImg.src = 'https://i.ibb.co/DCnj1S8/legend-carbon.png';
-                newLegendImg.alt = 'legend-carbon';
-                newLegendImg.style.position = 'absolute';
-                newLegendImg.style.top = '200px';
-                newLegendImg.style.left = '50px';
-                newLegendImg.style.width = '95px';
-                newLegendImg.style.height = '800px';
-                newLegendImg.style.boxShadow = '2px 2px 4px rgba(0, 0, 0, 0.5)';
-                document.getElementById('map').appendChild(newLegendImg);
-            }
-        } else {
-            if (legendImg) {
-                legendImg.parentNode.removeChild(legendImg);
-            }
+            return function () {
+                const legendImg = document.getElementById('legendImage');
+
+                if (layer.getVisible()) {
+                    if (!legendImg) {
+                        const newLegendImg = document.createElement('img');
+                        newLegendImg.id = 'legendImage';
+                        newLegendImg.src = legendSrc;
+                        newLegendImg.alt = legendAlt;
+                        newLegendImg.style.cssText = `position: absolute; top: ${legendTop}; left: 50px; width: ${legendWidth}; height: ${legendHeight}; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`;
+                        mapElement.appendChild(newLegendImg);
+                    }
+                } else if (legendImg) {
+                    mapElement.removeChild(legendImg);
+                }
+            };
         }
-    });
-});
 
-// After the map is loaded and rendered
-map.once('rendercomplete', function() {
-    phLayer.on('change:visible', function() {
-        const legendImg = document.getElementById('legendImage');
-
-        if (phLayer.getVisible()) {
-            if (!legendImg) {
-                const newLegendImg = document.createElement('img');
-                newLegendImg.id = 'legendImage';
-                newLegendImg.src = 'https://i.ibb.co/JdrP605/legend-ph.png';
-                newLegendImg.alt = 'legend-ph';
-                newLegendImg.style.position = 'absolute';
-                newLegendImg.style.top = '200px';
-                newLegendImg.style.left = '50px';
-                newLegendImg.style.width = '100px';
-                newLegendImg.style.height = '900px';
-                newLegendImg.style.boxShadow = '2px 2px 4px rgba(0, 0, 0, 0.5)';
-                document.getElementById('map').appendChild(newLegendImg);
-            }
-        } else {
-            if (legendImg) {
-                legendImg.parentNode.removeChild(legendImg);
-            }
-        }
-    });
-});
-
-
-// After the map is loaded and rendered
-map.once('rendercomplete', function() {
-    nitrogenLayer.on('change:visible', function() {
-        const legendImg = document.getElementById('legendImage');
-
-        if (nitrogenLayer.getVisible()) {
-            if (!legendImg) {
-                const newLegendImg = document.createElement('img');
-                newLegendImg.id = 'legendImage';
-                newLegendImg.src = 'https://i.ibb.co/z6p3NVc/legend-nitrogen.png';
-                newLegendImg.alt = 'legend-nitrogen';
-                newLegendImg.style.position = 'absolute';
-                newLegendImg.style.top = '200px';
-                newLegendImg.style.left = '50px';
-                newLegendImg.style.width = '100px';
-                newLegendImg.style.height = '900px';
-                newLegendImg.style.boxShadow = '2px 2px 4px rgba(0, 0, 0, 0.5)';
-                document.getElementById('map').appendChild(newLegendImg);
-            }
-        } else {
-            if (legendImg) {
-                legendImg.parentNode.removeChild(legendImg);
-            }
-        }
-    });
-});
+        // After the map is loaded and rendered
+        map.once('rendercomplete', function () {
+            carbonLayer.on('change:visible', handleLayerVisibilityChange(carbonLayer, 'https://i.ibb.co/DCnj1S8/legend-carbon.png', 'legend-carbon', '200px', '100px', '900px'));
+            phLayer.on('change:visible', handleLayerVisibilityChange(phLayer, 'https://i.ibb.co/JdrP605/legend-ph.png', 'legend-ph', '200px', '100px', '900px'));
+            nitrogenLayer.on('change:visible', handleLayerVisibilityChange(nitrogenLayer, 'https://i.ibb.co/z6p3NVc/legend-nitrogen.png', 'legend-nitrogen', '200px', '100px', '900px'));
+        });
 
 
 
