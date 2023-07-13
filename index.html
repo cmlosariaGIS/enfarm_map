@@ -697,8 +697,8 @@
 
         /****** Start Reset Button *******/
         #resetBtn {
-            position: relative;
-            bottom: 25%;
+            position: fixed;
+            bottom: 15%;
             left: 40px;
             background-color: #ffffff;
             border: none;
@@ -723,8 +723,8 @@
 
         /****** Start Scale line Styles *******/
         .ol-scale-line {
-            position: absolute;
-            bottom: 3%;
+            position: fixed;
+            bottom: 8%;
             left: 30px;
             background: none;
             border: none;
@@ -1142,6 +1142,18 @@
             // Start the tour
             tour.start();
         });
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         // SEARCH PLACE BUTTON FUNCTION
@@ -1791,12 +1803,12 @@
                     }
                 }
 
-                // Create the Clear all search history button
-                const clearAllButton = document.createElement("button");
-                clearAllButton.id = "clearAllBtn";
-                clearAllButton.innerHTML = `
+// Create the Clear all search history button
+const clearAllButton = document.createElement("button");
+clearAllButton.id = "clearAllBtn";
+clearAllButton.innerHTML = `
 <div style="display: flex; align-items: center; justify-content: center; width: 840px; margin: 0 auto; padding-bottom: 30px; padding-top: 30px; font-family: 'Be Vietnam Pro', Arial, sans-serif;">
-  <i class="material-icons" style="font-size: 70px; margin-right: 20px;">delete</i>
+  <i class="material-icons" style="font-size: 40px; margin-right: 20px;">delete</i>
   <span style="font-size: 45px; color: #515151;">Xóa tất cả tìm kiếm</span> 
 </div>`;
 
