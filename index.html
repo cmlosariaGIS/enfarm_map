@@ -44,8 +44,12 @@
             position: relative;
             width: 100%;
             height: 100vh;
-            /* Set an initial height for the map container */
+            overflow: hidden;
+            touch-action: pan-y;
+            touch-action: pan-x;
         }
+
+
 
 
         .logo {
@@ -1803,10 +1807,10 @@
                     }
                 }
 
-// Create the Clear all search history button
-const clearAllButton = document.createElement("button");
-clearAllButton.id = "clearAllBtn";
-clearAllButton.innerHTML = `
+                // Create the Clear all search history button
+                const clearAllButton = document.createElement("button");
+                clearAllButton.id = "clearAllBtn";
+                clearAllButton.innerHTML = `
 <div style="display: flex; align-items: center; justify-content: center; width: 840px; margin: 0 auto; padding-bottom: 30px; padding-top: 30px; font-family: 'Be Vietnam Pro', Arial, sans-serif;">
   <i class="material-icons" style="font-size: 40px; margin-right: 20px;">delete</i>
   <span style="font-size: 45px; color: #515151;">Xóa tất cả tìm kiếm</span> 
