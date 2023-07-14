@@ -22,7 +22,7 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <style>
-    @font-face {
+        @font-face {
             font-family: 'Be Vietnam Pro';
             src: url('fonts/BeVietnamPro-Regular.ttf') format('truetype');
             font-weight: normal;
@@ -877,6 +877,55 @@
             outline: none;
             padding: 0
         }
+
+
+        .map-attribution {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            background-color: white;
+            padding: 40px;
+            /* Set the desired padding */
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: none;
+            width: 800px;
+            /* Set the desired width */
+            border-radius: 20px;
+        }
+
+
+
+
+        .map-attribution p {
+            margin: 0;
+            line-height: 1.5;
+            font-size: 40px;
+        }
+
+        .map-attribution .hidden-link {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .map-attribution .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding-bottom: 40px;
+            padding-right: 10px;
+            padding-top: 10px;
+            font-size: 60px;
+            color: #515151;
+            cursor: pointer;
+        }
+
+        .info-icon:hover {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -895,6 +944,9 @@
             <i class="material-icons" style="color: #FF6666;">navigation</i>
         </div>
 
+
+
+
         <div id="basemapswitcher" class="basemapswitcher">
             <button id="basemapBtn" class="basemapBtn" onclick="cycleBasemap()">
                 <i class="material-icons">layers</i>
@@ -908,31 +960,57 @@
                     <i class="material-icons">cancel</i>
                 </div>
                 <div class="image-container">
-                    <div onclick="selectBasemap(1)">
+                    <div onclick="selectBasemap(1)" style="position: relative;">
                         <img src="https://i.ibb.co/Jjg7bMD/bm-street.png" alt="Bản đồ đường phố">
+                        <div class="info-icon" style="position: absolute; top: 20px; left: 20px;">
+                            <i class="material-icons"
+                                style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                        </div>
                         <div class="caption">Bản đồ đường phố</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
-                    <div onclick="selectBasemap(2)">
+
+                    <div onclick="selectBasemap(2)" style="position: relative;">
                         <img src="https://i.ibb.co/j3fq23k/bm-imagery.png" alt="Hình ảnh" border="0">
+                        <div class="info-icon" style="position: absolute; top: 20px; left: 20px;">
+                            <i class="material-icons"
+                                style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                        </div>
                         <div class="caption">Hình ảnh</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
-                    <div onclick="selectBasemap(0)">
+
+                    <div onclick="selectBasemap(0)" style="position: relative;">
                         <img src="https://i.ibb.co/VM1tBQj/bm-carbon.png" alt="bm-carbon" border="0">
+                        <div class="info-icon" style="position: absolute; top: 20px; left: 20px;">
+                            <i class="material-icons"
+                                style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                        </div>
                         <div class="caption">Cổ phiếu carbon</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
-                    <div onclick="selectBasemap(3)">
+
+
+                    <div onclick="selectBasemap(3)" style="position: relative;">
                         <img src="https://i.ibb.co/n73N7QY/bm-ph.png" alt="Bản đồ pH" border="0">
+                        <div class="info-icon" style="position: absolute; top: 20px; left: 20px;">
+                            <i class="material-icons"
+                                style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                        </div>
                         <div class="caption">Bản đồ pH</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
-                    <div onclick="selectBasemap(4)">
+
+                    <div onclick="selectBasemap(4)" style="position: relative;">
                         <img src="https://i.ibb.co/Krtp9sf/bm-nitrogen.png" alt="Nito" border="0">
+                        <div class="info-icon" style="position: absolute; top: 20px; left: 20px;">
+                            <i class="material-icons"
+                                style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                        </div>
                         <div class="caption">Nito</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
+
 
                     <!--<div onclick="selectBasemap(0)">
                         <img src="https://i.ibb.co/vYWN6F0/bm-soil.png" alt="Lớp đất" border="0">
@@ -995,11 +1073,11 @@
             <i class="material-icons">restart_alt</i>
         </button>
 
-                <button id="tutorialBtn">
+
+        <button id="tutorialBtn">
             <i class="material-icons">info</i>
         </button>
 
-        
         <!--Delete Confirm Dialog Box-->
         <div id="dialog" class="dialog hidden">
             <div class="dialog-content">
@@ -1035,13 +1113,58 @@
             <i class="material-icons">gps_fixed</i>
         </button>-->
 
+        <div class="map-attribution">
+            <i class="material-icons close-button" onclick="closeMapAttribution()">cancel</i>
+            <br>
+            <br>
+            <p>Đây là một phần của SoilGrids Maps và được quản lý bởi ISRIC (International Soil Reference and
+                Information Centre)</p>
+            <!--<p>This map is part of SoilGrids Maps and is maintained by ISRIC (International Soil Reference and
+                Information Centre).</p>-->
+            <br>
+            <!--<p>Local accuracy is not guaranteed. To know more about the SoilGrids Maps Programme, click on this <span
+                    class="hidden-link"
+                    onclick="window.open('https://www.isric.org/explore/soilgrids/faq-soilgrids', '_blank')">link</span>.
+            </p>-->
+            <p>Độ chính xác cục bộ không được đảm bảo. Để biết thêm về Chương trình SoilGrids Maps, hãy nhấp vào đây
+                <span class="hidden-link"
+                    onclick="window.open('https://www.isric.org/explore/soilgrids/faq-soilgrids', '_blank')">link</span>.
+            </p>
+        </div>
+
+        <script>
 
 
 
-    </div>
-    </div>
+            // MAP ATRIBUTION
 
-    <script>
+            //Dismiss the message
+            function closeMapAttribution() {
+                // Get the map-attribution element
+                var mapAttribution = document.querySelector('.map-attribution');
+
+                // Hide the map-attribution element
+                mapAttribution.style.display = 'none';
+            }
+
+            //Call map-attribution on click of info icon
+            // Add event listeners to info-icon elements
+            const infoIcons = document.querySelectorAll(".info-icon");
+            infoIcons.forEach((infoIcon) => {
+                infoIcon.addEventListener("click", openMapAttribution);
+                infoIcon.addEventListener("click", stopBasemapSwitch);
+            });
+
+            // Map attribution function
+            function openMapAttribution() {
+                const mapAttribution = document.querySelector(".map-attribution");
+                mapAttribution.style.display = "block";
+            }
+
+            // Stop basemap switch function
+            function stopBasemapSwitch(event) {
+                event.stopPropagation();
+            }
 
        //MAP PRODUCT TOUR
         // Check if the tour has already been shown
