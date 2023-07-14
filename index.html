@@ -2051,10 +2051,11 @@
 
         // After the map is loaded and rendered
         map.once('rendercomplete', function () {
-            carbonLayer.on('change:visible', handleLayerVisibilityChange(carbonLayer, 'https://i.ibb.co/DCnj1S8/legend-carbon.png', 'legend-carbon', '200px', '100px', '900px'));
-            phLayer.on('change:visible', handleLayerVisibilityChange(phLayer, 'https://i.ibb.co/JdrP605/legend-ph.png', 'legend-ph', '200px', '100px', '900px'));
-            nitrogenLayer.on('change:visible', handleLayerVisibilityChange(nitrogenLayer, 'https://i.ibb.co/z6p3NVc/legend-nitrogen.png', 'legend-nitrogen', '200px', '100px', '900px'));
+            carbonLayer.on('change:visible', handleLayerVisibilityChange(carbonLayer, 'https://i.ibb.co/DCnj1S8/legend-carbon.png', 'legend-carbon', '70px', '100px', '800px'));
+            phLayer.on('change:visible', handleLayerVisibilityChange(phLayer, 'https://i.ibb.co/JdrP605/legend-ph.png', 'legend-ph', '70px', '100px', '800px'));
+            nitrogenLayer.on('change:visible', handleLayerVisibilityChange(nitrogenLayer, 'https://i.ibb.co/z6p3NVc/legend-nitrogen.png', 'legend-nitrogen', '70px', '100px', '800px'));
         });
+
 
 
 
