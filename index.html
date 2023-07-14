@@ -2087,7 +2087,7 @@
 
 
 
-        // Function to handle layer visibility change and add/remove legend image
+                // Function to handle layer visibility change and add/remove legend image
         function handleLayerVisibilityChange(layer, legendSrc, legendAlt, legendTop, legendWidth, legendHeight) {
             const mapElement = document.getElementById('map');
 
@@ -2100,7 +2100,7 @@
                         newLegendImg.id = 'legendImage';
                         newLegendImg.src = legendSrc;
                         newLegendImg.alt = legendAlt;
-                        newLegendImg.style.cssText = `position: absolute; top: ${legendTop}; left: 50px; width: ${legendWidth}; height: ${legendHeight}; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`;
+                        newLegendImg.style.cssText = `position: absolute; top: ${legendTop}; right: 180px; width: ${legendWidth}; height: ${legendHeight}; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`;
                         mapElement.appendChild(newLegendImg);
                     }
                 } else if (legendImg) {
@@ -2115,7 +2115,6 @@
             phLayer.on('change:visible', handleLayerVisibilityChange(phLayer, 'https://i.ibb.co/JdrP605/legend-ph.png', 'legend-ph', '70px', '100px', '800px'));
             nitrogenLayer.on('change:visible', handleLayerVisibilityChange(nitrogenLayer, 'https://i.ibb.co/z6p3NVc/legend-nitrogen.png', 'legend-nitrogen', '70px', '80px', '800px'));
         });
-
 
 
 
