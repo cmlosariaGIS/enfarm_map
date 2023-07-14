@@ -1014,7 +1014,7 @@
 
     <script>
 
-        //MAP PRODUCT TOUR
+       //MAP PRODUCT TOUR
         // Check if the tour has already been shown
         const tourShown = localStorage.getItem('tourShown');
 
@@ -1131,6 +1131,22 @@
                     },
                     buttons: [
                         {
+                            text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                            action: tour.next,
+                        },
+                    ],
+                });
+
+
+                tour.addStep({
+                    id: 'step-reset',
+                    text: '<span style="font-size: 40px;">Nhấp vào nút này để xem lại hướng dẫn.</span>', //Click this button to show the guide again
+                    attachTo: {
+                        element: '#tutorialBtn',
+                        on: 'left',
+                    },
+                    buttons: [
+                        {
                             text: '<span style="font-size: 40px;">Làm lại</span>', //Repeat
                             action: () => {
                                 tour.show('step-search');
@@ -1152,6 +1168,21 @@
                 tour.start();
             });
         }
+
+        //RESET PRODUCT TOUR
+        function resetProductTour() {
+            // Clear the tourShown item from localStorage
+            localStorage.removeItem('tourShown');
+
+            // Reload the page to show the product tour again
+            location.reload();
+        }
+
+        // Get the tutorial button element
+        const tutorialBtn = document.getElementById('tutorialBtn');
+
+        // Add event listener to the button
+        tutorialBtn.addEventListener('click', resetProductTour);
 
 
         // SEARCH PLACE BUTTON FUNCTION
