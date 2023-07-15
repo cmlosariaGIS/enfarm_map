@@ -397,13 +397,13 @@
 
         .selected-basemap-circle {
             position: absolute;
-            bottom: 80px;
+            bottom: 75px;
             right: 25px;
             width: 30px;
             height: 30px;
             background-color: green;
             border-radius: 50%;
-            border: 10px solid white;
+            border: 6px solid white;
             display: none;
             animation: glow 1s ease-in-out infinite alternate;
         }
@@ -803,7 +803,7 @@
         /*Next Button*/
         .shepherd-button {
             background: green;
-            font-weight: bold;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
             border: 0;
             border-radius: 10px;
             color: white;
@@ -838,7 +838,8 @@
         .shepherd-button.shepherd-button-secondary {
             background: #3288e6;
             color: white;
-            font-weight: bold;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+
         }
 
         .shepherd-button.shepherd-button-secondary:not(:disabled):hover {
@@ -882,9 +883,9 @@
 
         /***** End Map Product Tour *****/
 
-        /***** Start Map Attribution *****/
-
-        .map-attribution {
+        .isric-attribution,
+        .osm-attribution,
+        .mapbox-attribution {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -892,26 +893,30 @@
             z-index: 9999;
             background-color: white;
             padding: 40px;
-            border-radius: 5px;
+            border-radius: 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             display: none;
             width: 800px;
-            border-radius: 20px;
         }
 
-        .map-attribution p {
+        .isric-attribution p,
+        .osm-attribution p,
+        .mapbox-attribution p {
             margin: 0;
             line-height: 1.5;
             font-size: 40px;
         }
 
-        .map-attribution .hidden-link {
+        .isric-attribution .hidden-link,
+        .osm-attribution a,
+        .mapbox-attribution a {
             color: blue;
-            cursor: pointer;
             text-decoration: underline;
         }
 
-        .map-attribution .close-button {
+        .isric-attribution .close-button,
+        .osm-attribution .close-button,
+        .mapbox-attribution .close-button {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -923,96 +928,11 @@
             cursor: pointer;
         }
 
-        .info-icon:hover {
-            cursor: pointer;
-        }
-
-        /* END SIRC Map Attribution */
-
-        .osm-attribution {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            background-color: white;
-            padding: 40px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            display: none;
-            width: 800px;
-            border-radius: 20px;
-        }
-
-        .osm-attribution p {
-            margin: 0;
-            line-height: 1.5;
-            font-size: 40px;
-        }
-
-        .osm-attribution a {
-            color: blue;
-            text-decoration: underline;
-        }
-
-        .osm-attribution .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 10px;
-            font-size: 60px;
-            color: #515151;
-            cursor: pointer;
-        }
-
-        .osminfo-icon:hover {
-            cursor: pointer;
-        }
-
-        /* END OSM Attribution */
-
-        .mapbox-attribution {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            background-color: white;
-            padding: 40px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            display: none;
-            width: 800px;
-            border-radius: 20px;
-        }
-
-        .mapbox-attribution p {
-            margin: 0;
-            line-height: 1.5;
-            font-size: 40px;
-        }
-
-        .mapbox-attribution a {
-            color: blue;
-            text-decoration: underline;
-        }
-
-        .mapbox-attribution .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 10px;
-            font-size: 60px;
-            color: #515151;
-            cursor: pointer;
-        }
-
+        .info-icon:hover,
+        .osminfo-icon:hover,
         .mapboxinfo-icon:hover {
             cursor: pointer;
         }
-
-        /* END Mapbox Attribution */
-
     </style>
 </head>
 
@@ -1042,18 +962,18 @@
 
         <div class="basemapSelector" id="basemapSelector">
             <div class="container-content">
-                <h2>Chọn Bản đồ cơ sở</h2>
+                <h2>Chọn bản đồ cơ sở</h2>
                 <div class="close-bm-button" onclick="closeBasemapSelector()">
                     <i class="material-icons">cancel</i>
                 </div>
                 <div class="image-container">
                     <div onclick="selectBasemap(1)" style="position: relative;">
-                        <img src="https://i.ibb.co/Jjg7bMD/bm-street.png" alt="Đường Phố">
+                        <img src="https://i.ibb.co/Jjg7bMD/bm-street.png" alt="Đường phố">
                         <div class="osminfo-icon" style="position: absolute; top: 20px; left: 20px;">
                             <i class="material-icons"
                                 style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                         </div>
-                        <div class="caption">Đường Phố</div>
+                        <div class="caption">Đường phố</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
 
@@ -1200,8 +1120,8 @@
             <i class="material-icons">gps_fixed</i>
         </button>-->
 
-        <div class="map-attribution">
-            <i class="material-icons close-button" onclick="closeMapAttribution()">cancel</i>
+        <div class="isric-attribution">
+            <i class="material-icons close-button" onclick="closeAttribution('.isric-attribution')">cancel</i>
             <br>
             <br>
             <p>Đây là một phần của SoilGrids Maps và được quản lý bởi ISRIC (International Soil Reference and
@@ -1210,8 +1130,8 @@
                 Information Centre).</p>-->
             <br>
             <!--<p>Local accuracy is not guaranteed. To know more about the SoilGrids Maps Programme, click on this <span
-                    class="hidden-link"
-                    onclick="window.open('https://www.isric.org/explore/soilgrids/faq-soilgrids', '_blank')">link</span>.
+                        class="hidden-link"
+                        onclick="window.open('https://www.isric.org/explore/soilgrids/faq-soilgrids', '_blank')">link</span>.
             </p>-->
             <p>Độ chính xác cục bộ không được đảm bảo. Để biết thêm về Chương trình SoilGrids Maps, hãy nhấp vào đây
                 <span class="hidden-link"
@@ -1220,16 +1140,18 @@
         </div>
 
         <div class="osm-attribution">
-            <i class="material-icons close-button" onclick="closeOSMAttribution()">cancel</i>
+            <i class="material-icons close-button" onclick="closeAttribution('.osm-attribution')">cancel</i>
             <br><br>
             <p>Map data <a href="https://www.openstreetmap.org/" target="_blank">© OpenStreetMap contributors</a></p>
         </div>
 
         <div class="mapbox-attribution">
-            <i class="material-icons close-button" onclick="closeMapboxAttribution()">cancel</i>
+            <i class="material-icons close-button" onclick="closeAttribution('.mapbox-attribution')">cancel</i>
             <br><br>
             <p>Map data <a href="https://www.mapbox.com/" target="_blank">© Mapbox</a></p>
         </div>
+
+
 
 
 
@@ -1239,77 +1161,35 @@
 
 
 
-            // SIRC MAP ATRIBUTION
-
-            //Dismiss the message
-            function closeMapAttribution() {
-                // Get the map-attribution element
-                var mapAttribution = document.querySelector('.map-attribution');
-
-                // Hide the map-attribution element
-                mapAttribution.style.display = 'none';
+            function closeAttribution(attributionClass) {
+                var attribution = document.querySelector(attributionClass);
+                attribution.style.display = 'none';
             }
 
-            //Call map-attribution on click of info icon
-            // Add event listeners to info-icon elements
-            const infoIcons = document.querySelectorAll(".info-icon");
+            function openAttribution(attributionClass) {
+                var attribution = document.querySelector(attributionClass);
+                attribution.style.display = 'block';
+            }
+
+            function stopBasemapSwitch(event) {
+                event.stopPropagation();
+            }
+
+            const infoIcons = document.querySelectorAll(".info-icon, .osminfo-icon, .mapboxinfo-icon");
             infoIcons.forEach((infoIcon) => {
-                infoIcon.addEventListener("click", openMapAttribution);
+                let attributionClass;
+                if (infoIcon.classList.contains("info-icon")) {
+                    attributionClass = ".isric-attribution";
+                } else if (infoIcon.classList.contains("osminfo-icon")) {
+                    attributionClass = ".osm-attribution";
+                } else if (infoIcon.classList.contains("mapboxinfo-icon")) {
+                    attributionClass = ".mapbox-attribution";
+                }
+                infoIcon.addEventListener("click", () => openAttribution(attributionClass));
                 infoIcon.addEventListener("click", stopBasemapSwitch);
             });
 
-            // Map attribution function
-            function openMapAttribution() {
-                const mapAttribution = document.querySelector(".map-attribution");
-                mapAttribution.style.display = "block";
-            }
 
-            // Stop basemap switch function
-            function stopBasemapSwitch(event) {
-                event.stopPropagation();
-            }
-
-
-            // OSM MAP ATRIBUTION
-
-            // JavaScript
-            function closeOSMAttribution() {
-                var osmAttribution = document.querySelector('.osm-attribution');
-                osmAttribution.style.display = 'none';
-            }
-
-            function openOSMAttribution() {
-                var mapAttribution = document.querySelector('.osm-attribution');
-                mapAttribution.style.display = 'block';
-            }
-
-            function stopBasemapSwitch(event) {
-                event.stopPropagation();
-            }
-
-            const osmInfoIcons = document.querySelectorAll('.osminfo-icon');
-            osmInfoIcons.forEach((infoIcon) => {
-                infoIcon.addEventListener('click', openOSMAttribution);
-                infoIcon.addEventListener('click', stopBasemapSwitch);
-            });
-
-
-            // MAPBOX ATTRIBUTION
-            function closeMapboxAttribution() {
-                var mapboxAttribution = document.querySelector('.mapbox-attribution');
-                mapboxAttribution.style.display = 'none';
-            }
-
-            function openMapboxAttribution() {
-                var mapAttribution = document.querySelector('.mapbox-attribution');
-                mapAttribution.style.display = 'block';
-            }
-
-            const mapboxInfoIcons = document.querySelectorAll('.mapboxinfo-icon');
-            mapboxInfoIcons.forEach((infoIcon) => {
-                infoIcon.addEventListener('click', openMapboxAttribution);
-                infoIcon.addEventListener('click', stopBasemapSwitch);
-            });
 
 
 
@@ -2383,15 +2263,15 @@
 
             // After the map is loaded and rendered
             map.once('rendercomplete', function () {
-                carbonLayer.on('change:visible', handleLayerVisibilityChange(carbonLayer, 'https://i.ibb.co/DCnj1S8/legend-carbon.png', 'legend-carbon', '70px', '100px', '800px'));
-                phLayer.on('change:visible', handleLayerVisibilityChange(phLayer, 'https://i.ibb.co/JdrP605/legend-ph.png', 'legend-ph', '70px', '100px', '800px'));
-                nitrogenLayer.on('change:visible', handleLayerVisibilityChange(nitrogenLayer, 'https://i.ibb.co/z6p3NVc/legend-nitrogen.png', 'legend-nitrogen', '70px', '80px', '800px'));
+                carbonLayer.on('change:visible', handleLayerVisibilityChange(carbonLayer, 'https://i.ibb.co/cJ7mwNz/legend-carbon.png', 'legend-carbon', '70px', '100px', '800px'));
+                phLayer.on('change:visible', handleLayerVisibilityChange(phLayer, 'https://i.ibb.co/BNMyDhS/legend-ph.png', 'legend-ph', '70px', '100px', '800px'));
+                nitrogenLayer.on('change:visible', handleLayerVisibilityChange(nitrogenLayer, 'https://i.ibb.co/fF5WphB/legend-nito.png', 'legend-nitrogen', '60px', '120px', '850px'));
             });
 
 
 
 
-
+            //USER LOCATION
             // Function to create the user location marker
             function createUserLocationMarker() {
                 const markerElement = document.createElement("div");
