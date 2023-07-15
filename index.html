@@ -935,24 +935,16 @@
         }
 
 
-        /*Basemap Legend*/
-
-        .carbonLegend .text {
-            font-size: 28px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 15px;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-        }
-
-        .carbonLegend {
+        /* Basemap Legend */
+        /* Legend Containers */
+        .carbonLegend,
+        .nitrogenLegend,
+        .phLegend {
             width: 135px;
             height: 820px;
             background-color: #ffffff;
             position: absolute;
             top: 60px;
-            right: 175px;
             z-index: 9999;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -964,43 +956,79 @@
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-bottom: 10px;
-        }
-
-        .closeLegend {
-            position: absolute;
-            top: 50px;
-            right: 165px;
-            background-color: #ffffff;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 99999;
-        }
-
-        .closeLegend i {
-            font-size: 45px;
-            color: #ff4d4d;
-        }
-
-        /* Hide scrollbar styles */
-        .carbonLegend::-webkit-scrollbar {
+            padding-bottom: 20px;
             display: none;
         }
 
-        .carbonLegend::-webkit-scrollbar-thumb {
+        .carbonLegend,
+        .phLegend,
+        .nitrogenLegend {
+            right: 175px;
+        }
+
+        /* Text */
+        .carbonLegend .text,
+        .nitrogenLegend .text,
+        .phLegend .text {
+            font-size: 28px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            margin-left: 20px;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            text-align: center;
+        }
+
+
+        .closecarbonLegend,
+.closenitrogenLegend,
+.closepHLegend {
+    position: absolute;
+    top: 50px;
+    background-color: #ffffff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 99999;
+    right: 165px;
+    display: none;
+}
+
+.closecarbonLegend i,
+.closenitrogenLegend i,
+.closepHLegend i {
+    font-size: 45px;
+    color: #ff4d4d;
+    display: none;
+    position: relative;
+    top: -2px;
+}
+
+
+        /* Scrollbar */
+        .carbonLegend::-webkit-scrollbar,
+        .nitrogenLegend::-webkit-scrollbar,
+        .phLegend::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carbonLegend::-webkit-scrollbar-thumb,
+        .nitrogenLegend::-webkit-scrollbar-thumb,
+        .phLegend::-webkit-scrollbar-thumb {
             background-color: transparent;
         }
 
-        /* Add scrollbar track color for visual effect */
-        .carbonLegend::-webkit-scrollbar-track {
+        .carbonLegend::-webkit-scrollbar-track,
+        .nitrogenLegend::-webkit-scrollbar-track,
+        .phLegend::-webkit-scrollbar-track {
             background-color: #f1f1f1;
         }
 
+        /* Color Value Container */
         .colorValueContainer {
             display: flex;
             align-items: center;
@@ -1009,145 +1037,12 @@
             margin-top: 3px;
         }
 
+        /* Color Box */
         .colorBox {
             width: 40px;
             height: 30px;
             margin-right: 5px;
             border-radius: 5px;
-        }
-
-
-
-
-
-
-
-
-
-        .phLegend .text {
-            font-size: 28px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 45px;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-        }
-
-        .phLegend {
-            width: 135px;
-            height: 820px;
-            background-color: #ffffff;
-            position: absolute;
-            top: 60px;
-            right: 350px;
-            z-index: 9999;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding-bottom: 10px;
-        }
-
-        .closepHLegend {
-            position: absolute;
-            top: 50px;
-            right: 335px;
-            background-color: #ffffff;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 99999;
-        }
-
-        .closepHLegend i {
-            font-size: 45px;
-            color: #ff4d4d;
-        }
-
-        .phLegend::-webkit-scrollbar {
-            display: none;
-        }
-
-        .phLegend::-webkit-scrollbar-thumb {
-            background-color: transparent;
-        }
-
-        .phLegend::-webkit-scrollbar-track {
-            background-color: #f1f1f1;
-        }
-
-
-        /*Start Nitrogen Legend*/
-        .nitrogenLegend .text {
-            font-size: 28px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            margin-left: 30px;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-        }
-
-        .nitrogenLegend {
-            width: 135px;
-            height: 820px;
-            background-color: #ffffff;
-            position: absolute;
-            top: 60px;
-            right: 550px;
-            z-index: 9999;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding-bottom: 10px;
-        }
-
-        .closenitrogenLegend {
-            position: absolute;
-            top: 50px;
-            right: 535px;
-            background-color: #ffffff;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 99999;
-        }
-
-        .closenitrogenLegend i {
-            font-size: 45px;
-            color: #ff4d4d;
-        }
-
-        .nitrogenLegend::-webkit-scrollbar {
-            display: none;
-        }
-
-        .nitrogenLegend::-webkit-scrollbar-thumb {
-            background-color: transparent;
-        }
-
-        .nitrogenLegend::-webkit-scrollbar-track {
-            background-color: #f1f1f1;
         }
     </style>
 </head>
@@ -1367,7 +1262,7 @@
                 </div>
 
             </div>
-            <div class="closeLegend">
+            <div class="closecarbonLegend">
                 <i class="material-icons">cancel</i>
             </div>
         </div>
@@ -1983,20 +1878,17 @@
 
         <script>
 
-            //Close carbonLegend //
-            document.querySelector('.closeLegend').addEventListener('click', function () {
-                document.getElementById('carbonlegend').style.display = 'none';
-            });
+            //Display ISRIC Maps Legend
+            function addCloseEventListener(elementId, targetId) {
+                document.querySelector(elementId).addEventListener('click', function () {
+                    document.getElementById(targetId).style.display = 'none';
+                });
+            }
 
-            //Close pHLegend
-            document.querySelector('.closepHLegend').addEventListener('click', function () {
-                document.getElementById('pHlegend').style.display = 'none';
-            });
+            addCloseEventListener('.closecarbonLegend', 'carbonlegend');
+            addCloseEventListener('.closepHLegend', 'pHlegend');
+            addCloseEventListener('.closenitrogenLegend', 'nitrogenlegend');
 
-            // Close nitrogenLegend
-            document.querySelector('.closenitrogenLegend').addEventListener('click', function () {
-                document.getElementById('nitrogenlegend').style.display = 'none';
-            });
 
 
 
@@ -3062,11 +2954,14 @@
             }
 
             // After the map is loaded and rendered
-            map.once('rendercomplete', function () {
-                carbonLayer.on('change:visible', handleLayerVisibilityChange(carbonLayer, 'https://i.ibb.co/cJ7mwNz/legend-carbon.png', 'legend-carbon', '70px', '100px', '800px'));
-                phLayer.on('change:visible', handleLayerVisibilityChange(phLayer, 'https://i.ibb.co/BNMyDhS/legend-ph.png', 'legend-ph', '70px', '100px', '800px'));
-                nitrogenLayer.on('change:visible', handleLayerVisibilityChange(nitrogenLayer, 'https://i.ibb.co/fF5WphB/legend-nito.png', 'legend-nitrogen', '60px', '120px', '850px'));
+            // When carbonLayer basemap is called
+            carbonLayer.on('change:visible', function () {
+                // Display the elements
+                document.querySelector('.carbonLegend').style.display = 'block';
+                document.querySelector('.closecarbonLegend').style.display = 'block';
+                document.querySelector('.closecarbonLegend i').style.display = 'block';
             });
+
 
 
             ///// BASEMAP ATTRIBUTION \\\\\
