@@ -158,7 +158,7 @@
             padding: 2px 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             width: 890px;
-            z-index: 3;
+            z-index: 10;
         }
 
         .searchInput {
@@ -352,7 +352,7 @@
             border-radius: 20px 20px 0 0;
             background-color: rgba(255, 255, 255);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            z-index: 9999;
+            z-index: 10;
             overflow: auto;
             transition: transform 0.3s;
         }
@@ -958,6 +958,7 @@
             overflow-x: hidden;
             padding-bottom: 20px;
             display: none;
+            z-index: 7;
         }
 
         .carbonLegend,
@@ -973,7 +974,7 @@
             font-size: 28px;
             margin-top: 20px;
             margin-bottom: 30px;
-            margin-left: 20px;
+            margin-left: 10px;
             color: #515151;
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
             text-align: center;
@@ -981,32 +982,34 @@
 
 
         .closecarbonLegend,
-.closenitrogenLegend,
-.closepHLegend {
-    position: absolute;
-    top: 50px;
-    background-color: #ffffff;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    z-index: 99999;
-    right: 165px;
-    display: none;
-}
+        .closenitrogenLegend,
+        .closepHLegend {
+            position: absolute;
+            top: 50px;
+            background-color: #ffffff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 8;
+            right: 165px;
+            display: none;
+        }
 
-.closecarbonLegend i,
-.closenitrogenLegend i,
-.closepHLegend i {
-    font-size: 45px;
-    color: #ff4d4d;
-    display: none;
-    position: relative;
-    top: -2px;
-}
+        .closecarbonLegend i,
+        .closenitrogenLegend i,
+        .closepHLegend i {
+            font-size: 45px;
+            color: #ff4d4d;
+            display: none;
+            position: relative;
+            top: -10px;
+            right: 11px;
+            z-index: 9;
+        }
 
 
         /* Scrollbar */
@@ -2953,14 +2956,59 @@
                 };
             }
 
-            // After the map is loaded and rendered
-            // When carbonLayer basemap is called
-            carbonLayer.on('change:visible', function () {
-                // Display the elements
-                document.querySelector('.carbonLegend').style.display = 'block';
-                document.querySelector('.closecarbonLegend').style.display = 'block';
-                document.querySelector('.closecarbonLegend i').style.display = 'block';
-            });
+// After the map is loaded and rendered
+
+// When carbonLayer basemap is called
+carbonLayer.on('change:visible', function () {
+    // Hide other elements
+    document.querySelectorAll('.nitrogenLegend, .closenitrogenLegend, .closenitrogenLegend i, .phLegend, .closepHLegend, .closepHLegend i').forEach(function (element) {
+        element.style.display = 'none';
+    });
+
+    // Display the carbonLegend and closecarbonLegend elements
+    document.querySelector('.carbonLegend').style.display = 'block';
+    document.querySelector('.closecarbonLegend').style.display = 'block';
+
+    // Add a delay of 500ms (.5 second) before displaying the icon
+    setTimeout(function () {
+        document.querySelector('.closecarbonLegend i').style.display = 'block';
+    }, 500);
+});
+
+// When phLayer basemap is called
+phLayer.on('change:visible', function () {
+    // Hide other elements
+    document.querySelectorAll('.carbonLegend, .closecarbonLegend, .closecarbonLegend i, .nitrogenLegend, .closenitrogenLegend, .closenitrogenLegend i').forEach(function (element) {
+        element.style.display = 'none';
+    });
+
+    // Display the phLegend and closepHLegend elements
+    document.querySelector('.phLegend').style.display = 'block';
+    document.querySelector('.closepHLegend').style.display = 'block';
+
+    // Add a delay of 500ms (.5 second) before displaying the icon
+    setTimeout(function () {
+        document.querySelector('.closepHLegend i').style.display = 'block';
+    }, 500);
+});
+
+// When nitrogenLayer basemap is called
+nitrogenLayer.on('change:visible', function () {
+    // Hide other elements
+    document.querySelectorAll('.carbonLegend, .closecarbonLegend, .closecarbonLegend i, .phLegend, .closepHLegend, .closepHLegend i').forEach(function (element) {
+        element.style.display = 'none';
+    });
+
+    // Display the nitrogenLegend and closenitrogenLegend elements
+    document.querySelector('.nitrogenLegend').style.display = 'block';
+    document.querySelector('.closenitrogenLegend').style.display = 'block';
+
+    // Add a delay of 500ms (.5 second) before displaying the icon
+    setTimeout(function () {
+        document.querySelector('.closenitrogenLegend i').style.display = 'block';
+    }, 500);
+});
+
 
 
 
