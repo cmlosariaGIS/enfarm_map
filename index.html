@@ -2934,80 +2934,36 @@
                 }, 300);
             }
 
-            // Function to handle layer visibility change and add/remove legend image
-            function handleLayerVisibilityChange(layer, legendSrc, legendAlt, legendTop, legendWidth, legendHeight) {
-                const mapElement = document.getElementById('map');
+
+            //function to switching ISRIC legends based on ISRIC basemaps
+            // Function to handle layer visibility change and display legend elements
+            function handleLayerVisibilityChange(layer, legendClass, closeLegendClass, closeLegendIconClass) {
+                const legendElement = document.querySelector(legendClass);
+                const closeLegendElement = document.querySelector(closeLegendClass);
+                const closeLegendIconElement = document.querySelector(closeLegendIconClass);
 
                 return function () {
-                    const legendImg = document.getElementById('legendImage');
-
                     if (layer.getVisible()) {
-                        if (!legendImg) {
-                            const newLegendImg = document.createElement('img');
-                            newLegendImg.id = 'legendImage';
-                            newLegendImg.src = legendSrc;
-                            newLegendImg.alt = legendAlt;
-                            newLegendImg.style.cssText = `position: absolute; top: ${legendTop}; right: 180px; width: ${legendWidth}; height: ${legendHeight}; box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);`;
-                            mapElement.appendChild(newLegendImg);
-                        }
-                    } else if (legendImg) {
-                        mapElement.removeChild(legendImg);
+                        legendElement.style.display = 'block';
+                        closeLegendElement.style.display = 'block';
+                        closeLegendIconElement.style.display = 'block';
+                    } else {
+                        legendElement.style.display = 'none';
+                        closeLegendElement.style.display = 'none';
+                        closeLegendIconElement.style.display = 'none';
                     }
                 };
             }
 
-// After the map is loaded and rendered
+            // When carbonLayer basemap is called
+            carbonLayer.on('change:visible', handleLayerVisibilityChange(carbonLayer, '.carbonLegend', '.closecarbonLegend', '.closecarbonLegend i'));
 
-// When carbonLayer basemap is called
-carbonLayer.on('change:visible', function () {
-    // Hide other elements
-    document.querySelectorAll('.nitrogenLegend, .closenitrogenLegend, .closenitrogenLegend i, .phLegend, .closepHLegend, .closepHLegend i').forEach(function (element) {
-        element.style.display = 'none';
-    });
+            // When phLayer basemap is called
+            phLayer.on('change:visible', handleLayerVisibilityChange(phLayer, '.phLegend', '.closepHLegend', '.closepHLegend i'));
 
-    // Display the carbonLegend and closecarbonLegend elements
-    document.querySelector('.carbonLegend').style.display = 'block';
-    document.querySelector('.closecarbonLegend').style.display = 'block';
+            // When nitrogenLayer basemap is called
+            nitrogenLayer.on('change:visible', handleLayerVisibilityChange(nitrogenLayer, '.nitrogenLegend', '.closenitrogenLegend', '.closenitrogenLegend i'));
 
-    // Add a delay of 500ms (.5 second) before displaying the icon
-    setTimeout(function () {
-        document.querySelector('.closecarbonLegend i').style.display = 'block';
-    }, 500);
-});
-
-// When phLayer basemap is called
-phLayer.on('change:visible', function () {
-    // Hide other elements
-    document.querySelectorAll('.carbonLegend, .closecarbonLegend, .closecarbonLegend i, .nitrogenLegend, .closenitrogenLegend, .closenitrogenLegend i').forEach(function (element) {
-        element.style.display = 'none';
-    });
-
-    // Display the phLegend and closepHLegend elements
-    document.querySelector('.phLegend').style.display = 'block';
-    document.querySelector('.closepHLegend').style.display = 'block';
-
-    // Add a delay of 500ms (.5 second) before displaying the icon
-    setTimeout(function () {
-        document.querySelector('.closepHLegend i').style.display = 'block';
-    }, 500);
-});
-
-// When nitrogenLayer basemap is called
-nitrogenLayer.on('change:visible', function () {
-    // Hide other elements
-    document.querySelectorAll('.carbonLegend, .closecarbonLegend, .closecarbonLegend i, .phLegend, .closepHLegend, .closepHLegend i').forEach(function (element) {
-        element.style.display = 'none';
-    });
-
-    // Display the nitrogenLegend and closenitrogenLegend elements
-    document.querySelector('.nitrogenLegend').style.display = 'block';
-    document.querySelector('.closenitrogenLegend').style.display = 'block';
-
-    // Add a delay of 500ms (.5 second) before displaying the icon
-    setTimeout(function () {
-        document.querySelector('.closenitrogenLegend i').style.display = 'block';
-    }, 500);
-});
 
 
 
