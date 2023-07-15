@@ -933,12 +933,95 @@
         .mapboxinfo-icon:hover {
             cursor: pointer;
         }
+
+
+        /*Basemap Legend*/
+
+        .carbonLegend .text {
+            font-size: 28px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            margin-left: 15px;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+        }
+
+        .carbonLegend {
+            width: 120px;
+            height: 820px;
+            background-color: #ffffff;
+            position: absolute;
+            top: 60px;
+            right: 175px;
+            z-index: 9999;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 10px;
+        }
+
+        .closeLegend {
+            position: absolute;
+            top: 50px;
+            right: 165px;
+            background-color: #ffffff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 99999;
+        }
+
+        .closeLegend i {
+            font-size: 45px;
+            color: #ff4d4d;
+        }
+
+        /* Hide scrollbar styles */
+        .carbonLegend::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carbonLegend::-webkit-scrollbar-thumb {
+            background-color: transparent;
+        }
+
+        /* Add scrollbar track color for visual effect */
+        .carbonLegend::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+
+        .colorValueContainer {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            margin-left: 20px;
+            margin-top: 3px;
+        }
+
+        .colorBox {
+            width: 40px;
+            height: 30px;
+            margin-right: 5px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="map">
+
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
@@ -946,6 +1029,222 @@
         <div>
             <img src="https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png" alt="Logo" class="logo">
         </div>
+
+        <div class="Legend" id="Legend">
+            <div class="carbonLegend" id="carbonLegend">
+                <div class="text">kg/m2</div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #ffffca;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">0</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #ffffbe;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">5</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #ffffbd;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">11</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #ffefa7;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">18</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #ffefa7;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">25</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #ffe091;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">31</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #fad27c;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">38</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #fad27c;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">45</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #dbcc6d;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">51</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #b8bc5d;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">58</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #b8bc5d;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">65</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #8b9d4e;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">71</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #688941;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">78</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #688941;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">85</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #498939;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">91</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #32893f;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">98</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #32893f;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">105</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #2a895a;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">111</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #2a895a;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">118</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #1f8671;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">125</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #16817c;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">131</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #16817c;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">138</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #0c6e7b;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">145</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #035675;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">151</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #035675;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">158</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #094273;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">165</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #1a3273;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">171</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #1a3273;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">178</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #2a2173;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">185</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #3b1073;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">191</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #3b1073;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">198</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #4c0073;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">205</div>
+                    </div>
+                </div>
+                <div class="colorValueContainer">
+                    <div class="colorBox" style="background-color: #4c0073;"></div>
+                    <div class="values">
+                        <div class="value" style="font-size: 24px;">212</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="closeLegend">
+                <i class="material-icons">cancel</i>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
 
         <div id="northArrow" class="northArrow">
             <i class="material-icons" style="color: #FF6666;">navigation</i>
@@ -1159,13 +1458,10 @@
 
         <script>
 
-
-
-
-
-
-
-
+            //Close Legend //
+            document.querySelector('.closeLegend').addEventListener('click', function () {
+                document.getElementById('Legend').style.display = 'none';
+            });
 
 
             ///// MAP PRODUCT TOUR \\\\\
