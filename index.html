@@ -727,6 +727,29 @@
             color: #515151;
         }
 
+        #clearAllDrawingBtn {
+
+            position: fixed;
+            bottom: 60%;
+            left: 70px;
+            background-color: #ff0000;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+
+        }
+
+        #clearAllDrawingBtn i.material-icons {
+            font-size: 40px;
+            color: #ffffff;
+        }
+
         /****** Start Reset Button *******/
         #resetBtn {
             position: fixed;
@@ -1798,14 +1821,20 @@
             <i class="material-icons">sensors</i>
         </button>
 
-        <button id="resetBtn">
-            <i class="material-icons">restart_alt</i>
-        </button>
 
 
         <button id="tutorialBtn">
             <i class="material-icons">info</i>
         </button>
+
+        <button id="clearAllDrawingBtn" class="hidden">
+            <i class="material-icons">delete</i>
+        </button>
+
+        <button id="resetBtn">
+            <i class="material-icons">restart_alt</i>
+        </button>
+
 
         <!--Delete Confirm Dialog Box-->
         <div id="dialog" class="dialog hidden">
@@ -1874,12 +1903,15 @@
         </div>
 
 
-
-
-
-
-
         <script>
+
+
+
+
+
+
+
+
 
             //Display ISRIC Maps Legend
             function addCloseEventListener(elementId, targetId) {
@@ -4246,7 +4278,7 @@ height: 30px;
                 image: new ol.style.Icon({
                     src: 'https://i.ibb.co/gWyRjHP/icons8-pin-96-xxhdpi.png',
                     anchor: [0.5, 1],
-                    scale: 1.10,
+                    scale: 0.75,
                     rotateWithView: true,
                 }),
             });
@@ -4444,6 +4476,101 @@ height: 30px;
                         });
                         sensorVectorLayer.getSource().addFeature(feature);
                     });
+                }
+            });
+
+
+
+
+
+
+            function clearAllDrawings() {
+                // Show the dialog box
+                const dialog = document.getElementById("dialog");
+                dialog.classList.remove("hidden");
+
+                // Handle the button clicks
+                const deleteYesBtn = document.getElementById("deleteYes");
+                const deleteNoBtn = document.getElementById("deleteNo");
+
+                deleteYesBtn.addEventListener("click", function () {
+                    // Remove stored polygon from local storage
+                    localStorage.removeItem("enfarm_polygon_coordinates");
+
+                    // Clear vector source and remove all features
+                    vectorSource.clear();
+
+                    // Remove farmVectorLayer from the map
+                    if (farmVectorLayer) {
+                        map.removeLayer(farmVectorLayer);
+                        farmVectorLayer = null;
+                    }
+
+                    // Remove tooltip overlays from the map
+                    for (const overlay of tooltipOverlays) {
+                        map.removeOverlay(overlay);
+                    }
+                    tooltipOverlays = [];
+
+                    // Remove stored sensor points from local storage
+                    localStorage.removeItem("enfarm_sensor_coordinates");
+
+                    // Clear sensorVectorLayer and remove all features
+                    if (sensorVectorLayer) {
+                        const source = sensorVectorLayer.getSource();
+                        source.clear();
+                    }
+
+                    // Hide the dialog box
+                    dialog.classList.add("hidden");
+
+                    // Update the visibility of clearAllDrawingBtn
+                    updateClearButtonVisibility();
+                });
+
+                deleteNoBtn.addEventListener("click", function () {
+                    // Hide the dialog box
+                    dialog.classList.add("hidden");
+                });
+            }
+
+            function updateClearButtonVisibility() {
+                const clearAllDrawingBtn = document.getElementById("clearAllDrawingBtn");
+                const storedPolygons = localStorage.getItem("enfarm_polygon_coordinates");
+                const storedPoints = localStorage.getItem("enfarm_sensor_coordinates");
+
+                if (storedPolygons || storedPoints) {
+                    clearAllDrawingBtn.style.display = "block";
+                } else {
+                    clearAllDrawingBtn.style.display = "none";
+                }
+            }
+
+            // Attach the event listener to the clearAllDrawingBtn button
+            const clearAllDrawingBtn = document.getElementById("clearAllDrawingBtn");
+            clearAllDrawingBtn.addEventListener("click", clearAllDrawings);
+
+            // Call the updateClearButtonVisibility function initially and whenever you add or remove polygons or points
+            // For example, after adding a polygon or point:
+            updateClearButtonVisibility();
+
+            // Inside the deletePoints function:
+            function deletePoints() {
+                if (sensorVectorLayer) {
+                    const source = sensorVectorLayer.getSource();
+                    source.clear();
+                    updateClearButtonVisibility(); // Update button visibility after clearing the points
+                }
+            }
+
+            // Inside the clearAllDrawings function, after clearing all drawings:
+            updateClearButtonVisibility(); // Update button visibility after clearing all drawings
+
+            // Check if there are stored polygons when the page loads
+            window.addEventListener("load", function () {
+                const storedPolygons = localStorage.getItem("enfarm_polygon_coordinates");
+                if (storedPolygons) {
+                    updateClearButtonVisibility();
                 }
             });
 
