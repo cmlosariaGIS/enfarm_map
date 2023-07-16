@@ -3780,28 +3780,26 @@
             let draw;
             let polygonExists = false;
             let vectorSource = new ol.source.Vector();
-            let tooltipOverlay; // Declare the tooltipOverlay variable outside the event listener
-            let tooltipOverlays = []; // Store the tooltip overlays
-            let timeoutId = null; // Move timeoutId declaration outside the function
+            let tooltipOverlay;
+            let tooltipOverlays = [];
+            let timeoutId = null;
 
-            let sketchFarmBtnIcon; // Declare the sketchFarmBtnIcon variable outside the function
-
+            let sketchFarmBtnIcon;
 
             async function startSketchFarm() {
                 const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-                sketchFarmBtnIcon = sketchFarmBtn.querySelector("i"); // Assign value to the sketchFarmBtnIcon variable
+                sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
                 const finishDrawingButton = document.querySelector('.finish-drawing');
                 const dialog = document.getElementById('dialog');
 
                 if (isSketchActive) {
-                    // Dismiss floating message if it's still visible
                     if (timeoutId) {
                         clearTimeout(timeoutId);
                         const existingFloatingMessage = document.querySelector('.floating-message');
                         if (existingFloatingMessage) {
                             map.getViewport().removeChild(existingFloatingMessage);
                         }
-                        timeoutId = null; // Reset the timeoutId
+                        timeoutId = null;
                     }
 
                     if (polygonExists) {
@@ -3813,7 +3811,7 @@
                             polygonExists = false;
                             vectorSource.clear();
                             for (const overlay of tooltipOverlays) {
-                                map.removeOverlay(overlay); // Remove all tooltip overlays
+                                map.removeOverlay(overlay);
                             }
                             sketchFarmBtn.style.backgroundColor = "white";
                             sketchFarmBtnIcon.textContent = "create";
@@ -3822,6 +3820,9 @@
                             dialog.classList.add('hidden');
 
                             console.clear();
+
+                            // Remove stored polygon from local storage
+                            localStorage.removeItem('enfarm_polygon_coordinates');
                         });
 
                         document.getElementById('deleteNo').addEventListener('click', function () {
@@ -3839,7 +3840,6 @@
                 }
 
 
-                // Add floating message
                 const floatingMessage = document.createElement("div");
                 floatingMessage.className = "floating-message";
                 const infoIcon = document.createElement("i");
@@ -3851,12 +3851,10 @@
                     "   Chạm vào màn hình để bắt đầu vẽ trang trại"; // "Tap the screen to start drawing farm"
                 map.getViewport().appendChild(floatingMessage);
 
-                // Remove floating message after 3 seconds
                 timeoutId = setTimeout(function () {
                     map.getViewport().removeChild(floatingMessage);
                 }, 3000);
 
-                //Sketching Farm Polygon
                 const farmVectorLayer = new ol.layer.Vector({
                     source: vectorSource,
                     style: new ol.style.Style({
@@ -3899,14 +3897,13 @@
                 map.addInteraction(draw);
                 isSketchActive = true;
 
-                // Create a custom canvas pattern for diagonal lines with transparency
                 const canvas = document.createElement("canvas");
                 const context = canvas.getContext("2d");
-                const size = 10; // Size of each pattern element
-                const spacing = 8; // Spacing between pattern elements
+                const size = 10;
+                const spacing = 8;
                 canvas.width = size;
                 canvas.height = size;
-                context.strokeStyle = "rgba(56, 108, 52, 0.5)"; // Color of the lines with transparency
+                context.strokeStyle = "rgba(56, 108, 52, 0.5)";
                 context.lineWidth = 2;
                 context.beginPath();
                 context.moveTo(0, 0);
@@ -3915,7 +3912,6 @@
 
                 const pattern = context.createPattern(canvas, "repeat");
 
-                // Apply the custom pattern as the fill style for the polygon
                 farmVectorLayer.setStyle(
                     new ol.style.Style({
                         fill: new ol.style.Fill({
@@ -3952,8 +3948,6 @@
                         geometry: new ol.geom.Point(centroid),
                     });
 
-
-                    // Center Point
                     pointFeature.setStyle(
                         new ol.style.Style({
                             image: new ol.style.Circle({
@@ -3969,11 +3963,9 @@
                         })
                     );
 
-                    // Stop the function
                     map.removeInteraction(draw);
                     isSketchActive = false;
 
-                    // Change the icon back to the original style
                     sketchFarmBtn.style.backgroundColor = "white";
                     sketchFarmBtnIcon.textContent = "create";
                     sketchFarmBtnIcon.style.color = "#515151";
@@ -4042,7 +4034,7 @@ min-width: 120px;
 height: 30px;
 `;
 
-                    const areaInHectares = area > 1000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
+                    const areaInHectares = area > 10000 ? (area / 10000).toFixed(2) + ' ha' : area.toFixed(2) + ' m²';
                     tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 50px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
 
                     tooltipOverlay = new ol.Overlay({
@@ -4054,71 +4046,25 @@ height: 30px;
                     tooltipOverlay.setPosition(centroid);
 
                     map.addOverlay(tooltipOverlay);
-                    tooltipOverlays.push(tooltipOverlay); // Push the tooltip overlay to the array
+                    tooltipOverlays.push(tooltipOverlay);
 
-
-
-
-                    //Get Elevation Values from Map Box Elevation
-                    async function getElevationFromMapbox(centerPointCoordinates) {
-                        const accessToken = 'pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw';
-
-                        let centerElevation;
-
-                        try {
-                            const centerPointLon = centerPointCoordinates[0];
-                            const centerPointLat = centerPointCoordinates[1];
-                            const centerUrl = `https://api.mapbox.com/v4/mapbox.mapbox-terrain-v2/tilequery/${centerPointLon},${centerPointLat}.json?layers=contour&access_token=${accessToken}`;
-                            const centerResponse = await fetch(centerUrl);
-                            if (centerResponse.ok) {
-                                const centerData = await centerResponse.json();
-                                if (centerData.features && centerData.features.length > 0) {
-                                    centerElevation = centerData.features[0].properties.ele; // Update the assignment statement
-                                    console.log("Elevation (meters):", centerElevation);
-                                } else {
-                                    console.error("No elevation data found for the center point.");
-                                }
-                            } else {
-                                console.error("Failed to fetch elevation data for the center point:", centerResponse.status, centerResponse.statusText);
-                            }
-                        } catch (error) {
-                            console.error("Failed to fetch elevation data for the center point:", error);
-                        }
-
-                        // Send to React Native App
-                        const dataToPost = {
-                            centerPoint: {
-                                lon: centerPointCoordinates[0],
-                                lat: centerPointCoordinates[1],
-                                elevation: centerElevation
-                            },
-                            polygonCoordinates: polygonPoints,
-                            segmentLengths: segmentLengths,
-                            area: {
-                                squareMeters: area.toFixed(2),
-                                hectares: areaHectares
-                            },
-                            address: address
-                        };
-
-                        try {
-                            // Send data to React Native App
-                            window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
-                        } catch (error) {
-                            // Handle the error (or do nothing to prevent logging)
-                        }
-                    }
-
-                    // Usage example:
-                    // Assuming you have the centerPointCoordinates from your existing code
-                    getElevationFromMapbox(centerPointCoordinates);
-
-
-
+                    // Store polygon coordinates in local storage
+                    const storedPolygon = {
+                        centerPoint: {
+                            lon: centerPointCoordinates[0],
+                            lat: centerPointCoordinates[1],
+                        },
+                        polygonPoints: polygonPoints,
+                        segmentLengths: segmentLengths,
+                        area: {
+                            squareMeters: area.toFixed(2),
+                            hectares: areaHectares
+                        },
+                        address: address
+                    };
+                    localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
                 });
             }
-
-
 
             const sketchFarmBtn = document.getElementById("sketchFarmBtn");
             sketchFarmBtn.addEventListener("click", function () {
@@ -4126,42 +4072,37 @@ height: 30px;
             });
 
             const finishDrawingButton = document.querySelector('.finish-drawing');
-            // Finish drawing button click event
             finishDrawingButton.onclick = function () {
                 if (draw) {
                     draw.finishDrawing();
                     finishDrawingButton.classList.add('hidden');
-                    map.removeInteraction(draw); // Disable further drawing
-                    isSketchActive = false; // Set the sketching state to inactive
-                    sketchFarmBtn.style.backgroundColor = "white"; // Change the background color to white
-                    sketchFarmBtnIcon.textContent = "create"; // Set the icon back to "create"
-                    sketchFarmBtnIcon.style.color = "#515151"; // Set the icon color
+                    map.removeInteraction(draw);
+                    isSketchActive = false;
+                    sketchFarmBtn.style.backgroundColor = "white";
+                    sketchFarmBtnIcon.textContent = "create";
+                    sketchFarmBtnIcon.style.color = "#515151";
                 }
             };
-
 
             function deactivateSketchFarm() {
                 const sketchFarmBtn = document.getElementById("sketchFarmBtn");
                 if (isSketchActive) {
-                    // Set sketchFarmBtn to inactive state
                     sketchFarmBtn.style.backgroundColor = "white";
                     const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
                     sketchFarmBtnIcon.textContent = "create";
                     sketchFarmBtnIcon.style.color = "#515151";
 
-                    // Remove sketching interaction
                     if (draw) {
                         map.removeInteraction(draw);
                         draw = null;
                     }
 
-                    // Clear floating message timeout
                     if (timeoutId) {
                         clearTimeout(timeoutId);
                         timeoutId = null;
                     }
 
-                    isSketchActive = false; // Set the sketching state to inactive
+                    isSketchActive = false;
                 }
             }
 
@@ -4169,15 +4110,139 @@ height: 30px;
             document.getElementById("measureLengthBtn").addEventListener("click", deactivateSketchFarm);
             document.getElementById("addSensorBtn").addEventListener("click", deactivateSketchFarm);
 
+            let farmVectorLayer; // Declare the farmVectorLayer variable outside the function
+
+            // Function to retrieve stored polygon from local storage
+            function getStoredPolygon() {
+                const storedPolygonString = localStorage.getItem('enfarm_polygon_coordinates');
+                if (storedPolygonString) {
+                    const storedPolygon = JSON.parse(storedPolygonString);
+                    const polygonPoints = storedPolygon.polygonPoints.map(point => ol.proj.transform([point.lon, point.lat], 'EPSG:4326', 'EPSG:3857'));
+
+                    const polygonFeature = new ol.Feature({
+                        geometry: new ol.geom.Polygon([polygonPoints]),
+                    });
+
+                    farmVectorLayer = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: [polygonFeature],
+                        }),
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: 'rgba(56, 108, 52, 0.5)',
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: '#386c34',
+                                width: 10,
+                            }),
+                        }),
+                    });
+
+                    map.addLayer(farmVectorLayer);
+
+                    const centroid = ol.extent.getCenter(polygonFeature.getGeometry().getExtent());
+
+                    const tooltipElement = document.createElement('div');
+                    tooltipElement.style.cssText = `
+      position: absolute;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 1000px;
+      padding: 20px 30px;
+      font-family: 'Be Vietnam Pro', Arial, sans-serif;
+      font-size: 40px;
+      font-weight: bold;
+      color: #000000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      height: 30px;
+    `;
+
+                    const area = Number(storedPolygon.area.squareMeters); // Convert area to a number
+                    const areaDisplay = area >= 10000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
+
+                    tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 50px; margin-right: 10px;">agriculture</i>${areaDisplay}</span>`;
+
+                    const tooltipOverlay = new ol.Overlay({
+                        element: tooltipElement,
+                        offset: [0, -120],
+                        positioning: 'bottom-center',
+                    });
+
+                    tooltipOverlay.setPosition(centroid);
+
+                    map.addOverlay(tooltipOverlay);
+                    tooltipOverlays.push(tooltipOverlay);
+                }
+            }
+
+
+
+
+            // Call the function to retrieve and display the stored polygon
+            getStoredPolygon();
+
+            // Update the finishDrawingButton click event to store the polygon in local storage
+            finishDrawingButton.onclick = function () {
+                if (draw) {
+                    draw.finishDrawing();
+                    finishDrawingButton.classList.add('hidden');
+                    map.removeInteraction(draw);
+                    isSketchActive = false;
+                    sketchFarmBtn.style.backgroundColor = 'white';
+                    sketchFarmBtnIcon.textContent = 'create';
+                    sketchFarmBtnIcon.style.color = '#515151';
+
+                    // Store polygon coordinates in local storage
+                    const polygonCoordinates = vectorSource.getFeatures()[0].getGeometry().getCoordinates()[0];
+                    const polygonPoints = polygonCoordinates.map(coordinate => {
+                        const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+                        return { lon: lonLat[0], lat: lonLat[1] };
+                    });
+
+                    const storedPolygon = {
+                        centerPoint: {
+                            lon: centerPointCoordinates[0],
+                            lat: centerPointCoordinates[1],
+                        },
+                        polygonPoints: polygonPoints,
+                        segmentLengths: segmentLengths,
+                        area: {
+                            squareMeters: area.toFixed(2),
+                            hectares: areaHectares,
+                        },
+                        address: address,
+                    };
+                    localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
+                }
+            };
+
+            // Remove the stored polygon from local storage when the page loads
+            window.addEventListener('load', function () {
+                if (!localStorage.getItem('enfarm_polygon_coordinates')) {
+                    if (farmVectorLayer) { // Add a check before removing the farmVectorLayer
+                        map.removeLayer(farmVectorLayer);
+                        farmVectorLayer = null;
+                    }
+                    for (const overlay of tooltipOverlays) {
+                        map.removeOverlay(overlay);
+                    }
+                    tooltipOverlays = [];
+                }
+            });
+
+
+
 
 
 
             ///// ADD SENSORS BUTTON \\\\\
 
             let sensorDrawCount = 0;
-
-            // Define a custom style for the point features resembling a GPS icon
-            const sensorPointStyle = new ol.style.Style({
+            let sensorPointStyle = new ol.style.Style({
                 image: new ol.style.Icon({
                     src: 'https://i.ibb.co/gWyRjHP/icons8-pin-96-xxhdpi.png',
                     anchor: [0.5, 1],
@@ -4186,21 +4251,18 @@ height: 30px;
                 }),
             });
 
-            // Create a variable to track the draw interaction status and store the draw interaction instance
             let startAddSensorActive = false;
             let sensorDrawInteraction;
             let sensorVectorLayer;
 
-            // Function to enable draw interaction and update button styles
             function startAddSensor() {
-                // Change the icon to the "delete_forever" icon
+                let addSensorBtnIcon = document.querySelector(".addSensorBtn i");
+                let addSensorBtn = document.querySelector(".addSensorBtn");
+
                 addSensorBtnIcon.textContent = "delete_forever";
-                // Change the background color to red
                 addSensorBtn.style.backgroundColor = "#FF6666";
-                // Change the icon color to white
                 addSensorBtnIcon.style.color = "white";
 
-                // Add floating message
                 const floatingMessage = document.createElement("div");
                 floatingMessage.className = "floating-message";
                 floatingMessage.id = "floatingMessageArea";
@@ -4212,43 +4274,35 @@ height: 30px;
                 floatingMessage.innerHTML += "  Nhấn vào màn hình để thêm/các cảm biến enfarm"; // "Tap the screen to add enfarm sensor/s"
                 map.getViewport().appendChild(floatingMessage);
 
-                // Remove floating message after 5 seconds
                 const floatingMessageAreaTimeoutId = setTimeout(function () {
                     if (floatingMessage.parentNode === map.getViewport()) {
                         map.getViewport().removeChild(floatingMessage);
                     }
                 }, 5000);
 
-                // Define the source to store the drawn features
                 const source = new ol.source.Vector();
 
-                // Create a vector layer to display the drawn features
                 sensorVectorLayer = new ol.layer.Vector({
                     source: source,
                     style: sensorPointStyle,
                 });
 
-                // Add the vector layer to the map
                 map.addLayer(sensorVectorLayer);
 
-                // Create the Draw interaction
                 sensorDrawInteraction = new ol.interaction.Draw({
                     source: source,
                     type: 'Point',
                 });
 
-                // Add the Draw interaction to the map
                 map.addInteraction(sensorDrawInteraction);
 
-                // Set startAddSensorActive to true
                 startAddSensorActive = true;
 
                 sensorDrawInteraction.on('drawstart', function () {
-                    sensorDrawCount = 0; // Reset the click count when drawing starts
+                    sensorDrawCount = 0;
                 });
 
                 sensorDrawInteraction.on('drawend', function () {
-                    // Check if there is at least one feature drawn
                     const source = sensorVectorLayer.getSource();
                     const features = source.getFeatures();
                     if (features.length === 0) {
@@ -4258,43 +4312,71 @@ height: 30px;
                 });
             }
 
-            // Function to disable draw interaction and revert button styles
+            function deletePoints() {
+                if (sensorVectorLayer) {
+                    const source = sensorVectorLayer.getSource();
+                    source.clear();
+                }
+            }
+
+            function storePointsInLocalStorage(points) {
+                localStorage.setItem('enfarm_sensor_coordinates', JSON.stringify(points));
+            }
+
+            function retrievePointsFromLocalStorage() {
+                const pointsString = localStorage.getItem('enfarm_sensor_coordinates');
+                if (pointsString) {
+                    return JSON.parse(pointsString);
+                } else {
+                    return [];
+                }
+            }
+
             function disableAddSensor() {
-                // Deactivate the draw interaction
                 map.removeInteraction(sensorDrawInteraction);
 
-                // Reset the button styles
+                let addSensorBtnIcon = document.querySelector(".addSensorBtn i");
+                let addSensorBtn = document.querySelector(".addSensorBtn");
+
                 addSensorBtnIcon.textContent = "sensors";
                 addSensorBtn.style.backgroundColor = "";
                 addSensorBtnIcon.style.color = "";
 
-                // Remove the floating message if it exists
-                const floatingMessage = document.getElementById("floatingMessageArea");
+                let floatingMessage = document.getElementById("floatingMessageArea");
                 if (floatingMessage && floatingMessage.parentNode === map.getViewport()) {
                     map.getViewport().removeChild(floatingMessage);
                 }
 
-                // Set startAddSensorActive to false
                 startAddSensorActive = false;
 
-                // Hide the "Finish Sketch" button
                 const finishButton = document.getElementById("finishDrawingButton");
                 finishButton.classList.add("hidden");
-            }
 
-            // Function to delete the points on the map
-            function deletePoints() {
-                if (sensorVectorLayer) {
-                    const source = sensorVectorLayer.getSource();
-                    source.clear(); // Clear the features from the source
+                const sensorVectorLayers = map.getLayers().getArray();
+                const hasPoints = sensorVectorLayers.some(
+                    (layer) =>
+                        layer instanceof ol.layer.Vector &&
+                        layer.getSource().getFeatures().length > 0
+                );
+
+                if (hasPoints) {
+                    try {
+                        const message = { enfarm_sensor_coordinates: retrievePointsFromLocalStorage() };
+                        window.ReactNativeWebView.postMessage(JSON.stringify(message));
+                    } catch (error) {
+                        // Handle the error (or do nothing to prevent logging)
+                    }
+                }
+
+                const storedPoints = retrievePointsFromLocalStorage();
+                if (storedPoints.length === 0) {
+                    localStorage.removeItem('enfarm_sensor_coordinates');
                 }
             }
 
-            // Get the button element
             const addSensorBtn = document.querySelector(".addSensorBtn");
             const addSensorBtnIcon = addSensorBtn.querySelector("i");
 
-            // Add a click event listener to the button
             addSensorBtn.addEventListener("click", function () {
                 if (startAddSensorActive) {
                     deletePoints();
@@ -4305,92 +4387,65 @@ height: 30px;
             });
 
             const finishButton = document.getElementById("finishDrawingButton");
-            const enfarm_sensor_coordinates = []; // Declare the variable outside the event listener
 
             finishButton.addEventListener("click", function () {
-                // Check if the sensorVectorLayer is defined
                 if (sensorVectorLayer) {
                     const source = sensorVectorLayer.getSource();
                     const features = source.getFeatures();
 
-                    // Clear the array before adding new coordinate values
-                    enfarm_sensor_coordinates.length = 0;
+                    const enfarm_sensor_coordinates = [];
 
-                    // Iterate through each feature to get the coordinates
                     features.forEach(function (feature) {
                         const geometry = feature.getGeometry();
                         const coordinate = geometry.getCoordinates();
-
-                        // Transform the coordinates to EPSG:4326
                         const transformedCoordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
                         const enfarm_sensor_lat = transformedCoordinate[1];
                         const enfarm_sensor_lon = transformedCoordinate[0];
 
-                        // Push the coordinates to the array
                         enfarm_sensor_coordinates.push({ enfarm_sensor_lat, enfarm_sensor_lon });
                     });
 
-                    // Log the coordinates to the console along with the variable name
                     console.log("enfarm_sensor_coordinates:", enfarm_sensor_coordinates);
 
-                    // Disable draw interaction and revert button styles
+                    storePointsInLocalStorage(enfarm_sensor_coordinates);
+
                     disableAddSensor();
                 }
             });
 
-            // Function to disable draw interaction and revert button styles
-            function disableAddSensor() {
-                // Deactivate the draw interaction
-                map.removeInteraction(sensorDrawInteraction);
-
-                // Reset the button styles
-                addSensorBtnIcon.textContent = "sensors";
-                addSensorBtn.style.backgroundColor = "";
-                addSensorBtnIcon.style.color = "";
-
-                // Remove the floating message if it exists
-                const floatingMessage = document.getElementById("floatingMessageArea");
-                if (floatingMessage && floatingMessage.parentNode === map.getViewport()) {
-                    map.getViewport().removeChild(floatingMessage);
-                }
-
-                // Set startAddSensorActive to false
-                startAddSensorActive = false;
-
-                // Hide the "Finish Sketch" button
-                finishButton.classList.add("hidden");
-
-                // Check if there are points on the map
-                const sensorVectorLayers = map.getLayers().getArray();
-                const hasPoints = sensorVectorLayers.some(
-                    (layer) =>
-                        layer instanceof ol.layer.Vector &&
-                        layer.getSource().getFeatures().length > 0
-                );
-
-                // Post a message to the React Native app if there are points
-                if (hasPoints) {
-                    try {
-                        const message = { enfarm_sensor_coordinates };
-                        window.ReactNativeWebView.postMessage(JSON.stringify(message));
-                    } catch (error) {
-                        // Handle the error (or do nothing to prevent logging)
-                    }
-                }
-            }
-
-
-            // Define the function to deactivate the add sensor functionality
             function deactivateAddSensor() {
                 if (startAddSensorActive) {
                     disableAddSensor();
                 }
             }
 
-            // Add event listeners to the buttons
             document.getElementById("measureAreaBtn").addEventListener("click", deactivateAddSensor);
             document.getElementById("measureLengthBtn").addEventListener("click", deactivateAddSensor);
             document.getElementById("sketchFarmBtn").addEventListener("click", deactivateAddSensor);
+
+            // Retrieve points from local storage when the page loads
+            window.addEventListener('load', function () {
+                // Define the layer only if it does not exist
+                if (!sensorVectorLayer) {
+                    const source = new ol.source.Vector();
+                    sensorVectorLayer = new ol.layer.Vector({
+                        source: source,
+                        style: sensorPointStyle,
+                    });
+                    map.addLayer(sensorVectorLayer);
+                }
+
+                const storedPoints = retrievePointsFromLocalStorage();
+                if (storedPoints.length > 0) {
+                    storedPoints.forEach(function (point) {
+                        const coordinate = ol.proj.transform([point.enfarm_sensor_lon, point.enfarm_sensor_lat], 'EPSG:4326', 'EPSG:3857');
+                        const feature = new ol.Feature({
+                            geometry: new ol.geom.Point(coordinate),
+                        });
+                        sensorVectorLayer.getSource().addFeature(feature);
+                    });
+                }
+            });
 
 
             ///// NORTH ARROW BUTTON \\\\\
