@@ -3031,7 +3031,7 @@
 
 
 
-            
+
 
 
 
@@ -4107,22 +4107,51 @@ height: 30px;
                         geometry: new ol.geom.Polygon([polygonPoints]),
                     });
 
-                    farmVectorLayer = new ol.layer.Vector({
-                        source: new ol.source.Vector({
-                            features: [polygonFeature],
-                        }),
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: 'rgba(56, 108, 52, 0.5)',
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: '#386c34',
-                                width: 10,
-                            }),
-                        }),
+                    const farmCenter = ol.proj.transform([storedPolygon.centerPoint.lon, storedPolygon.centerPoint.lat], 'EPSG:4326', 'EPSG:3857');
+
+                    const farmCenterFeature = new ol.Feature({
+                        geometry: new ol.geom.Point(farmCenter),
                     });
 
+                    farmVectorLayer = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: [polygonFeature, farmCenterFeature],
+                        }),
+                        style: [
+                            new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: 'rgba(56, 108, 52, 0.5)',
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: '#386c34',
+                                    width: 10,
+                                }),
+                            }),
+                            new ol.style.Style({
+                                image: new ol.style.Circle({
+                                    radius: 16,
+                                    fill: new ol.style.Fill({
+                                        color: '#386c34',
+                                    }),
+                                    stroke: new ol.style.Stroke({
+                                        color: 'white',
+                                        width: 8,
+                                    }),
+                                }),
+                                geometry: farmCenterFeature.getGeometry(),
+                            }),
+                        ],
+                    });
+
+                    vectorSource.addFeatures([polygonFeature, farmCenterFeature]); // Add both features to the vector source
+
                     map.addLayer(farmVectorLayer);
+
+                    // Retrieve and display the farm's center point
+                    const farmCenterLon = storedPolygon.centerPoint.lon;
+                    const farmCenterLat = storedPolygon.centerPoint.lat;
+                    console.log('Farm Center Lon:', farmCenterLon);
+                    console.log('Farm Center Lat:', farmCenterLat);
 
                     const centroid = ol.extent.getCenter(polygonFeature.getGeometry().getExtent());
 
@@ -4568,7 +4597,7 @@ height: 30px;
 
 
 
-            
+
             ///// PAN TO DRAWNN POLYGON or USER LOCATION \\\\\
             function panToDrawnPolygon() {
                 // Check if there is a drawn polygon
