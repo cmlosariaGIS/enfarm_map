@@ -1010,10 +1010,10 @@
         .closenitrogenLegend,
         .closepHLegend {
             position: absolute;
-            top: 50px;
+            top: 49px;
             background-color: #ffffff;
-            width: 20px;
-            height: 20px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -1022,6 +1022,8 @@
             z-index: 8;
             right: 165px;
             display: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
         }
 
         .closecarbonLegend i,
@@ -1030,10 +1032,11 @@
             font-size: 45px;
             color: #ff4d4d;
             display: none;
-            position: relative;
+            position: absolute;
             top: -10px;
-            right: 11px;
+            right: -7px;
             z-index: 9;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
 
@@ -1974,8 +1977,8 @@
             addCloseEventListener('.closenitrogenLegend', 'nitrogenlegend');
 
 
-                        //Basemap Legend background changes to transparent when user scrolls
-                        function changeBackgroundColorOnScroll() {
+            //Basemap Legend background changes to transparent when user scrolls
+            function changeBackgroundColorOnScroll() {
                 // Get the legend containers
                 const carbonLegend = document.querySelector('.carbonLegend');
                 const nitrogenLegend = document.querySelector('.nitrogenLegend');
