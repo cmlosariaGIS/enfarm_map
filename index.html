@@ -835,7 +835,7 @@
             cursor: pointer;
             margin-right: .5rem;
             padding: 1rem 2.5rem;
-            transition: all .5s ease
+            transition: all .5s ease box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .shepherd-button:not(:disabled):hover {
@@ -864,6 +864,7 @@
             background: #3288e6;
             color: white;
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
         }
 
@@ -1071,6 +1072,43 @@
             margin-right: 5px;
             border-radius: 5px;
         }
+
+        .carbonLegend,
+        .nitrogenLegend,
+        .phLegend {
+            background-color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .carbonLegend.transparent,
+        .nitrogenLegend.transparent,
+        .phLegend.transparent {
+            background-color: transparent !important;
+        }
+
+
+
+
+        /*.basemapfloatingTitle {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: fit-content;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 50px;
+  padding: 20px 40px;
+        z-index: 2;
+        }
+
+
+        .basemapfloatingTitle .basemapTitle {
+            font-size: 30px;
+            font-weight: bold;
+            color: #515151;
+        }*/
     </style>
 </head>
 
@@ -1078,13 +1116,25 @@
 
     <div class="map">
 
+
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
 
+        <div class="basemapfloatingTitle">
+            <span class="basemapTitle">Basemap Title</span>
+        </div>
+
+
+
+
         <div>
             <img src="https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png" alt="Logo" class="logo">
         </div>
+
+
+
+
 
         <div class="carbonlegend" id="carbonlegend">
             <div class="carbonLegend" id="carbonLegend">
@@ -1906,6 +1956,12 @@
 
         <script>
 
+
+
+
+
+
+
             //Display ISRIC Maps Legend
             function addCloseEventListener(elementId, targetId) {
                 document.querySelector(elementId).addEventListener('click', function () {
@@ -1918,6 +1974,31 @@
             addCloseEventListener('.closenitrogenLegend', 'nitrogenlegend');
 
 
+                        //Basemap Legend background changes to transparent when user scrolls
+                        function changeBackgroundColorOnScroll() {
+                // Get the legend containers
+                const carbonLegend = document.querySelector('.carbonLegend');
+                const nitrogenLegend = document.querySelector('.nitrogenLegend');
+                const phLegend = document.querySelector('.phLegend');
+
+                // Add scroll event listener to each legend container
+                carbonLegend.addEventListener('scroll', handleScroll);
+                nitrogenLegend.addEventListener('scroll', handleScroll);
+                phLegend.addEventListener('scroll', handleScroll);
+
+                // Function to handle scroll event
+                function handleScroll(event) {
+                    // Change the background color based on scroll position
+                    if (event.target.scrollTop > 0) {
+                        event.target.style.backgroundColor = 'transparent';
+                    } else {
+                        event.target.style.backgroundColor = '#ffffff';
+                    }
+                }
+            }
+
+            // Call the function to activate the scroll behavior
+            changeBackgroundColorOnScroll();
 
             ///// MAP PRODUCT TOUR \\\\\
             // Check if the tour has already been shown
