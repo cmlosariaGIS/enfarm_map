@@ -564,7 +564,7 @@
 
         .northArrow {
             position: fixed;
-            top:400px;
+            top: 400px;
             left: 40px;
             transform: translateX(-50%);
             background-color: #fff;
@@ -1709,7 +1709,7 @@
 
         <div class="basemapSelector" id="basemapSelector">
             <div class="container-content">
-                <h2>Chọn bản đồ cơ sở</h2>
+                <h2>Chọn bản đồ nền</h2>
                 <div class="close-bm-button" onclick="closeBasemapSelector()">
                     <i class="material-icons">cancel</i>
                 </div>
@@ -1725,22 +1725,22 @@
                     </div>
 
                     <div onclick="selectBasemap(2)" style="position: relative;">
-                        <img src="https://i.ibb.co/j3fq23k/bm-imagery.png" alt="Hình ảnh" border="0">
+                        <img src="https://i.ibb.co/j3fq23k/bm-imagery.png" alt="Vệ tinh" border="0">
                         <div class="mapboxinfo-icon" style="position: absolute; top: 20px; left: 20px;">
                             <i class="material-icons"
                                 style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                         </div>
-                        <div class="caption">Hình ảnh</div>
+                        <div class="caption">Vệ tinh</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
 
                     <div onclick="selectBasemap(0)" style="position: relative;">
-                        <img src="https://i.ibb.co/VM1tBQj/bm-carbon.png" alt="bm-carbon" border="0">
+                        <img src="https://i.ibb.co/VM1tBQj/bm-carbon.png" alt="Tín chỉ Các bon" border="0">
                         <div class="info-icon" style="position: absolute; top: 20px; left: 20px;">
                             <i class="material-icons"
                                 style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                         </div>
-                        <div class="caption">Cổ phiếu carbon</div>
+                        <div class="caption">Tín chỉ Các bon</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
 
@@ -1756,12 +1756,12 @@
                     </div>
 
                     <div onclick="selectBasemap(4)" style="position: relative;">
-                        <img src="https://i.ibb.co/Krtp9sf/bm-nitrogen.png" alt="Nito" border="0">
+                        <img src="https://i.ibb.co/Krtp9sf/bm-nitrogen.png" alt="Bản đồ Ni tơ" border="0">
                         <div class="info-icon" style="position: absolute; top: 20px; left: 20px;">
                             <i class="material-icons"
                                 style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                         </div>
-                        <div class="caption">Nito</div>
+                        <div class="caption">Bản đồ Ni tơ</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
 
@@ -1938,30 +1938,29 @@
                     // Define the steps of the tour
                     tour.addStep({
                         id: 'step-search',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để tìm kiếm các địa điểm.</span>', //Click this button to search for places.
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để tìm kiếm các địa điểm.</span>',
                         attachTo: {
                             element: '#searchBtn',
                             on: 'left',
                         },
                         buttons: [
                             {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
                                 action: tour.next,
                             },
                         ],
                     });
 
-
                     tour.addStep({
                         id: 'step-basemap',
-                        text: '<span style="font-size: 40px;">Nhấp vào nút này để chuyển đổi bản đồ cơ sở.</span>', //Click this button to switch basemaps.
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để chuyển đổi bản đồ cơ sở.</span>',
                         attachTo: {
                             element: '#basemapBtn',
                             on: 'left',
                         },
                         buttons: [
                             {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
                                 action: tour.next,
                             },
                         ],
@@ -1969,14 +1968,14 @@
 
                     tour.addStep({
                         id: 'step-measure-area',
-                        text: '<span style="font-size: 40px;">Bấm vào nút này để đo diện tích.</span>', //Click this button to measure area.
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Bấm vào nút này để đo diện tích.</span>',
                         attachTo: {
                             element: '#measureAreaBtn',
                             on: 'left',
                         },
                         buttons: [
                             {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
                                 action: tour.next,
                             },
                         ],
@@ -1984,14 +1983,14 @@
 
                     tour.addStep({
                         id: 'step-measure-length',
-                        text: '<span style="font-size: 40px;">Bấm vào nút này để đo chiều dài.</span>', //Click this button to measure length.
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Bấm vào nút này để đo chiều dài.</span>',
                         attachTo: {
                             element: '#measureLengthBtn',
                             on: 'left',
                         },
                         buttons: [
                             {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
                                 action: tour.next,
                             },
                         ],
@@ -1999,14 +1998,14 @@
 
                     tour.addStep({
                         id: 'step-sketch-farm',
-                        text: '<span style="font-size: 40px;">Nhấp vào nút này để phác thảo trang trại của bạn.</span>', //Click this button to sketch your farms.
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để phác thảo trang trại của bạn.</span>',
                         attachTo: {
                             element: '#sketchFarmBtn',
                             on: 'left',
                         },
                         buttons: [
                             {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
                                 action: tour.next,
                             },
                         ],
@@ -2014,30 +2013,29 @@
 
                     tour.addStep({
                         id: 'step-add-sensor',
-                        text: '<span style="font-size: 40px;">Nhấp vào nút này để thêm/các cảm biến enfarm.</span>', //Click this button to add enfarm sensor/s.
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để thêm/các cảm biến enfarm.</span>',
                         attachTo: {
                             element: '#addSensorBtn',
                             on: 'left',
                         },
                         buttons: [
                             {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
                                 action: tour.next,
                             },
                         ],
                     });
 
-
                     tour.addStep({
                         id: 'step-reset',
-                        text: '<span style="font-size: 40px;">Nhấp vào nút này để đặt lại bản đồ.</span>', //Click this button to reset the map.
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để đặt lại bản đồ.</span>',
                         attachTo: {
                             element: '#resetBtn',
                             on: 'left',
                         },
                         buttons: [
                             {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
                                 action: tour.next,
                             },
                         ],
@@ -2045,14 +2043,14 @@
 
                     tour.addStep({
                         id: 'step-reset',
-                        text: '<span style="font-size: 40px;">Nhấp vào nút này để tìm vị trí của bạn.</span>', //Click this button to find your location.
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để tìm vị trí của bạn.</span>',
                         attachTo: {
                             element: '#locationBtn',
                             on: 'left',
                         },
                         buttons: [
                             {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
                                 action: tour.next,
                             },
                         ],
@@ -2060,21 +2058,21 @@
 
                     tour.addStep({
                         id: 'step-reset',
-                        text: '<span style="font-size: 40px;">Nhấp vào nút này để xem lại hướng dẫn.</span>', //Click this button to show the guide again
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để xem lại hướng dẫn.</span>',
                         attachTo: {
                             element: '#tutorialBtn',
                             on: 'left',
                         },
                         buttons: [
                             {
-                                text: '<span style="font-size: 40px;">Làm lại</span>', //Repeat
+                                text: '<span style="font-size: 40px;">Làm lại</span>',
                                 action: () => {
                                     tour.show('step-search');
                                 },
                                 classes: 'shepherd-button-secondary',
                             },
                             {
-                                text: '<span style="font-size: 40px;">Xong</span>', //Done
+                                text: '<span style="font-size: 40px;">Xong</span>',
                                 action: () => {
                                     // Mark the tour as shown in the browser storage
                                     localStorage.setItem('tourShown', true);
@@ -2083,6 +2081,7 @@
                             },
                         ],
                     });
+
 
                     // Start the tour
                     tour.start();
