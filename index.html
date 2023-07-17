@@ -560,14 +560,13 @@
         /***** END DRAW FARM BUTTON FUNCTION *****/
 
 
-        * END USER LOCATION BUTTON *****/
 
-        /***** START NORTH ARROW BUTTON FUNCTION *****/
+
         .northArrow {
-            position: absolute;
-            top: 50%;
-            left: 34px;
-            transform: translate(-50%, -50%);
+            position: fixed;
+            top:400px;
+            left: 40px;
+            transform: translateX(-50%);
             background-color: #fff;
             border-radius: 50%;
             width: 120px;
@@ -588,6 +587,7 @@
             transform: rotate(0deg);
             transition: transform 0.3s ease-in-out;
         }
+
 
         /***** END NORTH ARROW BUTTON FUNCTION *****/
 
@@ -699,7 +699,7 @@
         #tutorialBtn {
 
             position: fixed;
-            bottom: 70%;
+            top: 200px;
             left: 70px;
             background-color: #ffffff;
             border: none;
@@ -722,7 +722,7 @@
         #clearAllDrawingBtn {
 
             position: fixed;
-            bottom: 60%;
+            top: 300px;
             left: 70px;
             background-color: #ff0000;
             border: none;
@@ -745,17 +745,17 @@
         /***** START USER LOCATION BUTTON *****/
         .locationBtn {
             position: absolute;
-            top:480px;
+            top: 550px;
             left: 32px;
             z-index: 1;
         }
 
-        /****
+        /***** END USER LOCATION BUTTON *****/
 
         /****** Start Reset Button *******/
         #resetBtn {
             position: fixed;
-            top: 620px;
+            top: 680px;
             left: 40px;
             background-color: #ffffff;
             border: none;
@@ -781,7 +781,7 @@
         /****** Start Scale line Styles *******/
         .ol-scale-line {
             position: fixed;
-            bottom: 5%;
+            top: 840px;
             left: 30px;
             background: none;
             border: none;
@@ -4844,7 +4844,6 @@ height: 30px;
                     console.error("Geolocation is not supported by this browser.");
                 }
             }
-
 
 
             // For Listening to react native app data
