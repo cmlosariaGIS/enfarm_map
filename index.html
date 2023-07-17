@@ -59,7 +59,7 @@
         .logo {
             position: absolute;
             top: 45px;
-            left: 30px;
+            left: 20px;
             width: 320px;
             height: 130px;
             z-index: 1;
@@ -745,8 +745,8 @@
         /***** START USER LOCATION BUTTON *****/
         .locationBtn {
             position: absolute;
-            bottom:29%;
-            left: 30px;
+            top:480px;
+            left: 32px;
             z-index: 1;
         }
 
@@ -755,7 +755,7 @@
         /****** Start Reset Button *******/
         #resetBtn {
             position: fixed;
-            bottom: 15%;
+            top: 620px;
             left: 40px;
             background-color: #ffffff;
             border: none;
@@ -4770,18 +4770,42 @@ height: 30px;
                 source: new ol.source.Vector(),
                 style: new ol.style.Style({
                     image: new ol.style.Circle({
-                        radius: 8,
+                        radius: 18,
                         fill: new ol.style.Fill({
-                            color: '#1B6B93',
+                            color: '#007bff',
                         }),
                         stroke: new ol.style.Stroke({
                             color: 'white',
-                            width: 3,
+                            width: 8,
                         }),
                     }),
                 }),
                 name: 'User Location',
             });
+
+            function createUserLocationMarker() {
+                const markerElement = document.createElement("div");
+                markerElement.className = "user-marker";
+
+                const markerOverlay = new ol.Overlay({
+                    element: markerElement,
+                    positioning: "center-center",
+                    stopEvent: false,
+                });
+
+                map.addOverlay(markerOverlay);
+
+                return markerOverlay;
+            }
+
+            function startGlowing() {
+                const markerElement = document.querySelector('.user-marker');
+                markerElement.classList.add('glowing');
+            }
+
+            // Call the functions to create the user location marker and start the glowing effect
+            const markerOverlay = createUserLocationMarker();
+            startGlowing();
 
             function getUserLocation() {
                 if ("geolocation" in navigator) {
@@ -4808,6 +4832,7 @@ height: 30px;
                             }
                             map.addLayer(userLocationLayer);
 
+                            // Pan and zoom to the user location
                             map.getView().setCenter(userLocation);
                             map.getView().setZoom(19);
                         },
