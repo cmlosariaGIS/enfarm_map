@@ -1907,14 +1907,6 @@
 
         <script>
 
-
-
-
-
-
-
-
-
             //Display ISRIC Maps Legend
             function addCloseEventListener(elementId, targetId) {
                 document.querySelector(elementId).addEventListener('click', function () {
@@ -1925,7 +1917,6 @@
             addCloseEventListener('.closecarbonLegend', 'carbonlegend');
             addCloseEventListener('.closepHLegend', 'pHlegend');
             addCloseEventListener('.closenitrogenLegend', 'nitrogenlegend');
-
 
 
 
@@ -1947,7 +1938,7 @@
                     // Define the steps of the tour
                     tour.addStep({
                         id: 'step-search',
-                        text: '<span style="font-size: 40px;">Nhấp vào nút này để tìm kiếm các địa điểm.</span>', //Click this button to search for places.
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để tìm kiếm các địa điểm.</span>', //Click this button to search for places.
                         attachTo: {
                             element: '#searchBtn',
                             on: 'left',
@@ -2052,6 +2043,20 @@
                         ],
                     });
 
+                    tour.addStep({
+                        id: 'step-reset',
+                        text: '<span style="font-size: 40px;">Nhấp vào nút này để tìm vị trí của bạn.</span>', //Click this button to find your location.
+                        attachTo: {
+                            element: '#locationBtn',
+                            on: 'left',
+                        },
+                        buttons: [
+                            {
+                                text: '<span style="font-size: 40px;">Kế tiếp</span>', //Next
+                                action: tour.next,
+                            },
+                        ],
+                    });
 
                     tour.addStep({
                         id: 'step-reset',
