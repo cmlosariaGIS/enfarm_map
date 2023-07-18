@@ -75,6 +75,8 @@
         .northArrow,
         .resetBtn,
         .addSensorBtn,
+        .undoSensorBtn,
+        .undoSketchBtn,
         .tutorialBtn {
             position: fixed;
             background-color: #ffffff;
@@ -100,6 +102,8 @@
         .northArrow i,
         .resetBtn i,
         .addSensorBtn i,
+        .undoSensorBtn i,
+        .undoSketchBtn i,
         .tutorialBtn i {
             font-family: "Material Icons";
             font-size: 65px;
@@ -504,6 +508,21 @@
             z-index: 1;
         }
 
+        .undoSketchBtn {
+            position: absolute;
+            top: 620px;
+            right: 180px;
+            background-color: #2b98fe;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .undoSketchBtn i {
+            color: #ffffff;
+        }
+
         .addSensorBtn {
             position: absolute;
             top: 760px;
@@ -512,6 +531,22 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .undoSensorBtn {
+            position: absolute;
+            top: 760px;
+            right: 180px;
+            background-color: #2b98fe;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            display: none;
+        }
+
+        .undoSensorBtn i {
+            color: #ffffff;
         }
 
         /*Draw Farm Area Size*/
@@ -611,7 +646,10 @@
             .sketchFarmBtn,
             .northArrow,
             .resetBtn,
-            .addSensorBtn .tutorialBtn {
+            .addSensorBtn,
+            .undoSensorBtn,
+            .undoSketchBtn,
+            .tutorialBtn {
                 font-size: 20px;
                 padding: 8px 12px;
             }
@@ -635,7 +673,10 @@
             .sketchFarmBtn,
             .northArrow,
             .resetBtn,
-            .addSensorBtn .tutorialBtn {
+            .addSensorBtn,
+            .undoSensorBtn,
+            .undoSketchBtn,
+            .tutorialBtn {
                 font-size: 16px;
                 padding: 6px 10px;
             }
@@ -960,7 +1001,7 @@
 
         .info-icon:hover,
         .osminfo-icon:hover,
-        .mapboxinfo-icon:hover, 
+        .mapboxinfo-icon:hover,
         .gebcoinfo-icon:hover {
             cursor: pointer;
         }
@@ -1874,18 +1915,22 @@
             <i class="material-icons">straighten</i>
         </button>
 
-        <!--<button id="drawFarmBtn" class="drawFarmBtn" onclick="startDrawingFarm()">
-            <i class="material-icons">create</i>
-        </button>-->
 
         <button id="sketchFarmBtn" class="sketchFarmBtn">
             <i class="material-icons">create</i>
         </button>
 
+        <!--<button id="undoSketchBtn" class="undoSketchBtn">
+            <i class="material-icons">undo</i>
+        </button>-->
+
         <button id="addSensorBtn" class="addSensorBtn">
             <i class="material-icons">sensors</i>
         </button>
 
+        <button id="undoSensorBtn" class="undoSensorBtn">
+            <i class="material-icons">undo</i>
+        </button>
 
 
         <button id="tutorialBtn">
@@ -4174,6 +4219,7 @@ height: 30px;
                         } catch (error) {
                             console.error("Failed to fetch elevation data for the center point:", error);
                         }
+                        
 
                         // Send to React Native App
                         const dataToPost = {
@@ -4459,6 +4505,7 @@ height: 30px;
             let startAddSensorActive = false;
             let sensorDrawInteraction;
             let sensorVectorLayer;
+            let isSensorPointAdded = false;
 
             function startAddSensor() {
                 let addSensorBtnIcon = document.querySelector(".addSensorBtn i");
@@ -4507,14 +4554,26 @@ height: 30px;
                     sensorDrawCount = 0;
                 });
 
-                sensorDrawInteraction.on('drawend', function () {
+                sensorDrawInteraction.on('drawend', function (event) {
+                    const feature = event.feature;
                     const source = sensorVectorLayer.getSource();
                     const features = source.getFeatures();
+
+                    if (features.length === 0) {
+                        isSensorPointAdded = true;
+                        const undoSensorBtn = document.getElementById("undoSensorBtn");
+                        undoSensorBtn.style.display = "block";
+                    }
+
                     if (features.length === 0) {
                         const finishDrawingButton = document.getElementById("finishDrawingButton");
                         finishDrawingButton.classList.remove("hidden");
                     }
                 });
+
+
+                const undoSensorBtn = document.getElementById("undoSensorBtn");
+                undoSensorBtn.style.display = "none";
             }
 
             function deletePoints() {
@@ -4577,6 +4636,29 @@ height: 30px;
                 if (storedPoints.length === 0) {
                     localStorage.removeItem('enfarm_sensor_coordinates');
                 }
+
+                const undoSensorBtn = document.getElementById("undoSensorBtn");
+                undoSensorBtn.style.display = "none";
+            }
+
+            function undoLastSensor() {
+                if (sensorVectorLayer) {
+                    const source = sensorVectorLayer.getSource();
+                    const features = source.getFeatures();
+                    const lastFeature = features[features.length - 1];
+
+                    if (lastFeature) {
+                        source.removeFeature(lastFeature);
+                        // You can also perform any additional logic here, such as updating localStorage
+                    }
+
+                    const remainingFeatures = source.getFeatures();
+                    if (remainingFeatures.length === 0) {
+                        const undoSensorBtn = document.getElementById("undoSensorBtn");
+                        undoSensorBtn.style.display = "none";
+                        isSensorPointAdded = false;
+                    }
+                }
             }
 
             const addSensorBtn = document.querySelector(".addSensorBtn");
@@ -4594,32 +4676,35 @@ height: 30px;
             const finishButton = document.getElementById("finishDrawingButton");
 
             finishButton.addEventListener("click", function () {
-                if (sensorVectorLayer) {
-                    const source = sensorVectorLayer.getSource();
-                    const features = source.getFeatures();
+                if (isSensorPointAdded) {
+                    if (sensorVectorLayer) {
+                        const source = sensorVectorLayer.getSource();
+                        const features = source.getFeatures();
 
-                    const enfarm_sensor_coordinates = [];
+                        const enfarm_sensor_coordinates = [];
 
-                    features.forEach(function (feature) {
-                        const geometry = feature.getGeometry();
-                        const coordinate = geometry.getCoordinates();
-                        const transformedCoordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-                        const enfarm_sensor_lat = transformedCoordinate[1];
-                        const enfarm_sensor_lon = transformedCoordinate[0];
+                        features.forEach(function (feature) {
+                            const geometry = feature.getGeometry();
+                            const coordinate = geometry.getCoordinates();
+                            const transformedCoordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+                            const enfarm_sensor_lat = transformedCoordinate[1];
+                            const enfarm_sensor_lon = transformedCoordinate[0];
 
-                        enfarm_sensor_coordinates.push({ enfarm_sensor_lat, enfarm_sensor_lon });
-                    });
+                            enfarm_sensor_coordinates.push({ enfarm_sensor_lat, enfarm_sensor_lon });
+                        });
 
-                    console.log("enfarm_sensor_coordinates:", enfarm_sensor_coordinates);
+                        console.log("enfarm_sensor_coordinates:", enfarm_sensor_coordinates);
 
-                    storePointsInLocalStorage(enfarm_sensor_coordinates);
+                        storePointsInLocalStorage(enfarm_sensor_coordinates);
 
-                    disableAddSensor();
+                        disableAddSensor();
+                    }
                 }
             });
 
             function deactivateAddSensor() {
                 if (startAddSensorActive) {
+                    deletePoints();
                     disableAddSensor();
                 }
             }
@@ -4650,13 +4735,21 @@ height: 30px;
                         sensorVectorLayer.getSource().addFeature(feature);
                     });
                 }
+
+                const undoSensorBtn = document.getElementById("undoSensorBtn");
+                undoSensorBtn.style.display = "none";
             });
 
+            undoSensorBtn.addEventListener("click", undoLastSensor);
 
 
 
 
 
+
+
+
+            //CLEAR ALL DRAWINGS BUTTON FUNCTION (FARM SKETCH AND SENSORS)
             function clearAllDrawings() {
                 // Show the dialog box
                 const dialog = document.getElementById("dialog");
