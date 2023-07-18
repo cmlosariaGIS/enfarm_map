@@ -512,13 +512,12 @@
         .undoSketchBtn {
             position: absolute;
             top: 620px;
-            right: 160px;
+            right: 180px;
             background-color: #2b98fe;
             z-index: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            display: none;
         }
 
         .undoSketchBtn i {
@@ -596,6 +595,9 @@
         }
 
         /***** END DRAW FARM BUTTON FUNCTION *****/
+
+
+
 
         .northArrow {
             position: fixed;
@@ -2088,10 +2090,9 @@
             <i class="material-icons">create</i>
         </button>
 
-        <button id="undoSketchBtn" class="undoSketchBtn">
-            <i id="undoSketchIcon" class="material-icons">undo</i>
-        </button>
-
+        <!--<button id="undoSketchBtn" class="undoSketchBtn">
+            <i class="material-icons">undo</i>
+        </button>-->
 
         <!--Delete Confirm Dialog Box-->
         <div id="dialog" class="dialog hidden">
@@ -4026,11 +4027,7 @@
             document.getElementById("addSensorBtn").addEventListener("click", deactivateMeasurementLength);
 
 
-
             ///// <----- SKETCH FARM BUTTON FUNCTION -----> \\\\\
-
-            // Define and initialize address
-            let address;
 
             // Function to fetch place name from OSM Nominatim
             async function fetchPlaceName(lon, lat) {
@@ -4071,27 +4068,23 @@
             async function startSketchFarm() {
                 const sketchFarmBtn = document.getElementById("sketchFarmBtn");
                 sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
-                const finishDrawingButton = document.querySelector(".finish-drawing");
-                const dialog = document.getElementById("dialog");
+                const finishDrawingButton = document.querySelector('.finish-drawing');
+                const dialog = document.getElementById('dialog');
 
                 if (isSketchActive) {
                     if (timeoutId) {
                         clearTimeout(timeoutId);
-                        const existingFloatingMessage = document.querySelector(
-                            ".floating-message"
-                        );
+                        const existingFloatingMessage = document.querySelector('.floating-message');
                         if (existingFloatingMessage) {
                             map.getViewport().removeChild(existingFloatingMessage);
                         }
                         timeoutId = null;
                     }
 
-                    
-
                     if (polygonExists) {
-                        dialog.classList.remove("hidden");
+                        dialog.classList.remove('hidden');
 
-                        document.getElementById("deleteYes").addEventListener("click", function () {
+                        document.getElementById('deleteYes').addEventListener('click', function () {
                             map.removeInteraction(draw);
                             isSketchActive = false;
                             polygonExists = false;
@@ -4102,17 +4095,17 @@
                             sketchFarmBtn.style.backgroundColor = "white";
                             sketchFarmBtnIcon.textContent = "create";
                             sketchFarmBtnIcon.style.color = "#515151";
-                            finishDrawingButton.classList.add("hidden");
-                            dialog.classList.add("hidden");
-                            
+                            finishDrawingButton.classList.add('hidden');
+                            dialog.classList.add('hidden');
+
                             console.clear();
 
                             // Remove stored polygon from local storage
-                            localStorage.removeItem("enfarm_polygon_coordinates");
+                            localStorage.removeItem('enfarm_polygon_coordinates');
                         });
 
-                        document.getElementById("deleteNo").addEventListener("click", function () {
-                            dialog.classList.add("hidden");
+                        document.getElementById('deleteNo').addEventListener('click', function () {
+                            dialog.classList.add('hidden');
                         });
                     } else {
                         map.removeInteraction(draw);
@@ -4120,9 +4113,7 @@
                         sketchFarmBtn.style.backgroundColor = "white";
                         sketchFarmBtnIcon.textContent = "create";
                         sketchFarmBtnIcon.style.color = "#515151";
-                        finishDrawingButton.classList.add("hidden");
-                        
-                        
+                        finishDrawingButton.classList.add('hidden');
                     }
                     return;
                 }
@@ -4184,24 +4175,6 @@
                 map.addInteraction(draw);
                 isSketchActive = true;
 
-                // Get a reference to the undoSketchBtn button
-                const undoSketchBtn = document.getElementById("undoSketchBtn");
-
-                // Add an event listener to the drawstart event of the draw interaction
-                draw.on("drawstart", function (event) {
-                    // Show the undoSketchBtn button when the user starts drawing a polygon
-                    undoSketchBtn.style.display = "block";
-                });
-
-                // Function to undo the last sketch vertex
-                function undoSketchInteraction() {
-                    draw.removeLastPoint();
-                }
-
-                undoSketchBtn.addEventListener("click", undoSketchInteraction);
-
-
-
                 const canvas = document.createElement("canvas");
                 const context = canvas.getContext("2d");
                 const size = 10;
@@ -4238,9 +4211,7 @@
                     event.feature.getGeometry().on("change", function (geomEvent) {
                         const coordinates = geomEvent.target.getCoordinates()[0];
                         if (coordinates.length >= 5) {
-                            finishDrawingButton.classList.remove("hidden");
-                            
-                            
+                            finishDrawingButton.classList.remove('hidden');
                         }
                     });
                 });
@@ -4260,10 +4231,10 @@
                             image: new ol.style.Circle({
                                 radius: 16,
                                 fill: new ol.style.Fill({
-                                    color: "#386c34",
+                                    color: '#386c34',
                                 }),
                                 stroke: new ol.style.Stroke({
-                                    color: "white",
+                                    color: 'white',
                                     width: 8,
                                 }),
                             }),
@@ -4427,42 +4398,23 @@ height: 30px;
                 });
             }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
             const sketchFarmBtn = document.getElementById("sketchFarmBtn");
             sketchFarmBtn.addEventListener("click", function () {
                 startSketchFarm();
             });
 
-            const finishDrawingButton = document.querySelector(".finish-drawing");
-            const undoSketchBtn = document.getElementById("undoSketchBtn");
-
+            const finishDrawingButton = document.querySelector('.finish-drawing');
             finishDrawingButton.onclick = function () {
                 if (draw) {
                     draw.finishDrawing();
-                    finishDrawingButton.classList.add("hidden");
+                    finishDrawingButton.classList.add('hidden');
                     map.removeInteraction(draw);
                     isSketchActive = false;
                     sketchFarmBtn.style.backgroundColor = "white";
                     sketchFarmBtnIcon.textContent = "create";
                     sketchFarmBtnIcon.style.color = "#515151";
-
-                    // Hide the undoSketchBtn button when the finishDrawingButton is hidden
-                    undoSketchBtn.style.display = "none";
                 }
             };
-
 
             function deactivateSketchFarm() {
                 const sketchFarmBtn = document.getElementById("sketchFarmBtn");
@@ -4494,22 +4446,16 @@ height: 30px;
 
             // Function to retrieve stored polygon from local storage
             function getStoredPolygon() {
-                const storedPolygonString = localStorage.getItem("enfarm_polygon_coordinates");
+                const storedPolygonString = localStorage.getItem('enfarm_polygon_coordinates');
                 if (storedPolygonString) {
                     const storedPolygon = JSON.parse(storedPolygonString);
-                    const polygonPoints = storedPolygon.polygonPoints.map(point =>
-                        ol.proj.transform([point.lon, point.lat], "EPSG:4326", "EPSG:3857")
-                    );
+                    const polygonPoints = storedPolygon.polygonPoints.map(point => ol.proj.transform([point.lon, point.lat], 'EPSG:4326', 'EPSG:3857'));
 
                     const polygonFeature = new ol.Feature({
                         geometry: new ol.geom.Polygon([polygonPoints]),
                     });
 
-                    const farmCenter = ol.proj.transform(
-                        [storedPolygon.centerPoint.lon, storedPolygon.centerPoint.lat],
-                        "EPSG:4326",
-                        "EPSG:3857"
-                    );
+                    const farmCenter = ol.proj.transform([storedPolygon.centerPoint.lon, storedPolygon.centerPoint.lat], 'EPSG:4326', 'EPSG:3857');
 
                     const farmCenterFeature = new ol.Feature({
                         geometry: new ol.geom.Point(farmCenter),
@@ -4522,10 +4468,10 @@ height: 30px;
                         style: [
                             new ol.style.Style({
                                 fill: new ol.style.Fill({
-                                    color: "rgba(56, 108, 52, 0.5)",
+                                    color: 'rgba(56, 108, 52, 0.5)',
                                 }),
                                 stroke: new ol.style.Stroke({
-                                    color: "#386c34",
+                                    color: '#386c34',
                                     width: 10,
                                 }),
                             }),
@@ -4533,10 +4479,10 @@ height: 30px;
                                 image: new ol.style.Circle({
                                     radius: 16,
                                     fill: new ol.style.Fill({
-                                        color: "#386c34",
+                                        color: '#386c34',
                                     }),
                                     stroke: new ol.style.Stroke({
-                                        color: "white",
+                                        color: 'white',
                                         width: 8,
                                     }),
                                 }),
@@ -4552,39 +4498,39 @@ height: 30px;
                     // Retrieve and display the farm's center point
                     const farmCenterLon = storedPolygon.centerPoint.lon;
                     const farmCenterLat = storedPolygon.centerPoint.lat;
-                    console.log("Farm Center Lon:", farmCenterLon);
-                    console.log("Farm Center Lat:", farmCenterLat);
+                    console.log('Farm Center Lon:', farmCenterLon);
+                    console.log('Farm Center Lat:', farmCenterLat);
 
                     const centroid = ol.extent.getCenter(polygonFeature.getGeometry().getExtent());
 
-                    const tooltipElement = document.createElement("div");
+                    const tooltipElement = document.createElement('div');
                     tooltipElement.style.cssText = `
-position: absolute;
-background-color: #ffffff;
-border: 1px solid #ccc;
-border-radius: 1000px;
-padding: 20px 30px;
-font-family: 'Be Vietnam Pro', Arial, sans-serif;
-font-size: 40px;
-font-weight: bold;
-color: #000000;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-display: flex;
-align-items: center;
-justify-content: center;
-min-width: 120px;
-height: 30px;
-`;
+      position: absolute;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      border-radius: 1000px;
+      padding: 20px 30px;
+      font-family: 'Be Vietnam Pro', Arial, sans-serif;
+      font-size: 40px;
+      font-weight: bold;
+      color: #000000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 120px;
+      height: 30px;
+    `;
 
                     const area = Number(storedPolygon.area.squareMeters); // Convert area to a number
-                    const areaDisplay = area >= 10000 ? (area / 10000).toFixed(2) + "ha" : area.toFixed(2) + "m²";
+                    const areaDisplay = area >= 10000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
 
                     tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 50px; margin-right: 10px;">agriculture</i>${areaDisplay}</span>`;
 
                     const tooltipOverlay = new ol.Overlay({
                         element: tooltipElement,
                         offset: [0, -120],
-                        positioning: "bottom-center",
+                        positioning: 'bottom-center',
                     });
 
                     tooltipOverlay.setPosition(centroid);
@@ -4609,19 +4555,17 @@ height: 30px;
             // Define and initialize areaHectares
             let areaHectares;
 
+
             // Update the finishDrawingButton click event to store the polygon in local storage
             finishDrawingButton.onclick = function () {
                 if (draw) {
                     draw.finishDrawing();
-                    finishDrawingButton.classList.add("hidden");
+                    finishDrawingButton.classList.add('hidden');
                     map.removeInteraction(draw);
                     isSketchActive = false;
-                    sketchFarmBtn.style.backgroundColor = "white";
-                    sketchFarmBtnIcon.textContent = "create";
-                    sketchFarmBtnIcon.style.color = "#515151";
-                    // Hide the undoSketchBtn button when the finishDrawingButton is hidden
-                    undoSketchBtn.style.display = "none";
-
+                    sketchFarmBtn.style.backgroundColor = 'white';
+                    sketchFarmBtnIcon.textContent = 'create';
+                    sketchFarmBtnIcon.style.color = '#515151';
 
                     // Store polygon coordinates in local storage
                     const polygonGeometry = vectorSource.getFeatures()[0].getGeometry();
@@ -4633,7 +4577,7 @@ height: 30px;
                         : polygonCoordinates[0];
 
                     const polygonPoints = polygonCoordinatesArray.map(coordinate => {
-                        const lonLat = ol.proj.transform(coordinate, "EPSG:3857", "EPSG:4326");
+                        const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
                         return { lon: lonLat[0], lat: lonLat[1] };
                     });
 
@@ -4650,15 +4594,14 @@ height: 30px;
                         },
                         address: address,
                     };
-                    localStorage.setItem("enfarm_polygon_coordinates", JSON.stringify(storedPolygon));
+                    localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
                 }
             };
 
             // Remove the stored polygon from local storage when the page loads
-            window.addEventListener("load", function () {
-                if (!localStorage.getItem("enfarm_polygon_coordinates")) {
-                    if (farmVectorLayer) {
-                        // Add a check before removing the farmVectorLayer
+            window.addEventListener('load', function () {
+                if (!localStorage.getItem('enfarm_polygon_coordinates')) {
+                    if (farmVectorLayer) { // Add a check before removing the farmVectorLayer
                         map.removeLayer(farmVectorLayer);
                         farmVectorLayer = null;
                     }
@@ -4668,7 +4611,6 @@ height: 30px;
                     tooltipOverlays = [];
                 }
             });
-
 
 
 
