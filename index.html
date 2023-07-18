@@ -512,12 +512,13 @@
         .undoSketchBtn {
             position: absolute;
             top: 620px;
-            right: 180px;
+            right: 160px;
             background-color: #2b98fe;
             z-index: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            display: none;
         }
 
         .undoSketchBtn i {
@@ -595,9 +596,6 @@
         }
 
         /***** END DRAW FARM BUTTON FUNCTION *****/
-
-
-
 
         .northArrow {
             position: fixed;
@@ -2090,9 +2088,9 @@
             <i class="material-icons">create</i>
         </button>
 
-        <!--<button id="undoSketchBtn" class="undoSketchBtn">
-            <i class="material-icons">undo</i>
-        </button>-->
+        <button id="undoSketchBtn" class="undoSketchBtn">
+            <i id="undoSketchIcon" class="material-icons">undo</i>
+          </button>
 
         <!--Delete Confirm Dialog Box-->
         <div id="dialog" class="dialog hidden">
@@ -4029,6 +4027,10 @@
 
             ///// <----- SKETCH FARM BUTTON FUNCTION -----> \\\\\
 
+            // Define and initialize address
+            //let address;
+
+
             // Function to fetch place name from OSM Nominatim
             async function fetchPlaceName(lon, lat) {
                 const baseUrl = "https://nominatim.openstreetmap.org/reverse";
@@ -4069,6 +4071,7 @@
                 const sketchFarmBtn = document.getElementById("sketchFarmBtn");
                 sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
                 const finishDrawingButton = document.querySelector('.finish-drawing');
+                const undoSketchbtn = document.querySelector('.fundoSketchbtn');
                 const dialog = document.getElementById('dialog');
 
                 if (isSketchActive) {
@@ -4097,7 +4100,6 @@
                             sketchFarmBtnIcon.style.color = "#515151";
                             finishDrawingButton.classList.add('hidden');
                             dialog.classList.add('hidden');
-
                             console.clear();
 
                             // Remove stored polygon from local storage
@@ -4114,6 +4116,7 @@
                         sketchFarmBtnIcon.textContent = "create";
                         sketchFarmBtnIcon.style.color = "#515151";
                         finishDrawingButton.classList.add('hidden');
+                        //undoSketchBtn.style.display = "none";
                     }
                     return;
                 }
@@ -4175,6 +4178,33 @@
                 map.addInteraction(draw);
                 isSketchActive = true;
 
+
+
+
+
+// Get a reference to the undoSketchBtn button
+const undoSketchBtn = document.getElementById("undoSketchBtn");
+
+// Hide the undoSketchBtn button initially
+undoSketchBtn.style.display = "none";
+
+// Add an event listener to the drawstart event of the draw interaction
+draw.on("drawstart", function (event) {
+  // Show the undoSketchBtn button when the user starts drawing a polygon
+  undoSketchBtn.style.display = "block";
+});
+
+// Function to undo the last sketch vertex
+function undoSketchInteraction() {
+  draw.removeLastPoint();
+}
+
+undoSketchBtn.addEventListener("click", undoSketchInteraction);
+
+
+
+
+
                 const canvas = document.createElement("canvas");
                 const context = canvas.getContext("2d");
                 const size = 10;
@@ -4212,6 +4242,7 @@
                         const coordinates = geomEvent.target.getCoordinates()[0];
                         if (coordinates.length >= 5) {
                             finishDrawingButton.classList.remove('hidden');
+                            
                         }
                     });
                 });
@@ -4413,6 +4444,7 @@ height: 30px;
                     sketchFarmBtn.style.backgroundColor = "white";
                     sketchFarmBtnIcon.textContent = "create";
                     sketchFarmBtnIcon.style.color = "#515151";
+                    undoSketchBtn.style.display = "none";
                 }
             };
 
@@ -4566,6 +4598,7 @@ height: 30px;
                     sketchFarmBtn.style.backgroundColor = 'white';
                     sketchFarmBtnIcon.textContent = 'create';
                     sketchFarmBtnIcon.style.color = '#515151';
+                    undoSketchBtn.style.display = "none";
 
                     // Store polygon coordinates in local storage
                     const polygonGeometry = vectorSource.getFeatures()[0].getGeometry();
