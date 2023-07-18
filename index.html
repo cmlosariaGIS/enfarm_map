@@ -22,6 +22,7 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
 
 
     <style>
@@ -1135,6 +1136,99 @@
             background-color: transparent !important;
         }
 
+        /*Start Terrain Legend*/
+        .terrainlegend {
+            position: absolute;
+            top: 60px;
+            right: 170px;
+            background-color: #fdfdfd;
+            border-radius: 10px;
+            padding: 15px 20px;
+            width: fit-content;
+            font-family: Arial, sans-serif;
+            display: none;
+            z-index: 2;
+        }
+
+        .terrainLegend {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .terraincolorValueContainer {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0px;
+        }
+
+        .terraincolorBox {
+            width: 35px;
+            height: 20px;
+        }
+
+        .closeterrainLegend {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .material-icons {
+            font-size: 45px;
+            color: #ff0000;
+            cursor: pointer;
+        }
+
+        .textContainer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .terraincontainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .terrainicon {
+            margin-right: 5px;
+            margin-bottom: -10px;
+        }
+
+        .terraintext {
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 35px;
+            margin-bottom: -10px
+        }
+
+        .low {
+            text-align: left;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 25px;
+        }
+
+        .high {
+            text-align: right;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 25px;
+        }
+
+        /*End Terrain Legend*/
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1170,9 +1264,9 @@
             <div class="blur-mask"></div>
         </div>
 
-        <div class="basemapfloatingTitle">
+        <!--<div class="basemapfloatingTitle">
             <span class="basemapTitle">Basemap Title</span>
-        </div>
+        </div>-->
 
 
 
@@ -1182,9 +1276,81 @@
         </div>
 
 
+        <!---------- BASEMAP LEGENDS ----------->
+        <!--Terrain Legend-->
+        <div class="terrainlegend" id="terrainlegend">
+            <div class="closeterrainLegend">
+                <i class="material-icons">cancel</i>
+            </div>
+            <div class="terraincontainer">
+                <div class="terrainicon">
+                    <i class="material-icons" style="font-size: 60px; color: #515151;">landscape</i>
+                </div>
+                <div class="terraintext">Terrain</div>
+            </div>
+            <div class="terrainLegend">
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #afead9;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #85d09a;"></div>
+                </div>
 
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #70c888;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #6cbd79;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #69b673;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #59b570;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #67a964;"></div>
+                </div>
 
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #a7ad7d;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #caa963;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #8a701b;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #8c691d;"></div>
+                </div>
 
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #836418;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #86621a;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #765e0d;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #73540a;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #ede8eb;"></div>
+                </div>
+                <div class="terraincolorValueContainer">
+                    <div class="terraincolorBox" style="background-color: #fafcf9;"></div>
+                </div>
+            </div>
+            <div class="textContainer">
+                <div class="low">low</div>
+                <div class="high">high</div>
+            </div>
+        </div>
+
+        <!--Carbon Legend-->
         <div class="carbonlegend" id="carbonlegend">
             <div class="carbonLegend" id="carbonLegend">
                 <div class="text">kg/m2</div>
@@ -1393,6 +1559,7 @@
             </div>
         </div>
 
+        <!--pH Legend-->
         <div class="pHlegend" id="pHlegend">
             <div class="phLegend">
                 <div class="text">pHx10</div>
@@ -1582,6 +1749,7 @@
             </div>
         </div>
 
+        <!--Nitrogen Legend-->
         <div class="nitrogenlegend" id="nitrogenlegend">
             <div class="nitrogenLegend">
                 <div class="text">g/kg</div>
@@ -2021,6 +2189,8 @@
             <i class="material-icons close-button" onclick="closeAttribution('.gebco-attribution')">cancel</i>
             <br><br>
             <p>Map data <a href="https://www.gebco.net" target="_blank">© GEBCO</a></p>
+            <p>Imagery reproduced from the GEBCO_2022 Grid, GEBCO Compilation Group (2022) GEBCO 2022 Grid
+                (doi:10.5285/e0f0bb80-ab44-2739-e053-6c86abc0289c)</p>
         </div>
         <script>
 
@@ -3156,6 +3326,33 @@
             });
 
 
+            // Dismiss the Terrain Legend
+            const terrainLegend = document.getElementById("terrainlegend");
+            const closeTerrainLegend = document.querySelector(".closeterrainLegend");
+
+            // Function to dismiss the terrainlegend
+            const dismissTerrainLegend = () => {
+                terrainLegend.style.display = "none";
+            };
+
+            // Function to show the terrainlegend
+            const showTerrainLegend = () => {
+                terrainLegend.style.display = "block";
+            };
+
+            // Add click event listener to the closeTerrainLegend
+            closeTerrainLegend.addEventListener("click", dismissTerrainLegend);
+
+            // Listen for change in basemap visibility
+            gebcoLayer.on("change:visible", () => {
+                if (gebcoLayer.getVisible()) {
+                    showTerrainLegend();
+                } else {
+                    dismissTerrainLegend();
+                }
+            });
+
+
 
 
             //Display ISRIC Maps Legend
@@ -4219,7 +4416,7 @@ height: 30px;
                         } catch (error) {
                             console.error("Failed to fetch elevation data for the center point:", error);
                         }
-                        
+
 
                         // Send to React Native App
                         const dataToPost = {
