@@ -599,7 +599,7 @@
 
         .northArrow {
             position: fixed;
-            top: 430px;
+            top: 440px;
             left: 50px;
             transform: translateX(-50%);
             background-color: #fff;
@@ -740,7 +740,7 @@
         #tutorialBtn {
 
             position: fixed;
-            top: 200px;
+            top: 190px;
             left: 70px;
             background-color: #ffffff;
             border: none;
@@ -763,7 +763,7 @@
         #clearAllDrawingBtn {
 
             position: fixed;
-            top: 350px;
+            top: 360px;
             left: 70px;
             background-color: #ff0000;
             border: none;
@@ -791,6 +791,30 @@
             z-index: 1;
         }
 
+        .locationBtn i {
+            /* Define the animation */
+            animation: locationBtn-icon-animation 1s ease-in-out 3;
+        }
+
+        /* Define the keyframes for the animation */
+        @keyframes locationBtn-icon-animation {
+            0% {
+                /* Start with the icon at its original size */
+                transform: scale(1);
+            }
+
+            50% {
+                /* Scale the icon up and change its color at the halfway point */
+                transform: scale(1.2);
+                color: rgb(59, 129, 242);
+            }
+
+            100% {
+                /* End with the icon back at its original size */
+                transform: scale(1);
+            }
+        }
+
         /***** END USER LOCATION BUTTON *****/
 
         /****** Start Reset Button *******/
@@ -814,7 +838,20 @@
         #resetBtn i.material-icons {
             font-size: 65px;
             color: #515151;
+            animation: resetBtn-icon-animation .5s ease-in-out;
         }
+
+        /* Define the keyframes for the animation */
+        @keyframes resetBtn-icon-animation {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(-360deg);
+            }
+        }
+
 
         /****** End Reset Button *******/
 
@@ -2248,16 +2285,12 @@
                     mapContainer.innerHTML = '';
                     mapContainer.appendChild(iframe);
 
-                    // Change the button text to "x"
+                    // Change the button text to "cancel"
                     buttonText.textContent = 'x';
 
                     // Set the width and padding of the button
                     showMapButton.style.width = '60px';
                     showMapButton.style.padding = '10px';
-
-                    // Restart the animation with a longer delay
-                    buttonText.style.animation = 'none';
-                    setTimeout(() => (buttonText.style.animation = ''), 1000);
                 } else {
                     // If it is not hidden, hide it
                     mapContainer.style.display = 'none';
@@ -2268,12 +2301,10 @@
                     // Reset the width and padding of the button
                     showMapButton.style.width = '';
                     showMapButton.style.padding = '';
-
-                    // Restart the animation with a longer delay
-                    buttonText.style.animation = 'none';
-                    setTimeout(() => (buttonText.style.animation = ''), 300);
                 }
             });
+
+
 
 
 
@@ -5326,10 +5357,22 @@ height: 30px;
             }
 
 
-            // For Listening to react native app data
-            window.addEventListener("message", message => {
-                alert(message.data);
+
+            // Get the location button element
+            const locationButton = document.querySelector('.locationBtn');
+
+            // Get the icon element inside the location button
+            const locationButtonIcon = locationButton.querySelector('i');
+
+            // Add an event listener to the location button to handle clicks
+            locationButton.addEventListener('click', function () {
+                // Restart the animation
+                locationButtonIcon.style.animation = 'none';
+                setTimeout(() => (locationButtonIcon.style.animation = ''), 10);
             });
+
+
+
 
 
 
@@ -5364,6 +5407,11 @@ height: 30px;
             map.addControl(scale_line);
 
 
+
+            // For Listening to react native app data
+            window.addEventListener("message", message => {
+                alert(message.data);
+            });
         </script>
 </body>
 
