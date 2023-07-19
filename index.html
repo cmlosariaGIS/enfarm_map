@@ -599,13 +599,13 @@
 
         .northArrow {
             position: fixed;
-            top: 400px;
-            left: 40px;
+            top: 430px;
+            left: 50px;
             transform: translateX(-50%);
             background-color: #fff;
             border-radius: 50%;
-            width: 120px;
-            height: 120px;
+            width: 90px;
+            height: 90px;
             z-index: 1;
             box-sizing: border-box;
         }
@@ -615,7 +615,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 65px;
+            font-size: 50px;
         }
 
         .northArrow i {
@@ -763,7 +763,7 @@
         #clearAllDrawingBtn {
 
             position: fixed;
-            top: 300px;
+            top: 350px;
             left: 70px;
             background-color: #ff0000;
             border: none;
@@ -1252,6 +1252,56 @@
             font-weight: bold;
             color: #515151;
         }*/
+
+
+
+
+        #windyMapContainer {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            display: none;
+
+        }
+
+        #windyMapBtn {
+            position: absolute;
+            top: 270px;
+            left: 60px;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 30px;
+            z-index: 6;
+            padding: 10px 20px;
+            background-color: red;
+            color: white;
+            border: none;
+            font-weight: bolder;
+            border-radius: 9999px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: width .3s ease-in-out, padding .3s ease-in-out;
+        }
+
+
+        .windyMapBtn-text {
+            display: inline-block;
+            animation: windyMapBtn-text-animation .5s ease-in-out;
+        }
+
+        /* Define the keyframes for the animation */
+        @keyframes windyMapBtn-text-animation {
+            from {
+                opacity: 1;
+            }
+
+            to {
+
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
@@ -1263,6 +1313,9 @@
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
+
+        <button id="windyMapBtn"><span class="windyMapBtn-text">Windy</span></button>
+        <div id="windyMapContainer"></div>
 
         <!--<div class="basemapfloatingTitle">
             <span class="basemapTitle">Basemap Title</span>
@@ -2090,7 +2143,7 @@
 
         <button id="undoSketchBtn" class="undoSketchBtn">
             <i id="undoSketchIcon" class="material-icons">undo</i>
-          </button>
+        </button>
 
         <!--Delete Confirm Dialog Box-->
         <div id="dialog" class="dialog hidden">
@@ -2164,7 +2217,80 @@
 
 
 
+
         <script>
+
+
+            //WINDY FORECAST
+            // Get the button and container elements
+            const showMapButton = document.getElementById('windyMapBtn');
+            const mapContainer = document.getElementById('windyMapContainer');
+
+            // Get the span element containing the button text
+            const buttonText = document.querySelector('#windyMapBtn .windyMapBtn-text');
+
+            // Add an event listener to the button to handle clicks
+            showMapButton.addEventListener('click', function () {
+                // Check if the map container is currently hidden
+                if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
+                    // If it is hidden, show it
+                    mapContainer.style.display = 'block';
+
+                    // Create the iframe element
+                    const iframe = document.createElement('iframe');
+                    iframe.width = '100%';
+                    iframe.height = '100%';
+                    iframe.src =
+                        'https://embed.windy.com/embed2.html?lat=14.0583&lon=108.2772&detailLat=14.0583&detailLon=108.2772&width=650&height=450&zoom=6&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1';
+                    iframe.frameBorder = '0';
+
+                    // Add the iframe to the container element
+                    mapContainer.innerHTML = '';
+                    mapContainer.appendChild(iframe);
+
+                    // Change the button text to "x"
+                    buttonText.textContent = 'x';
+
+                    // Set the width and padding of the button
+                    showMapButton.style.width = '60px';
+                    showMapButton.style.padding = '10px';
+
+                    // Restart the animation with a longer delay
+                    buttonText.style.animation = 'none';
+                    setTimeout(() => (buttonText.style.animation = ''), 1000);
+                } else {
+                    // If it is not hidden, hide it
+                    mapContainer.style.display = 'none';
+
+                    // Change the button text back to "Windy"
+                    buttonText.textContent = 'Windy';
+
+                    // Reset the width and padding of the button
+                    showMapButton.style.width = '';
+                    showMapButton.style.padding = '';
+
+                    // Restart the animation with a longer delay
+                    buttonText.style.animation = 'none';
+                    setTimeout(() => (buttonText.style.animation = ''), 300);
+                }
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             ///// <----- MAP PRODUCT TOUR -----> \\\\\
             // Check if the tour has already been shown
             const tourShown = localStorage.getItem('tourShown');
@@ -3149,6 +3275,7 @@
 
 
 
+
             // Initialize the map
             const map = new ol.Map({
                 target: mapElement,
@@ -4025,6 +4152,9 @@
             document.getElementById("addSensorBtn").addEventListener("click", deactivateMeasurementLength);
 
 
+
+
+
             ///// <----- SKETCH FARM BUTTON FUNCTION -----> \\\\\
 
             // Define and initialize address
@@ -4071,7 +4201,7 @@
                 const sketchFarmBtn = document.getElementById("sketchFarmBtn");
                 sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
                 const finishDrawingButton = document.querySelector('.finish-drawing');
-                const undoSketchbtn = document.querySelector('.fundoSketchbtn');
+                const undoSketchbtn = document.querySelector('.undoSketchBtn');
                 const dialog = document.getElementById('dialog');
 
                 if (isSketchActive) {
@@ -4087,7 +4217,7 @@
                     if (polygonExists) {
                         dialog.classList.remove('hidden');
 
-                        document.getElementById('deleteYes').addEventListener('click', function () {
+                        document.getElementById("deleteYes").addEventListener("click", function () {
                             map.removeInteraction(draw);
                             isSketchActive = false;
                             polygonExists = false;
@@ -4098,13 +4228,17 @@
                             sketchFarmBtn.style.backgroundColor = "white";
                             sketchFarmBtnIcon.textContent = "create";
                             sketchFarmBtnIcon.style.color = "#515151";
-                            finishDrawingButton.classList.add('hidden');
-                            dialog.classList.add('hidden');
+                            finishDrawingButton.classList.add("hidden");
+                            dialog.classList.add("hidden");
                             console.clear();
 
+                            // Hide the undoSketchBtn button when the deleteYes button is clicked
+                            undoSketchbtn.style.display = "none";
+
                             // Remove stored polygon from local storage
-                            localStorage.removeItem('enfarm_polygon_coordinates');
+                            localStorage.removeItem("enfarm_polygon_coordinates");
                         });
+
 
                         document.getElementById('deleteNo').addEventListener('click', function () {
                             dialog.classList.add('hidden');
@@ -4179,30 +4313,25 @@
                 isSketchActive = true;
 
 
+                //Undo Sketch Function
+                // Get a reference to the undoSketchBtn button
+                const undoSketchBtn = document.getElementById("undoSketchBtn");
 
+                // Hide the undoSketchBtn button initially
+                undoSketchBtn.style.display = "none";
 
+                // Add an event listener to the drawstart event of the draw interaction
+                draw.on("drawstart", function (event) {
+                    // Show the undoSketchBtn button when the user starts drawing a polygon
+                    undoSketchBtn.style.display = "block";
+                });
 
-// Get a reference to the undoSketchBtn button
-const undoSketchBtn = document.getElementById("undoSketchBtn");
+                // Function to undo the last sketch vertex
+                function undoSketchInteraction() {
+                    draw.removeLastPoint();
+                }
 
-// Hide the undoSketchBtn button initially
-undoSketchBtn.style.display = "none";
-
-// Add an event listener to the drawstart event of the draw interaction
-draw.on("drawstart", function (event) {
-  // Show the undoSketchBtn button when the user starts drawing a polygon
-  undoSketchBtn.style.display = "block";
-});
-
-// Function to undo the last sketch vertex
-function undoSketchInteraction() {
-  draw.removeLastPoint();
-}
-
-undoSketchBtn.addEventListener("click", undoSketchInteraction);
-
-
-
+                undoSketchBtn.addEventListener("click", undoSketchInteraction);
 
 
                 const canvas = document.createElement("canvas");
@@ -4242,7 +4371,7 @@ undoSketchBtn.addEventListener("click", undoSketchInteraction);
                         const coordinates = geomEvent.target.getCoordinates()[0];
                         if (coordinates.length >= 5) {
                             finishDrawingButton.classList.remove('hidden');
-                            
+
                         }
                     });
                 });
