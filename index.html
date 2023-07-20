@@ -1321,7 +1321,7 @@
             font-size: 30px;
             z-index: 6;
             padding: 10px 20px;
-            background-color: red;
+            background-color: #a51e25;
             color: white;
             border: none;
             font-weight: bolder;
@@ -1329,24 +1329,21 @@
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
             cursor: pointer;
             transition: width .3s ease-in-out, padding .3s ease-in-out;
-        }
 
+            /* Add flex display and center the items horizontally and vertically */
+            display: flex;
+            align-items: center;
+        }
 
         .windyMapBtn-text {
-            display: inline-block;
-            animation: windyMapBtn-text-animation .5s ease-in-out;
+            /* Remove the animation for this class */
+            animation: none;
         }
 
-        /* Define the keyframes for the animation */
-        @keyframes windyMapBtn-text-animation {
-            from {
-                opacity: 1;
-            }
-
-            to {
-
-                opacity: 0;
-            }
+        .windyIcon {
+            width: 30px;
+            height: 30px;
+            margin-right: 4px;
         }
     </style>
 </head>
@@ -1360,9 +1357,15 @@
             <div class="blur-mask"></div>
         </div>
 
-        <button id="windyMapBtn"><span class="windyMapBtn-text">Windy</span></button>
+        <button id="windyMapBtn">
+            <img class="windyIcon" src="https://i.ibb.co/Hxs1JTC/windy-icon.png" alt="Windy Icon">
+            <span class="windyMapBtn-text">Windy</span>
+        </button>
 
-        <div id="windyMapContainer"></div>
+
+
+        <div id="windyMapContainer" style="display: none;"></div>
+
 
         <!--<div class="basemapfloatingTitle">
             <span class="basemapTitle">Basemap Title</span>
@@ -2266,7 +2269,7 @@
         <script>
 
 
- 
+
 
 
 
@@ -2452,7 +2455,7 @@
                 });
             }
 
-            //Reset Product tOUR
+            //Reset Product tour
             function resetProductTour() {
                 // Clear the tourShown item from localStorage
                 localStorage.removeItem('tourShown');
@@ -2469,90 +2472,90 @@
 
 
 
-                       ///// <----- WINDY WEATHER MAP FORECAST -----> \\\\\
-            // Get the button and container elements
-            // Get the button and container elements
             const showMapButton = document.getElementById('windyMapBtn');
             const mapContainer = document.getElementById('windyMapContainer');
             const buttonText = document.querySelector('#windyMapBtn .windyMapBtn-text');
+            const iconElement = document.querySelector('#windyMapBtn .windyIcon');
+
+            let isMapLoaded = false;
+            let iframe = null;
+            let messageElement = null;
 
             showMapButton.addEventListener('click', function () {
                 if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
-                    mapContainer.style.display = 'block';
+                    if (!isMapLoaded) {
+                        mapContainer.style.display = 'block';
+                        buttonText.textContent = 'x';
+                        buttonText.style.margin = 'auto';
+                        iconElement.style.display = 'none';
+                        showMapButton.style.width = '60px';
+                        showMapButton.style.padding = '10px';
 
-                    const iframe = document.createElement('iframe');
-                    iframe.width = '100%';
-                    iframe.height = '99%';
+                        const initialLatitude = 16.257222;
+                        const initialLongitude = 105.512778;
+                        const initialZoomLevel = 6;
 
-                    // Set the initial view of the map to the specified position and zoom level
-                    const initialLatitude = 16.257222;
-                    const initialLongitude = 105.512778;
-                    const initialZoomLevel = 6;
-                    iframe.src = `https://embed.windy.com/embed2.html?lat=${initialLatitude}&lon=${initialLongitude}&zoom=${initialZoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
+                        iframe = document.createElement('iframe');
+                        iframe.width = '100%';
+                        iframe.height = '99%';
+                        iframe.src = `https://embed.windy.com/embed2.html?lat=${initialLatitude}&lon=${initialLongitude}&zoom=${initialZoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
 
-                    // Create a pill-shaped message element
-                    const messageElement = document.createElement('div');
-                    messageElement.textContent = 'Định vị người dùng...'; //Locating user...
-                    messageElement.style.position = 'absolute';
-                    messageElement.style.top = '50%';
-                    messageElement.style.left = '50%';
-                    messageElement.style.transform = 'translate(-50%, -50%)';
-                    messageElement.style.fontSize = '30px';
-                    messageElement.style.fontFamily = "'Be Vietnam Pro', Arial, sans-serif";
-                    messageElement.style.padding = '10px 20px';
-                    messageElement.style.backgroundColor = '#fff';
-                    messageElement.style.borderRadius = '100px';
-                    messageElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+                        messageElement = document.createElement('div');
+                        messageElement.textContent = 'Định vị người dùng...'; //Locating user...
+                        messageElement.style.position = 'absolute';
+                        messageElement.style.top = '50%';
+                        messageElement.style.left = '50%';
+                        messageElement.style.transform = 'translate(-50%, -50%)';
+                        messageElement.style.fontSize = '30px';
+                        messageElement.style.fontFamily = "'Be Vietnam Pro', Arial, sans-serif";
+                        messageElement.style.padding = '10px 20px';
+                        messageElement.style.backgroundColor = '#fff';
+                        messageElement.style.borderRadius = '100px';
+                        messageElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+                        messageElement.style.color = '#515151';
 
-                    // Change the font color of the message element
-                    messageElement.style.color = '#515151';
+                        mapContainer.innerHTML = '';
+                        mapContainer.appendChild(iframe);
 
-                    // Add the iframe to the container element
-                    mapContainer.innerHTML = '';
-                    mapContainer.appendChild(iframe);
+                        setTimeout(() => {
+                            mapContainer.appendChild(messageElement);
+                        }, 1000);
 
-                    // Wait for 1 second before showing the message element
-                    setTimeout(() => {
-                        mapContainer.appendChild(messageElement);
-                    }, 1000);
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const latitude = position.coords.latitude;
+                                const longitude = position.coords.longitude;
+                                const zoomLevel = 11;
 
-                    // Get the user's location using the Geolocation API
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            const latitude = position.coords.latitude;
-                            const longitude = position.coords.longitude;
+                                const url = `https://embed.windy.com/embed2.html?lat=${latitude}&lon=${longitude}&zoom=${zoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=${latitude},${longitude}&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
 
-                            // Use the user's location to center the Windy map and set a zoom level
-                            const zoomLevel = 11; // Adjust the zoom level as needed
+                                setTimeout(() => {
+                                    iframe.src = url;
+                                    messageElement.style.display = 'none';
+                                }, 4000);
+                            },
+                            (error) => {
+                                console.error('Error getting user location:', error);
+                            }
+                        );
 
-                            // Create the URL with the marker parameter for the user's location
-                            const url = `https://embed.windy.com/embed2.html?lat=${latitude}&lon=${longitude}&zoom=${zoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=${latitude},${longitude}&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
-
-                            // Wait for 3 seconds before updating the src attribute of the iframe
-                            setTimeout(() => {
-                                iframe.src = url;
-
-                                // Hide the message element when the new embed link is loaded
-                                messageElement.style.display = 'none';
-                            }, 4000);
-                        },
-                        (error) => {
-                            // Handle errors when geolocation is not available or permission is denied
-                            console.error('Error getting user location:', error);
-                        }
-                    );
-
-                    buttonText.textContent = 'x';
-                    showMapButton.style.width = '60px';
-                    showMapButton.style.padding = '10px';
+                        isMapLoaded = true;
+                    } else {
+                        mapContainer.style.display = 'block';
+                        buttonText.textContent = 'x';
+                        buttonText.style.margin = 'auto';
+                        iconElement.style.display = 'none';
+                        showMapButton.style.width = '60px';
+                        showMapButton.style.padding = '10px';
+                    }
                 } else {
                     mapContainer.style.display = 'none';
                     buttonText.textContent = 'Windy';
+                    iconElement.style.display = 'inline-block';
                     showMapButton.style.width = '';
                     showMapButton.style.padding = '';
                 }
             });
-
 
 
 
