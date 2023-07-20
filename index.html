@@ -2263,59 +2263,11 @@
         </button>
 
 
-
-
         <script>
 
 
-            ///// <----- WINDY WEATHER MAP FORECAST -----> \\\\\
-            // Get the button and container elements
-            const showMapButton = document.getElementById('windyMapBtn');
-            const mapContainer = document.getElementById('windyMapContainer');
-            const buttonText = document.querySelector('#windyMapBtn .windyMapBtn-text');
+ 
 
-            showMapButton.addEventListener('click', function () {
-                if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
-                    mapContainer.style.display = 'block';
-
-                    const iframe = document.createElement('iframe');
-                    iframe.width = '100%';
-                    iframe.height = '99%';
-
-                    // Get the user's location using the Geolocation API
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            const latitude = position.coords.latitude;
-                            const longitude = position.coords.longitude;
-
-                            // Use the user's location to center the Windy map and set a zoom level
-                            const zoomLevel = 10; // Adjust the zoom level as needed
-
-                            // Create the URL with the marker parameter for the user's location
-                            const url = `https://embed.windy.com/embed2.html?lat=${latitude}&lon=${longitude}&zoom=${zoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=${latitude},${longitude}&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
-
-                            iframe.src = url;
-
-                            // Add the iframe to the container element
-                            mapContainer.innerHTML = '';
-                            mapContainer.appendChild(iframe);
-                        },
-                        (error) => {
-                            // Handle errors when geolocation is not available or permission is denied
-                            console.error('Error getting user location:', error);
-                        }
-                    );
-
-                    buttonText.textContent = 'x';
-                    showMapButton.style.width = '60px';
-                    showMapButton.style.padding = '10px';
-                } else {
-                    mapContainer.style.display = 'none';
-                    buttonText.textContent = 'Windy';
-                    showMapButton.style.width = '';
-                    showMapButton.style.padding = '';
-                }
-            });
 
 
             ///// <----- MAP PRODUCT TOUR -----> \\\\\
@@ -2456,10 +2408,10 @@
 
                     tour.addStep({
                         id: 'step-reset',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để truy cập bản đồ thời tiết.</span>',
+                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để truy cập bản đồ thời tiết từ Windy.com.</span>',
                         attachTo: {
                             element: '#windyMapBtn',
-                            on: 'left',
+                            on: 'right',
                         },
                         buttons: [
                             {
@@ -2516,6 +2468,90 @@
             tutorialBtn.addEventListener('click', resetProductTour);
 
 
+
+                       ///// <----- WINDY WEATHER MAP FORECAST -----> \\\\\
+            // Get the button and container elements
+            // Get the button and container elements
+            const showMapButton = document.getElementById('windyMapBtn');
+            const mapContainer = document.getElementById('windyMapContainer');
+            const buttonText = document.querySelector('#windyMapBtn .windyMapBtn-text');
+
+            showMapButton.addEventListener('click', function () {
+                if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
+                    mapContainer.style.display = 'block';
+
+                    const iframe = document.createElement('iframe');
+                    iframe.width = '100%';
+                    iframe.height = '99%';
+
+                    // Set the initial view of the map to the specified position and zoom level
+                    const initialLatitude = 16.257222;
+                    const initialLongitude = 105.512778;
+                    const initialZoomLevel = 6;
+                    iframe.src = `https://embed.windy.com/embed2.html?lat=${initialLatitude}&lon=${initialLongitude}&zoom=${initialZoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
+
+                    // Create a pill-shaped message element
+                    const messageElement = document.createElement('div');
+                    messageElement.textContent = 'Định vị người dùng...'; //Locating user...
+                    messageElement.style.position = 'absolute';
+                    messageElement.style.top = '50%';
+                    messageElement.style.left = '50%';
+                    messageElement.style.transform = 'translate(-50%, -50%)';
+                    messageElement.style.fontSize = '30px';
+                    messageElement.style.fontFamily = "'Be Vietnam Pro', Arial, sans-serif";
+                    messageElement.style.padding = '10px 20px';
+                    messageElement.style.backgroundColor = '#fff';
+                    messageElement.style.borderRadius = '100px';
+                    messageElement.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+
+                    // Change the font color of the message element
+                    messageElement.style.color = '#515151';
+
+                    // Add the iframe to the container element
+                    mapContainer.innerHTML = '';
+                    mapContainer.appendChild(iframe);
+
+                    // Wait for 1 second before showing the message element
+                    setTimeout(() => {
+                        mapContainer.appendChild(messageElement);
+                    }, 1000);
+
+                    // Get the user's location using the Geolocation API
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
+
+                            // Use the user's location to center the Windy map and set a zoom level
+                            const zoomLevel = 11; // Adjust the zoom level as needed
+
+                            // Create the URL with the marker parameter for the user's location
+                            const url = `https://embed.windy.com/embed2.html?lat=${latitude}&lon=${longitude}&zoom=${zoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=${latitude},${longitude}&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
+
+                            // Wait for 3 seconds before updating the src attribute of the iframe
+                            setTimeout(() => {
+                                iframe.src = url;
+
+                                // Hide the message element when the new embed link is loaded
+                                messageElement.style.display = 'none';
+                            }, 4000);
+                        },
+                        (error) => {
+                            // Handle errors when geolocation is not available or permission is denied
+                            console.error('Error getting user location:', error);
+                        }
+                    );
+
+                    buttonText.textContent = 'x';
+                    showMapButton.style.width = '60px';
+                    showMapButton.style.padding = '10px';
+                } else {
+                    mapContainer.style.display = 'none';
+                    buttonText.textContent = 'Windy';
+                    showMapButton.style.width = '';
+                    showMapButton.style.padding = '';
+                }
+            });
 
 
 
