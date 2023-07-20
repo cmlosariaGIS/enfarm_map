@@ -1312,6 +1312,7 @@
             }
         }
 
+
         #windyMapBtn {
             position: absolute;
             top: 270px;
@@ -2267,53 +2268,54 @@
         <script>
 
 
-              ///// <----- WINDY WEATHER MAP FORECAST -----> \\\\\
+            ///// <----- WINDY WEATHER MAP FORECAST -----> \\\\\
             // Get the button and container elements
             const showMapButton = document.getElementById('windyMapBtn');
             const mapContainer = document.getElementById('windyMapContainer');
-
-            // Get the span element containing the button text
             const buttonText = document.querySelector('#windyMapBtn .windyMapBtn-text');
 
-            // Add an event listener to the button to handle clicks
             showMapButton.addEventListener('click', function () {
-                // Check if the map container is currently hidden
                 if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
-                    // If it is hidden, show it
                     mapContainer.style.display = 'block';
 
-                    // Create the iframe element
                     const iframe = document.createElement('iframe');
                     iframe.width = '100%';
                     iframe.height = '100%';
-                    iframe.src =
-                        'https://embed.windy.com/embed2.html?lat=15.835&lon=105.864&detailLat=21.030&detailLon=105.850&width=300&height=450&zoom=6&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1';
-                    iframe.frameBorder = '0';
 
-                    // Add the iframe to the container element
-                    mapContainer.innerHTML = '';
-                    mapContainer.appendChild(iframe);
+                    // Get the user's location using the Geolocation API
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
 
-                    // Change the button text to "cancel"
+                            // Use the user's location to center the Windy map and set a zoom level
+                            const zoomLevel = 10; // Adjust the zoom level as needed
+
+                            // Create the URL with the marker parameter for the user's location
+                            const url = `https://embed.windy.com/embed2.html?lat=${latitude}&lon=${longitude}&zoom=${zoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=${latitude},${longitude}&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
+
+                            iframe.src = url;
+
+                            // Add the iframe to the container element
+                            mapContainer.innerHTML = '';
+                            mapContainer.appendChild(iframe);
+                        },
+                        (error) => {
+                            // Handle errors when geolocation is not available or permission is denied
+                            console.error('Error getting user location:', error);
+                        }
+                    );
+
                     buttonText.textContent = 'x';
-
-                    // Set the width and padding of the button
                     showMapButton.style.width = '60px';
                     showMapButton.style.padding = '10px';
                 } else {
-                    // If it is not hidden, hide it
                     mapContainer.style.display = 'none';
-
-                    // Change the button text back to "Windy"
                     buttonText.textContent = 'Windy';
-
-                    // Reset the width and padding of the button
                     showMapButton.style.width = '';
                     showMapButton.style.padding = '';
                 }
             });
-
-
 
 
             ///// <----- MAP PRODUCT TOUR -----> \\\\\
