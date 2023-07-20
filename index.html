@@ -21,7 +21,6 @@
 
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-    <link href="https://fonts.google.com/icons?icon.set=Material+Symbols" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
 
@@ -1068,7 +1067,7 @@
             overflow-x: hidden;
             padding-bottom: 35px;
             display: none;
-            z-index: 7;
+            z-index: 4;
         }
 
         .carbonLegend,
@@ -1103,7 +1102,7 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            z-index: 8;
+            z-index: 4;
             right: 165px;
             display: none;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -1119,7 +1118,7 @@
             position: absolute;
             top: -10px;
             right: -7px;
-            z-index: 9;
+            z-index: 4;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
@@ -1184,7 +1183,7 @@
             width: fit-content;
             font-family: Arial, sans-serif;
             display: none;
-            z-index: 7;
+            z-index: 4;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
@@ -2473,7 +2472,7 @@
 
 
 
-            //WINDY MAP FORECAST FUNCTION
+            ///// <----- WINDY MAP FORECAST FUNCTION -----> \\\\\
             const showMapButton = document.getElementById('windyMapBtn');
             const mapContainer = document.getElementById('windyMapContainer');
             const buttonText = document.querySelector('#windyMapBtn .windyMapBtn-text');
@@ -2770,7 +2769,7 @@
                         // Create the place name element
                         const placeNameElement = document.createElement("span");
                         placeNameElement.textContent = placeName;
-                        placeNameElement.style.fontSize = "40px";
+                        placeNameElement.style.fontSize = "30px";
                         placeNameElement.style.fontFamily = "Be Vietnam Pro', Arial, sans-serif";
                         placeNameElement.style.color = "#515151";
                         placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)";
@@ -2780,7 +2779,7 @@
                         const chevronIcon = document.createElement("i");
                         chevronIcon.classList.add("material-icons");
                         chevronIcon.textContent = "expand_circle_down";
-                        chevronIcon.style.fontSize = "60px";
+                        chevronIcon.style.fontSize = "50px";
                         chevronIcon.style.color = "#515151";
                         chevronIcon.style.marginLeft = "15px";
 
@@ -2823,9 +2822,9 @@
 
                                     if (pillContainer.getAttribute('data-expanded') === 'true') {
                                         pillContainer.innerHTML = `
-      <span style="font-size: 40px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
+      <span style="font-size: 30px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
         <span>${placeName}</span>
-        <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
+        <button style="font-size: 50px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
           <i class="material-icons" style="transform: rotate(0deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
         </button>
       </span>`;
@@ -2839,7 +2838,7 @@
                                         pillContainer.innerHTML = `
       <span style="font-size: 40px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center;">
         <strong>${placeName}</strong>, ${addressDetails}
-        <button style="font-size: 60px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 430px;">
+        <button style="font-size: 50px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 430px;">
           <i class="material-icons" style="transform: rotate(180deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
         </button>
       </span>`;
@@ -3458,6 +3457,7 @@
             nitrogenLayer.on('change:visible', handleLayerVisibilityChange(nitrogenLayer, '.nitrogenLegend', '.closenitrogenLegend', '.closenitrogenLegend i'));
 
 
+            
 
             ///// Basemap Attribution \\\\\
             function closeAttribution(attributionClass) {
