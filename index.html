@@ -346,7 +346,7 @@
             position: absolute;
             left: 50%;
             height: 100%;
-            top: 0;
+            top: 20px;
             bottom: 0;
             transform: translateX(-50%) translateY(100%);
             width: 100%;
@@ -757,6 +757,91 @@
             color: #515151;
         }
 
+          /***** Start Product Tour *****/
+        /*Next Button*/
+        .shepherd-button {
+            background: #306b1b;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            border: 0;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            margin-right: .5rem;
+            padding: 1rem 2.5rem;
+            transition: all .5s ease box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .shepherd-button:not(:disabled):hover {
+            background: green;
+            color: hsla(0, 0%, 100%, .75)
+        }
+
+        /*Modal*/
+        .shepherd-element {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+            max-width: 700px;
+            max-height: 300px;
+            opacity: 0;
+            outline: none;
+            padding-left: 10px;
+            padding-top: 20px;
+            transition: opacity .3s, visibility .3s;
+            visibility: hidden;
+            width: 100%;
+            z-index: 9999
+        }
+
+        .shepherd-button.shepherd-button-secondary {
+            background: #3288e6;
+            color: white;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+        }
+
+        .shepherd-button.shepherd-button-secondary:not(:disabled):hover {
+            background: #196fcc;
+            color: hsla(0, 0%, 100%, .75);
+        }
+
+        .shepherd-button:disabled {
+            cursor: not-allowed
+        }
+
+        .shepherd-button {
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+        }
+
+        .shepherd-text p {
+            margin-bottom: 20px;
+        }
+
+        .shepherd-has-title .shepherd-content .shepherd-header {
+            background: #e6e6e6;
+            padding: 1em
+        }
+
+        .shepherd-text {
+            color: rgba(0, 0, 0, .75);
+            font-size: 1rem;
+            line-height: 2.5em;
+            padding: .75em
+        }
+
+        .shepherd-text p:last-child {
+            margin-bottom: 0
+        }
+
+        .shepherd-content {
+            border-radius: 5px;
+            outline: none;
+            padding: 0
+        }
+
+        /***** End Map Product Tour *****/
+
         #clearAllDrawingBtn {
 
             position: fixed;
@@ -899,90 +984,7 @@
 
         /****** End Scale line Styles *******/
 
-        /***** Start Product Tour *****/
-        /*Next Button*/
-        .shepherd-button {
-            background: green;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            border: 0;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            margin-right: .5rem;
-            padding: 1rem 2.5rem;
-            transition: all .5s ease box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .shepherd-button:not(:disabled):hover {
-            background: green;
-            color: hsla(0, 0%, 100%, .75)
-        }
-
-        /*Modal*/
-        .shepherd-element {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
-            max-width: 700px;
-            max-height: 300px;
-            opacity: 0;
-            outline: none;
-            padding-left: 10px;
-            padding-top: 20px;
-            transition: opacity .3s, visibility .3s;
-            visibility: hidden;
-            width: 100%;
-            z-index: 9999
-        }
-
-        .shepherd-button.shepherd-button-secondary {
-            background: #3288e6;
-            color: white;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-        }
-
-        .shepherd-button.shepherd-button-secondary:not(:disabled):hover {
-            background: #196fcc;
-            color: hsla(0, 0%, 100%, .75);
-        }
-
-        .shepherd-button:disabled {
-            cursor: not-allowed
-        }
-
-        .shepherd-button {
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-        }
-
-        .shepherd-text p {
-            margin-bottom: 20px;
-        }
-
-        .shepherd-has-title .shepherd-content .shepherd-header {
-            background: #e6e6e6;
-            padding: 1em
-        }
-
-        .shepherd-text {
-            color: rgba(0, 0, 0, .75);
-            font-size: 1rem;
-            line-height: 2.5em;
-            padding: .75em
-        }
-
-        .shepherd-text p:last-child {
-            margin-bottom: 0
-        }
-
-        .shepherd-content {
-            border-radius: 5px;
-            outline: none;
-            padding: 0
-        }
-
-        /***** End Map Product Tour *****/
+      
 
         .isric-attribution,
         .osm-attribution,
@@ -1359,8 +1361,6 @@
             <span class="windyMapBtn-text">Windy</span>
         </button>
 
-
-
         <div id="windyMapContainer" style="display: none;"></div>
 
 
@@ -1411,7 +1411,10 @@
         <!-- Basemap Selector Thumbnails -->
         <div class="basemapSelector" id="basemapSelector">
             <div class="container-content">
-                <h2>Chọn bản đồ nền</h2>
+                <h2>
+                    <i class="material-icons" style="font-size: 50px; vertical-align: middle;">layers</i>
+                    Chọn bản đồ nền
+                  </h2>
                 <div class="close-bm-button" onclick="closeBasemapSelector()">
                     <i class="material-icons">cancel</i>
                 </div>
