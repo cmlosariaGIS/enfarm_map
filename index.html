@@ -3554,8 +3554,16 @@
             function startMeasurementArea() {
                 const measureAreaBtn = document.getElementById("measureAreaBtn");
                 const measureAreaBtnIcon = measureAreaBtn.querySelector("i");
+                const isActive = measureAreaBtn.classList.contains("active");
 
-                if (measureAreaBtn.classList.contains("active")) {
+                // Buttons to hide
+                const buttonsToHide = [
+                    "searchBar", "searchBtn", "basemapBtn", "measureLengthBtn",
+                    "sketchFarmBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn",
+                    "resetBtn", "locationBtn"
+                ];
+
+                if (isActive) {
                     // Disable measuring area
                     measureAreaBtn.classList.remove("active");
                     map.removeInteraction(drawArea);
@@ -3583,6 +3591,12 @@
                     if (finishDrawingButton) {
                         finishDrawingButton.classList.add("hidden");
                     }
+
+                    // Show the hidden buttons
+                    buttonsToHide.forEach((btnId) => {
+                        const btn = document.getElementById(btnId);
+                        if (btn) btn.style.display = "block";
+                    });
                 } else {
                     // Enable measuring area
                     measureAreaBtn.classList.add("active");
@@ -3633,8 +3647,26 @@
                     floatingMessageAreaTimeoutId = setTimeout(function () {
                         map.getViewport().removeChild(floatingMessage);
                     }, 5000);
+
+                    // Hide the specified buttons
+                    buttonsToHide.forEach((btnId) => {
+                        const btn = document.getElementById(btnId);
+                        if (btn) btn.style.display = "none";
+                    });
+                }
+
+                // Show the hidden buttons when the drawing is finished
+                const finishDrawingButton = document.getElementById("finishDrawingButton");
+                if (finishDrawingButton) {
+                    finishDrawingButton.addEventListener("click", () => {
+                        buttonsToHide.forEach((btnId) => {
+                            const btn = document.getElementById(btnId);
+                            if (btn) btn.style.display = "block";
+                        });
+                    });
                 }
             }
+
 
             let drawAreaStartListener;
             let drawAreaEndListener;
@@ -3969,8 +4001,6 @@
                         "tutorialBtn",
                         "windyMapBtn",
                         "resetBtn",
-                        "locationBtn",
-                        "clearAllDrawingBtn",
                     ];
                     const displayValue = isActive ? "none" : "block";
                     buttonsToHide.forEach((btnId) => {
@@ -4252,7 +4282,6 @@
                         "windyMapBtn",
                         "resetBtn",
                         "locationBtn",
-                        "clearAllDrawingBtn",
                     ];
                     buttonsToHide.forEach((btnId) => {
                         const btn = document.getElementById(btnId);
@@ -4288,7 +4317,6 @@
                     "windyMapBtn",
                     "resetBtn",
                     "locationBtn",
-                    "clearAllDrawingBtn",
                 ];
                 buttonsToHide.forEach((btnId) => {
                     const btn = document.getElementById(btnId);
@@ -4864,6 +4892,10 @@ height: 30px;
             // Define and initialize areaHectares
             let areaHectares;
 
+            // Define and initialize address
+            //let address;
+
+
 
             // Update the finishDrawingButton click event to store the polygon in local storage
             finishDrawingButton.onclick = function () {
@@ -4902,7 +4934,7 @@ height: 30px;
                             squareMeters: area ? area.toFixed(2) : undefined, // Use the defined area variable
                             hectares: areaHectares,
                         },
-                        address: address,
+                        //address: address,
                     };
                     localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
                 }
@@ -4926,7 +4958,40 @@ height: 30px;
 
 
 
+
             ///// <----- ADD ENFARM SENSORS BUTTON -----> \\\\\
+
+            // Button IDs to hide when `startAddSensor` function is active
+            const buttonsToHide = [
+                "searchBar",
+                "searchBtn",
+                "basemapBtn",
+                "measureAreaBtn",
+                "measureLengthBtn",
+                "sketchFarmBtn",
+                "tutorialBtn",
+                "windyMapBtn",
+                "resetBtn",
+                "locationBtn",
+            ];
+
+            function hideButtons() {
+                buttonsToHide.forEach((buttonId) => {
+                    const buttonElement = document.getElementById(buttonId);
+                    if (buttonElement) {
+                        buttonElement.style.display = "none";
+                    }
+                });
+            }
+
+            function showButtons() {
+                buttonsToHide.forEach((buttonId) => {
+                    const buttonElement = document.getElementById(buttonId);
+                    if (buttonElement) {
+                        buttonElement.style.display = "block";
+                    }
+                });
+            }
 
             let sensorDrawCount = 0;
             let sensorPointStyle = new ol.style.Style({
@@ -5007,9 +5072,11 @@ height: 30px;
                     }
                 });
 
-
                 const undoSensorBtn = document.getElementById("undoSensorBtn");
                 undoSensorBtn.style.display = "none";
+
+                // Hide the buttons when the function is active
+                hideButtons();
             }
 
             function deletePoints() {
@@ -5075,6 +5142,9 @@ height: 30px;
 
                 const undoSensorBtn = document.getElementById("undoSensorBtn");
                 undoSensorBtn.style.display = "none";
+
+                // Show the buttons when the function is deactivated
+                showButtons();
             }
 
             function undoLastSensor() {
@@ -5177,6 +5247,7 @@ height: 30px;
             });
 
             undoSensorBtn.addEventListener("click", undoLastSensor);
+
 
 
 
@@ -5535,9 +5606,6 @@ height: 30px;
 
             // Add an event listener to the map to handle changes in view
             map.on('moveend', updateLocationButtonVisibility);
-
-
-
 
 
 
