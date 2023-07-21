@@ -4374,13 +4374,19 @@
             let sketchFarmBtnIcon;
 
             async function startSketchFarm() {
-                const sketchFarmBtn = document.getElementById("sketchFarmBtn");
-                sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
-                const finishDrawingButton = document.querySelector('.finish-drawing');
-                const undoSketchbtn = document.querySelector('.undoSketchBtn');
-                const dialog = document.getElementById('dialog');
+  const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+  sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
+  const finishDrawingButton = document.querySelector('.finish-drawing');
+  const undoSketchbtn = document.querySelector('.undoSketchBtn');
+  const dialog = document.getElementById('dialog');
 
-                if (isSketchActive) {
+  // hide the buttons
+  const buttonsToHide = ["searchBar", "searchBtn", "basemapBtn", "measureAreaBtn", "measureLengthBtn", "tutorialBtn", "windyMapBtn", "resetBtn", "addSensorBtn", "locationBtn"];
+  for (let button of buttonsToHide) {
+    document.getElementById(button).style.display = "none";
+  }
+
+  if (isSketchActive) {
                     if (timeoutId) {
                         clearTimeout(timeoutId);
                         const existingFloatingMessage = document.querySelector('.floating-message');
@@ -4427,9 +4433,16 @@
                         sketchFarmBtnIcon.style.color = "#515151";
                         finishDrawingButton.classList.add('hidden');
                         //undoSketchBtn.style.display = "none";
-                    }
-                    return;
-                }
+                    }// show the buttons
+    const buttonsToShow = ["searchBar", "searchBtn", "basemapBtn", "measureAreaBtn", "measureLengthBtn", "tutorialBtn", "windyMapBtn", "resetBtn", "addSensorBtn", "locationBtn"];
+    for (let button of buttonsToShow) {
+      document.getElementById(button).style.display = "";
+    }
+
+    return;
+  }
+
+
 
                 const floatingMessage = document.createElement("div");
                 floatingMessage.className = "floating-message";
@@ -4755,6 +4768,7 @@ height: 30px;
 
             function deactivateSketchFarm() {
                 const sketchFarmBtn = document.getElementById("sketchFarmBtn");
+                
                 if (isSketchActive) {
                     sketchFarmBtn.style.backgroundColor = "white";
                     const sketchFarmBtnIcon = sketchFarmBtn.querySelector("i");
