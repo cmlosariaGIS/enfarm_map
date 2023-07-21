@@ -3957,6 +3957,32 @@
                 const measureLengthBtn = document.getElementById("measureLengthBtn");
                 const measureLengthBtnIcon = measureLengthBtn.querySelector("i");
 
+                // Helper function to toggle visibility of buttons
+                function toggleButtonVisibility(isActive) {
+                    const buttonsToHide = [
+                        "searchBar",
+                        "searchBtn",
+                        "basemapBtn",
+                        "measureAreaBtn",
+                        "sketchFarmBtn",
+                        "addSensorBtn",
+                        "tutorialBtn",
+                        "windyMapBtn",
+                        "resetBtn",
+                        "locationBtn",
+                        "clearAllDrawingBtn",
+                    ];
+                    const displayValue = isActive ? "none" : "block";
+                    buttonsToHide.forEach((btnId) => {
+                        const btn = document.getElementById(btnId);
+                        if (btn) {
+                            btn.style.display = displayValue;
+                        } else {
+                            console.warn(`Button with ID "${btnId}" not found.`);
+                        }
+                    });
+                }
+
                 if (measureLengthBtn.classList.contains("active")) {
                     // Disable measuring length
                     measureLengthBtn.classList.remove("active");
@@ -3984,6 +4010,9 @@
                     if (floatingMessage && floatingMessage.parentNode) {
                         floatingMessage.parentNode.removeChild(floatingMessage);
                     }
+
+                    // Show the buttons when the function is deactivated
+                    toggleButtonVisibility(false);
 
                 } else {
                     // Enable measuring length
@@ -4027,6 +4056,9 @@
                             map.getViewport().removeChild(floatingMessage);
                         }
                     }, 5000);
+
+                    // Hide the buttons when the function is activated
+                    toggleButtonVisibility(true);
                 }
             }
 
@@ -4081,7 +4113,7 @@
                     });
                 });
                 // Add event listener to the finish button
-                document.getElementById('finishDrawingButton').addEventListener('click', function () {
+                document.getElementById("finishDrawingButton").addEventListener("click", function () {
                     drawLength.finishDrawing();
                 });
 
@@ -4208,13 +4240,64 @@
                         floatingMessage.parentNode.removeChild(floatingMessage);
                     }
 
-                    // Note: We are not clearing the source or removing the overlay, so the drawn lines and tooltips should remain visible.
+                    // Show the hidden buttons
+                    const buttonsToHide = [
+                        "searchBar",
+                        "searchBtn",
+                        "basemapBtn",
+                        "measureAreaBtn",
+                        "sketchFarmBtn",
+                        "addSensorBtn",
+                        "tutorialBtn",
+                        "windyMapBtn",
+                        "resetBtn",
+                        "locationBtn",
+                        "clearAllDrawingBtn",
+                    ];
+                    buttonsToHide.forEach((btnId) => {
+                        const btn = document.getElementById(btnId);
+                        if (btn) {
+                            btn.style.display = "block";
+                        }
+                    });
+
+                    // Show the finish button
+                    const finishDrawingButton = document.getElementById("finishDrawingButton");
+                    if (finishDrawingButton) {
+                        finishDrawingButton.classList.add("hidden");
+                    }
                 }
             }
 
             document.getElementById("measureAreaBtn").addEventListener("click", deactivateMeasurementLength);
             document.getElementById("sketchFarmBtn").addEventListener("click", deactivateMeasurementLength);
             document.getElementById("addSensorBtn").addEventListener("click", deactivateMeasurementLength);
+
+            // Add event listener to the finish button
+            document.getElementById("finishDrawingButton").addEventListener("click", function () {
+                drawLength.finishDrawing();
+                // Show the hidden buttons after finishing the sketch
+                const buttonsToHide = [
+                    "searchBar",
+                    "searchBtn",
+                    "basemapBtn",
+                    "measureAreaBtn",
+                    "sketchFarmBtn",
+                    "addSensorBtn",
+                    "tutorialBtn",
+                    "windyMapBtn",
+                    "resetBtn",
+                    "locationBtn",
+                    "clearAllDrawingBtn",
+                ];
+                buttonsToHide.forEach((btnId) => {
+                    const btn = document.getElementById(btnId);
+                    if (btn) {
+                        btn.style.display = "block";
+                    }
+                });
+            });
+
 
 
 
@@ -5311,6 +5394,8 @@ height: 30px;
 
             ///// <----- USER LOCATION BUTTON -----> \\\\\
 
+
+
             const userLocationLayer = new ol.layer.Vector({
                 source: new ol.source.Vector(),
                 style: new ol.style.Style({
@@ -5450,6 +5535,7 @@ height: 30px;
 
             // Add an event listener to the map to handle changes in view
             map.on('moveend', updateLocationButtonVisibility);
+
 
 
 
