@@ -4381,7 +4381,7 @@
   const dialog = document.getElementById('dialog');
 
   // hide the buttons
-  const buttonsToHide = ["searchBar", "searchBtn", "basemapBtn", "measureAreaBtn", "measureLengthBtn", "tutorialBtn", "windyMapBtn", "resetBtn", "addSensorBtn", "locationBtn"];
+  const buttonsToHide = ["searchBar", "searchBtn", "basemapBtn", "measureAreaBtn", "measureLengthBtn", "tutorialBtn", "windyMapBtn", "addSensorBtn", "locationBtn"];
   for (let button of buttonsToHide) {
     document.getElementById(button).style.display = "none";
   }
@@ -4753,18 +4753,26 @@ height: 30px;
             });
 
             const finishDrawingButton = document.querySelector('.finish-drawing');
-            finishDrawingButton.onclick = function () {
-                if (draw) {
-                    draw.finishDrawing();
-                    finishDrawingButton.classList.add('hidden');
-                    map.removeInteraction(draw);
-                    isSketchActive = false;
-                    sketchFarmBtn.style.backgroundColor = "white";
-                    sketchFarmBtnIcon.textContent = "create";
-                    sketchFarmBtnIcon.style.color = "#515151";
-                    undoSketchBtn.style.display = "none";
-                }
-            };
+finishDrawingButton.onclick = function () {
+  if (draw) {
+    draw.finishDrawing();
+    finishDrawingButton.classList.add('hidden');
+    map.removeInteraction(draw);
+    isSketchActive = false;
+    sketchFarmBtn.style.backgroundColor = "white";
+    sketchFarmBtnIcon.textContent = "create";
+    sketchFarmBtnIcon.style.color = "#515151";
+    undoSketchBtn.style.display = "none";
+
+    // show the buttons
+    const buttonsToShow = ["searchBar", "searchBtn", "basemapBtn", "measureAreaBtn", "measureLengthBtn", "tutorialBtn", "windyMapBtn", "resetBtn", "addSensorBtn", "locationBtn"];
+    for (let button of buttonsToShow) {
+      document.getElementById(button).style.display = "";
+    }
+  }
+};
+
+
 
             function deactivateSketchFarm() {
                 const sketchFarmBtn = document.getElementById("sketchFarmBtn");
