@@ -24,6 +24,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.9/lottie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.10/lottie.min.js"></script>
+
 
     <style>
         @font-face {
@@ -456,8 +459,8 @@
             font-size: 60px;
         }
 
-              /*Basemap Attribution*/
-              .isric-attribution,
+        /*Basemap Attribution*/
+        .isric-attribution,
         .osm-attribution,
         .mapbox-attribution,
         .gebco-attribution {
@@ -555,7 +558,7 @@
 
         .closeterrainLegend .material-icons {
             font-size: 45px;
-            color: #ff0000;
+            color: #ff4d4d;
             cursor: pointer;
         }
 
@@ -1145,7 +1148,8 @@
 
         .shepherd-button:not(:disabled):hover {
             background: green;
-            color: hsla(0, 0%, 100%, .75) box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            color: hsla(0, 0%, 100%, .75);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         /*Modal*/
@@ -1214,12 +1218,14 @@
 
         /***** End Map Product Tour *****/
 
+        /***** CLEAR ALL DRAWINGS BUTTON *****/
+
         #clearAllDrawingBtn {
 
             position: fixed;
             top: 360px;
             left: 70px;
-            background-color: #ff0000;
+            background-color: #ff4d4d;
             border: none;
             border-radius: 50%;
             width: 60px;
@@ -1236,6 +1242,8 @@
             font-size: 40px;
             color: #ffffff;
         }
+
+        /***** END CLEAR ALL DRAWINGS BUTTON *****/
 
         /***** START USER LOCATION BUTTON *****/
         .locationBtn {
@@ -1338,7 +1346,50 @@
 
 
 
-  
+/* Floating container styles */
+.addSensorSuccess-floating-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: fit-content;
+    background-color: white;
+    border-radius: 50px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    z-index: 10;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+/* Slide-up animation class */
+.slide-up {
+    transform: translate(-50%, -50%) translateY(-50px);
+    opacity: 1;
+}
+
+/* Slide-down animation class */
+.slide-down {
+    transform: translate(-50%, -50%) translateY(0);
+    opacity: 0;
+}
+
+/* Animation container styles */
+#successAnimationCheck {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+/* Message styles */
+.addSensorSuccessMessage {
+    text-align: center;
+    font-size: 40px;
+    color: #515151;
+    margin-top: 10px;
+}
+
 
     </style>
 </head>
@@ -1351,6 +1402,19 @@
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
+
+
+        <div id="addSensorSuccess" class="addSensorSuccess-floating-container" style="display: block;">
+            <div id="successAnimationCheck"></div>
+            <div class="addSensorSuccessMessage">đã thêm/các cảm biến enfarm</div> <!--enfarm sensor/s added-->
+        </div>
+        
+
+        <div id="addFarmSuccess" class="floating-container" style="display: block;">
+            <div id="addSensorAnimation"></div>
+            <div class="message">Farm boundary added</div>
+        </div>
+
 
         <button id="windyMapBtn">
             <img class="windyIcon" src="https://i.ibb.co/Hxs1JTC/windy-icon.png" alt="Windy Icon">
@@ -1483,8 +1547,33 @@
         </div>
 
         <!--Basemap Attributions-->
+        <div class="osm-attribution">
+            <i class="material-icons close-button" onclick="closeAttribution('.osm-attribution')"
+                style="color: #ff4d4d;">cancel</i>
+            <br><br>
+            <p>Map data <a href="https://www.openstreetmap.org/" target="_blank">© OpenStreetMap contributors</a></p>
+        </div>
+
+        <div class="mapbox-attribution">
+            <i class="material-icons close-button" onclick="closeAttribution('.mapbox-attribution')"
+                style="color: #ff4d4d;">cancel</i>
+            <br><br>
+            <p>Map data <a href="https://www.mapbox.com/" target="_blank">© Mapbox</a></p>
+        </div>
+
+
+        <div class="gebco-attribution">
+            <i class="material-icons close-button" onclick="closeAttribution('.gebco-attribution')"
+                style="color: #ff4d4d;">cancel</i>
+            <br><br>
+            <p>Map data <a href="https://www.gebco.net" target="_blank">© GEBCO</a></p>
+            <p>Imagery reproduced from the GEBCO_2022 Grid, GEBCO Compilation Group (2022) GEBCO 2022 Grid
+                (doi:10.5285/e0f0bb80-ab44-2739-e053-6c86abc0289c)</p>
+        </div>
+
         <div class="isric-attribution">
-            <i class="material-icons close-button" onclick="closeAttribution('.isric-attribution')">cancel</i>
+            <i class="material-icons close-button" onclick="closeAttribution('.isric-attribution')"
+                style="color:#ff4d4d;">cancel</i>
             <br>
             <br>
             <p>Đây là một phần của SoilGrids Maps và được quản lý bởi ISRIC (International Soil Reference and
@@ -1500,27 +1589,6 @@
                 <span class="hidden-link"
                     onclick="window.open('https://www.isric.org/explore/soilgrids/faq-soilgrids', '_blank')">link</span>.
             </p>
-        </div>
-
-        <div class="osm-attribution">
-            <i class="material-icons close-button" onclick="closeAttribution('.osm-attribution')">cancel</i>
-            <br><br>
-            <p>Map data <a href="https://www.openstreetmap.org/" target="_blank">© OpenStreetMap contributors</a></p>
-        </div>
-
-        <div class="mapbox-attribution">
-            <i class="material-icons close-button" onclick="closeAttribution('.mapbox-attribution')">cancel</i>
-            <br><br>
-            <p>Map data <a href="https://www.mapbox.com/" target="_blank">© Mapbox</a></p>
-        </div>
-
-
-        <div class="gebco-attribution">
-            <i class="material-icons close-button" onclick="closeAttribution('.gebco-attribution')">cancel</i>
-            <br><br>
-            <p>Map data <a href="https://www.gebco.net" target="_blank">© GEBCO</a></p>
-            <p>Imagery reproduced from the GEBCO_2022 Grid, GEBCO Compilation Group (2022) GEBCO 2022 Grid
-                (doi:10.5285/e0f0bb80-ab44-2739-e053-6c86abc0289c)</p>
         </div>
 
         <!-- Basemap Legends -->
@@ -5242,45 +5310,95 @@ height: 30px;
                 }
             });
 
-            const finishButton = document.getElementById("finishAddingSensor");
 
-            finishButton.addEventListener("click", function () {
-                if (isSensorPointAdded) {
-                    if (sensorVectorLayer) {
-                        const source = sensorVectorLayer.getSource();
-                        const features = source.getFeatures();
 
-                        const enfarm_sensor_coordinates = [];
+            // Function to show the floating container and trigger the slide-up animation
+function showAddSensorSuccess() {
+    const addSensorSuccess = document.getElementById("addSensorSuccess");
+    addSensorSuccess.style.display = "block"; // Set the container to be visible
+    addSensorSuccess.classList.add("slide-up"); // Add the slide-up animation class
 
-                        features.forEach(function (feature) {
-                            const geometry = feature.getGeometry();
-                            const coordinate = geometry.getCoordinates();
-                            const transformedCoordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-                            const enfarm_sensor_lat = transformedCoordinate[1];
-                            const enfarm_sensor_lon = transformedCoordinate[0];
+    // Hide the container after 2 seconds
+    setTimeout(() => {
+        hideAddSensorSuccess();
+    }, 2000);
+}
 
-                            enfarm_sensor_coordinates.push({ enfarm_sensor_lat, enfarm_sensor_lon });
-                        });
+// Function to hide the floating container and trigger the slide-down animation
+function hideAddSensorSuccess() {
+    const addSensorSuccess = document.getElementById("addSensorSuccess");
+    addSensorSuccess.classList.remove("slide-up"); // Remove the slide-up animation class
+    addSensorSuccess.classList.add("slide-down"); // Add the slide-down animation class
 
-                        console.log("enfarm_sensor_coordinates:", enfarm_sensor_coordinates);
+    // Hide the container after the animation duration (1000ms)
+    setTimeout(() => {
+        addSensorSuccess.style.display = "none";
+        addSensorSuccess.classList.remove("slide-down"); // Remove the slide-down animation class
+    }, 1000);
+}
 
-                        storePointsInLocalStorage(enfarm_sensor_coordinates);
+const finishButton = document.getElementById("finishAddingSensor");
+finishButton.addEventListener("click", function () {
+    if (isSensorPointAdded) {
+        if (sensorVectorLayer) {
+            const source = sensorVectorLayer.getSource();
+            const features = source.getFeatures();
 
-                        disableAddSensor();
-                    }
-                }
+            const enfarm_sensor_coordinates = [];
+
+            features.forEach(function (feature) {
+                const geometry = feature.getGeometry();
+                const coordinate = geometry.getCoordinates();
+                const transformedCoordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+                const enfarm_sensor_lat = transformedCoordinate[1];
+                const enfarm_sensor_lon = transformedCoordinate[0];
+
+                enfarm_sensor_coordinates.push({ enfarm_sensor_lat, enfarm_sensor_lon });
             });
 
-            function deactivateAddSensor() {
-                if (startAddSensorActive) {
-                    deletePoints();
-                    disableAddSensor();
-                }
-            }
+            console.log("enfarm_sensor_coordinates:", enfarm_sensor_coordinates);
 
-            document.getElementById("measureAreaBtn").addEventListener("click", deactivateAddSensor);
-            document.getElementById("measureLengthBtn").addEventListener("click", deactivateAddSensor);
-            document.getElementById("sketchFarmBtn").addEventListener("click", deactivateAddSensor);
+            storePointsInLocalStorage(enfarm_sensor_coordinates);
+
+            disableAddSensor();
+
+            // After processing is finished and the "finishButton" is clicked, show the floating container
+            showAddSensorSuccess();
+        }
+    }
+});
+
+function deactivateAddSensor() {
+    if (startAddSensorActive) {
+        deletePoints();
+        disableAddSensor();
+    }
+}
+
+document.getElementById("measureAreaBtn").addEventListener("click", deactivateAddSensor);
+document.getElementById("measureLengthBtn").addEventListener("click", deactivateAddSensor);
+document.getElementById("sketchFarmBtn").addEventListener("click", deactivateAddSensor);
+
+// Call this function to hide the floating container on map load
+hideAddSensorSuccess();
+
+// Load the Lottie animation when the document is ready
+document.addEventListener("DOMContentLoaded", function () {
+    // Replace "LRglt3SwZv.json" with the URL of your Lottie animation JSON file
+    const animationURL = "https://lottie.host/52133049-24ce-4236-a7c1-0f11d4b03ace/LRglt3SwZv.json";
+    const animationContainer = document.getElementById("successAnimationCheck");
+    const animation = lottie.loadAnimation({
+        container: animationContainer,
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        path: animationURL,
+    });
+});
+
+
+
+
 
             // Retrieve points from local storage when the page loads
             window.addEventListener('load', function () {
@@ -5310,6 +5428,8 @@ height: 30px;
             });
 
             undoSensorBtn.addEventListener("click", undoLastSensor);
+
+
 
 
             ///// <----- CLEAR ALL DRAWINGS BUTTON FUNCTION (FARM SKETCH AND SENSORS) -----> \\\\\
