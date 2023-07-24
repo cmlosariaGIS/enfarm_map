@@ -332,7 +332,7 @@
         /*Basemap floating title*/
         .basemapfloatingTitle {
             position: absolute;
-            top: 11%;
+            top: 82%;
             left: 50%;
             width: fit-content;
             transform: translateX(-50%);
@@ -347,8 +347,7 @@
 
 
         .basemapfloatingTitle .basemapTitle {
-            font-size: 22px;
-            font-weight: bold;
+            font-size: 30px;
             color: #515151;
         }
 
@@ -457,10 +456,284 @@
             font-size: 60px;
         }
 
+              /*Basemap Attribution*/
+              .isric-attribution,
+        .osm-attribution,
+        .mapbox-attribution,
+        .gebco-attribution {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: none;
+            width: 800px;
+        }
 
+        .isric-attribution p,
+        .osm-attribution p,
+        .mapbox-attribution p,
+        .gebco-attribution p {
+            margin: 0;
+            line-height: 1.5;
+            font-size: 40px;
+        }
+
+        .isric-attribution .hidden-link,
+        .osm-attribution a,
+        .mapbox-attribution a,
+        .gebco-attribution a {
+            color: blue;
+            text-decoration: underline;
+        }
+
+        .isric-attribution .close-button,
+        .osm-attribution .close-button,
+        .mapbox-attribution .close-button,
+        .gebco-attribution .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding-bottom: 40px;
+            padding-right: 10px;
+            padding-top: 10px;
+            font-size: 60px;
+            color: #515151;
+            cursor: pointer;
+        }
+
+        .info-icon:hover,
+        .osminfo-icon:hover,
+        .mapboxinfo-icon:hover,
+        .gebcoinfo-icon:hover {
+            cursor: pointer;
+        }
+
+
+        /* Basemap Legend */
+        /* Legend Containers */
+
+        /*Start Terrain Legend*/
+        .terrainlegend {
+            position: absolute;
+            top: 60px;
+            right: 170px;
+            background-color: #fdfdfd;
+            border-radius: 10px;
+            padding: 15px 20px;
+            width: fit-content;
+            font-family: Arial, sans-serif;
+            display: none;
+            z-index: ;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .terrainLegend {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .terraincolorValueContainer {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0px;
+        }
+
+        .terraincolorBox {
+            width: 35px;
+            height: 20px;
+        }
+
+        .closeterrainLegend {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .closeterrainLegend .material-icons {
+            font-size: 45px;
+            color: #ff0000;
+            cursor: pointer;
+        }
+
+        .textContainer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .terraincontainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .terrainicon {
+            margin-right: 5px;
+            margin-bottom: -10px;
+        }
+
+        .terraintext {
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 35px;
+            margin-bottom: -10px
+        }
+
+        .low {
+            text-align: left;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 25px;
+        }
+
+        .high {
+            text-align: right;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 25px;
+        }
+
+        /*End Terrain Legend*/
+
+        /*Start Carbon, Nitrogen, pH Legend*/
+        .carbonLegend,
+        .nitrogenLegend,
+        .phLegend {
+            width: 135px;
+            height: 820px;
+            background-color: #ffffff;
+            position: absolute;
+            top: 60px;
+            z-index: 9999;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 35px;
+            display: none;
+            z-index: 4;
+        }
+
+        .carbonLegend,
+        .phLegend,
+        .nitrogenLegend {
+            right: 175px;
+        }
+
+        /* Legend Text */
+        .carbonLegend .text,
+        .nitrogenLegend .text,
+        .phLegend .text {
+            font-size: 28px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            text-align: center;
+        }
+
+
+        .closecarbonLegend,
+        .closenitrogenLegend,
+        .closepHLegend {
+            position: absolute;
+            top: 49px;
+            background-color: #ffffff;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 4;
+            right: 165px;
+            display: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+        }
+
+        .closecarbonLegend i,
+        .closenitrogenLegend i,
+        .closepHLegend i {
+            font-size: 45px;
+            color: #ff4d4d;
+            display: none;
+            position: absolute;
+            top: -10px;
+            right: -7px;
+            z-index: 4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+
+        /* Scrollbar */
+        .carbonLegend::-webkit-scrollbar,
+        .nitrogenLegend::-webkit-scrollbar,
+        .phLegend::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carbonLegend::-webkit-scrollbar-thumb,
+        .nitrogenLegend::-webkit-scrollbar-thumb,
+        .phLegend::-webkit-scrollbar-thumb {
+            background-color: transparent;
+        }
+
+        .carbonLegend::-webkit-scrollbar-track,
+        .nitrogenLegend::-webkit-scrollbar-track,
+        .phLegend::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+
+        /* Color Value Container */
+        .colorValueContainer {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            margin-left: 20px;
+            margin-top: 3px;
+        }
+
+        /* Color Box */
+        .colorBox {
+            width: 40px;
+            height: 30px;
+            margin-right: 5px;
+            border-radius: 5px;
+        }
+
+        .carbonLegend,
+        .nitrogenLegend,
+        .phLegend {
+            background-color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .carbonLegend.transparent,
+        .nitrogenLegend.transparent,
+        .phLegend.transparent {
+            background-color: transparent !important;
+        }
+
+        /*End Carbon, Nitrogen, pH Legend*/
 
 
         /***** END SWITCH BASEMAP BUTTON FUNCTION *****/
+
 
         /***** START MEASURE AREA AND LINE BUTTON FUNCTION *****/
 
@@ -1065,292 +1338,7 @@
 
 
 
-        /*Basemap Attribution*/
-        .isric-attribution,
-        .osm-attribution,
-        .mapbox-attribution,
-        .gebco-attribution {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 9999;
-            background-color: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            display: none;
-            width: 800px;
-        }
-
-        .isric-attribution p,
-        .osm-attribution p,
-        .mapbox-attribution p,
-        .gebco-attribution p {
-            margin: 0;
-            line-height: 1.5;
-            font-size: 40px;
-        }
-
-        .isric-attribution .hidden-link,
-        .osm-attribution a,
-        .mapbox-attribution a,
-        .gebco-attribution a {
-            color: blue;
-            text-decoration: underline;
-        }
-
-        .isric-attribution .close-button,
-        .osm-attribution .close-button,
-        .mapbox-attribution .close-button,
-        .gebco-attribution .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding-bottom: 40px;
-            padding-right: 10px;
-            padding-top: 10px;
-            font-size: 60px;
-            color: #515151;
-            cursor: pointer;
-        }
-
-        .info-icon:hover,
-        .osminfo-icon:hover,
-        .mapboxinfo-icon:hover,
-        .gebcoinfo-icon:hover {
-            cursor: pointer;
-        }
-
-
-        /* Basemap Legend */
-        /* Legend Containers */
-
-        /*Start Terrain Legend*/
-        .terrainlegend {
-            position: absolute;
-            top: 60px;
-            right: 170px;
-            background-color: #fdfdfd;
-            border-radius: 10px;
-            padding: 15px 20px;
-            width: fit-content;
-            font-family: Arial, sans-serif;
-            display: none;
-            z-index: ;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .terrainLegend {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .terraincolorValueContainer {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0px;
-        }
-
-        .terraincolorBox {
-            width: 35px;
-            height: 20px;
-        }
-
-        .closeterrainLegend {
-            text-align: right;
-            margin-top: 10px;
-        }
-
-        .closeterrainLegend .material-icons {
-            font-size: 45px;
-            color: #ff0000;
-            cursor: pointer;
-        }
-
-        .textContainer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 18px;
-        }
-
-        .terraincontainer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .terrainicon {
-            margin-right: 5px;
-            margin-bottom: -10px;
-        }
-
-        .terraintext {
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            font-size: 35px;
-            margin-bottom: -10px
-        }
-
-        .low {
-            text-align: left;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            font-size: 25px;
-        }
-
-        .high {
-            text-align: right;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            font-size: 25px;
-        }
-
-        /*End Terrain Legend*/
-
-
-        .carbonLegend,
-        .nitrogenLegend,
-        .phLegend {
-            width: 135px;
-            height: 820px;
-            background-color: #ffffff;
-            position: absolute;
-            top: 60px;
-            z-index: 9999;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding-bottom: 35px;
-            display: none;
-            z-index: 4;
-        }
-
-        .carbonLegend,
-        .phLegend,
-        .nitrogenLegend {
-            right: 175px;
-        }
-
-        /* Legend Text */
-        .carbonLegend .text,
-        .nitrogenLegend .text,
-        .phLegend .text {
-            font-size: 28px;
-            margin-top: 20px;
-            margin-bottom: 30px;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            text-align: center;
-        }
-
-
-        .closecarbonLegend,
-        .closenitrogenLegend,
-        .closepHLegend {
-            position: absolute;
-            top: 49px;
-            background-color: #ffffff;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 4;
-            right: 165px;
-            display: none;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-        }
-
-        .closecarbonLegend i,
-        .closenitrogenLegend i,
-        .closepHLegend i {
-            font-size: 45px;
-            color: #ff4d4d;
-            display: none;
-            position: absolute;
-            top: -10px;
-            right: -7px;
-            z-index: 4;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-
-        /* Scrollbar */
-        .carbonLegend::-webkit-scrollbar,
-        .nitrogenLegend::-webkit-scrollbar,
-        .phLegend::-webkit-scrollbar {
-            display: none;
-        }
-
-        .carbonLegend::-webkit-scrollbar-thumb,
-        .nitrogenLegend::-webkit-scrollbar-thumb,
-        .phLegend::-webkit-scrollbar-thumb {
-            background-color: transparent;
-        }
-
-        .carbonLegend::-webkit-scrollbar-track,
-        .nitrogenLegend::-webkit-scrollbar-track,
-        .phLegend::-webkit-scrollbar-track {
-            background-color: #f1f1f1;
-        }
-
-        /* Color Value Container */
-        .colorValueContainer {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-            margin-left: 20px;
-            margin-top: 3px;
-        }
-
-        /* Color Box */
-        .colorBox {
-            width: 40px;
-            height: 30px;
-            margin-right: 5px;
-            border-radius: 5px;
-        }
-
-        .carbonLegend,
-        .nitrogenLegend,
-        .phLegend {
-            background-color: white;
-            transition: background-color 0.3s ease;
-        }
-
-        .carbonLegend.transparent,
-        .nitrogenLegend.transparent,
-        .phLegend.transparent {
-            background-color: transparent !important;
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
 
     </style>
 </head>
@@ -1406,9 +1394,11 @@
 
         <!----------///// BASEMAP BUTTON AND FUNCTIONS \\\\\---------->
 
-        <div class="basemapfloatingTitle">
-            <span class="basemapTitle">Basemap Title</span>
+        <div class="basemapfloatingTitle" style="display: flex; align-items: center;">
+            <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">layers</i>
+            <span class="basemapTitle" style="display: inline-block;">Basemap Title</span>
         </div>
+
 
         <div id="basemapswitcher" class="basemapswitcher">
             <button id="basemapBtn" class="basemapBtn" onclick="cycleBasemap()">
@@ -3330,7 +3320,7 @@
                     currentBasemap = index;
 
                     // Update the basemap title in the floating container
-                    const basemapTitleElement = document.querySelector(".basemapTitle");
+                    const basemapTitleElement = document.querySelector(".basemapfloatingTitle");
                     const basemapTitles = [
                         "Đường phố",
                         "Vệ tinh",
@@ -3339,7 +3329,11 @@
                         "Bản đồ pH",
                         "Bản đồ Ni tơ",
                     ];
-                    basemapTitleElement.textContent = basemapTitles[index];
+                    const basemapTitleText = basemapTitles[index];
+                    basemapTitleElement.innerHTML = `
+      <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">layers</i>
+      <span class="basemapTitle" style="display: inline-block;">${basemapTitleText}</span>
+    `;
 
                     const logoElement = document.querySelector(".logo");
                     const logoImage =
@@ -3347,6 +3341,17 @@
                             ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
                             : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
                     logoElement.src = logoImage;
+
+                    // Show the basemap title container when selecting another basemap
+                    basemapTitleElement.style.display = "flex";
+
+                    // Clear the existing timeout and set a new one to hide the title container after 5 seconds
+                    if (basemapTitleElement.timerId) {
+                        clearTimeout(basemapTitleElement.timerId);
+                    }
+                    basemapTitleElement.timerId = setTimeout(() => {
+                        basemapTitleElement.style.display = "none";
+                    }, 5000);
                 }
 
                 const basemapImages = document.querySelectorAll(".image-container > div");
@@ -3367,6 +3372,20 @@
             // Set the initial basemap title in the floating container to the default basemap "Đường phố"
             const defaultBasemapIndex = 0;
             selectBasemap(defaultBasemapIndex);
+
+            // Hide the basemap title container after 5 seconds from map load
+            document.addEventListener("DOMContentLoaded", () => {
+                const basemapTitleElement = document.querySelector(".basemapfloatingTitle");
+                basemapTitleElement.timerId = setTimeout(() => {
+                    basemapTitleElement.style.display = "none";
+                }, 5000);
+            });
+
+
+
+
+
+
 
             // Set the initial basemap title on DOMContentLoaded
             window.addEventListener("DOMContentLoaded", function () {
