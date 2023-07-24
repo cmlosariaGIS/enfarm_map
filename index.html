@@ -1007,12 +1007,11 @@
         .dialog-content {
             background-color: white;
             padding: 80px;
-            border-radius: 20px;
+            border-radius: 50px;
             text-align: center;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-            /* Subtle box-shadow for depth */
-            width: 600px;
-            height: 300px;
+            width: 550px;
+            height: 330px;
             font-size: 40px;
             color: #515151;
             max-width: 100%;
@@ -1028,7 +1027,6 @@
             border: none;
             color: white;
             cursor: pointer;
-            /*background: linear-gradient(to bottom, #f2709c, #ff9472);*/
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 
         }
@@ -1402,12 +1400,12 @@
 
         <div id="addSensorSuccess" class="addFloating-container">
             <div id="sensorsuccessAnimationCheck" class="animationCheck"></div>
-            <div class="addMessage">enfarm sensor/s added</div>
+            <div class="addMessage">cảm biến enfarm / s được thêm vào</div> <!--enfarm sensor/s added-->
         </div>
 
         <div id="addFarmSuccess" class="addFloating-container">
             <div id="farmsuccessAnimationCheck" class="animationCheck"></div>
-            <div class="addMessage">Farm boundary added</div>
+            <div class="addMessage">Đã thêm ranh giới trang trại</div> <!--Farm boundary added-->
         </div>
 
 
@@ -2257,16 +2255,16 @@
             <i id="undoSketchIcon" class="material-icons">undo</i>
         </button>
 
-        <!--Delete Confirm Dialog Box-->
+        <!-- Delete Confirm Dialog Box -->
         <div id="dialog" class="dialog hidden">
             <div class="dialog-content">
                 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <i class="material-icons" style="font-size: 120px; color: #FF6666; margin-bottom: 10px;">warning</i>
+                    <div id="deleteAnimationContainer" style="width: 200px; height: 200px;"></div>
                     <p style="margin: 0; margin-bottom: 30px;">Bạn có muốn xóa bản vẽ?</p>
                 </div>
                 <div style="display: flex; justify-content: center;">
                     <button id="deleteYes" class="dialog-button"
-                        style="background-color: #FF6666; color: white; display: flex; align-items: center;">
+                        style="background-color: #d40133; color: white; display: flex; align-items: center;">
                         <i class="material-icons" style="font-size: 50px; margin-right: 8px;">delete_forever</i>
                         <span>Đúng</span>
                     </button>
@@ -2276,6 +2274,7 @@
                 </div>
             </div>
         </div>
+
 
         <!--Finish Sketch Button-->
         <div class="sketch-buttons">
@@ -2347,6 +2346,8 @@
 
 
         <script>
+
+
 
             ////////// <----- START ENFARM MAP PRODUCT TOUR -----> \\\\\\\\\\
 
@@ -5569,6 +5570,28 @@ height: 30px;
                 }
             });
 
+            // Load the Lottie animation when the document is ready
+            document.addEventListener("DOMContentLoaded", function () {
+                const animationURL = "https://lottie.host/2d84733d-de2c-4e15-9280-a0c02ef6ae0d/ZDmGcxs6ND.json";
+                const animationContainer = document.getElementById("deleteAnimationContainer");
+                const animation = lottie.loadAnimation({
+                    container: animationContainer,
+                    renderer: "svg",
+                    loop: true,
+                    autoplay: true,
+                    path: animationURL,
+                });
+
+                // Play the animation once when needed
+                function playAnimationOnce() {
+                    animation.play();
+                }
+
+                // After 1 second, set loop to false to play the animation only once
+                setTimeout(function () {
+                    animation.loop = true;
+                }, 3000);
+            });
 
 
             ///// <----- NORTH ARROW BUTTON FUNCTION -----> \\\\\
