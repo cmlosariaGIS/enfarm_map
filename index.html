@@ -328,6 +328,31 @@
 
 
         /***** START SWITCH BASEMAP BUTTON FUNCTION *****/
+
+        /*Basemap floating title*/
+        .basemapfloatingTitle {
+            position: absolute;
+            top: 11%;
+            left: 50%;
+            width: fit-content;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 50px;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+
+
+        .basemapfloatingTitle .basemapTitle {
+            font-size: 22px;
+            font-weight: bold;
+            color: #515151;
+        }
+
+
         .basemapBtn {
             position: absolute;
             top: 10px;
@@ -425,7 +450,7 @@
             top: 42px;
             right: 30px;
             cursor: pointer;
-            color: #515151;
+            color: #ff4d4d;
         }
 
         .close-bm-button i {
@@ -737,6 +762,9 @@
             display: none;
         }
 
+
+        /****** Start  Tutorial Button Styles *******/
+
         #tutorialBtn {
 
             position: fixed;
@@ -760,23 +788,91 @@
             color: #515151;
         }
 
+
+        /****** End Tutorial Button Styles *******/
+
+        /****** Start Windy Weather Styles *******/
+        :root {
+            --iframe-width: 100%;
+            --iframe-height: 300px;
+            --button-font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            --button-font-size: 30px;
+            --button-background-color: #a51e25;
+            --button-color: white;
+            --button-border-radius: 9999px;
+            --button-padding: 10px 20px;
+            --icon-size: 32px;
+        }
+
+        #windyMapContainer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            display: none;
+        }
+
+        @media screen and (max-width: 767px) {
+            #windyMapContainer iframe {
+                width: var(--iframe-width);
+                height: var(--iframe-height);
+            }
+        }
+
+        #windyMapBtn {
+            position: absolute;
+            top: 270px;
+            left: 60px;
+            font-family: var(--button-font-family);
+            font-size: var(--button-font-size);
+            z-index: 6;
+            padding: var(--button-padding);
+            background-color: var(--button-background-color);
+            color: var(--button-color);
+            border: none;
+            font-weight: bolder;
+            border-radius: var(--button-border-radius);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: width .3s ease-in-out, padding .3s ease-in-out;
+            display: flex;
+            align-items: center;
+        }
+
+        .windyMapBtn-text {
+            animation: none;
+        }
+
+        .windyIcon {
+            width: var(--icon-size);
+            height: var(--icon-size);
+            margin-right: 4px;
+        }
+
+        /****** End Windy Weather Styles *******/
+
+
         /***** Start Product Tour *****/
         /*Next Button*/
         .shepherd-button {
             background: #306b1b;
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
             border: 0;
-            border-radius: 30px;
+            border-radius: 100px;
             color: white;
             cursor: pointer;
             margin-right: .5rem;
             padding: 1rem 2.5rem;
-            transition: all .5s ease box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all .5s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
+
 
         .shepherd-button:not(:disabled):hover {
             background: green;
-            color: hsla(0, 0%, 100%, .75)
+            color: hsla(0, 0%, 100%, .75) box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         /*Modal*/
@@ -827,7 +923,7 @@
         }
 
         .shepherd-text {
-            color: rgba(0, 0, 0, .75);
+            color: #515151;
             font-size: 1rem;
             line-height: 2.5em;
             padding: .75em
@@ -883,7 +979,7 @@
 
         /***** END USER LOCATION BUTTON *****/
 
-        /****** Start Reset Button *******/
+        /****** START RESET BUTTON *******/
         #resetBtn {
             position: fixed;
             top: 700px;
@@ -918,11 +1014,10 @@
             }
         }
 
+        /****** END RESET BUTTON *******/
 
-        /****** End Reset Button *******/
 
-
-        /****** Start Scale line Styles *******/
+        /****** START SCALE LINE STYLES *******/
         .ol-scale-line {
             position: fixed;
             top: 840px;
@@ -966,10 +1061,11 @@
             right: 25%;
         }
 
-        /****** End Scale line Styles *******/
+        /****** END SCALE LINE STYLES *******/
 
 
 
+        /*Basemap Attribution*/
         .isric-attribution,
         .osm-attribution,
         .mapbox-attribution,
@@ -1029,6 +1125,93 @@
 
         /* Basemap Legend */
         /* Legend Containers */
+
+        /*Start Terrain Legend*/
+        .terrainlegend {
+            position: absolute;
+            top: 60px;
+            right: 170px;
+            background-color: #fdfdfd;
+            border-radius: 10px;
+            padding: 15px 20px;
+            width: fit-content;
+            font-family: Arial, sans-serif;
+            display: none;
+            z-index: ;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .terrainLegend {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .terraincolorValueContainer {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0px;
+        }
+
+        .terraincolorBox {
+            width: 35px;
+            height: 20px;
+        }
+
+        .closeterrainLegend {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .closeterrainLegend .material-icons {
+            font-size: 45px;
+            color: #ff0000;
+            cursor: pointer;
+        }
+
+        .textContainer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .terraincontainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .terrainicon {
+            margin-right: 5px;
+            margin-bottom: -10px;
+        }
+
+        .terraintext {
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 35px;
+            margin-bottom: -10px
+        }
+
+        .low {
+            text-align: left;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 25px;
+        }
+
+        .high {
+            text-align: right;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 25px;
+        }
+
+        /*End Terrain Legend*/
+
+
         .carbonLegend,
         .nitrogenLegend,
         .phLegend {
@@ -1059,7 +1242,7 @@
             right: 175px;
         }
 
-        /* Text */
+        /* Legend Text */
         .carbonLegend .text,
         .nitrogenLegend .text,
         .phLegend .text {
@@ -1155,90 +1338,6 @@
             background-color: transparent !important;
         }
 
-        /*Start Terrain Legend*/
-        .terrainlegend {
-            position: absolute;
-            top: 60px;
-            right: 170px;
-            background-color: #fdfdfd;
-            border-radius: 10px;
-            padding: 15px 20px;
-            width: fit-content;
-            font-family: Arial, sans-serif;
-            display: none;
-            z-index: 4;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .terrainLegend {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .terraincolorValueContainer {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0px;
-        }
-
-        .terraincolorBox {
-            width: 35px;
-            height: 20px;
-        }
-
-        .closeterrainLegend {
-            text-align: right;
-            margin-top: 10px;
-        }
-
-        .closeterrainLegend .material-icons {
-            font-size: 45px;
-            color: #ff0000;
-            cursor: pointer;
-        }
-
-        .textContainer {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 18px;
-        }
-
-        .terraincontainer {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .terrainicon {
-            margin-right: 5px;
-            margin-bottom: -10px;
-        }
-
-        .terraintext {
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            font-size: 35px;
-            margin-bottom: -10px
-        }
-
-        .low {
-            text-align: left;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            font-size: 25px;
-        }
-
-        .high {
-            text-align: right;
-            color: #515151;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            font-size: 25px;
-        }
-
-        /*End Terrain Legend*/
 
 
 
@@ -1252,82 +1351,7 @@
 
 
 
-        /*.basemapfloatingTitle {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  width: fit-content;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  background-color: #ffffff;
-  border-radius: 50px;
-  padding: 20px 40px;
-        z-index: 2;
-        }
 
-
-        .basemapfloatingTitle .basemapTitle {
-            font-size: 30px;
-            font-weight: bold;
-            color: #515151;
-        }*/
-
-
-        #windyMapContainer {
-            position: absolute;
-            top: 0px;
-            right: 0px;
-            width: 100%;
-            height: 100%;
-            z-index: 5;
-            display: none;
-        }
-
-        /* Add a media query for mobile devices with a max-width of 767px */
-        @media screen and (max-width: 767px) {
-
-            /* Set the width and height of the iframe for mobile view */
-            #windyMapContainer iframe {
-                width: 100%;
-                height: 300px;
-                /* You can adjust the height as per your needs */
-            }
-        }
-
-
-        #windyMapBtn {
-            position: absolute;
-            top: 270px;
-            left: 60px;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            font-size: 30px;
-            z-index: 6;
-            padding: 10px 20px;
-            background-color: #a51e25;
-            color: white;
-            border: none;
-            font-weight: bolder;
-            border-radius: 9999px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            transition: width .3s ease-in-out, padding .3s ease-in-out;
-
-            /* Add flex display and center the items horizontally and vertically */
-            display: flex;
-            align-items: center;
-        }
-
-        .windyMapBtn-text {
-            /* Remove the animation for this class */
-            animation: none;
-        }
-
-        .windyIcon {
-            width: 32px;
-            height: 32px;
-            margin-right: 4px;
-        }
     </style>
 </head>
 
@@ -1347,10 +1371,6 @@
 
         <div id="windyMapContainer" style="display: none;"></div>
 
-
-        <!--<div class="basemapfloatingTitle">
-            <span class="basemapTitle">Basemap Title</span>
-        </div>-->
 
 
         <!----------///// SEARCH BUTTON AND FUNCTIONS \\\\\---------->
@@ -1385,6 +1405,10 @@
 
 
         <!----------///// BASEMAP BUTTON AND FUNCTIONS \\\\\---------->
+
+        <div class="basemapfloatingTitle">
+            <span class="basemapTitle">Basemap Title</span>
+        </div>
 
         <div id="basemapswitcher" class="basemapswitcher">
             <button id="basemapBtn" class="basemapBtn" onclick="cycleBasemap()">
@@ -2207,23 +2231,23 @@
                 Hoàn Thành
             </button>
 
-                <button id="finishMeasuringLength" class="finish-measuringLength hidden"
-                    style="font-size: 40px; background-color: #386c34; color: white;">
-                    <span class="material-icons" style="font-size: 40px;">done_outline</span>
-                    Hoàn Thành
-                </button>
+            <button id="finishMeasuringLength" class="finish-measuringLength hidden"
+                style="font-size: 40px; background-color: #386c34; color: white;">
+                <span class="material-icons" style="font-size: 40px;">done_outline</span>
+                Hoàn Thành
+            </button>
 
-                    <button id="finishDrawingButton" class="finish-drawing hidden"
-                        style="font-size: 40px; background-color: #386c34; color: white;">
-                        <span class="material-icons" style="font-size: 40px;">done_outline</span>
-                        Hoàn Thành
-                    </button>
+            <button id="finishDrawingButton" class="finish-drawing hidden"
+                style="font-size: 40px; background-color: #386c34; color: white;">
+                <span class="material-icons" style="font-size: 40px;">done_outline</span>
+                Hoàn Thành
+            </button>
 
-                    <button id="finishAddingSensor" class="finish-addingsensor hidden"
-                        style="font-size: 40px; background-color: #386c34; color: white;">
-                        <span class="material-icons" style="font-size: 40px;">done_outline</span>
-                        Hoàn Thành
-                    </button>
+            <button id="finishAddingSensor" class="finish-addingsensor hidden"
+                style="font-size: 40px; background-color: #386c34; color: white;">
+                <span class="material-icons" style="font-size: 40px;">done_outline</span>
+                Hoàn Thành
+            </button>
         </div>
 
         <!----------///// ADD SENSOR BUTTON AND FUNCTIONS \\\\\---------->
@@ -2270,200 +2294,13 @@
 
         <script>
 
+            ////////// <----- START ENFARM MAP PRODUCT TOUR -----> \\\\\\\\\\
 
-
-
-
-
-            ///// <----- MAP PRODUCT TOUR -----> \\\\\
             // Check if the tour has already been shown
             const tourShown = localStorage.getItem('tourShown');
 
             if (!tourShown) {
-                // Ensure Shepherd.js is loaded before using it
-                window.addEventListener('DOMContentLoaded', () => {
-                    // Create a new instance of Shepherd
-                    const tour = new Shepherd.Tour({
-                        useModalOverlay: true,
-                        defaultStepOptions: {
-                            classes: 'shadow-md bg-purple-dark',
-                            scrollTo: true,
-                        },
-                    });
-                    // Define the steps of the tour
-                    tour.addStep({
-                        id: 'step-search',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để tìm kiếm các địa điểm.</span>',
-                        attachTo: {
-                            element: '#searchBtn',
-                            on: 'left',
-                        },
-                        buttons: [
-                            {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
-                                action: tour.next,
-                            },
-                        ],
-                    });
-
-                    tour.addStep({
-                        id: 'step-basemap',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để chuyển đổi bản đồ cơ sở.</span>',
-                        attachTo: {
-                            element: '#basemapBtn',
-                            on: 'left',
-                        },
-                        buttons: [
-                            {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
-                                action: tour.next,
-                            },
-                        ],
-                    });
-
-                    tour.addStep({
-                        id: 'step-measure-area',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Bấm vào nút này để đo diện tích.</span>',
-                        attachTo: {
-                            element: '#measureAreaBtn',
-                            on: 'left',
-                        },
-                        buttons: [
-                            {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
-                                action: tour.next,
-                            },
-                        ],
-                    });
-
-                    tour.addStep({
-                        id: 'step-measure-length',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Bấm vào nút này để đo chiều dài.</span>',
-                        attachTo: {
-                            element: '#measureLengthBtn',
-                            on: 'left',
-                        },
-                        buttons: [
-                            {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
-                                action: tour.next,
-                            },
-                        ],
-                    });
-
-                    tour.addStep({
-                        id: 'step-sketch-farm',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để phác thảo trang trại của bạn.</span>',
-                        attachTo: {
-                            element: '#sketchFarmBtn',
-                            on: 'left',
-                        },
-                        buttons: [
-                            {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
-                                action: tour.next,
-                            },
-                        ],
-                    });
-
-                    tour.addStep({
-                        id: 'step-add-sensor',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để thêm/các cảm biến enfarm.</span>',
-                        attachTo: {
-                            element: '#addSensorBtn',
-                            on: 'left',
-                        },
-                        buttons: [
-                            {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
-                                action: tour.next,
-                            },
-                        ],
-                    });
-
-                    tour.addStep({
-                        id: 'step-reset',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để đặt lại bản đồ.</span>',
-                        attachTo: {
-                            element: '#resetBtn',
-                            on: 'left',
-                        },
-                        buttons: [
-                            {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
-                                action: tour.next,
-                            },
-                        ],
-                    });
-
-                    tour.addStep({
-                        id: 'step-reset',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để tìm vị trí của bạn.</span>',
-                        attachTo: {
-                            element: '#locationBtn',
-                            on: 'left',
-                        },
-                        buttons: [
-                            {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
-                                action: tour.next,
-                            },
-                        ],
-                    });
-
-                    tour.addStep({
-                        id: 'step-reset',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để truy cập bản đồ thời tiết từ Windy.com.</span>',
-                        attachTo: {
-                            element: '#windyMapBtn',
-                            on: 'right',
-                        },
-                        buttons: [
-                            {
-                                text: '<span style="font-size: 40px;">Kế tiếp</span>',
-                                action: tour.next,
-                            },
-                        ],
-                    });
-
-                    tour.addStep({
-                        id: 'step-reset',
-                        text: '<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>Nhấp vào nút này để xem lại hướng dẫn.</span>',
-                        attachTo: {
-                            element: '#tutorialBtn',
-                            on: 'left',
-                        },
-                        buttons: [
-                            {
-                                text: '<span style="font-size: 40px;">Làm lại</span>',
-                                action: () => {
-                                    tour.show('step-search');
-                                },
-                                classes: 'shepherd-button-secondary',
-                            },
-                            {
-                                text: '<span style="font-size: 40px;">Xong</span>',
-                                action: () => {
-                                    // Mark the tour as shown in the browser storage
-                                    localStorage.setItem('tourShown', true);
-                                    tour.complete();
-                                },
-                            },
-                        ],
-                    });
-
-                    // Start the tour
-                    tour.start();
-                });
-            }
-
-            //Reset Product tour
-            function resetProductTour() {
-                // Clear the tourShown item from localStorage
-                localStorage.removeItem('tourShown');
-
-                // Reload the page to show the product tour again
-                location.reload();
+                window.addEventListener('DOMContentLoaded', initTour);
             }
 
             // Get the tutorial button element
@@ -2471,6 +2308,118 @@
 
             // Add event listener to the button
             tutorialBtn.addEventListener('click', resetProductTour);
+
+            function initTour() {
+                // Create a new instance of Shepherd
+                const tour = new Shepherd.Tour({
+                    useModalOverlay: true,
+                    defaultStepOptions: {
+                        classes: 'shadow-md bg-purple-dark',
+                        scrollTo: true,
+                    },
+                });
+
+                addStepSearch(tour);
+                addStepBaseMap(tour);
+                addStepMeasureArea(tour);
+                addStepMeasureLength(tour);
+                addStepSketchFarm(tour);
+                addStepAddSensor(tour);
+                addStepReset(tour);
+                addStepFindLocation(tour);
+                addStepAccessWeatherMap(tour);
+                addStepRevisitTutorial(tour);
+
+                // Start the tour
+                tour.start();
+            }
+
+            function addStepSearch(tour) {
+                addTourStep(tour, 'step-search', '#searchBtn', 'Nhấp vào nút này để tìm kiếm các địa điểm.');
+            }
+
+            function addStepBaseMap(tour) {
+                addTourStep(tour, 'step-basemap', '#basemapBtn', 'Nhấp vào nút này để chuyển đổi bản đồ cơ sở.');
+            }
+
+            function addStepMeasureArea(tour) {
+                addTourStep(tour, 'step-measure-area', '#measureAreaBtn', 'Bấm vào nút này để đo diện tích.');
+            }
+
+            function addStepMeasureLength(tour) {
+                addTourStep(tour, 'step-measure-length', '#measureLengthBtn', 'Bấm vào nút này để đo chiều dài.');
+            }
+
+            function addStepSketchFarm(tour) {
+                addTourStep(tour, 'step-sketch-farm', '#sketchFarmBtn', 'Nhấp vào nút này để phác thảo trang trại của bạn.');
+            }
+
+            function addStepAddSensor(tour) {
+                addTourStep(tour, 'step-add-sensor', '#addSensorBtn', 'Nhấp vào nút này để thêm/các cảm biến enfarm.');
+            }
+
+            function addStepReset(tour) {
+                addTourStep(tour, 'step-reset', '#resetBtn', 'Nhấp vào nút này để đặt lại bản đồ.');
+            }
+
+            function addStepFindLocation(tour) {
+                addTourStep(tour, 'step-location', '#locationBtn', 'Nhấp vào nút này để tìm vị trí của bạn.');
+            }
+
+            function addStepAccessWeatherMap(tour) {
+                addTourStep(tour, 'step-windyMap', '#windyMapBtn', 'Nhấp vào nút này để truy cập bản đồ thời tiết từ Windy.com.', 'right');
+            }
+
+            function addStepRevisitTutorial(tour) {
+                tour.addStep({
+                    id: 'step-tutorial',
+                    text: getText('Nhấp vào nút này để xem lại hướng dẫn.'),
+                    attachTo: { element: '#tutorialBtn', on: 'left' },
+                    buttons: [
+                        {
+                            text: getButtonText('Làm lại'),
+                            action: () => tour.show('step-search'),
+                            classes: 'shepherd-button-secondary',
+                        },
+                        {
+                            text: getButtonText('Xong'),
+                            action: () => {
+                                localStorage.setItem('tourShown', true);
+                                tour.complete();
+                            },
+                        },
+                    ],
+                });
+            }
+
+            function addTourStep(tour, id, element, text, position = 'left') {
+                tour.addStep({
+                    id,
+                    text: getText(text),
+                    attachTo: { element, on: position },
+                    buttons: [{ text: getButtonText('Kế tiếp'), action: tour.next }],
+                });
+            }
+
+            function getText(text) {
+                return `<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>${text}</span>`;
+            }
+
+            function getButtonText(text) {
+                return `<span style="font-size: 40px;">${text}</span>`;
+            }
+
+            function resetProductTour() {
+                // Clear the tourShown item from localStorage
+                localStorage.removeItem('tourShown');
+
+                // Reinitialize the tour
+                initTour();
+            }
+
+            ////////// <----- END ENFARM MAP PRODUCT TOUR -----> \\\\\\\\\\
+
+
 
 
 
@@ -3358,9 +3307,6 @@
             });
 
 
-
-
-
             // Initialize the map
             const map = new ol.Map({
                 target: mapElement,
@@ -3383,10 +3329,23 @@
 
                     currentBasemap = index;
 
+                    // Update the basemap title in the floating container
+                    const basemapTitleElement = document.querySelector(".basemapTitle");
+                    const basemapTitles = [
+                        "Đường phố",
+                        "Vệ tinh",
+                        "Địa Hình",
+                        "Tín chỉ Các bon",
+                        "Bản đồ pH",
+                        "Bản đồ Ni tơ",
+                    ];
+                    basemapTitleElement.textContent = basemapTitles[index];
+
                     const logoElement = document.querySelector(".logo");
-                    const logoImage = basemaps[currentBasemap] === satelliteLayer
-                        ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
-                        : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
+                    const logoImage =
+                        basemaps[currentBasemap] === satelliteLayer
+                            ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
+                            : "https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png";
                     logoElement.src = logoImage;
                 }
 
@@ -3405,6 +3364,17 @@
                 }, 500);
             }
 
+            // Set the initial basemap title in the floating container to the default basemap "Đường phố"
+            const defaultBasemapIndex = 0;
+            selectBasemap(defaultBasemapIndex);
+
+            // Set the initial basemap title on DOMContentLoaded
+            window.addEventListener("DOMContentLoaded", function () {
+                const basemapTitleElement = document.querySelector(".basemapTitle");
+                basemapTitleElement.textContent = "Đường phố";
+            });
+
+            // Add event listeners to basemap images to trigger selectBasemap function
             const basemapImages = document.querySelectorAll(".image-container > div");
             basemapImages.forEach((image, index) => {
                 image.addEventListener("click", () => {
@@ -3564,435 +3534,435 @@
 
             ///// <----- MEASURE AREA BUTTON FUNCTION -----> \\\\\
 
-let drawArea;
-let measureAreaSource;
-let measureAreaTooltipElement;
-let measureAreaTooltip;
-let sketchArea;
-let lineTooltips = [];
-let floatingMessageAreaTimeoutId;
+            let drawArea;
+            let measureAreaSource;
+            let measureAreaTooltipElement;
+            let measureAreaTooltip;
+            let sketchArea;
+            let lineTooltips = [];
+            let floatingMessageAreaTimeoutId;
 
-function startMeasurementArea() {
-    const measureAreaBtn = document.getElementById("measureAreaBtn");
-    const measureAreaBtnIcon = measureAreaBtn.querySelector("i");
-    const isActive = measureAreaBtn.classList.contains("active");
+            function startMeasurementArea() {
+                const measureAreaBtn = document.getElementById("measureAreaBtn");
+                const measureAreaBtnIcon = measureAreaBtn.querySelector("i");
+                const isActive = measureAreaBtn.classList.contains("active");
 
-    // Buttons to hide
-    const buttonsToHide = [
-        "searchBar", "searchBtn", "basemapBtn", "measureLengthBtn",
-        "sketchFarmBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn",
-        "resetBtn", "locationBtn"
-    ];
+                // Buttons to hide
+                const buttonsToHide = [
+                    "searchBar", "searchBtn", "basemapBtn", "measureLengthBtn",
+                    "sketchFarmBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn",
+                    "resetBtn", "locationBtn"
+                ];
 
-    if (isActive) {
-        // Disable measuring area
-        measureAreaBtn.classList.remove("active");
-        map.removeInteraction(drawArea);
-        map.removeOverlay(measureAreaTooltip);
-        measureAreaTooltipElement = null;
-        measureAreaSource.clear();
-        clearLineTooltips(); // Clear length tooltips
+                if (isActive) {
+                    // Disable measuring area
+                    measureAreaBtn.classList.remove("active");
+                    map.removeInteraction(drawArea);
+                    map.removeOverlay(measureAreaTooltip);
+                    measureAreaTooltipElement = null;
+                    measureAreaSource.clear();
+                    clearLineTooltips(); // Clear length tooltips
 
-        // Change the icon back to the "square_foot" icon
-        measureAreaBtnIcon.textContent = "square_foot";
-        // Reset the background color to white
-        measureAreaBtn.style.backgroundColor = "#ffffff";
-        // Change the icon color to black
-        measureAreaBtnIcon.style.color = "#515151";
+                    // Change the icon back to the "square_foot" icon
+                    measureAreaBtnIcon.textContent = "square_foot";
+                    // Reset the background color to white
+                    measureAreaBtn.style.backgroundColor = "#ffffff";
+                    // Change the icon color to black
+                    measureAreaBtnIcon.style.color = "#515151";
 
-        // Clear timeout and hide the floating message immediately
-        clearTimeout(floatingMessageAreaTimeoutId);
-        const floatingMessage = document.getElementById("floatingMessageArea");
-        if (floatingMessage && floatingMessage.parentNode) {
-            floatingMessage.parentNode.removeChild(floatingMessage);
-        }
+                    // Clear timeout and hide the floating message immediately
+                    clearTimeout(floatingMessageAreaTimeoutId);
+                    const floatingMessage = document.getElementById("floatingMessageArea");
+                    if (floatingMessage && floatingMessage.parentNode) {
+                        floatingMessage.parentNode.removeChild(floatingMessage);
+                    }
 
-        // Hide the finish drawing button
-        const finishMeasuringArea = document.getElementById("finishMeasuringArea");
-        if (finishMeasuringArea) {
-            finishMeasuringArea.classList.add("hidden");
-        }
+                    // Hide the finish drawing button
+                    const finishMeasuringArea = document.getElementById("finishMeasuringArea");
+                    if (finishMeasuringArea) {
+                        finishMeasuringArea.classList.add("hidden");
+                    }
 
-        // Show the hidden buttons
-        buttonsToHide.forEach((btnId) => {
-            const btn = document.getElementById(btnId);
-            if (btn) btn.style.display = "block";
-        });
-    } else {
-        // Enable measuring area
-        measureAreaBtn.classList.add("active");
-        measureAreaSource = new ol.source.Vector();
-        map.addLayer(
-            new ol.layer.Vector({
-                source: measureAreaSource,
-                style: new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: "rgba(247, 200, 21, 0.8)", // 80% transparent fill
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: "#F7C815",
-                        width: 10,
-                    }),
-                    image: new ol.style.Circle({
-                        radius: 7,
-                        fill: new ol.style.Fill({
-                            color: "#F7C815",
-                        }),
-                    }),
-                }),
-            })
-        );
-        createMeasureAreaTooltip();
-        addAreaInteraction();
+                    // Show the hidden buttons
+                    buttonsToHide.forEach((btnId) => {
+                        const btn = document.getElementById(btnId);
+                        if (btn) btn.style.display = "block";
+                    });
+                } else {
+                    // Enable measuring area
+                    measureAreaBtn.classList.add("active");
+                    measureAreaSource = new ol.source.Vector();
+                    map.addLayer(
+                        new ol.layer.Vector({
+                            source: measureAreaSource,
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: "rgba(247, 200, 21, 0.8)", // 80% transparent fill
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: "#F7C815",
+                                    width: 10,
+                                }),
+                                image: new ol.style.Circle({
+                                    radius: 7,
+                                    fill: new ol.style.Fill({
+                                        color: "#F7C815",
+                                    }),
+                                }),
+                            }),
+                        })
+                    );
+                    createMeasureAreaTooltip();
+                    addAreaInteraction();
 
-        // Change the icon to the "close" icon
-        measureAreaBtnIcon.textContent = "close";
-        // Change the background color to dark red
-        measureAreaBtn.style.backgroundColor = "#FF6666";
-        // Change the icon color to white
-        measureAreaBtnIcon.style.color = "#ffffff";
+                    // Change the icon to the "close" icon
+                    measureAreaBtnIcon.textContent = "close";
+                    // Change the background color to dark red
+                    measureAreaBtn.style.backgroundColor = "#FF6666";
+                    // Change the icon color to white
+                    measureAreaBtnIcon.style.color = "#ffffff";
 
-        // Add floating message
-        const floatingMessage = document.createElement("div");
-        floatingMessage.className = "floating-message";
-        floatingMessage.id = "floatingMessageArea";
-        const infoIcon = document.createElement("i");
-        infoIcon.className = "material-icons";
-        infoIcon.textContent = "touch_app";
-        infoIcon.style.fontSize = "100px";
-        floatingMessage.appendChild(infoIcon);
-        floatingMessage.innerHTML += "  Chạm vào màn hình để bắt đầu đo"; // "Tap the screen to start measuring"
-        map.getViewport().appendChild(floatingMessage);
+                    // Add floating message
+                    const floatingMessage = document.createElement("div");
+                    floatingMessage.className = "floating-message";
+                    floatingMessage.id = "floatingMessageArea";
+                    const infoIcon = document.createElement("i");
+                    infoIcon.className = "material-icons";
+                    infoIcon.textContent = "touch_app";
+                    infoIcon.style.fontSize = "100px";
+                    floatingMessage.appendChild(infoIcon);
+                    floatingMessage.innerHTML += "  Chạm vào màn hình để bắt đầu đo"; // "Tap the screen to start measuring"
+                    map.getViewport().appendChild(floatingMessage);
 
-        // Remove floating message after 05 seconds
-        floatingMessageAreaTimeoutId = setTimeout(function () {
-            map.getViewport().removeChild(floatingMessage);
-        }, 5000);
+                    // Remove floating message after 05 seconds
+                    floatingMessageAreaTimeoutId = setTimeout(function () {
+                        map.getViewport().removeChild(floatingMessage);
+                    }, 5000);
 
-        // Hide the specified buttons
-        buttonsToHide.forEach((btnId) => {
-            const btn = document.getElementById(btnId);
-            if (btn) btn.style.display = "none";
-        });
-    }
+                    // Hide the specified buttons
+                    buttonsToHide.forEach((btnId) => {
+                        const btn = document.getElementById(btnId);
+                        if (btn) btn.style.display = "none";
+                    });
+                }
 
-    // Show the hidden buttons when the drawing is finished
-    const finishMeasuringArea = document.getElementById("finishMeasuringArea");
-    if (finishMeasuringArea) {
-        finishMeasuringArea.addEventListener("click", () => {
-            buttonsToHide.forEach((btnId) => {
-                const btn = document.getElementById(btnId);
-                if (btn) btn.style.display = "block";
-            });
-        });
-    }
-}
-
-
-let drawAreaStartListener;
-let drawAreaEndListener;
-
-function addAreaInteraction() {
-    drawArea = new ol.interaction.Draw({
-        source: measureAreaSource,
-        type: "Polygon",
-        style: new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: "rgba(255, 255, 255, 0.2)",
-            }),
-            stroke: new ol.style.Stroke({
-                color: "#F7C815",
-                width: 10,
-            }),
-            image: new ol.style.Circle({
-                radius: 18,
-                fill: new ol.style.Fill({
-                    color: "#F7C815",
-                }),
-                stroke: new ol.style.Stroke({
-                    color: "#ffffff",
-                    width: 9,
-                }),
-            }),
-        }),
-    });
-    map.addInteraction(drawArea);
-
-    // Declare a variable to count how many points have been clicked
-    let clickCount = 0;
-
-    drawAreaStartListener = drawArea.on("drawstart", function (evt) {
-        const feature = evt.feature;
-        sketchArea = feature;
-        createHelpAreaTooltip();
-        map.on("pointermove", pointerMoveHandler);
-
-        // Reset click count
-        clickCount = 0;
-
-        // Add a vertex listener to count clicks
-        feature.getGeometry().on("change", function (event) {
-            clickCount++;
-
-            // Check if the user has clicked 3 times
-            if (clickCount === 3) {
-                // Show the finish button
+                // Show the hidden buttons when the drawing is finished
                 const finishMeasuringArea = document.getElementById("finishMeasuringArea");
                 if (finishMeasuringArea) {
-                    finishMeasuringArea.classList.remove("hidden");
+                    finishMeasuringArea.addEventListener("click", () => {
+                        buttonsToHide.forEach((btnId) => {
+                            const btn = document.getElementById(btnId);
+                            if (btn) btn.style.display = "block";
+                        });
+                    });
                 }
             }
-        });
-    });
-
-    document.getElementById('finishMeasuringArea').addEventListener('click', function () {
-        drawArea.finishDrawing();
-    });
-
-    drawAreaEndListener = drawArea.on("drawend", function (evt) {
-        const feature = evt.feature;
-        measureAreaSource.removeFeature(sketchArea);
-        sketchArea = null;
-        measureAreaTooltipElement.className = "ol-tooltip ol-tooltip-static";
-        measureAreaTooltip.setOffset([0, -7]);
-
-        const geom = feature.getGeometry();
-        const extent = geom.getExtent();
-        const center = ol.extent.getCenter(extent);
-        const area = getArea(geom);
-
-        let measurement;
-        let measurementUnit;
-
-        if (area > 1000) {
-            measurement = (area / 10000).toFixed(2); // Convert to hectares (ha)
-            measurementUnit = "ha";
-        } else {
-            measurement = area.toFixed(2);
-            measurementUnit = "m²";
-        }
-
-        measureAreaTooltipElement.innerHTML = `<div style="display: flex; align-items: center;"><i class="material-icons" style="margin-right: 10px;"></i><span>Khu vực:</span><strong style="margin-left: 10px;">${measurement}${measurementUnit}</strong></div>`;
 
 
-        // Hide the finish button
-        const finishMeasuringArea = document.getElementById("finishMeasuringArea");
-        if (finishMeasuringArea) {
-            finishMeasuringArea.classList.add("hidden");
-        }
+            let drawAreaStartListener;
+            let drawAreaEndListener;
 
-        // Add a white background to the measurement size label
-        measureAreaTooltipElement.style.backgroundColor = "#ffffff";
-        measureAreaTooltipElement.style.padding = "10px 20px";
-        measureAreaTooltipElement.style.borderRadius = "50px";
-        measureAreaTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
-        measureAreaTooltipElement.style.color = "#515151";
-        measureAreaTooltipElement.style.fontFamily = "Segoe UI";
-        measureAreaTooltipElement.style.fontSize = "35px";
+            function addAreaInteraction() {
+                drawArea = new ol.interaction.Draw({
+                    source: measureAreaSource,
+                    type: "Polygon",
+                    style: new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: "rgba(255, 255, 255, 0.2)",
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: "#F7C815",
+                            width: 10,
+                        }),
+                        image: new ol.style.Circle({
+                            radius: 18,
+                            fill: new ol.style.Fill({
+                                color: "#F7C815",
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: "#ffffff",
+                                width: 9,
+                            }),
+                        }),
+                    }),
+                });
+                map.addInteraction(drawArea);
 
-        // Position the measurement tooltip element in the middle of the map
-        measureAreaTooltip.setPosition(center);
+                // Declare a variable to count how many points have been clicked
+                let clickCount = 0;
 
-        // Create tooltips for each edge of the polygon
-        const coordinates = geom.getCoordinates()[0];
-        const numEdges = coordinates.length;
-        clearLineTooltips();
-        for (let i = 0; i < numEdges - 1; i++) {
-            const start = coordinates[i];
-            const end = coordinates[i + 1];
-            const midpoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
-            const length = ol.sphere.getLength(new ol.geom.LineString([start, end]));
+                drawAreaStartListener = drawArea.on("drawstart", function (evt) {
+                    const feature = evt.feature;
+                    sketchArea = feature;
+                    createHelpAreaTooltip();
+                    map.on("pointermove", pointerMoveHandler);
 
-            const lineTooltip = createLineTooltip(length, midpoint, start, end);
-            lineTooltips.push(lineTooltip);
-            map.addOverlay(lineTooltip);
-        }
+                    // Reset click count
+                    clickCount = 0;
 
-        map.removeInteraction(drawArea);
-        map.un("pointermove", pointerMoveHandler);
-    });
+                    // Add a vertex listener to count clicks
+                    feature.getGeometry().on("change", function (event) {
+                        clickCount++;
 
-    drawAreaStartListener = drawArea.on("drawstart", function (evt) {
-        const feature = evt.feature;
-        sketchArea = feature;
-        createHelpAreaTooltip();
-        map.on("pointermove", pointerMoveHandler);
-    });
-}
+                        // Check if the user has clicked 3 times
+                        if (clickCount === 3) {
+                            // Show the finish button
+                            const finishMeasuringArea = document.getElementById("finishMeasuringArea");
+                            if (finishMeasuringArea) {
+                                finishMeasuringArea.classList.remove("hidden");
+                            }
+                        }
+                    });
+                });
 
-let helpMeasureAreaTooltipElement;
-let helpMeasureAreaTooltip;
+                document.getElementById('finishMeasuringArea').addEventListener('click', function () {
+                    drawArea.finishDrawing();
+                });
 
-function createHelpAreaTooltip() {
-    if (helpMeasureAreaTooltipElement) {
-        helpMeasureAreaTooltipElement.parentNode.removeChild(helpMeasureAreaTooltipElement);
-    }
-    helpMeasureAreaTooltipElement = document.createElement("div");
-    helpMeasureAreaTooltipElement.className = "ol-tooltip hidden";
-    helpMeasureAreaTooltip = new ol.Overlay({
-        element: helpMeasureAreaTooltipElement,
-        offset: [15, 0],
-        positioning: "center-left",
-    });
-    map.addOverlay(helpMeasureAreaTooltip);
-}
+                drawAreaEndListener = drawArea.on("drawend", function (evt) {
+                    const feature = evt.feature;
+                    measureAreaSource.removeFeature(sketchArea);
+                    sketchArea = null;
+                    measureAreaTooltipElement.className = "ol-tooltip ol-tooltip-static";
+                    measureAreaTooltip.setOffset([0, -7]);
 
-function createMeasureAreaTooltip() {
-    if (measureAreaTooltipElement) {
-        measureAreaTooltipElement.parentNode.removeChild(measureAreaTooltipElement);
-    }
-    measureAreaTooltipElement = document.createElement("div");
-    measureAreaTooltipElement.className = "ol-tooltip ol-tooltip-measure";
-    measureAreaTooltip = new ol.Overlay({
-        element: measureAreaTooltipElement,
-        offset: [100, 0],
-        positioning: "bottom-center",
-    });
-    map.addOverlay(measureAreaTooltip);
-}
+                    const geom = feature.getGeometry();
+                    const extent = geom.getExtent();
+                    const center = ol.extent.getCenter(extent);
+                    const area = getArea(geom);
 
-const continuePolygonMsg = "Click to continue drawing the polygon";
+                    let measurement;
+                    let measurementUnit;
 
-function pointerMoveHandler(evt) {
-    if (evt.dragging) {
-        return;
-    }
-    let helpMsg = "Click to continue drawing the polygon";
-    if (sketchArea) {
-        const geom = sketchArea.getGeometry();
-        if (geom instanceof ol.geom.Polygon) {
-            helpMsg = continuePolygonMsg;
-        }
-    }
-}
+                    if (area > 1000) {
+                        measurement = (area / 10000).toFixed(2); // Convert to hectares (ha)
+                        measurementUnit = "ha";
+                    } else {
+                        measurement = area.toFixed(2);
+                        measurementUnit = "m²";
+                    }
+
+                    measureAreaTooltipElement.innerHTML = `<div style="display: flex; align-items: center;"><i class="material-icons" style="margin-right: 10px;"></i><span>Khu vực:</span><strong style="margin-left: 10px;">${measurement}${measurementUnit}</strong></div>`;
 
 
-function getArea(polygon) {
-    const area = polygon.getArea();
-    return area;
-}
+                    // Hide the finish button
+                    const finishMeasuringArea = document.getElementById("finishMeasuringArea");
+                    if (finishMeasuringArea) {
+                        finishMeasuringArea.classList.add("hidden");
+                    }
 
-function createLineTooltip(length, midpoint, start, end) {
-    const lineTooltipElement = document.createElement("div");
-    lineTooltipElement.className = "ol-tooltip ol-tooltip-line";
+                    // Add a white background to the measurement size label
+                    measureAreaTooltipElement.style.backgroundColor = "#ffffff";
+                    measureAreaTooltipElement.style.padding = "10px 20px";
+                    measureAreaTooltipElement.style.borderRadius = "50px";
+                    measureAreaTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
+                    measureAreaTooltipElement.style.color = "#515151";
+                    measureAreaTooltipElement.style.fontFamily = "Segoe UI";
+                    measureAreaTooltipElement.style.fontSize = "35px";
 
-    let measurement;
-    let measurementUnit;
+                    // Position the measurement tooltip element in the middle of the map
+                    measureAreaTooltip.setPosition(center);
 
-    if (length > 1000) {
-        measurement = (length / 1000).toFixed(2); // Convert to kilometers
-        measurementUnit = "km";
-    } else {
-        measurement = length.toFixed(2);
-        measurementUnit = "m";
-    }
+                    // Create tooltips for each edge of the polygon
+                    const coordinates = geom.getCoordinates()[0];
+                    const numEdges = coordinates.length;
+                    clearLineTooltips();
+                    for (let i = 0; i < numEdges - 1; i++) {
+                        const start = coordinates[i];
+                        const end = coordinates[i + 1];
+                        const midpoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
+                        const length = ol.sphere.getLength(new ol.geom.LineString([start, end]));
 
-    lineTooltipElement.innerHTML = `Chiều dài: ${measurement}${measurementUnit}`;
+                        const lineTooltip = createLineTooltip(length, midpoint, start, end);
+                        lineTooltips.push(lineTooltip);
+                        map.addOverlay(lineTooltip);
+                    }
 
-    // Add a white background to the line tooltip
-    lineTooltipElement.style.backgroundColor = "#ffffff";
-    lineTooltipElement.style.padding = "10px 20px";
-    lineTooltipElement.style.borderRadius = "40px";
-    lineTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
+                    map.removeInteraction(drawArea);
+                    map.un("pointermove", pointerMoveHandler);
+                });
 
-    // Change the font color to Segoe UI (#515151) and set the font size to 12px
-    lineTooltipElement.style.color = "#515151";
-    lineTooltipElement.style.fontFamily = "Segoe UI";
-    lineTooltipElement.style.fontSize = "28px";
+                drawAreaStartListener = drawArea.on("drawstart", function (evt) {
+                    const feature = evt.feature;
+                    sketchArea = feature;
+                    createHelpAreaTooltip();
+                    map.on("pointermove", pointerMoveHandler);
+                });
+            }
 
-    const lineTooltip = new ol.Overlay({
-        element: lineTooltipElement,
-        offset: [0, 0],
-        position: midpoint,
-        positioning: "center-center",
-    });
+            let helpMeasureAreaTooltipElement;
+            let helpMeasureAreaTooltip;
 
-    lineTooltipElement.addEventListener("mouseover", function () {
-        lineTooltip.setPosition(midpoint);
-    });
+            function createHelpAreaTooltip() {
+                if (helpMeasureAreaTooltipElement) {
+                    helpMeasureAreaTooltipElement.parentNode.removeChild(helpMeasureAreaTooltipElement);
+                }
+                helpMeasureAreaTooltipElement = document.createElement("div");
+                helpMeasureAreaTooltipElement.className = "ol-tooltip hidden";
+                helpMeasureAreaTooltip = new ol.Overlay({
+                    element: helpMeasureAreaTooltipElement,
+                    offset: [15, 0],
+                    positioning: "center-left",
+                });
+                map.addOverlay(helpMeasureAreaTooltip);
+            }
 
-    lineTooltipElement.addEventListener("mouseout", function () {
-        lineTooltip.setPosition(midpoint);
-    });
+            function createMeasureAreaTooltip() {
+                if (measureAreaTooltipElement) {
+                    measureAreaTooltipElement.parentNode.removeChild(measureAreaTooltipElement);
+                }
+                measureAreaTooltipElement = document.createElement("div");
+                measureAreaTooltipElement.className = "ol-tooltip ol-tooltip-measure";
+                measureAreaTooltip = new ol.Overlay({
+                    element: measureAreaTooltipElement,
+                    offset: [100, 0],
+                    positioning: "bottom-center",
+                });
+                map.addOverlay(measureAreaTooltip);
+            }
 
-    lineTooltipElement.addEventListener("click", function () {
-        const lineCoordinates = [start, end];
-        const lineString = new ol.geom.LineString(lineCoordinates);
-        const lineFeature = new ol.Feature(lineString);
-        measureAreaSource.addFeature(lineFeature);
-        lineTooltips.push(createLineTooltip(length, midpoint, start, end));
-        map.addOverlay(lineTooltips[lineTooltips.length - 1]);
-    });
+            const continuePolygonMsg = "Click to continue drawing the polygon";
 
-    return lineTooltip;
-}
-
-function clearLineTooltips() {
-    lineTooltips.forEach(function (tooltip) {
-        map.removeOverlay(tooltip);
-    });
-    lineTooltips = [];
-}
-
-// Function to clear length tooltips
-function clearLengthTooltips() {
-    clearLineTooltips();
-}
+            function pointerMoveHandler(evt) {
+                if (evt.dragging) {
+                    return;
+                }
+                let helpMsg = "Click to continue drawing the polygon";
+                if (sketchArea) {
+                    const geom = sketchArea.getGeometry();
+                    if (geom instanceof ol.geom.Polygon) {
+                        helpMsg = continuePolygonMsg;
+                    }
+                }
+            }
 
 
-// Handle clicks on the measureLengthBtn and sketchFarmBtn buttons
-document.getElementById("measureLengthBtn").addEventListener("click", deactivateMeasurementArea);
-document.getElementById("sketchFarmBtn").addEventListener("click", deactivateMeasurementArea);
-document.getElementById("addSensorBtn").addEventListener("click", deactivateMeasurementArea);
+            function getArea(polygon) {
+                const area = polygon.getArea();
+                return area;
+            }
 
-function deactivateMeasurementArea() {
-    const measureAreaBtn = document.getElementById("measureAreaBtn");
-    if (measureAreaBtn.classList.contains("active")) {
-        // Set measureAreaBtn to inactive state
-        measureAreaBtn.classList.remove("active");
+            function createLineTooltip(length, midpoint, start, end) {
+                const lineTooltipElement = document.createElement("div");
+                lineTooltipElement.className = "ol-tooltip ol-tooltip-line";
 
-        // Change the icon back to the "square_foot" icon
-        const measureAreaBtnIcon = measureAreaBtn.querySelector("i");
-        measureAreaBtnIcon.textContent = "square_foot";
+                let measurement;
+                let measurementUnit;
 
-        // Reset the background color to white
-        measureAreaBtn.style.backgroundColor = "#ffffff";
+                if (length > 1000) {
+                    measurement = (length / 1000).toFixed(2); // Convert to kilometers
+                    measurementUnit = "km";
+                } else {
+                    measurement = length.toFixed(2);
+                    measurementUnit = "m";
+                }
 
-        // Change the icon color to black
-        measureAreaBtnIcon.style.color = "#515151";
+                lineTooltipElement.innerHTML = `Chiều dài: ${measurement}${measurementUnit}`;
 
-        // Remove interactions
-        if (drawArea) {
-            map.removeInteraction(drawArea);
-            drawArea = null;
-        }
+                // Add a white background to the line tooltip
+                lineTooltipElement.style.backgroundColor = "#ffffff";
+                lineTooltipElement.style.padding = "10px 20px";
+                lineTooltipElement.style.borderRadius = "40px";
+                lineTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
 
-        // Remove listeners
-        if (drawAreaStartListener) {
-            ol.Observable.unByKey(drawAreaStartListener);
-            drawAreaStartListener = null;
-        }
-        if (drawAreaEndListener) {
-            ol.Observable.unByKey(drawAreaEndListener);
-            drawAreaEndListener = null;
-        }
+                // Change the font color to Segoe UI (#515151) and set the font size to 12px
+                lineTooltipElement.style.color = "#515151";
+                lineTooltipElement.style.fontFamily = "Segoe UI";
+                lineTooltipElement.style.fontSize = "28px";
 
-        // Clear timeout and hide the floating message immediately
-        clearTimeout(floatingMessageAreaTimeoutId);
-        const floatingMessage = document.getElementById("floatingMessageArea");
-        if (floatingMessage && floatingMessage.parentNode) {
-            floatingMessage.parentNode.removeChild(floatingMessage);
-        }
+                const lineTooltip = new ol.Overlay({
+                    element: lineTooltipElement,
+                    offset: [0, 0],
+                    position: midpoint,
+                    positioning: "center-center",
+                });
 
-        // Hide the finish drawing button
-        const finishMeasuringArea = document.getElementById("finishMeasuringArea");
-        if (finishMeasuringArea) {
-            finishMeasuringArea.classList.add("hidden");
-        }
+                lineTooltipElement.addEventListener("mouseover", function () {
+                    lineTooltip.setPosition(midpoint);
+                });
 
-        // Note: We are not clearing the source or removing the overlay, so the drawn polygons and tooltips should remain visible.
-    }
-}
+                lineTooltipElement.addEventListener("mouseout", function () {
+                    lineTooltip.setPosition(midpoint);
+                });
+
+                lineTooltipElement.addEventListener("click", function () {
+                    const lineCoordinates = [start, end];
+                    const lineString = new ol.geom.LineString(lineCoordinates);
+                    const lineFeature = new ol.Feature(lineString);
+                    measureAreaSource.addFeature(lineFeature);
+                    lineTooltips.push(createLineTooltip(length, midpoint, start, end));
+                    map.addOverlay(lineTooltips[lineTooltips.length - 1]);
+                });
+
+                return lineTooltip;
+            }
+
+            function clearLineTooltips() {
+                lineTooltips.forEach(function (tooltip) {
+                    map.removeOverlay(tooltip);
+                });
+                lineTooltips = [];
+            }
+
+            // Function to clear length tooltips
+            function clearLengthTooltips() {
+                clearLineTooltips();
+            }
+
+
+            // Handle clicks on the measureLengthBtn and sketchFarmBtn buttons
+            document.getElementById("measureLengthBtn").addEventListener("click", deactivateMeasurementArea);
+            document.getElementById("sketchFarmBtn").addEventListener("click", deactivateMeasurementArea);
+            document.getElementById("addSensorBtn").addEventListener("click", deactivateMeasurementArea);
+
+            function deactivateMeasurementArea() {
+                const measureAreaBtn = document.getElementById("measureAreaBtn");
+                if (measureAreaBtn.classList.contains("active")) {
+                    // Set measureAreaBtn to inactive state
+                    measureAreaBtn.classList.remove("active");
+
+                    // Change the icon back to the "square_foot" icon
+                    const measureAreaBtnIcon = measureAreaBtn.querySelector("i");
+                    measureAreaBtnIcon.textContent = "square_foot";
+
+                    // Reset the background color to white
+                    measureAreaBtn.style.backgroundColor = "#ffffff";
+
+                    // Change the icon color to black
+                    measureAreaBtnIcon.style.color = "#515151";
+
+                    // Remove interactions
+                    if (drawArea) {
+                        map.removeInteraction(drawArea);
+                        drawArea = null;
+                    }
+
+                    // Remove listeners
+                    if (drawAreaStartListener) {
+                        ol.Observable.unByKey(drawAreaStartListener);
+                        drawAreaStartListener = null;
+                    }
+                    if (drawAreaEndListener) {
+                        ol.Observable.unByKey(drawAreaEndListener);
+                        drawAreaEndListener = null;
+                    }
+
+                    // Clear timeout and hide the floating message immediately
+                    clearTimeout(floatingMessageAreaTimeoutId);
+                    const floatingMessage = document.getElementById("floatingMessageArea");
+                    if (floatingMessage && floatingMessage.parentNode) {
+                        floatingMessage.parentNode.removeChild(floatingMessage);
+                    }
+
+                    // Hide the finish drawing button
+                    const finishMeasuringArea = document.getElementById("finishMeasuringArea");
+                    if (finishMeasuringArea) {
+                        finishMeasuringArea.classList.add("hidden");
+                    }
+
+                    // Note: We are not clearing the source or removing the overlay, so the drawn polygons and tooltips should remain visible.
+                }
+            }
 
 
 
