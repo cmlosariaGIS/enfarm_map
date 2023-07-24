@@ -1006,7 +1006,7 @@
 
         .dialog-content {
             background-color: white;
-            padding: 80px;
+            padding: 100px;
             border-radius: 50px;
             text-align: center;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
@@ -1386,6 +1386,21 @@
             color: #515151;
             margin-top: 10px;
         }
+
+
+        .shepherd-target.custom-triangle .shepherd-arrow {
+            border-bottom: 10px solid transparent;
+            border-top: 10px solid transparent;
+            border-right: 10px solid white;
+            border-left: 2px solid #515151;
+            /* add border on the left side of the triangle */
+            border-width: 2px;
+            /* specify the border width */
+            border-style: solid;
+            /* specify the border style */
+            border-color: #515151;
+            /* specify the border color */
+        }
     </style>
 </head>
 
@@ -1396,6 +1411,8 @@
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
+
+
 
 
         <div id="addSensorSuccess" class="addFloating-container">
@@ -2450,6 +2467,7 @@
             function addTourStep(tour, id, element, text, position = 'left') {
                 tour.addStep({
                     id,
+                    classes: 'step-border',
                     text: getText(text),
                     attachTo: { element, on: position },
                     buttons: [{ text: getButtonText('Kế tiếp'), action: tour.next }],
@@ -2506,6 +2524,10 @@
                         iframe.width = '100%';
                         iframe.height = '99%';
                         iframe.src = `https://embed.windy.com/embed2.html?lat=${initialLatitude}&lon=${initialLongitude}&zoom=${initialZoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
+                        //iframe.src = `https://earth.nullschool.net/#current/wind/surface/level/orthographic=-245.08,11.45,1183/loc=107.832,12.362`;
+                        //iframe.src = "https://www.meteoblue.com/en/weather/maps/widget/ho-chi-minh-city_vietnam_1566083?windAnimation=0&windAnimation=1&gust=0&gust=1&satellite=0&satellite=1&cloudsAndPrecipitation=0&cloudsAndPrecipitation=1&temperature=0&temperature=1&sunshine=0&sunshine=1&extremeForecastIndex=0&extremeForecastIndex=1&geoloc=fixed&tempunit=C&windunit=km%252Fh&lengthunit=metric&zoom=5&autowidth=auto";
+
+
 
                         messageElement = document.createElement('div');
                         messageElement.textContent = 'Định vị người dùng...'; //Locating user...
@@ -2536,6 +2558,9 @@
                                 const zoomLevel = 11;
 
                                 const url = `https://embed.windy.com/embed2.html?lat=${latitude}&lon=${longitude}&zoom=${zoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=${latitude},${longitude}&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
+                                //const url = `https://earth.nullschool.net/#current/wind/surface/level/orthographic=-245.08,11.45,1183/loc=107.832,12.362`;
+                                //const url = `https://www.meteoblue.com/en/weather/maps/widget/ho-chi-minh-city_vietnam_1566083?windAnimation=0&windAnimation=1&gust=0&gust=1&satellite=0&satellite=1&cloudsAndPrecipitation=0&cloudsAndPrecipitation=1&temperature=0&temperature=1&sunshine=0&sunshine=1&extremeForecastIndex=0&extremeForecastIndex=1&geoloc=fixed&tempunit=C&windunit=km%252Fh&lengthunit=metric&zoom=5&autowidth=auto"`;
+
 
                                 setTimeout(() => {
                                     iframe.src = url;
