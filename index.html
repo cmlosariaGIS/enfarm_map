@@ -24,7 +24,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.9/lottie.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.10/lottie.min.js"></script>
 
 
@@ -1346,51 +1345,49 @@
 
 
 
-/* Floating container styles */
-.addSensorSuccess-floating-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: fit-content;
-    background-color: white;
-    border-radius: 50px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    padding: 40px;
-    z-index: 10;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-}
+        /* Floating container styles */
+        .addFloating-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: fit-content;
+            background-color: white;
+            border-radius: 50px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            z-index: 10;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
 
-/* Slide-up animation class */
-.slide-up {
-    transform: translate(-50%, -50%) translateY(-50px);
-    opacity: 1;
-}
+        /* Slide-up animation class */
+        .slide-up {
+            transform: translate(-50%, -50%) translateY(-50px);
+            opacity: 1;
+        }
 
-/* Slide-down animation class */
-.slide-down {
-    transform: translate(-50%, -50%) translateY(0);
-    opacity: 0;
-}
+        /* Slide-down animation class */
+        .slide-down {
+            transform: translate(-50%, -50%) translateY(0);
+            opacity: 0;
+        }
 
-/* Animation container styles */
-#successAnimationCheck {
-    width: 200px;
-    height: 200px;
-    margin: 0 auto;
-}
+        /* Animation container styles */
+        .animationCheck {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
 
-/* Message styles */
-.addSensorSuccessMessage {
-    text-align: center;
-    font-size: 40px;
-    color: #515151;
-    margin-top: 10px;
-}
-
-
+        /* Message styles */
+        .addMessage {
+            text-align: center;
+            font-size: 40px;
+            color: #515151;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -1398,22 +1395,21 @@
 
     <div class="map">
 
-
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
 
 
-        <div id="addSensorSuccess" class="addSensorSuccess-floating-container" style="display: block;">
-            <div id="successAnimationCheck"></div>
-            <div class="addSensorSuccessMessage">đã thêm/các cảm biến enfarm</div> <!--enfarm sensor/s added-->
+        <div id="addSensorSuccess" class="addFloating-container">
+            <div id="sensorsuccessAnimationCheck" class="animationCheck"></div>
+            <div class="addMessage">enfarm sensor/s added</div>
         </div>
-        
 
-        <div id="addFarmSuccess" class="floating-container" style="display: block;">
-            <div id="addSensorAnimation"></div>
-            <div class="message">Farm boundary added</div>
+        <div id="addFarmSuccess" class="addFloating-container">
+            <div id="farmsuccessAnimationCheck" class="animationCheck"></div>
+            <div class="addMessage">Farm boundary added</div>
         </div>
+
 
 
         <button id="windyMapBtn">
@@ -4856,6 +4852,31 @@ height: 30px;
                 }
             }
 
+            // Function to show the floating container and trigger the slide-up animation
+            function showAddFarmSuccess() {
+                const addFarmSuccess = document.getElementById("addFarmSuccess");
+                addFarmSuccess.style.display = "block"; // Set the container to be visible
+                addFarmSuccess.classList.add("slide-up"); // Add the slide-up animation class
+
+                // Hide the container after 2 seconds
+                setTimeout(() => {
+                    hideAddFarmSuccess();
+                }, 2000);
+            }
+
+            // Function to hide the floating container and trigger the slide-down animation
+            function hideAddFarmSuccess() {
+                const addFarmSuccess = document.getElementById("addFarmSuccess");
+                addFarmSuccess.classList.remove("slide-up"); // Remove the slide-up animation class
+                addFarmSuccess.classList.add("slide-down"); // Add the slide-down animation class
+
+                // Hide the container after the animation duration (1000ms)
+                setTimeout(() => {
+                    addFarmSuccess.style.display = "none";
+                    addFarmSuccess.classList.remove("slide-down"); // Remove the slide-down animation class
+                }, 1000);
+            }
+
             finishDrawingButton.addEventListener('click', function () {
                 if (draw) {
                     draw.finishDrawing();
@@ -4871,6 +4892,9 @@ height: 30px;
                     showButtonsSkecthFarmInactive();
 
                     finishDrawingButton.classList.add('hidden');
+
+                    // After drawing is finished and the "finishDrawingButton" is clicked, show the floating container
+                    showAddFarmSuccess();
                 }
             });
 
@@ -4909,6 +4933,27 @@ height: 30px;
                     showButtonsSkecthFarmInactive();
                 }
             });
+
+            // Call this function to hide the floating container on map load
+            hideAddFarmSuccess();
+
+            // Load the Lottie animation when the document is ready
+            document.addEventListener("DOMContentLoaded", function () {
+                // Replace "LRglt3SwZv.json" with the URL of your Lottie animation JSON file
+                const animationURL = "https://lottie.host/52133049-24ce-4236-a7c1-0f11d4b03ace/LRglt3SwZv.json";
+                const animationContainer = document.getElementById("farmsuccessAnimationCheck");
+                const animation = lottie.loadAnimation({
+                    container: animationContainer,
+                    renderer: "svg",
+                    loop: true,
+                    autoplay: true,
+                    path: animationURL,
+                });
+            });
+
+
+
+
 
 
 
@@ -5313,88 +5358,88 @@ height: 30px;
 
 
             // Function to show the floating container and trigger the slide-up animation
-function showAddSensorSuccess() {
-    const addSensorSuccess = document.getElementById("addSensorSuccess");
-    addSensorSuccess.style.display = "block"; // Set the container to be visible
-    addSensorSuccess.classList.add("slide-up"); // Add the slide-up animation class
+            function showAddSensorSuccess() {
+                const addSensorSuccess = document.getElementById("addSensorSuccess");
+                addSensorSuccess.style.display = "block"; // Set the container to be visible
+                addSensorSuccess.classList.add("slide-up"); // Add the slide-up animation class
 
-    // Hide the container after 2 seconds
-    setTimeout(() => {
-        hideAddSensorSuccess();
-    }, 2000);
-}
+                // Hide the container after 2 seconds
+                setTimeout(() => {
+                    hideAddSensorSuccess();
+                }, 2000);
+            }
 
-// Function to hide the floating container and trigger the slide-down animation
-function hideAddSensorSuccess() {
-    const addSensorSuccess = document.getElementById("addSensorSuccess");
-    addSensorSuccess.classList.remove("slide-up"); // Remove the slide-up animation class
-    addSensorSuccess.classList.add("slide-down"); // Add the slide-down animation class
+            // Function to hide the floating container and trigger the slide-down animation
+            function hideAddSensorSuccess() {
+                const addSensorSuccess = document.getElementById("addSensorSuccess");
+                addSensorSuccess.classList.remove("slide-up"); // Remove the slide-up animation class
+                addSensorSuccess.classList.add("slide-down"); // Add the slide-down animation class
 
-    // Hide the container after the animation duration (1000ms)
-    setTimeout(() => {
-        addSensorSuccess.style.display = "none";
-        addSensorSuccess.classList.remove("slide-down"); // Remove the slide-down animation class
-    }, 1000);
-}
+                // Hide the container after the animation duration (1000ms)
+                setTimeout(() => {
+                    addSensorSuccess.style.display = "none";
+                    addSensorSuccess.classList.remove("slide-down"); // Remove the slide-down animation class
+                }, 1000);
+            }
 
-const finishButton = document.getElementById("finishAddingSensor");
-finishButton.addEventListener("click", function () {
-    if (isSensorPointAdded) {
-        if (sensorVectorLayer) {
-            const source = sensorVectorLayer.getSource();
-            const features = source.getFeatures();
+            const finishButton = document.getElementById("finishAddingSensor");
+            finishButton.addEventListener("click", function () {
+                if (isSensorPointAdded) {
+                    if (sensorVectorLayer) {
+                        const source = sensorVectorLayer.getSource();
+                        const features = source.getFeatures();
 
-            const enfarm_sensor_coordinates = [];
+                        const enfarm_sensor_coordinates = [];
 
-            features.forEach(function (feature) {
-                const geometry = feature.getGeometry();
-                const coordinate = geometry.getCoordinates();
-                const transformedCoordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-                const enfarm_sensor_lat = transformedCoordinate[1];
-                const enfarm_sensor_lon = transformedCoordinate[0];
+                        features.forEach(function (feature) {
+                            const geometry = feature.getGeometry();
+                            const coordinate = geometry.getCoordinates();
+                            const transformedCoordinate = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+                            const enfarm_sensor_lat = transformedCoordinate[1];
+                            const enfarm_sensor_lon = transformedCoordinate[0];
 
-                enfarm_sensor_coordinates.push({ enfarm_sensor_lat, enfarm_sensor_lon });
+                            enfarm_sensor_coordinates.push({ enfarm_sensor_lat, enfarm_sensor_lon });
+                        });
+
+                        console.log("enfarm_sensor_coordinates:", enfarm_sensor_coordinates);
+
+                        storePointsInLocalStorage(enfarm_sensor_coordinates);
+
+                        disableAddSensor();
+
+                        // After processing is finished and the "finishButton" is clicked, show the floating container
+                        showAddSensorSuccess();
+                    }
+                }
             });
 
-            console.log("enfarm_sensor_coordinates:", enfarm_sensor_coordinates);
+            function deactivateAddSensor() {
+                if (startAddSensorActive) {
+                    deletePoints();
+                    disableAddSensor();
+                }
+            }
 
-            storePointsInLocalStorage(enfarm_sensor_coordinates);
+            document.getElementById("measureAreaBtn").addEventListener("click", deactivateAddSensor);
+            document.getElementById("measureLengthBtn").addEventListener("click", deactivateAddSensor);
+            document.getElementById("sketchFarmBtn").addEventListener("click", deactivateAddSensor);
 
-            disableAddSensor();
+            // Call this function to hide the floating container on map load
+            hideAddSensorSuccess();
 
-            // After processing is finished and the "finishButton" is clicked, show the floating container
-            showAddSensorSuccess();
-        }
-    }
-});
-
-function deactivateAddSensor() {
-    if (startAddSensorActive) {
-        deletePoints();
-        disableAddSensor();
-    }
-}
-
-document.getElementById("measureAreaBtn").addEventListener("click", deactivateAddSensor);
-document.getElementById("measureLengthBtn").addEventListener("click", deactivateAddSensor);
-document.getElementById("sketchFarmBtn").addEventListener("click", deactivateAddSensor);
-
-// Call this function to hide the floating container on map load
-hideAddSensorSuccess();
-
-// Load the Lottie animation when the document is ready
-document.addEventListener("DOMContentLoaded", function () {
-    // Replace "LRglt3SwZv.json" with the URL of your Lottie animation JSON file
-    const animationURL = "https://lottie.host/52133049-24ce-4236-a7c1-0f11d4b03ace/LRglt3SwZv.json";
-    const animationContainer = document.getElementById("successAnimationCheck");
-    const animation = lottie.loadAnimation({
-        container: animationContainer,
-        renderer: "svg",
-        loop: true,
-        autoplay: true,
-        path: animationURL,
-    });
-});
+            // Load the Lottie animation when the document is ready
+            document.addEventListener("DOMContentLoaded", function () {
+                // Replace "LRglt3SwZv.json" with the URL of your Lottie animation JSON file
+                const animationURL = "https://lottie.host/52133049-24ce-4236-a7c1-0f11d4b03ace/LRglt3SwZv.json";
+                const animationContainer = document.getElementById("sensorsuccessAnimationCheck");
+                const animation = lottie.loadAnimation({
+                    container: animationContainer,
+                    renderer: "svg",
+                    loop: true,
+                    autoplay: true,
+                    path: animationURL,
+                });
+            });
 
 
 
