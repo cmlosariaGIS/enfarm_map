@@ -1007,7 +1007,7 @@
         .dialog-content {
             background-color: white;
             padding: 100px;
-            border-radius: 50px;
+            border-radius: 30px;
             text-align: center;
             box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
             width: 550px;
@@ -1034,7 +1034,6 @@
         .hidden {
             display: none;
         }
-
 
         /****** Start  Tutorial Button Styles *******/
 
@@ -1411,9 +1410,6 @@
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
-
-
-
 
         <div id="addSensorSuccess" class="addFloating-container">
             <div id="sensorsuccessAnimationCheck" class="animationCheck"></div>
@@ -4903,6 +4899,15 @@ height: 30px;
                 }, 1000);
             }
 
+            function showButton(id) {
+                var btn = document.getElementById(id);
+                if (btn) {
+                    btn.style.display = "block"; // or whatever your default display style is
+                } else {
+                    console.log("No button found with id: " + id);
+                }
+            }
+
             finishDrawingButton.addEventListener('click', function () {
                 if (draw) {
                     draw.finishDrawing();
@@ -4918,6 +4923,9 @@ height: 30px;
                     showButtonsSkecthFarmInactive();
 
                     finishDrawingButton.classList.add('hidden');
+
+                    // Show the clear all drawing button
+                    showButton('clearAllDrawingBtn');
 
                     // After drawing is finished and the "finishDrawingButton" is clicked, show the floating container
                     showAddFarmSuccess();
@@ -4976,12 +4984,6 @@ height: 30px;
                     path: animationURL,
                 });
             });
-
-
-
-
-
-
 
             let farmVectorLayer; // Declare the farmVectorLayer variable outside the function
 
@@ -5408,6 +5410,15 @@ height: 30px;
                 }, 1000);
             }
 
+            function showButton(id) {
+                var btn = document.getElementById(id);
+                if (btn) {
+                    btn.style.display = "block"; // or whatever your default display style is
+                } else {
+                    console.log("No button found with id: " + id);
+                }
+            }
+
             const finishButton = document.getElementById("finishAddingSensor");
             finishButton.addEventListener("click", function () {
                 if (isSensorPointAdded) {
@@ -5437,6 +5448,9 @@ height: 30px;
                         showAddSensorSuccess();
                     }
                 }
+
+                // Show the clear all drawing button
+                showButton('clearAllDrawingBtn');
             });
 
             function deactivateAddSensor() {
@@ -5466,9 +5480,6 @@ height: 30px;
                     path: animationURL,
                 });
             });
-
-
-
 
 
             // Retrieve points from local storage when the page loads
