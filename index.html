@@ -2361,7 +2361,6 @@
         <script>
 
 
-
             ////////// <----- START ENFARM MAP PRODUCT TOUR -----> \\\\\\\\\\
 
             // Check if the tour has already been shown
@@ -2790,14 +2789,14 @@
                         pillContainer.style.alignItems = "center";
                         pillContainer.style.justifyContent = "space-between";
                         pillContainer.style.background = "#ffffff";
-                        pillContainer.style.padding = "10px 40px";
+                        pillContainer.style.padding = "10px 10px";
                         pillContainer.style.borderRadius = "100px";
                         pillContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)";
 
                         // Create the place name element
                         const placeNameElement = document.createElement("span");
                         placeNameElement.textContent = placeName;
-                        placeNameElement.style.fontSize = "40px";
+                        placeNameElement.style.fontSize = "35px";
                         placeNameElement.style.fontFamily = "Be Vietnam Pro', Arial, sans-serif";
                         placeNameElement.style.color = "#515151";
                         placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)";
@@ -2820,10 +2819,6 @@
 
                         // Set the pill container as the label element
                         labelElement.appendChild(pillContainer);
-
-
-
-                        // Ensure that 'pillContainer' is defined before this block
 
                         // Check that pillContainer is not null before adding an event listener
                         if (pillContainer) {
@@ -2850,7 +2845,7 @@
 
                                     if (pillContainer.getAttribute('data-expanded') === 'true') {
                                         pillContainer.innerHTML = `
-      <span style="font-size: 40px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
+      <span style="font-size: 35px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
         <span>${placeName}</span>
         <button style="font-size: 50px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
           <i class="material-icons" style="transform: rotate(0deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
@@ -2864,7 +2859,7 @@
 
                                     } else if (addressParts.length > 0) {
                                         pillContainer.innerHTML = `
-      <span style="font-size: 40px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center;">
+      <span style="font-size: 35px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center;">
         <strong>${placeName}</strong>, ${addressDetails}
         <button style="font-size: 50px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 430px;">
           <i class="material-icons" style="transform: rotate(180deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
@@ -4432,17 +4427,96 @@
             //let address;
 
 
-            // Function to fetch place name from OSM Nominatim
+
             async function fetchPlaceName(lon, lat) {
                 const baseUrl = "https://nominatim.openstreetmap.org/reverse";
                 const format = "json";
                 const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18&addressdetails=1`;
+
+                const cities = ["Hà Nội", "Thành phố Hồ Chí Minh", "Hồ Chí Minh City", "Sài Gòn", "Đà Nẵng", "Hải Phòng", "Cần Thơ", "Biên Hòa", "Huế", "Nha Trang",
+                    "Rạch Giá", "Quy Nhơn", "Vũng Tàu", "Vinh", "Thái Nguyên", "Nam Định", "Hạ Long", "Buôn Ma Thuột", "Hội An", "Long Xuyên",
+                    "Hà Tĩnh", "Đồng Hới", "Bến Tre", "Mỹ Tho", "Sóc Trăng", "Cần Giờ", "Tam Kỳ", "Vĩnh Long", "Thanh Hóa", "Đà Lạt",
+                    "Phan Thiết", "Hà Tiên"];
+
+                const provinces = ["An Giang", "Bà Rịa-Vũng Tàu", "Bạc Liêu", "Bắc Kạn", "Bắc Giang", "Bắc Ninh", "Bến Tre", "Bình Dương",
+                    "Bình Định", "Bình Phước", "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk", "Đắk Nông", "Điện Biên", "Đồng Nai", "Đồng Tháp",
+                    "Gia Lai", "Hà Giang", "Hà Nam", "Hà Tĩnh", "Hải Dương", "Hậu Giang", "Hòa Bình", "Hưng Yên", "Khánh Hòa", "Kiên Giang",
+                    "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai", "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận",
+                    "Phú Thọ", "Phú Yên", "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị", "Sóc Trăng", "Sơn La", "Tây Ninh",
+                    "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên-Huế", "Tiền Giang", "Trà Vinh", "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"];
 
                 try {
                     const response = await fetch(url);
                     if (response.ok) {
                         const data = await response.json();
                         const placeName = data.display_name || "";
+
+                        const parts = placeName.split(', ');
+                        const firstPart = parts.shift(); // Get the first part before the comma (place name)
+
+                        let streetAddress = '';
+                        let village = '';
+                        let commune = '';
+                        let ward = '';
+                        let district = '';
+                        let city = '';
+                        let province = '';
+                        let postcode = '';
+                        let country = '';
+
+                        parts.forEach((part, index) => {
+                            if (part.includes("District") || part.includes("Huyện") || part.includes("Quận")) {
+                                district = part;
+                            } else if (part.includes("Ward") || part.includes("ward") || part.includes("Phường")) {
+                                ward = part;
+                            } else if (part.includes("Xã")) {
+                                commune = part;
+                            } else if (part.includes("Chung cư") || part.includes("Chung Cư") || part.includes("Tòa nhà") || part.includes("Tower") || part.includes("Building")) {
+                                streetAddress = part;
+                            } else if (/\d/.test(part) && !/\d{4,5}/.test(part)) {
+                                streetAddress += ' ' + part;
+                            } else if (/\d{4,5}/.test(part)) {
+                                postcode = part;
+                            } else if (/\D/.test(part)) {
+                                // Check for street address keywords
+                                if (part.includes("Đường") || part.includes("Quốc lộ") || part.includes("Tỉnh lộ") || part.includes("Hẻm") || part.includes("Ngõ")
+                                    || part.includes("Phố") || part.includes("Đại lộ") || part.includes("Xóm") || part.includes("Thôn") || part.includes("Road")
+                                    || part.includes("Rd.") || part.includes("Avenue") || part.includes("Ave.") || part.includes("Street") || part.includes("street")
+                                    || part.includes("Highway") || part.includes("highway") || part.includes("Lane") || part.includes("lane") || part.includes("Boulevard") || part.includes("Blvd.")) {
+                                    streetAddress += ' ' + part;
+                                } else {
+                                    for (let i = 0; i < cities.length; i++) {
+                                        if (part.includes(cities[i])) {
+                                            city = part;
+                                            break;
+                                        }
+                                    }
+
+                                    for (let j = 0; j < provinces.length; j++) {
+                                        if (part.includes(provinces[j])) {
+                                            province = part;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (part === "Vietnam") {
+                                country = part;
+                            }
+                        });
+
+                        console.log('Place Name:', firstPart);
+                        console.log('Street Address:', streetAddress.trim());
+                        console.log('Village:', village);
+                        console.log('Commune:', commune);
+                        console.log('Ward:', ward);
+                        console.log('District:', district);
+                        console.log('City:', city);
+                        console.log('Province:', province);
+                        console.log('Postcode:', postcode);
+                        console.log('Country:', country);
+
                         return placeName;
                     } else {
                         console.error(
@@ -4457,6 +4531,7 @@
                     return "";
                 }
             }
+
 
             let isSketchActive = false;
             let draw;
@@ -4809,14 +4884,57 @@ height: 30px;
                             console.error("Failed to fetch elevation data for the center point:", error);
                         }
 
-                        // Send to React Native App
-                        const dataToPost = {
+                        // Log the information
+                        const loggedInfo = {
+                            placeName: firstPart,
+                            streetAddress: streetAddress.trim(),
+                            village: village,
+                            commune: commune,
+                            ward: ward,
+                            district: district,
+                            city: city,
+                            province: province,
+                            postcode: postcode,
+                            country: country
+                        };
+
+                        console.log(loggedInfo);
+
+                        // Send data to React Native App
+                        try {
+                            const dataToPost = {
+                                centerPoint: {
+                                    lon: centerPointCoordinates[0],
+                                    lat: centerPointCoordinates[1],
+                                    elevation: centerElevation
+                                },
+                                polygonCoordinates: polygonPoints,
+                                segmentLengths: segmentLengths,
+                                area: {
+                                    squareMeters: area.toFixed(2),
+                                    hectares: areaHectares
+                                },
+                                address: loggedInfo
+                            };
+
+                            // Send data to React Native App
+                            window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
+                        } catch (error) {
+                            // Handle the error (or do nothing to prevent logging)
+                        }
+
+
+                        // Usage example:
+                        // Assuming you have the centerPointCoordinates from your existing code
+                        getElevationFromMapbox(centerPointCoordinates);
+
+                        // Store polygon coordinates in local storage
+                        const storedPolygon = {
                             centerPoint: {
                                 lon: centerPointCoordinates[0],
                                 lat: centerPointCoordinates[1],
-                                elevation: centerElevation
                             },
-                            polygonCoordinates: polygonPoints,
+                            polygonPoints: polygonPoints,
                             segmentLengths: segmentLengths,
                             area: {
                                 squareMeters: area.toFixed(2),
@@ -4824,35 +4942,8 @@ height: 30px;
                             },
                             address: address
                         };
-
-                        try {
-                            // Send data to React Native App
-                            window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
-                        } catch (error) {
-                            // Handle the error (or do nothing to prevent logging)
-                        }
-                    }
-
-                    // Usage example:
-                    // Assuming you have the centerPointCoordinates from your existing code
-                    getElevationFromMapbox(centerPointCoordinates);
-
-                    // Store polygon coordinates in local storage
-                    const storedPolygon = {
-                        centerPoint: {
-                            lon: centerPointCoordinates[0],
-                            lat: centerPointCoordinates[1],
-                        },
-                        polygonPoints: polygonPoints,
-                        segmentLengths: segmentLengths,
-                        area: {
-                            squareMeters: area.toFixed(2),
-                            hectares: areaHectares
-                        },
-                        address: address
-                    };
-                    localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
-                });
+                        localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
+                    });
             }
 
             const sketchFarmBtn = document.getElementById("sketchFarmBtn");
@@ -5157,9 +5248,6 @@ height: 30px;
                     tooltipOverlays = [];
                 }
             });
-
-
-
 
 
 
@@ -5747,7 +5835,6 @@ height: 30px;
 
 
             ///// <----- USER LOCATION BUTTON -----> \\\\\
-
 
 
             const userLocationLayer = new ol.layer.Vector({
