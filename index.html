@@ -4884,9 +4884,7 @@ height: 30px;
                             console.error("Failed to fetch elevation data for the center point:", error);
                         }
 
-
-
-
+                        getElevationFromMapbox(centerPointCoordinates);
 
 
                         // Log the information
@@ -4933,9 +4931,7 @@ height: 30px;
 
 
 
-                    // Usage example:
-                    // Assuming you have the centerPointCoordinates from your existing code
-                    getElevationFromMapbox(centerPointCoordinates);
+
 
                     // Store polygon coordinates in local storage
                     const storedPolygon = {
