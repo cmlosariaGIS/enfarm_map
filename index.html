@@ -4422,17 +4422,43 @@
                 const format = "json";
                 const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18&addressdetails=1`;
 
-                const cities = ["Hà Nội", "Thành phố Hồ Chí Minh", "Hồ Chí Minh City", "Sài Gòn", "Đà Nẵng", "Hải Phòng", "Cần Thơ", "Biên Hòa", "Huế", "Nha Trang",
-                    "Rạch Giá", "Quy Nhơn", "Vũng Tàu", "Vinh", "Thái Nguyên", "Nam Định", "Hạ Long", "Buôn Ma Thuột", "Hội An", "Long Xuyên",
-                    "Hà Tĩnh", "Đồng Hới", "Bến Tre", "Mỹ Tho", "Sóc Trăng", "Cần Giờ", "Tam Kỳ", "Vĩnh Long", "Thanh Hóa", "Đà Lạt",
-                    "Phan Thiết", "Hà Tiên"];
+                let cities = await fetch('https://vn-public-apis.fpo.vn/districts/getAll?limit=-1')
+                    .then(response => response.json())
+                    .then(data => {
+                        let allCities = data.data.data;
+                        let citiesWithThanhPho = [];
+                        allCities.forEach(city => {
+                            let pathWithTypeParts = city.path_with_type.split(', ');
+                            if (pathWithTypeParts[1].includes('Thành phố')) {
+                                let cityName = pathWithTypeParts[1].replace('Thành phố ', '');
+                                if (!citiesWithThanhPho.includes(cityName)) {
+                                    citiesWithThanhPho.push(cityName);
+                                }
+                            }
+                            if (city.name_with_type.includes('Thành phố') && !citiesWithThanhPho.includes(city.name)) {
+                                citiesWithThanhPho.push(city.name);
+                            }
+                        });
 
-                const provinces = ["An Giang", "Bà Rịa-Vũng Tàu", "Bạc Liêu", "Bắc Kạn", "Bắc Giang", "Bắc Ninh", "Bến Tre", "Bình Dương",
-                    "Bình Định", "Bình Phước", "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk", "Đắk Nông", "Điện Biên", "Đồng Nai", "Đồng Tháp",
-                    "Gia Lai", "Hà Giang", "Hà Nam", "Hà Tĩnh", "Hải Dương", "Hậu Giang", "Hòa Bình", "Hưng Yên", "Khánh Hòa", "Kiên Giang",
-                    "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai", "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận",
-                    "Phú Thọ", "Phú Yên", "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị", "Sóc Trăng", "Sơn La", "Tây Ninh",
-                    "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên-Huế", "Tiền Giang", "Trà Vinh", "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"];
+                        console.log('Fetched Cities:', citiesWithThanhPho);
+
+                        return citiesWithThanhPho;
+                    })
+                    .catch((error) => console.error('Error:', error));
+
+
+                let provinces = await fetch('https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1')
+                    .then(response => response.json())
+                    .then(data => {
+                        let allProvinces = data.data.data;
+                        let provinceNames = allProvinces.map(province => province.name);
+
+                        console.log('Fetched Provinces:', provinceNames);
+
+                        return provinceNames;
+                    })
+                    .catch((error) => console.error('Error:', error));
+
 
                 try {
                     const response = await fetch(url);
@@ -4476,7 +4502,7 @@
                                 } else {
                                     for (let i = 0; i < cities.length; i++) {
                                         if (part.includes(cities[i])) {
-                                            city = part;
+                                            city = cities[i];
                                             break;
                                         }
                                     }
@@ -4494,6 +4520,10 @@
                                 country = part;
                             }
                         });
+
+
+
+
 
                         console.log('Place Name:', firstPart);
                         console.log('Street Address:', streetAddress.trim());
@@ -4520,6 +4550,8 @@
                     return "";
                 }
             }
+
+
 
 
             let isSketchActive = false;
