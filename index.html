@@ -4884,6 +4884,11 @@ height: 30px;
                             console.error("Failed to fetch elevation data for the center point:", error);
                         }
 
+
+
+
+
+
                         // Log the information
                         const loggedInfo = {
                             placeName: firstPart,
@@ -4914,7 +4919,7 @@ height: 30px;
                                     squareMeters: area.toFixed(2),
                                     hectares: areaHectares
                                 },
-                                address: loggedInfo
+                                address: loggedInfo // Send the logged information as part of the dataToPost
                             };
 
                             // Send data to React Native App
@@ -4922,30 +4927,33 @@ height: 30px;
                         } catch (error) {
                             // Handle the error (or do nothing to prevent logging)
                         }
+                    }
 
 
-                        // Usage example:
-                        // Assuming you have the centerPointCoordinates from your existing code
-                        getElevationFromMapbox(centerPointCoordinates);
 
-                        // Store polygon coordinates in local storage
-                        const storedPolygon = {
-                            centerPoint: {
-                                lon: centerPointCoordinates[0],
-                                lat: centerPointCoordinates[1],
-                            },
-                            polygonPoints: polygonPoints,
-                            segmentLengths: segmentLengths,
-                            area: {
-                                squareMeters: area.toFixed(2),
-                                hectares: areaHectares
-                            },
-                            address: address
-                        };
-                        localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
-                    });
+
+
+                    // Usage example:
+                    // Assuming you have the centerPointCoordinates from your existing code
+                    getElevationFromMapbox(centerPointCoordinates);
+
+                    // Store polygon coordinates in local storage
+                    const storedPolygon = {
+                        centerPoint: {
+                            lon: centerPointCoordinates[0],
+                            lat: centerPointCoordinates[1],
+                        },
+                        polygonPoints: polygonPoints,
+                        segmentLengths: segmentLengths,
+                        area: {
+                            squareMeters: area.toFixed(2),
+                            hectares: areaHectares
+                        },
+                        address: address
+                    };
+                    localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
+                });
             }
-} 
 
             const sketchFarmBtn = document.getElementById("sketchFarmBtn");
             sketchFarmBtn.addEventListener("click", function () {
