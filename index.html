@@ -2789,7 +2789,7 @@
                         pillContainer.style.alignItems = "center";
                         pillContainer.style.justifyContent = "space-between";
                         pillContainer.style.background = "#ffffff";
-                        pillContainer.style.padding = "10px 10px";
+                        pillContainer.style.padding = "10px 40px";
                         pillContainer.style.borderRadius = "100px";
                         pillContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)";
 
@@ -3454,19 +3454,13 @@
             const defaultBasemapIndex = 0;
             selectBasemap(defaultBasemapIndex);
 
-            // Hide the basemap title container after 5 seconds from map load
+            // Hide the basemap title container after 2 seconds from map load
             document.addEventListener("DOMContentLoaded", () => {
                 const basemapTitleElement = document.querySelector(".basemapfloatingTitle");
                 basemapTitleElement.timerId = setTimeout(() => {
                     basemapTitleElement.style.display = "none";
-                }, 5000);
+                }, 2000);
             });
-
-
-
-
-
-
 
             // Set the initial basemap title on DOMContentLoaded
             window.addEventListener("DOMContentLoaded", function () {
