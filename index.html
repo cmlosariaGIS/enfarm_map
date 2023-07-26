@@ -4417,11 +4417,6 @@
 
             ///// <----- SKETCH FARM BUTTON FUNCTION -----> \\\\\
 
-            // Define and initialize address
-            //let address;
-
-
-
             async function fetchPlaceName(lon, lat) {
                 const baseUrl = "https://nominatim.openstreetmap.org/reverse";
                 const format = "json";
@@ -4539,7 +4534,7 @@
             let buttonsToHideSketchFarmActive = [
                 "searchBar", "searchBtn", "basemapBtn", "measureAreaBtn",
                 "measureLengthBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn",
-                "resetBtn", "locationBtn"
+                "locationBtn"
             ];
 
             function showButtonsSketchFarmInactive() {
@@ -5568,7 +5563,6 @@ height: 30px;
                 });
             });
 
-
             // Retrieve points from local storage when the page loads
             window.addEventListener('load', function () {
                 // Define the layer only if it does not exist
@@ -5601,7 +5595,7 @@ height: 30px;
 
 
 
-            ///// <----- CLEAR ALL DRAWINGS BUTTON FUNCTION (FARM SKETCH AND SENSORS) -----> \\\\\
+            ////////// <----- CLEAR ALL DRAWINGS BUTTON FUNCTION (FARM SKETCH AND SENSORS) -----> \\\\\\\\\\
 
             function clearAllDrawings() {
                 // Show the dialog box
@@ -5717,7 +5711,9 @@ height: 30px;
             });
 
 
-            ///// <----- NORTH ARROW BUTTON FUNCTION -----> \\\\\
+
+
+            ////////// <----- NORTH ARROW BUTTON FUNCTION -----> \\\\\\\\\\
 
             // Function to update the rotation of the north arrow based on the map's rotation
             function updateNorthArrowRotation() {
@@ -5758,7 +5754,7 @@ height: 30px;
 
 
 
-            ///// <----- PAN TO DRAWNN POLYGON or USER LOCATION if no DRAWN POLYGON -----> \\\\\
+            ////////// <----- PAN TO DRAWNN POLYGON or USER LOCATION if no DRAWN POLYGON FUNCTION -----> \\\\\\\\\\
 
             function panToDrawnPolygon() {
                 // Check if there is a drawn polygon
@@ -5833,8 +5829,7 @@ height: 30px;
 
 
 
-            ///// <----- USER LOCATION BUTTON -----> \\\\\
-
+            ////////// <----- USER LOCATION BUTTON -----> \\\\\\\\\\
 
             const userLocationLayer = new ol.layer.Vector({
                 source: new ol.source.Vector(),
@@ -5877,51 +5872,59 @@ height: 30px;
             const markerOverlay = createUserLocationMarker();
             startGlowing();
 
-            function getUserLocation() {
+            async function getUserLocation() {
                 if ("geolocation" in navigator) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            const { latitude, longitude } = position.coords;
+                    try {
+                        const position = await new Promise((resolve, reject) => {
+                            navigator.geolocation.getCurrentPosition(resolve, reject);
+                        });
 
-                            // Log the current user location
-                            console.log("Current user location (latitude, longitude):", latitude, longitude);
+                        const { latitude, longitude } = position.coords;
+                        console.log("Current user location coordinates (latitude, longitude):", latitude, longitude);
 
-                            // Convert latitude and longitude to EPSG:4326
-                            const userLocation = [longitude, latitude];
+                        // Convert latitude and longitude to EPSG:4326
+                        const userLocation = [longitude, latitude];
 
-                            // Remove existing user location feature if it exists
-                            userLocationLayer.getSource().clear();
+                        // Remove existing user location feature if it exists
+                        userLocationLayer.getSource().clear();
 
-                            // Create a new user location feature
-                            const userLocationFeature = new ol.Feature({
-                                geometry: new ol.geom.Point(userLocation).transform('EPSG:4326', 'EPSG:3857'),
-                            });
+                        // Create a new user location feature
+                        const userLocationFeature = new ol.Feature({
+                            geometry: new ol.geom.Point(userLocation).transform('EPSG:4326', 'EPSG:3857'),
+                        });
 
-                            // Add the feature to the user location layer
-                            userLocationLayer.getSource().addFeature(userLocationFeature);
+                        // Add the feature to the user location layer
+                        userLocationLayer.getSource().addFeature(userLocationFeature);
 
-                            // Add or update the user location layer on the map
-                            const existingUserLocationLayer = map.getLayers().getArray().find(layer => layer.get('name') === 'User Location');
-                            if (existingUserLocationLayer) {
-                                map.removeLayer(existingUserLocationLayer);
-                            }
-                            map.addLayer(userLocationLayer);
-
-                            // Pan and zoom to the user location smoothly
-                            map.getView().animate({
-                                center: ol.proj.fromLonLat(userLocation),
-                                zoom: 19,
-                                duration: 1000, // Adjust the duration as needed for the animation speed
-                            });
-                        },
-                        (error) => {
-                            console.error("Error getting user location:", error);
+                        // Add or update the user location layer on the map
+                        const existingUserLocationLayer = map.getLayers().getArray().find(layer => layer.get('name') === 'User Location');
+                        if (existingUserLocationLayer) {
+                            map.removeLayer(existingUserLocationLayer);
                         }
-                    );
+                        map.addLayer(userLocationLayer);
+
+                        // Pan and zoom to the user location smoothly
+                        map.getView().animate({
+                            center: ol.proj.fromLonLat(userLocation),
+                            zoom: 19,
+                            duration: 1000, // Adjust the duration as needed for the animation speed
+                        });
+
+                        // Fetch address information from OSM Nominatim
+                        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`);
+                        const data = await response.json();
+
+                        // Extract the address components
+                        const address = data.display_name;
+                        console.log("User location address:", address);
+                    } catch (error) {
+                        console.error("Error getting user location:", error);
+                    }
                 } else {
                     console.error("Geolocation is not supported by this browser.");
                 }
             }
+
 
             // Get the location button element
             const locationButton = document.querySelector('.locationBtn');
@@ -5937,9 +5940,6 @@ height: 30px;
                 locationButtonIcon.style.animation = 'none';
                 setTimeout(() => (locationButtonIcon.style.animation = ''), 10);
             });
-
-
-
 
             // Function to check if the user location is visible on the current map view
             function isUserLocationVisible() {
@@ -5979,9 +5979,7 @@ height: 30px;
 
 
 
-
-
-            ///// <----- RESET BUTTON FUNCTION -----> \\\\\
+            ////////// <----- RESET BUTTON FUNCTION -----> \\\\\\\\\\
 
             // Get the reset button element
             const resetButton = document.getElementById("resetBtn");
@@ -5996,8 +5994,7 @@ height: 30px;
 
 
 
-
-            ///// <----- SCALE BAR -----> \\\\\
+            ////////// <----- SCALE BAR -----> \\\\\\\\\\
 
             var scale_line = new ol.control.ScaleLine({
                 units: 'metric',
@@ -6012,10 +6009,14 @@ height: 30px;
 
 
 
+
+
             // For Listening to react native app data
             window.addEventListener("message", message => {
                 alert(message.data);
             });
+
+
         </script>
 </body>
 
