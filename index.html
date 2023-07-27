@@ -4418,138 +4418,149 @@
             ///// <----- SKETCH FARM BUTTON FUNCTION -----> \\\\\
 
             async function fetchPlaceName(lon, lat) {
-                const baseUrl = "https://nominatim.openstreetmap.org/reverse";
-                const format = "json";
-                const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18&addressdetails=1`;
+    const baseUrl = "https://nominatim.openstreetmap.org/reverse";
+    const format = "json";
+    const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18&addressdetails=1`;
 
-                let cities = await fetch('https://vn-public-apis.fpo.vn/districts/getAll?limit=-1')
-                    .then(response => response.json())
-                    .then(data => {
-                        let allCities = data.data.data;
-                        let citiesWithThanhPho = [];
-                        allCities.forEach(city => {
-                            let pathWithTypeParts = city.path_with_type.split(', ');
-                            if (pathWithTypeParts[1].includes('Thành phố')) {
-                                let cityName = pathWithTypeParts[1].replace('Thành phố ', '');
-                                if (!citiesWithThanhPho.includes(cityName)) {
-                                    citiesWithThanhPho.push(cityName);
-                                }
-                            }
-                            if (city.name_with_type.includes('Thành phố') && !citiesWithThanhPho.includes(city.name)) {
-                                citiesWithThanhPho.push(city.name);
-                            }
-                        });
-
-                        console.log('Fetched Cities:', citiesWithThanhPho);
-
-                        return citiesWithThanhPho;
-                    })
-                    .catch((error) => console.error('Error:', error));
-
-
-                let provinces = await fetch('https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1')
-                    .then(response => response.json())
-                    .then(data => {
-                        let allProvinces = data.data.data;
-                        let provinceNames = allProvinces.map(province => province.name);
-
-                        console.log('Fetched Provinces:', provinceNames);
-
-                        return provinceNames;
-                    })
-                    .catch((error) => console.error('Error:', error));
-
-
-                try {
-                    const response = await fetch(url);
-                    if (response.ok) {
-                        const data = await response.json();
-                        const placeName = data.display_name || "";
-
-                        const parts = placeName.split(', ');
-                        const firstPart = parts.shift(); // Get the first part before the comma (place name)
-
-                        let streetAddress = '';
-                        let village = '';
-                        let commune = '';
-                        let ward = '';
-                        let district = '';
-                        let city = '';
-                        let province = '';
-                        let postcode = '';
-                        let country = '';
-
-                        parts.forEach((part, index) => {
-                            if (part.includes("District") || part.includes("Huyện") || part.includes("Quận")) {
-                                district = part;
-                            } else if (part.includes("Ward") || part.includes("ward") || part.includes("Phường")) {
-                                ward = part;
-                            } else if (part.includes("Xã")) {
-                                commune = part;
-                            } else if (part.includes("Chung cư") || part.includes("Chung Cư") || part.includes("Tòa nhà") || part.includes("Tower") || part.includes("Building")) {
-                                streetAddress = part;
-                            } else if (/\d/.test(part) && !/\d{4,5}/.test(part)) {
-                                streetAddress += ' ' + part;
-                            } else if (/\d{4,5}/.test(part)) {
-                                postcode = part;
-                            } else if (/\D/.test(part)) {
-                                // Check for street address keywords
-                                if (part.includes("Đường") || part.includes("Quốc lộ") || part.includes("Tỉnh lộ") || part.includes("Hẻm") || part.includes("Ngõ")
-                                    || part.includes("Phố") || part.includes("Đại lộ") || part.includes("Xóm") || part.includes("Thôn") || part.includes("Road")
-                                    || part.includes("Rd.") || part.includes("Avenue") || part.includes("Ave.") || part.includes("Street") || part.includes("street")
-                                    || part.includes("Highway") || part.includes("highway") || part.includes("Lane") || part.includes("lane") || part.includes("Boulevard") || part.includes("Blvd.")) {
-                                    streetAddress += ' ' + part;
-                                } else {
-                                    for (let i = 0; i < cities.length; i++) {
-                                        if (part.includes(cities[i])) {
-                                            city = cities[i];
-                                            break;
-                                        }
-                                    }
-
-                                    for (let j = 0; j < provinces.length; j++) {
-                                        if (part.includes(provinces[j])) {
-                                            province = part;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (part === "Vietnam") {
-                                country = part;
-                            }
-                        });
-
-
-
-
-
-                        console.log('Place Name:', firstPart);
-                        console.log('Street Address:', streetAddress.trim());
-                        console.log('Village:', village);
-                        console.log('Commune:', commune);
-                        console.log('Ward:', ward);
-                        console.log('District:', district);
-                        console.log('City:', city);
-                        console.log('Province:', province);
-                        console.log('Postcode:', postcode);
-                        console.log('Country:', country);
-
-                        return placeName;
-                    } else {
-                        console.error(
-                            "Failed to fetch place name:",
-                            response.status,
-                            response.statusText
-                        );
-                        return "";
+    let cities = await fetch('https://vn-public-apis.fpo.vn/districts/getAll?limit=-1')
+        .then(response => response.json())
+        .then(data => {
+            let allCities = data.data.data;
+            let citiesWithThanhPho = [];
+            allCities.forEach(city => {
+                let pathWithTypeParts = city.path_with_type.split(', ');
+                if (pathWithTypeParts[1].includes('Thành phố')) {
+                    let cityName = pathWithTypeParts[1].replace('Thành phố ', '');
+                    if (!citiesWithThanhPho.includes(cityName)) {
+                        citiesWithThanhPho.push(cityName);
                     }
-                } catch (error) {
-                    console.error("Failed to fetch place name:", error);
-                    return "";
                 }
+                if (city.name_with_type.includes('Thành phố') && !citiesWithThanhPho.includes(city.name)) {
+                    citiesWithThanhPho.push(city.name);
+                }
+            });
+
+            console.log('Fetched Cities:', citiesWithThanhPho);
+
+            return citiesWithThanhPho;
+        })
+        .catch((error) => console.error('Error:', error));
+
+    let provinces = await fetch('https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1')
+        .then(response => response.json())
+        .then(data => {
+            let allProvinces = data.data.data;
+            let provinceNames = allProvinces.map(province => province.name);
+
+            console.log('Fetched Provinces:', provinceNames);
+
+            return provinceNames;
+        })
+        .catch((error) => console.error('Error:', error));
+
+    try {
+        const response = await fetch(url);
+        if (response.ok) {
+            const data = await response.json();
+            let placeName = data.display_name || "";
+
+            const parts = placeName.split(', ');
+            let firstPart = parts.shift(); // Get the first part before the comma (place name)
+
+            let streetAddress = '';
+            let village = '';
+            let commune = '';
+            let ward = '';
+            let district = '';
+            let city = '';
+            let province = '';
+            let postcode = '';
+            let country = '';
+
+            // Check the first part for keywords
+            if (firstPart.includes("Chung cư") || firstPart.includes("Chung Cư") || firstPart.includes("Tòa nhà") || firstPart.includes("Tower") || firstPart.includes("Building") || firstPart.includes("Complex") || firstPart.includes("Hospital") || firstPart.includes("Hotel") || firstPart.includes("Store")) {
+                firstPart = firstPart; // Assign to place name
+            } else if (firstPart.includes("District") || firstPart.includes("Huyện") || firstPart.includes("Quận")) {
+                district = firstPart;
+                firstPart = '';
+            } else if (firstPart.includes("Ward") || firstPart.includes("ward") || firstPart.includes("Phường")) {
+                ward = firstPart;
+                firstPart = '';
+            } else if (firstPart.includes("Xã") || firstPart.includes("Commune")) {
+                commune = firstPart;
+                firstPart = '';
+            } else {
+                streetAddress = firstPart;
             }
+
+            // Process the rest of the parts
+            parts.forEach((part, index) => {
+                if (part.includes("District") || part.includes("Huyện") || part.includes("Quận")) {
+                    district = part;
+                } else if (part.includes("Ward") || part.includes("ward") || part.includes("Phường")) {
+                    ward = part;
+                } else if (part.includes("Xã") || part.includes("Commune")) {
+                    commune = part;
+                } else if (/\d/.test(part) && !/\d{4,5}/.test(part)) {
+                    streetAddress += ' ' + part;
+                } else if (/\d{4,5}/.test(part)) {
+                    postcode = part;
+                } else if (/\D/.test(part)) {
+                    // Check for street address keywords
+                    if (part.includes("Đường") || part.includes("Quốc lộ") || part.includes("Tỉnh lộ") || part.includes("Hẻm") || part.includes("Ngõ") // Add "Ngõ" here
+                        || part.includes("Phố") || part.includes("Đại lộ") || part.includes("Xóm") || part.includes("Thôn") || part.includes("Road")
+                        || part.includes("Rd.") || part.includes("Avenue") || part.includes("Ave.") || part.includes("Street") || part.includes("street")
+                        || part.includes("Highway") || part.includes("highway") || part.includes("Lane") || part.includes("lane") || part.includes("Boulevard") || part.includes("Blvd.")) {
+                        streetAddress += ' ' + part;
+                    } else {
+                        for (let i = 0; i < cities.length; i++) {
+                            if (part.includes(cities[i])) {
+                                city = cities[i];
+                                break;
+                            }
+                        }
+
+                        for (let j = 0; j < provinces.length; j++) {
+                            if (part.includes(provinces[j])) {
+                                province = part;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (part === "Vietnam") {
+                    country = part;
+                }
+            });
+
+            console.log('Place Name:', firstPart);
+            console.log('Street Address:', streetAddress.trim());
+            console.log('Village:', village);
+            console.log('Commune:', commune);
+            console.log('Ward:', ward);
+            console.log('District:', district);
+            console.log('City:', city);
+            console.log('Province:', province);
+            console.log('Postcode:', postcode);
+            console.log('Country:', country);
+            return placeName;
+        } else {
+            console.error(
+                "Failed to fetch place name:",
+                response.status,
+                response.statusText
+            );
+            return "";
+        }
+    } catch (error) {
+        console.error("Failed to fetch place name:", error);
+        return "";
+    }
+}
+
+
+
 
 
 
