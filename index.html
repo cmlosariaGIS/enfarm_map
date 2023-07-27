@@ -1400,6 +1400,98 @@
             border-color: #515151;
             /* specify the border color */
         }
+
+
+
+
+        .measuringAreafloatingTitle {
+            position: absolute;
+            top: 140px;
+            left: 50%;
+            width: fit-content;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            background-color: #ffffffc0;
+            border-radius: 50px;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            display: none;
+        }
+
+
+        .measuringAreafloatingTitle .measuringAreaTitle {
+            font-size: 28px;
+            color: #515151;
+        }
+
+        .measuringLengthfloatingTitle {
+            position: absolute;
+            top: 140px;
+            left: 50%;
+            width: fit-content;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            background-color: #ffffffc0;
+            border-radius: 50px;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            display: none;
+        }
+
+
+        .measuringLengthfloatingTitle .measuringLengthTitle {
+            font-size: 28px;
+            color: #515151;
+        }
+
+        .sketchingFarmfloatingTitle {
+            position: absolute;
+            top: 140px;
+            left: 50%;
+            width: fit-content;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            background-color: #ffffffc0;
+            border-radius: 50px;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            display: none;
+        }
+
+
+        .sketchingFarmfloatingTitle .sketchingFarmTitle {
+            font-size: 28px;
+            color: #515151;
+        }
+
+
+        .addSensorsfloatingTitle {
+            position: absolute;
+            top: 140px;
+            left: 50%;
+            width: fit-content;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            background-color: #ffffffc0;
+            border-radius: 50px;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            display: none;
+        }
+
+
+        .addSensorsfloatingTitle .addSensorsTitle {
+            font-size: 28px;
+            color: #515151;
+        }
     </style>
 </head>
 
@@ -1411,6 +1503,30 @@
             <div class="blur-mask"></div>
         </div>
 
+        <div class="measuringAreafloatingTitle" style="display: flex; align-items: center;">
+            <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">square_foot</i>
+            <span class="measuringAreaTitle" style="display: inline-block;">Measuring Area</span>
+        </div>
+
+        <div class="measuringLengthfloatingTitle" style="display: flex; align-items: center;">
+            <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">straighten</i>
+            <span class="measuringLengthTitle" style="display: inline-block;">Measuring Length</span>
+        </div>
+
+        <div class="sketchingFarmfloatingTitle" style="display: flex; align-items: center;">
+            <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">create</i>
+            <span class="sketchingFarmTitle" style="display: inline-block;">Sketching a Farm Parcel</span>
+        </div>
+
+        <div class="addSensorsfloatingTitle" style="display: flex; align-items: center;">
+            <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">sensors</i>
+            <span class="addSensorsTitle" style="display: inline-block;">Adding enfarm sensors</span>
+        </div>
+
+
+
+
+        <!--Adding Farm and Sensor Success Message-->
         <div id="addSensorSuccess" class="addFloating-container">
             <div id="sensorsuccessAnimationCheck" class="animationCheck"></div>
             <div class="addMessage">cảm biến enfarm / s được thêm vào</div> <!--enfarm sensor/s added-->
@@ -1422,14 +1538,13 @@
         </div>
 
 
-
+        <!--Windy Weather-->
         <button id="windyMapBtn">
             <img class="windyIcon" src="https://i.ibb.co/Hxs1JTC/windy-icon.png" alt="Windy Icon">
             <span class="windyMapBtn-text">Windy</span>
         </button>
 
         <div id="windyMapContainer" style="display: none;"></div>
-
 
 
         <!----------///// SEARCH BUTTON AND FUNCTIONS \\\\\---------->
@@ -3636,7 +3751,11 @@
             let lineTooltips = [];
             let floatingMessageAreaTimeoutId;
 
+
+
             function startMeasurementArea() {
+                // Get a reference to the floating title
+                const measureAreaFloatingTitle = document.querySelector('.measuringAreafloatingTitle');
                 const measureAreaBtn = document.getElementById("measureAreaBtn");
                 const measureAreaBtnIcon = measureAreaBtn.querySelector("i");
                 const isActive = measureAreaBtn.classList.contains("active");
@@ -3682,6 +3801,9 @@
                         const btn = document.getElementById(btnId);
                         if (btn) btn.style.display = "block";
                     });
+
+                    // Hide the floating title
+                    measureAreaFloatingTitle.style.display = "none";
                 } else {
                     // Enable measuring area
                     measureAreaBtn.classList.add("active");
@@ -3731,13 +3853,16 @@
                     // Remove floating message after 05 seconds
                     floatingMessageAreaTimeoutId = setTimeout(function () {
                         map.getViewport().removeChild(floatingMessage);
-                    }, 5000);
+                    }, 3000);
 
                     // Hide the specified buttons
                     buttonsToHide.forEach((btnId) => {
                         const btn = document.getElementById(btnId);
                         if (btn) btn.style.display = "none";
                     });
+
+                    // Show the floating title
+                    measureAreaFloatingTitle.style.display = "flex";
                 }
 
                 // Show the hidden buttons when the drawing is finished
@@ -3748,9 +3873,15 @@
                             const btn = document.getElementById(btnId);
                             if (btn) btn.style.display = "block";
                         });
+
+                        // Hide the floating title
+                        measureAreaFloatingTitle.style.display = "none";
                     });
                 }
             }
+
+
+
 
 
             let drawAreaStartListener;
@@ -3930,7 +4061,6 @@
                 }
             }
 
-
             function getArea(polygon) {
                 const area = polygon.getArea();
                 return area;
@@ -4073,8 +4203,8 @@
             function startMeasurementLength() {
                 const measureLengthBtn = document.getElementById("measureLengthBtn");
                 const measureLengthBtnIcon = measureLengthBtn.querySelector("i");
+                const floatingTitle = document.querySelector(".measuringLengthfloatingTitle");
 
-                // Helper function to toggle visibility of buttons
                 function toggleButtonVisibility(isActive) {
                     const buttonsToHide = [
                         "searchBar",
@@ -4099,38 +4229,33 @@
                 }
 
                 if (measureLengthBtn.classList.contains("active")) {
-                    // Disable measuring length
                     measureLengthBtn.classList.remove("active");
                     map.removeInteraction(drawLength);
                     map.removeOverlay(measureLengthTooltip);
                     measureLengthTooltipElement = null;
                     measureLengthSource.clear();
 
-                    // Change the icon back to the "straighten" icon
                     measureLengthBtnIcon.textContent = "straighten";
-                    // Reset the background color to white
                     measureLengthBtn.style.backgroundColor = "#ffffff";
-                    // Change the icon color to black
                     measureLengthBtnIcon.style.color = "#515151";
 
-                    // Hide the finish button
                     const finishMeasuringLength = document.getElementById("finishMeasuringLength");
                     if (finishMeasuringLength) {
                         finishMeasuringLength.classList.add("hidden");
                     }
 
-                    // Clear timeout and hide the floating message immediately
                     clearTimeout(floatingMessageTimeoutId);
                     const floatingMessage = document.getElementById("floatingMessage");
                     if (floatingMessage && floatingMessage.parentNode) {
                         floatingMessage.parentNode.removeChild(floatingMessage);
                     }
 
-                    // Show the buttons when the function is deactivated
-                    toggleButtonVisibility(false);
+                    if (floatingTitle) {
+                        floatingTitle.style.display = 'none';
+                    }
 
+                    toggleButtonVisibility(false);
                 } else {
-                    // Enable measuring length
                     measureLengthBtn.classList.add("active");
                     measureLengthSource = new ol.source.Vector();
                     map.addLayer(
@@ -4147,32 +4272,31 @@
                     createMeasureLengthTooltip();
                     addLengthInteraction();
 
-                    // Change the icon to the "close" icon
                     measureLengthBtnIcon.textContent = "close";
-                    // Change the background color to dark red
                     measureLengthBtn.style.backgroundColor = "#FF6666";
-                    // Change the icon color to white
                     measureLengthBtnIcon.style.color = "#ffffff";
 
-                    // Add floating message
                     const floatingMessage = document.createElement("div");
                     floatingMessage.className = "floating-message";
-                    floatingMessage.id = "floatingMessage"; // Assign an ID to the floating message element
+                    floatingMessage.id = "floatingMessage";
                     const infoIcon = document.createElement("i");
                     infoIcon.className = "material-icons";
                     infoIcon.textContent = "touch_app";
                     infoIcon.style.fontSize = "100px";
                     floatingMessage.appendChild(infoIcon);
-                    floatingMessage.innerHTML += "  Chạm vào màn hình để bắt đầu đo"; //"Tap the screen to start measuring"
+                    floatingMessage.innerHTML += "  Chạm vào màn hình để bắt đầu đo";
                     map.getViewport().appendChild(floatingMessage);
 
                     setTimeout(function () {
                         if (floatingMessage.parentNode === map.getViewport()) {
                             map.getViewport().removeChild(floatingMessage);
                         }
-                    }, 5000);
+                    }, 3000);
 
-                    // Hide the buttons when the function is activated
+                    if (floatingTitle) {
+                        floatingTitle.style.display = 'flex';
+                    }
+
                     toggleButtonVisibility(true);
                 }
             }
@@ -4418,152 +4542,146 @@
             ///// <----- SKETCH FARM BUTTON FUNCTION -----> \\\\\
 
             async function fetchPlaceName(lon, lat) {
-    const baseUrl = "https://nominatim.openstreetmap.org/reverse";
-    const format = "json";
-    const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18&addressdetails=1`;
+                const baseUrl = "https://nominatim.openstreetmap.org/reverse";
+                const format = "json";
+                const url = `${baseUrl}?lon=${lon}&lat=${lat}&format=${format}&zoom=18&addressdetails=1`;
 
-    let cities = await fetch('https://vn-public-apis.fpo.vn/districts/getAll?limit=-1')
-        .then(response => response.json())
-        .then(data => {
-            let allCities = data.data.data;
-            let citiesWithThanhPho = [];
-            allCities.forEach(city => {
-                let pathWithTypeParts = city.path_with_type.split(', ');
-                if (pathWithTypeParts[1].includes('Thành phố')) {
-                    let cityName = pathWithTypeParts[1].replace('Thành phố ', '');
-                    if (!citiesWithThanhPho.includes(cityName)) {
-                        citiesWithThanhPho.push(cityName);
-                    }
-                }
-                if (city.name_with_type.includes('Thành phố') && !citiesWithThanhPho.includes(city.name)) {
-                    citiesWithThanhPho.push(city.name);
-                }
-            });
+                let cities = await fetch('https://vn-public-apis.fpo.vn/districts/getAll?limit=-1')
+                    .then(response => response.json())
+                    .then(data => {
+                        let allCities = data.data.data;
+                        let citiesWithThanhPho = [];
+                        allCities.forEach(city => {
+                            let pathWithTypeParts = city.path_with_type.split(', ');
+                            if (pathWithTypeParts[1].includes('Thành phố')) {
+                                let cityName = pathWithTypeParts[1].replace('Thành phố ', '');
+                                if (!citiesWithThanhPho.includes(cityName)) {
+                                    citiesWithThanhPho.push(cityName);
+                                }
+                            }
+                            if (city.name_with_type.includes('Thành phố') && !citiesWithThanhPho.includes(city.name)) {
+                                citiesWithThanhPho.push(city.name);
+                            }
+                        });
 
-            console.log('Fetched Cities:', citiesWithThanhPho);
+                        console.log('Fetched Cities:', citiesWithThanhPho);
 
-            return citiesWithThanhPho;
-        })
-        .catch((error) => console.error('Error:', error));
+                        return citiesWithThanhPho;
+                    })
+                    .catch((error) => console.error('Error:', error));
 
-    let provinces = await fetch('https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1')
-        .then(response => response.json())
-        .then(data => {
-            let allProvinces = data.data.data;
-            let provinceNames = allProvinces.map(province => province.name);
+                let provinces = await fetch('https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1')
+                    .then(response => response.json())
+                    .then(data => {
+                        let allProvinces = data.data.data;
+                        let provinceNames = allProvinces.map(province => province.name);
 
-            console.log('Fetched Provinces:', provinceNames);
+                        console.log('Fetched Provinces:', provinceNames);
 
-            return provinceNames;
-        })
-        .catch((error) => console.error('Error:', error));
+                        return provinceNames;
+                    })
+                    .catch((error) => console.error('Error:', error));
 
-    try {
-        const response = await fetch(url);
-        if (response.ok) {
-            const data = await response.json();
-            let placeName = data.display_name || "";
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const data = await response.json();
+                        let placeName = data.display_name || "";
 
-            const parts = placeName.split(', ');
-            let firstPart = parts.shift(); // Get the first part before the comma (place name)
+                        const parts = placeName.split(', ');
+                        let firstPart = parts.shift(); // Get the first part before the comma (place name)
 
-            let streetAddress = '';
-            let village = '';
-            let commune = '';
-            let ward = '';
-            let district = '';
-            let city = '';
-            let province = '';
-            let postcode = '';
-            let country = '';
+                        let streetAddress = '';
+                        let village = '';
+                        let commune = '';
+                        let ward = '';
+                        let district = '';
+                        let city = '';
+                        let province = '';
+                        let postcode = '';
+                        let country = '';
 
-            // Check the first part for keywords
-            if (firstPart.includes("Chợ Rẫy") ||firstPart.includes("Chung cư") || firstPart.includes("Chung Cư") || firstPart.includes("Tòa nhà") || firstPart.includes("Tower") || firstPart.includes("Building") || firstPart.includes("Complex") || firstPart.includes("Hospital") || firstPart.includes("Hotel") || firstPart.includes("Store")) {
-                firstPart = firstPart; // Assign to place name
-            } else if (firstPart.includes("District") || firstPart.includes("Huyện") || firstPart.includes("Quận")) {
-                district = firstPart;
-                firstPart = '';
-            } else if (firstPart.includes("Ward") || firstPart.includes("ward") || firstPart.includes("Phường")) {
-                ward = firstPart;
-                firstPart = '';
-            } else if (firstPart.includes("Xã") || firstPart.includes("Commune")) {
-                commune = firstPart;
-                firstPart = '';
-            } else {
-                streetAddress = firstPart;
-            }
+                        // Check the first part for keywords
+                        if (firstPart.includes("Chợ Rẫy") || firstPart.includes("Chung cư") || firstPart.includes("Chung Cư") || firstPart.includes("Tòa nhà") || firstPart.includes("Tower") || firstPart.includes("Building") || firstPart.includes("Complex") || firstPart.includes("Hospital") || firstPart.includes("Hotel") || firstPart.includes("Store")) {
+                            firstPart = firstPart; // Assign to place name
+                        } else if (firstPart.includes("District") || firstPart.includes("Huyện") || firstPart.includes("Quận")) {
+                            district = firstPart;
+                            firstPart = '';
+                        } else if (firstPart.includes("Ward") || firstPart.includes("ward") || firstPart.includes("Phường")) {
+                            ward = firstPart;
+                            firstPart = '';
+                        } else if (firstPart.includes("Xã") || firstPart.includes("Commune")) {
+                            commune = firstPart;
+                            firstPart = '';
+                        } else {
+                            streetAddress = firstPart;
+                        }
 
-            // Process the rest of the parts
-            parts.forEach((part, index) => {
-                if (part.includes("District") || part.includes("Huyện") || part.includes("Quận")) {
-                    district = part;
-                } else if (part.includes("Ward") || part.includes("ward") || part.includes("Phường")) {
-                    ward = part;
-                } else if (part.includes("Xã") || part.includes("Commune")) {
-                    commune = part;
-                } else if (/\d/.test(part) && !/\d{4,5}/.test(part)) {
-                    streetAddress += ' ' + part;
-                } else if (/\d{4,5}/.test(part)) {
-                    postcode = part;
-                } else if (/\D/.test(part)) {
-                    // Check for street address keywords
-                    if (part.includes("Đường") || part.includes("Quốc lộ") || part.includes("Tỉnh lộ") || part.includes("Hẻm") || part.includes("Ngõ") // Add "Ngõ" here
-                        || part.includes("Phố") || part.includes("Đại lộ") || part.includes("Xóm") || part.includes("Thôn") || part.includes("Road")
-                        || part.includes("Rd.") || part.includes("Avenue") || part.includes("Ave.") || part.includes("Street") || part.includes("street")
-                        || part.includes("Highway") || part.includes("highway") || part.includes("Lane") || part.includes("lane") || part.includes("Boulevard") || part.includes("Blvd.")) {
-                        streetAddress += ' ' + part;
+                        // Process the rest of the parts
+                        parts.forEach((part, index) => {
+                            if (part.includes("District") || part.includes("Huyện") || part.includes("Quận")) {
+                                district = part;
+                            } else if (part.includes("Ward") || part.includes("ward") || part.includes("Phường")) {
+                                ward = part;
+                            } else if (part.includes("Xã") || part.includes("Commune")) {
+                                commune = part;
+                            } else if (/\d/.test(part) && !/\d{4,5}/.test(part)) {
+                                streetAddress += ' ' + part;
+                            } else if (/\d{4,5}/.test(part)) {
+                                postcode = part;
+                            } else if (/\D/.test(part)) {
+                                // Check for street address keywords
+                                if (part.includes("Đường") || part.includes("Quốc lộ") || part.includes("Tỉnh lộ") || part.includes("Hẻm") || part.includes("Ngõ") // Add "Ngõ" here
+                                    || part.includes("Phố") || part.includes("Đại lộ") || part.includes("Xóm") || part.includes("Thôn") || part.includes("Road")
+                                    || part.includes("Rd.") || part.includes("Avenue") || part.includes("Ave.") || part.includes("Street") || part.includes("street")
+                                    || part.includes("Highway") || part.includes("highway") || part.includes("Lane") || part.includes("lane") || part.includes("Boulevard") || part.includes("Blvd.")) {
+                                    streetAddress += ' ' + part;
+                                } else {
+                                    for (let i = 0; i < cities.length; i++) {
+                                        if (part.includes(cities[i])) {
+                                            city = cities[i];
+                                            break;
+                                        }
+                                    }
+
+                                    for (let j = 0; j < provinces.length; j++) {
+                                        if (part.includes(provinces[j])) {
+                                            province = part;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (part === "Vietnam") {
+                                country = part;
+                            }
+                        });
+
+                        console.log('Place Name:', firstPart);
+                        console.log('Street Address:', streetAddress.trim());
+                        console.log('Village:', village);
+                        console.log('Commune:', commune);
+                        console.log('Ward:', ward);
+                        console.log('District:', district);
+                        console.log('City:', city);
+                        console.log('Province:', province);
+                        console.log('Postcode:', postcode);
+                        console.log('Country:', country);
+                        return placeName;
                     } else {
-                        for (let i = 0; i < cities.length; i++) {
-                            if (part.includes(cities[i])) {
-                                city = cities[i];
-                                break;
-                            }
-                        }
-
-                        for (let j = 0; j < provinces.length; j++) {
-                            if (part.includes(provinces[j])) {
-                                province = part;
-                                break;
-                            }
-                        }
+                        console.error(
+                            "Failed to fetch place name:",
+                            response.status,
+                            response.statusText
+                        );
+                        return "";
                     }
+                } catch (error) {
+                    console.error("Failed to fetch place name:", error);
+                    return "";
                 }
-
-                if (part === "Vietnam") {
-                    country = part;
-                }
-            });
-
-            console.log('Place Name:', firstPart);
-            console.log('Street Address:', streetAddress.trim());
-            console.log('Village:', village);
-            console.log('Commune:', commune);
-            console.log('Ward:', ward);
-            console.log('District:', district);
-            console.log('City:', city);
-            console.log('Province:', province);
-            console.log('Postcode:', postcode);
-            console.log('Country:', country);
-            return placeName;
-        } else {
-            console.error(
-                "Failed to fetch place name:",
-                response.status,
-                response.statusText
-            );
-            return "";
-        }
-    } catch (error) {
-        console.error("Failed to fetch place name:", error);
-        return "";
-    }
-}
-
-
-
-
-
-
+            }
 
             let isSketchActive = false;
             let draw;
@@ -4590,6 +4708,9 @@
             }
 
             async function startSketchFarm() {
+                // Get a reference to the sketchingFarmfloatingTitle
+                const sketchingFarmFloatingTitle = document.querySelector('.sketchingFarmfloatingTitle');
+
                 // Hide all buttons
                 for (let button of buttonsToHideSketchFarmActive) {
                     let btn = document.getElementById(button);
@@ -4640,9 +4761,12 @@
 
                             // Show the hidden buttons
                             showButtonsSketchFarmInactive();
+
+                            // Hide sketchingFarmfloatingTitle when sketching is inactive
+                            if (sketchingFarmFloatingTitle) {
+                                sketchingFarmFloatingTitle.style.display = 'none';
+                            }
                         });
-
-
 
                         document.getElementById('deleteNo').addEventListener('click', function () {
                             dialog.classList.add('hidden');
@@ -4655,8 +4779,18 @@
                         sketchFarmBtnIcon.style.color = "#515151";
                         finishDrawingButton.classList.add('hidden');
                         //undoSketchBtn.style.display = "none";
+
+                        // Hide sketchingFarmfloatingTitle when sketching is inactive
+                        if (sketchingFarmFloatingTitle) {
+                            sketchingFarmFloatingTitle.style.display = 'none';
+                        }
                     }
                     return;
+                }
+
+                // Show sketchingFarmfloatingTitle when sketching is active
+                if (sketchingFarmFloatingTitle) {
+                    sketchingFarmFloatingTitle.style.display = 'flex';
                 }
 
                 const floatingMessage = document.createElement("div");
@@ -4688,6 +4822,7 @@
                 });
 
                 map.addLayer(farmVectorLayer);
+
 
                 draw = new ol.interaction.Draw({
                     source: vectorSource,
@@ -5057,8 +5192,15 @@ height: 30px;
 
                     // After drawing is finished and the "finishDrawingButton" is clicked, show the floating container
                     showAddFarmSuccess();
+
+                    // Hide the floating title
+                    const sketchingFarmFloatingTitle = document.querySelector('.sketchingFarmfloatingTitle');
+                    if (sketchingFarmFloatingTitle) {
+                        sketchingFarmFloatingTitle.style.display = "none";
+                    }
                 }
             });
+
 
             function deactivateSketchFarm() {
                 const sketchFarmBtn = document.getElementById("sketchFarmBtn");
@@ -5341,6 +5483,14 @@ height: 30px;
                 let addSensorBtnIcon = document.querySelector(".addSensorBtn i");
                 let addSensorBtn = document.querySelector(".addSensorBtn");
 
+                // Get a reference to the floating title
+                const addSensorsFloatingTitle = document.querySelector('.addSensorsfloatingTitle');
+
+                // Show the floating title
+                if (addSensorsFloatingTitle) {
+                    addSensorsFloatingTitle.style.display = "block";
+                }
+
                 addSensorBtnIcon.textContent = "delete_forever";
                 addSensorBtn.style.backgroundColor = "#FF6666";
                 addSensorBtnIcon.style.color = "white";
@@ -5370,6 +5520,9 @@ height: 30px;
                 });
 
                 map.addLayer(sensorVectorLayer);
+
+
+
 
                 sensorDrawInteraction = new ol.interaction.Draw({
                     source: source,
@@ -5571,6 +5724,12 @@ height: 30px;
 
                         // After processing is finished and the "finishButton" is clicked, show the floating container
                         showAddSensorSuccess();
+
+                        // Hide the floating title
+                        const addSensorsFloatingTitle = document.querySelector('.addSensorsfloatingTitle');
+                        if (addSensorsFloatingTitle) {
+                            addSensorsFloatingTitle.style.display = "none";
+                        }
                     }
                 }
 
@@ -6050,6 +6209,34 @@ height: 30px;
             });
             map.addControl(scale_line);
 
+
+
+
+
+            window.onload = function () {
+                // Get a reference to the floating titles
+                const measureAreaFloatingTitle = document.querySelector('.measuringAreafloatingTitle');
+                const measureLengthFloatingTitle = document.querySelector('.measuringLengthfloatingTitle');
+                const sketchingFarmFloatingTitle = document.querySelector('.sketchingFarmfloatingTitle');
+                const addSensorsFloatingTitle = document.querySelector('.addSensorsfloatingTitle');
+
+                // Hide the floating titles
+                if (measureAreaFloatingTitle) {
+                    measureAreaFloatingTitle.style.display = "none";
+                }
+
+                if (measureLengthFloatingTitle) {
+                    measureLengthFloatingTitle.style.display = "none";
+                }
+
+                if (sketchingFarmFloatingTitle) {
+                    sketchingFarmFloatingTitle.style.display = "none";
+                }
+
+                if (addSensorsFloatingTitle) {
+                    addSensorsFloatingTitle.style.display = "none";
+                }
+            }
 
 
 
