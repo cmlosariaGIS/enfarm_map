@@ -6177,100 +6177,116 @@ height: 30px;
             map.addControl(scale_line);
 
 
-            ////////// <----- BIRDS, CLOUD, RAIN -----> \\\\\\\\\\
+           ////////// <----- BIRDS, CLOUD, RAIN -----> \\\\\\\\\\
 
-            // Birds 
-            var birds = new ol.Overlay.AnimatedCanvas({
-                particule: ol.particule.Bird,
-                density: .01,
-                angle: Math.PI / 3,
-                speed: 2
-            });
-            birds.setVisible(true);
-            map.addOverlay(birds);
+// Birds 
+var birds = new ol.Overlay.AnimatedCanvas({
+    particule: ol.particule.Bird,
+    density: .01,
+    angle: Math.PI / 3,
+    speed: 2
+});
+birds.setVisible(true);
+map.addOverlay(birds);
 
-            // Rain
-            var rain = new ol.Overlay.AnimatedCanvas({
-                particule: ol.particule.Rain,
-                density: 1,
-                angle: 2 * Math.PI / 5,
-                speed: 5
-            });
-            rain.setVisible(false);
-            map.addOverlay(rain);
+// Rain
+var rain = new ol.Overlay.AnimatedCanvas({
+    particule: ol.particule.Rain,
+    density: 1,
+    angle: 2 * Math.PI / 5,
+    speed: 5
+});
+rain.setVisible(false);
+map.addOverlay(rain);
 
-            // Clouds 
-            var cloud = new ol.Overlay.AnimatedCanvas({
-                particule: ol.particule.Cloud,
-                density: 2,
-                angle: Math.PI / 3,
-                speed: 1
-            });
-            map.addOverlay(cloud);
+// Clouds 
+var cloud = new ol.Overlay.AnimatedCanvas({
+    particule: ol.particule.Cloud,
+    density: 2,
+    angle: Math.PI / 3,
+    speed: 1
+});
+map.addOverlay(cloud);
 
-            // Raindrop
-            var raindrop = new ol.Overlay.AnimatedCanvas({
-                particule: ol.particule.RainDrop,
-                density: 1,
-                speed: 5
-            });
-            raindrop.setVisible(true);
-            map.addOverlay(raindrop);
+// Raindrop
+var raindrop = new ol.Overlay.AnimatedCanvas({
+    particule: ol.particule.RainDrop,
+    density: 1,
+    speed: 5
+});
+raindrop.setVisible(false);
+map.addOverlay(raindrop);
 
-            map.getView().on('change:resolution', function () {
-                var zoomLevel = map.getView().getZoom();
+map.getView().on('change:resolution', function () {
+    var zoomLevel = map.getView().getZoom();
 
-                if (zoomLevel <= 15) {
-                    // Show the birds and clouds
-                    birds.setVisible(true);
-                    cloud.setVisible(true);
-                    cloud2.setVisible(true);
-                } else {
-                    // Hide the birds and clouds
-                    birds.setVisible(false);
-                    cloud.setVisible(false);
-                    cloud2.setVisible(false);
-                }
-            });
+    if (zoomLevel <= 15) {
+        // Show the birds and clouds
+        birds.setVisible(true);
+        cloud.setVisible(true);
+    } else {
+        // Hide the birds and clouds
+        birds.setVisible(false);
+        cloud.setVisible(false);
+    }
+});
 
-            ol.particule.RainDrop = function (context, timestamp) {
-                // Update the y position based on timestamp
-                this.y = (timestamp % this.lifetime) / this.lifetime * canvas.height;
+ol.particule.RainDrop = function (context, timestamp) {
+    // Update the y position based on timestamp
+    this.y = (timestamp % this.lifetime) / this.lifetime * canvas.height;
 
-                // Draw the raindrop at the new position
-                context.beginPath();
-                context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-                context.fillStyle = this.color;
-                context.fill();
-            };
+    // Draw the raindrop at the new position
+    context.beginPath();
+    context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    context.fillStyle = this.color;
+    context.fill();
+};
 
-            function checkWeatherAndShowRaindrops(lon, lat) {
-                var zoomLevel = map.getView().getZoom();
-                var url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=2de4099908a27a1c78b19a28dbbf29fc`;
+function checkWeatherAndShowRaindrops(lon, lat) {
+    var zoomLevel = map.getView().getZoom();
+    var url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=2de4099908a27a1c78b19a28dbbf29fc`;
 
-                // Fetch the weather data from the OpenWeatherMap API
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Check if it's raining and the zoom level is 17 or more
-                        if (data.weather[0].main === 'Rain' && zoomLevel >= 17) {
-                            // If it's raining and zoom level is 17 or more, show the raindrop overlay
-                            raindrop.setVisible(true);
-                        } else {
-                            // If it's not raining or the zoom level is less than 17, hide the raindrop overlay
-                            raindrop.setVisible(false);
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
+    // Log to the console when about to fetch weather
+    console.log("Fetching weather data...");
+
+    // Fetch the weather data from the OpenWeatherMap API
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            // Check if it's raining and the zoom level is 17 or more
+            if (data.weather[0].main === 'Rain' && zoomLevel >= 17) {
+                // If it's raining and zoom level is 17 or more, show the raindrop overlay
+                raindrop.setVisible(true);
+            } else {
+                // If it's not raining or the zoom level is less than 17, hide the raindrop overlay
+                raindrop.setVisible(false);
             }
+        })
+        .catch(error => console.error('Error:', error));
+}
 
-            // Call the checkWeatherAndShowRaindrops function whenever the map's center changes
-            map.getView().on('change:center', function () {
-                var center = ol.proj.toLonLat(map.getView().getCenter());
-                checkWeatherAndShowRaindrops(center[0], center[1]);
-            });
+// We will use this to keep track of the scheduled call
+var scheduledCall;
 
-            ////////// <----- END BIRDS, CLOUD, RAIN -----> \\\\\\\\\\
+map.getView().on('change:center', function () {
+    // If there's already a call scheduled, clear it
+    if (scheduledCall) {
+        clearTimeout(scheduledCall);
+    }
+
+    // Schedule a new call for 5 seconds in the future
+    scheduledCall = setTimeout(function () {
+        var center = ol.proj.toLonLat(map.getView().getCenter());
+        checkWeatherAndShowRaindrops(center[0], center[1]);
+
+        // After the call is made, clear the scheduledCall variable
+        scheduledCall = null;
+    }, 5000);  // 5000 milliseconds = 5 seconds
+});
+
+////////// <----- END BIRDS, CLOUD, RAIN -----> \\\\\\\\\\
+
+
 
 
             
@@ -6298,9 +6314,7 @@ height: 30px;
                     addSensorsFloatingTitle.style.display = "none";
                 }
             }
-
-
-
+            
 
             // For Listening to react native app data
             window.addEventListener("message", message => {
