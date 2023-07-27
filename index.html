@@ -3881,9 +3881,6 @@
             }
 
 
-
-
-
             let drawAreaStartListener;
             let drawAreaEndListener;
 
@@ -4351,10 +4348,18 @@
                         }
                     });
                 });
+
                 // Add event listener to the finish button
                 document.getElementById("finishMeasuringLength").addEventListener("click", function () {
                     drawLength.finishDrawing();
+
+                    // Hide the floating title
+                    const measuringLengthFloatingTitle = document.querySelector('.measuringLengthfloatingTitle');
+                    if (measuringLengthFloatingTitle) {
+                        measuringLengthFloatingTitle.style.display = "none";
+                    }
                 });
+
 
                 drawLengthEndListener = drawLength.on("drawend", function (evt) {
                     const feature = evt.feature;
