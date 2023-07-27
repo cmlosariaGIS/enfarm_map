@@ -5632,7 +5632,16 @@ height: 30px;
 
                 // Show the buttons when the function is deactivated
                 showButtons();
+
+                // Get a reference to the floating title
+                const addSensorsfloatingTitle = document.querySelector('.addSensorsfloatingTitle');
+
+                // Hide the floating title
+                if (addSensorsfloatingTitle) {
+                    addSensorsfloatingTitle.style.display = "none";
+                }
             }
+
 
             function undoLastSensor() {
                 if (sensorVectorLayer) {
