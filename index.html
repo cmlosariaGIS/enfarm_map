@@ -6186,7 +6186,7 @@ height: 30px;
                 angle: Math.PI / 3,
                 speed: 2
             });
-            birds.setVisible(false);
+            birds.setVisible(true);
             map.addOverlay(birds);
 
             // Rain
@@ -6242,25 +6242,29 @@ height: 30px;
                 context.fill();
             };
 
+
+
             function checkWeatherAndShowRaindrops(lon, lat) {
                 var zoomLevel = map.getView().getZoom();
-                var url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=2de4099908a27a1c78b19a28dbbf29fc`;
 
-                // Log to the console when about to fetch weather
+                var url = `https://api.tomorrow.io/v4/timelines?location=${lat},${lon}&fields=temperature,weatherCode&timesteps=1h&units=metric&apikey=1rPOUhxYRF3TBu1qYkuhHw2Lw89svKL7`;
+
                 console.log("Fetching weather data...");
 
-                // Fetch the weather data from the OpenWeatherMap API
                 fetch(url)
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
-                        // Check if it's raining and the zoom level is 17 or more
-                        if (data.weather[0].main === 'Rain' && zoomLevel >= 17) {
-                            // If it's raining and zoom level is 17 or more, show the raindrop overlay
+                        console.log("Response data:");
+                        console.log(JSON.stringify(data, null, 2)); // Log the entire response data in a pretty-printed format
+                        if (data.data.timelines[0].intervals[0].values.weatherCode === 4001 && zoomLevel >= 17) {
                             raindrop.setVisible(true);
-                            // Also, display the 'rain' overlay
                             rain.setVisible(true);
                         } else {
-                            // If it's not raining or the zoom level is less than 17, hide the raindrop and rain overlays
                             raindrop.setVisible(false);
                             rain.setVisible(false);
                         }
@@ -6269,7 +6273,31 @@ height: 30px;
             }
 
 
+
+
+            // We will use this to keep track of the scheduled call
+            var scheduledCall;
+
+            map.getView().on('change:center', function () {
+                console.log('Center changed');  // Debugging log
+                // If there's already a call scheduled, clear it
+                if (scheduledCall) {
+                    clearTimeout(scheduledCall);
+                }
+
+                // Schedule a new call for 5 seconds in the future
+                scheduledCall = setTimeout(function () {
+                    console.log('Executing scheduled function');  // Debugging log
+                    var center = ol.proj.toLonLat(map.getView().getCenter());
+                    checkWeatherAndShowRaindrops(center[0], center[1]);
+
+                    // After the call is made, clear the scheduledCall variable
+                    scheduledCall = null;
+                }, 5000);  // 5000 milliseconds = 5 seconds
+            });
+
             ////////// <----- END BIRDS, CLOUD, RAIN -----> \\\\\\\\\\
+
 
 
 
