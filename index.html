@@ -28,6 +28,12 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.10/lottie.min.js"></script>
 
+    <script src="
+    https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.js"></script>
+    <link href="
+    https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.css" rel="stylesheet">
+
+
 
     <style>
         @font-face {
@@ -1063,9 +1069,10 @@
         }
 
 
-        /****** End Tutorial Button Styles *******/
+        /****** END TUTORIAL BUTTON STYLES *******/
 
-        /****** Start Windy Weather Styles *******/
+
+        /****** START WINDY WEATHER STYLES *******/
         :root {
             --iframe-width: 100%;
             --iframe-height: 300px;
@@ -1125,10 +1132,10 @@
             margin-right: 4px;
         }
 
-        /****** End Windy Weather Styles *******/
+        /****** END WINDY WEATHER STYLE *******/
 
 
-        /***** Start Product Tour *****/
+        /***** START MAP PRODUCT TOUR *****/
         /*Next Button*/
         .shepherd-button {
             background: #306b1b;
@@ -1214,7 +1221,21 @@
             padding: 0
         }
 
-        /***** End Map Product Tour *****/
+        .shepherd-target.custom-triangle .shepherd-arrow {
+            border-bottom: 10px solid transparent;
+            border-top: 10px solid transparent;
+            border-right: 10px solid white;
+            border-left: 2px solid #515151;
+            /* add border on the left side of the triangle */
+            border-width: 2px;
+            /* specify the border width */
+            border-style: solid;
+            /* specify the border style */
+            border-color: #515151;
+            /* specify the border color */
+        }
+
+        /***** END MAP PRODUCT TOUR *****/
 
         /***** CLEAR ALL DRAWINGS BUTTON *****/
 
@@ -1344,6 +1365,7 @@
 
 
 
+        /****** START ADDING FARMS AND SENSORS SUCCESS MESSAGE*****/
         /* Floating container styles */
         .addFloating-container {
             position: fixed;
@@ -1388,91 +1410,21 @@
             margin-top: 10px;
         }
 
-
-        .shepherd-target.custom-triangle .shepherd-arrow {
-            border-bottom: 10px solid transparent;
-            border-top: 10px solid transparent;
-            border-right: 10px solid white;
-            border-left: 2px solid #515151;
-            /* add border on the left side of the triangle */
-            border-width: 2px;
-            /* specify the border width */
-            border-style: solid;
-            /* specify the border style */
-            border-color: #515151;
-            /* specify the border color */
-        }
+        /****** END ADDING FARMS AND SENSORS SUCCESS MESSAGE*****/
 
 
 
 
-        .measuringAreafloatingTitle {
-            position: absolute;
-            top: 140px;
-            left: 50%;
-            width: fit-content;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            background-color: #ffffffc0;
-            border-radius: 50px;
-            padding: 10px 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-            display: none;
-        }
 
 
-        .measuringAreafloatingTitle .measuringAreaTitle {
-            font-size: 28px;
-            color: #515151;
-        }
-
-        .measuringLengthfloatingTitle {
-            position: absolute;
-            top: 140px;
-            left: 50%;
-            width: fit-content;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            background-color: #ffffffc0;
-            border-radius: 50px;
-            padding: 10px 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-            display: none;
-        }
 
 
-        .measuringLengthfloatingTitle .measuringLengthTitle {
-            font-size: 28px;
-            color: #515151;
-        }
-
-        .sketchingFarmfloatingTitle {
-            position: absolute;
-            top: 140px;
-            left: 50%;
-            width: fit-content;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            background-color: #ffffffc0;
-            border-radius: 50px;
-            padding: 10px 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-            display: none;
-        }
 
 
-        .sketchingFarmfloatingTitle .sketchingFarmTitle {
-            font-size: 28px;
-            color: #515151;
-        }
-
-
+        /***** START CURRENT ACTIVITY FLOATING TITLE ******/
+        .measuringAreafloatingTitle,
+        .measuringLengthfloatingTitle,
+        .sketchingFarmfloatingTitle,
         .addSensorsfloatingTitle {
             position: absolute;
             top: 140px;
@@ -1489,11 +1441,15 @@
             display: none;
         }
 
-
-        .addSensorsfloatingTitle .addSensorsTitle {
+        .addSensorsfloatingTitle .addSensorsTitle,
+        .sketchingFarmfloatingTitle .sketchingFarmTitle,
+        .measuringLengthfloatingTitle .measuringLengthTitle,
+        .measuringAreafloatingTitle .measuringAreaTitle {
             font-size: 28px;
             color: #515151;
         }
+
+        /***** END CURRENT ACTIVITY FLOATING TITLE ******/
     </style>
 </head>
 
@@ -2767,8 +2723,6 @@
             });
 
 
-
-
             function toggleSearchIcon() {
                 if (searchInput.value.length > 0) {
                     searchIcon.textContent = "cancel";
@@ -3381,8 +3335,6 @@
                     noResultsText.appendChild(historyIcon);
                     noResultsText.appendChild(text);
                     suggestionsContainer.appendChild(noResultsText);
-
-
 
                 }
 
@@ -5105,11 +5057,6 @@ height: 30px;
                     }
 
 
-
-
-
-
-
                     // Store polygon coordinates in local storage
                     const storedPolygon = {
                         centerPoint: {
@@ -6266,6 +6213,83 @@ height: 30px;
                 alert(message.data);
             });
 
+
+
+
+            // Birds 
+            var birds = new ol.Overlay.AnimatedCanvas({
+                particule: ol.particule.Bird,
+                density: .01,
+                angle: Math.PI / 3,
+                speed: 2
+            });
+            birds.setVisible(true);
+            map.addOverlay(birds);
+
+            // Rain
+            var rain = new ol.Overlay.AnimatedCanvas({
+                particule: ol.particule.Rain,
+                density: 1,
+                angle: 2 * Math.PI / 5,
+                speed: 5
+            });
+            rain.setVisible(false);
+            map.addOverlay(rain);
+
+            // Snow
+            var snow = new ol.Overlay.AnimatedCanvas({
+                particule: ol.particule.Snow,
+                density: 5,
+                angle: Math.PI / 2,
+                speed: .5
+            });
+            snow.setVisible(false);
+            map.addOverlay(snow);
+
+            // Clouds 
+            var cloud = new ol.Overlay.AnimatedCanvas({
+                particule: ol.particule.Cloud,
+                density: 2,
+                angle: Math.PI / 3,
+                speed: 2
+            });
+            map.addOverlay(cloud);
+
+            // Clouds 
+            var cloud2 = new ol.Overlay.AnimatedCanvas({
+                particule: ol.particule.Cloud,
+                density: 1.5,
+                angle: Math.PI / 4,
+                speed: 2,
+            });
+            cloud2.setVisible(true);
+            map.addOverlay(cloud2);
+
+            // Raindrop
+            var raindrop = new ol.Overlay.AnimatedCanvas({
+                particule: ol.particule.RainDrop,
+                density: 1,
+                speed: 5
+            });
+            raindrop.setVisible(false);
+            map.addOverlay(raindrop);
+
+
+            map.getView().on('change:resolution', function () {
+                var zoomLevel = map.getView().getZoom();
+
+                if (zoomLevel <= 15) {
+                    // Show the birds and clouds
+                    birds.setVisible(true);
+                    cloud.setVisible(true);
+                    cloud2.setVisible(true);
+                } else {
+                    // Hide the birds and clouds
+                    birds.setVisible(false);
+                    cloud.setVisible(false);
+                    cloud2.setVisible(false);
+                }
+            });
 
         </script>
 </body>
