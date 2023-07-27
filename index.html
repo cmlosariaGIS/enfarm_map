@@ -24,6 +24,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
 
+    <script src="https://kit.fontawesome.com/0eb73cfc5c.js" crossorigin="anonymous"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.10/lottie.min.js"></script>
 
 
@@ -4688,6 +4690,8 @@
                 }
             }
 
+
+
             let isSketchActive = false;
             let draw;
             let polygonExists = false;
@@ -4821,7 +4825,7 @@
                         }),
                         stroke: new ol.style.Stroke({
                             color: "#386c34", // solid color for the stroke
-                            width: 10,
+                            width: 20,
                         }),
                     }),
                 });
@@ -5017,7 +5021,8 @@ height: 30px;
 `;
 
                     const areaInHectares = area > 10000 ? (area / 10000).toFixed(2) + ' ha' : area.toFixed(2) + ' m²';
-                    tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 40px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
+                    //tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 40px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
+                    tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="fa-solid fa-seedling" style="font-size: 40px; margin-right: 10px;"></i>${areaInHectares}</span>`;
 
                     tooltipOverlay = new ol.Overlay({
                         element: tooltipElement,
@@ -5341,9 +5346,10 @@ height: 30px;
     `;
 
                     const area = Number(storedPolygon.area.squareMeters); // Convert area to a number
-                    const areaDisplay = area >= 10000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + 'm²';
+                    const areaDisplay = area >= 10000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + ' m²';
 
-                    tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 40px; margin-right: 10px;">agriculture</i>${areaDisplay}</span>`;
+                    //tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="fas fa-seedling" style="font-size: 3px; margin-right: 10px;"></i>${areaDisplay}</span>`;
+                    tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="fas fa-seedling" style="font-size: 40px; margin-right: 10px;"></i>${areaDisplay}</span>`;
 
                     const tooltipOverlay = new ol.Overlay({
                         element: tooltipElement,
