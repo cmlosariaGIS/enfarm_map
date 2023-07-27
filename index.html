@@ -6251,7 +6251,7 @@ height: 30px;
                 particule: ol.particule.Cloud,
                 density: 2,
                 angle: Math.PI / 3,
-                speed: 2
+                speed: 1
             });
             map.addOverlay(cloud);
 
@@ -6260,10 +6260,10 @@ height: 30px;
                 particule: ol.particule.Cloud,
                 density: 1.5,
                 angle: Math.PI / 4,
-                speed: 2,
+                speed: 1,
             });
-            cloud2.setVisible(true);
-            map.addOverlay(cloud2);
+            cloud2.setVisible(false);
+            //map.addOverlay(cloud2);
 
             // Raindrop
             var raindrop = new ol.Overlay.AnimatedCanvas({
@@ -6271,7 +6271,7 @@ height: 30px;
                 density: 1,
                 speed: 5
             });
-            raindrop.setVisible(false);
+            raindrop.setVisible(true);
             map.addOverlay(raindrop);
 
 
@@ -6290,6 +6290,44 @@ height: 30px;
                     cloud2.setVisible(false);
                 }
             });
+
+
+            ol.particule.RainDrop = function (context, timestamp) {
+                // Update the y position based on timestamp
+                this.y = (timestamp % this.lifetime) / this.lifetime * canvas.height;
+
+                // Draw the raindrop at the new position
+                context.beginPath();
+                context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+                context.fillStyle = this.color;
+                context.fill();
+            };
+
+            function checkWeatherAndShowRaindrops(lon, lat) {
+                var url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=2de4099908a27a1c78b19a28dbbf29fc`;
+
+                // Fetch the weather data from the OpenWeatherMap API
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Check if it's raining
+                        if (data.weather[0].main === 'Rain') {
+                            // If it's raining, show the raindrop overlay
+                            raindrop.setVisible(true);
+                        } else {
+                            // If it's not raining, hide the raindrop overlay
+                            raindrop.setVisible(false);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            // Call the checkWeatherAndShowRaindrops function whenever the map's center changes
+            map.getView().on('change:center', function () {
+                var center = ol.proj.toLonLat(map.getView().getCenter());
+                checkWeatherAndShowRaindrops(center[0], center[1]);
+            });
+
 
         </script>
 </body>
