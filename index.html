@@ -34,6 +34,8 @@
     https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.css" rel="stylesheet">
 
 
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+
 
     <style>
         @font-face {
@@ -1450,6 +1452,44 @@
         }
 
         /***** END CURRENT ACTIVITY FLOATING TITLE ******/
+        .input-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    font-size: 40px; /* Increase the font size to 40 pixels */
+    display: flex; /* Use flexbox to align items */
+    align-items: center; /* Center items vertically */
+    gap: 20px; /* Add a 20px gap between the input field and button */
+}
+
+/* Style the label and input fields */
+.input-container label {
+    margin-right: 10px; /* Add some space between the label and the input field */
+}
+
+.input-container input[type="text"] {
+    padding: 20px; /* Increase the padding to make the input field taller */
+    font-size: 24px; /* Increase the font size of the input field */
+    border: 2px solid #ccc; /* Add a border for a modern look */
+    border-radius: 10px; /* Round the corners of the input field */
+    width: 50px; /* Increase the width of the input field */
+}
+
+/* Style the button */
+.input-container button {
+    padding: 20px 40px; /* Increase the padding to make the button taller and wider */
+    font-size: 28px; /* Increase the font size of the button */
+    font-weight: bold;
+    background-color: #007BFF; /* Add a background color for a modern look */
+    color: #fff; /* Set text color to white */
+    border: none; /* Remove the default button border */
+    border-radius: 20px; /* Round the corners of the button */
+    cursor: pointer; /* Add a pointer cursor on hover */
+}
+
+
+
     </style>
 </head>
 
@@ -1460,6 +1500,14 @@
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
+
+        <!--<div class="input-container">
+            <label for="angle-input">Grid Angle:</label>
+            <input type="text" id="rotate-input">
+            <button id="apply-button">Apply</button>
+        </div>-->
+
+
 
         <div class="measuringAreafloatingTitle" style="display: flex; align-items: center;">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">square_foot</i>
@@ -1582,12 +1630,12 @@
                     </div>
 
                     <div onclick="selectBasemap(0)" style="position: relative;">
-                        <img src="https://i.ibb.co/52KrTf7/bm-terrain.png" alt="Địa Hình" border="0">
+                        <img src="https://i.ibb.co/52KrTf7/bm-terrain.png" alt="Địa hình" border="0">
                         <div class="gebcoinfo-icon" style="position: absolute; top: 20px; left: 20px;">
                             <i class="material-icons"
                                 style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                         </div>
-                        <div class="caption">Địa Hình</div>
+                        <div class="caption">Địa hình</div>
                         <div class="selected-basemap-circle"></div>
                     </div>
 
@@ -1681,7 +1729,7 @@
                 <div class="terrainicon">
                     <i class="material-icons" style="font-size: 60px; color: #515151;">landscape</i>
                 </div>
-                <div class="terraintext">Terrain</div>
+                <div class="terraintext">Địa hình</div>
             </div>
             <div class="terrainLegend">
                 <div class="terraincolorValueContainer">
@@ -1705,8 +1753,8 @@
                 </div>
             </div>
             <div class="textContainer">
-                <div class="low">low</div>
-                <div class="high">high</div>
+                <div class="low">thấp</div>
+                <div class="high">cao</div>
             </div>
         </div>
 
@@ -4769,21 +4817,48 @@
                     map.getViewport().removeChild(floatingMessage);
                 }, 3000);
 
+
+
+
+
+
+
+
+                let extent;
+
+                const gridX = new ol.layer.Vector({
+                    source: new ol.source.Vector(),
+                    style: new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: 'black',
+                            width: 4
+                        })
+                    })
+                });
+
+                const gridY = new ol.layer.Vector({
+                    source: new ol.source.Vector(),
+                    style: new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: 'black',
+                            width: 4
+                        })
+                    })
+                });
+
+                map.addLayer(gridX);
+                map.addLayer(gridY);
+
                 const farmVectorLayer = new ol.layer.Vector({
                     source: vectorSource,
                     style: new ol.style.Style({
                         fill: new ol.style.Fill({
-                            color: "rgba(56, 108, 52, 0.5)", // 80% transparent fill
-                        }),
-                        stroke: new ol.style.Stroke({
-                            color: "#386c34", // solid color for the stroke
-                            width: 20,
-                        }),
-                    }),
+                            color: "rgba(56, 108, 52, 0.5)"
+                        })
+                    })
                 });
 
                 map.addLayer(farmVectorLayer);
-
 
                 draw = new ol.interaction.Draw({
                     source: vectorSource,
@@ -4811,6 +4886,90 @@
 
                 map.addInteraction(draw);
                 isSketchActive = true;
+
+                draw.on('drawend', function (evt) {
+                    extent = evt.feature.getGeometry().getExtent();
+
+                    const numCellsX = Math.ceil((extent[2] - extent[0]) / 3);
+                    const numCellsY = Math.ceil((extent[3] - extent[1]) / 3);
+
+                    const xCoords = [];
+                    for (let x = 0; x < numCellsX; x++) {
+                        xCoords.push([extent[0] + (x * 3), extent[1]]);
+                        xCoords.push([extent[0] + (x * 3), extent[3]]);
+                    }
+
+                    const yCoords = [];
+                    for (let y = 0; y < numCellsY; y++) {
+                        yCoords.push([extent[0], extent[1] + (y * 3)]);
+                        yCoords.push([extent[2], extent[1] + (y * 3)]);
+                    }
+
+                    var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
+                    var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+                    var drawnPolygonGeoJSON = turf.polygon([geometry4326]);
+
+                    addAndTrimFeatures(gridX, xCoords, drawnPolygonGeoJSON);
+                    addAndTrimFeatures(gridY, yCoords, drawnPolygonGeoJSON);
+                });
+
+                function addAndTrimFeatures(layer, coords, polygon) {
+                    const source = layer.getSource();
+
+                    for (let i = 0, len = coords.length; i < len; i += 2) {
+                        const start = coords[i];
+                        const end = coords[i + 1];
+                        const geometry = new ol.geom.LineString([start, end]);
+
+                        var geometry3857 = geometry.getCoordinates();
+                        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+                        var geojson = turf.lineString(geometry4326);
+
+                        var splitted = turf.lineSplit(geojson, polygon);
+
+                        splitted.features.forEach(function (lineSegment) {
+                            if (turf.booleanPointInPolygon(turf.centerOfMass(lineSegment), polygon)) {
+                                var lineSegment3857 = new ol.geom.LineString(lineSegment.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
+
+                                source.addFeature(new ol.Feature(lineSegment3857));
+                            }
+                        });
+                    }
+                }
+
+                function rotateGrid() {
+                    const angle = parseFloat(document.getElementById('rotate-input').value);
+
+                    const gridLayers = [gridX, gridY];
+                    const center = ol.extent.getCenter(extent);
+
+                    gridLayers.forEach(function (layer) {
+                        const source = layer.getSource();
+
+                        source.getFeatures().forEach(function (feature) {
+                            var geometry3857 = feature.getGeometry().getCoordinates();
+                            var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+                            var geojson = turf.lineString(geometry4326);
+
+                            const center4326 = ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326');
+                            const centerTurf = turf.point(center4326);
+
+                            var rotated = turf.transformRotate(geojson, angle, { pivot: centerTurf });
+
+                            var rotated3857 = new ol.geom.LineString(rotated.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
+
+                            feature.setGeometry(rotated3857);
+                        });
+                    });
+                }
+
+                document.getElementById("apply-button").addEventListener("click", rotateGrid);
+
+
+
+
+
+
 
 
                 //Undo Sketch Function
@@ -6177,16 +6336,17 @@ height: 30px;
             map.addControl(scale_line);
 
 
+
             ////////// <----- BIRDS, CLOUD, RAIN -----> \\\\\\\\\\
 
             // Birds 
             var birds = new ol.Overlay.AnimatedCanvas({
                 particule: ol.particule.Bird,
-                density: .01,
-                angle: Math.PI / 3,
+                density: .03,
+                angle: Math.random() * Math.PI * 8,
                 speed: 2
             });
-            birds.setVisible(true);
+            birds.setVisible(false);
             map.addOverlay(birds);
 
             // Rain
@@ -6206,6 +6366,7 @@ height: 30px;
                 angle: Math.PI / 3,
                 speed: 1
             });
+            cloud.setVisible(false);
             map.addOverlay(cloud);
 
             // Raindrop
@@ -6217,19 +6378,35 @@ height: 30px;
             raindrop.setVisible(false);
             map.addOverlay(raindrop);
 
-            map.getView().on('change:resolution', function () {
-                var zoomLevel = map.getView().getZoom();
+            // Keep track of the last zoom level
+            var lastZoomLevel = -1;
 
-                if (zoomLevel <= 15) {
-                    // Show the birds and clouds
+            map.getView().on('change:resolution', function () {
+                var zoomLevel = Math.round(map.getView().getZoom());
+
+                // Check if the zoom level has changed
+                if (zoomLevel !== lastZoomLevel) {
+                    console.log("Current Zoom Level: ", zoomLevel); // Log the current zoom level
+                    lastZoomLevel = zoomLevel;
+                }
+
+                if (zoomLevel >= 16 && zoomLevel <= 18) {
+                    // Show birds
                     birds.setVisible(true);
+                } else {
+                    // Hide birds
+                    birds.setVisible(false);
+                }
+
+                if (zoomLevel >= 8 && zoomLevel <= 15) {
+                    // Show clouds
                     cloud.setVisible(true);
                 } else {
-                    // Hide the birds and clouds
-                    birds.setVisible(false);
+                    // Hide clouds
                     cloud.setVisible(false);
                 }
             });
+
 
             ol.particule.RainDrop = function (context, timestamp) {
                 // Update the y position based on timestamp
@@ -6244,6 +6421,76 @@ height: 30px;
 
 
 
+
+
+
+
+            /*
+             //FETCH WEATHER DATA FROM METEO
+                        // Function to create the floating window and display the current temperature
+                        function showFloatingWindow(content) {
+                            var floatingWindow = document.createElement("div");
+                            floatingWindow.className = "floating-window";
+                            floatingWindow.innerHTML = content;
+            
+                            // Append the floating window to the map container
+                            var mapContainer = document.getElementById("map");
+                            mapContainer.appendChild(floatingWindow);
+                        }
+            
+                        function checkWeatherAndShowRaindrops(lon, lat) {
+                            var zoomLevel = map.getView().getZoom();
+            
+                            var url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,rain`;
+            
+                            console.log("Fetching weather data...");
+            
+                            fetch(url)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP error! status: ${response.status}`);
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log("Response data:");
+                                    console.log(JSON.stringify(data, null, 2));
+            
+                                    // Extract current weather data for the current timestamp "2023-07-27T10:00"
+                                    var currentWeather = data.hourly.time.indexOf("2023-07-27T10:00");
+                                    if (currentWeather !== -1) {
+                                        var currentTemperature = data.hourly.temperature_2m[currentWeather];
+                                        var currentRainfall = data.hourly.rain[currentWeather];
+            
+                                        console.log("Current Temperature:", currentTemperature, "°C");
+                                        console.log("Current Rainfall:", currentRainfall, "mm");
+            
+                                        // Display the current temperature in the floating window
+                                        var currentTemperatureElement = document.getElementById("current-temperature");
+                                        currentTemperatureElement.textContent = currentTemperature;
+            
+                                        // Show/hide rain and raindrop animations based on currentRainfall value
+                                        if (currentRainfall > 0) {
+                                            raindrop.setVisible(true);
+                                            rain.setVisible(true);
+                                        } else {
+                                            raindrop.setVisible(false);
+                                            rain.setVisible(false);
+                                        }
+                                    } else {
+                                        console.log("Weather data for the current timestamp not found.");
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+                        }
+            
+                        // Initial call to check weather and show raindrops
+                        checkWeatherAndShowRaindrops(/* provide lon and lat values here 
+                        );*/
+
+
+
+            //FETCH WEATHER DATA FROM TOMORROW.IO
             function checkWeatherAndShowRaindrops(lon, lat) {
                 var zoomLevel = map.getView().getZoom();
 
@@ -6273,6 +6520,32 @@ height: 30px;
             }
 
 
+            /*//FETCH WEATHER DATA FROM OPEN WEATHER
+            //function checkWeatherAndShowRaindrops(lon, lat) {
+            var zoomLevel = map.getView().getZoom();
+            var url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=2de4099908a27a1c78b19a28dbbf29fc`;
+
+            // Log to the console when about to fetch weather
+            console.log("Fetching weather data...");
+
+            // Fetch the weather data from the OpenWeatherMap API
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // Check if it's raining and the zoom level is 17 or more
+                    if (data.weather[0].main === 'Rain' && zoomLevel >= 17) {
+                        // If it's raining and zoom level is 17 or more, show the raindrop overlay
+                        raindrop.setVisible(true);
+                        // Also, display the 'rain' overlay
+                        rain.setVisible(true);
+                    } else {
+                        // If it's not raining or the zoom level is less than 17, hide the raindrop and rain overlays
+                        raindrop.setVisible(false);
+                        rain.setVisible(false);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }*/
 
 
             // We will use this to keep track of the scheduled call
@@ -6293,12 +6566,10 @@ height: 30px;
 
                     // After the call is made, clear the scheduledCall variable
                     scheduledCall = null;
-                }, 5000);  // 5000 milliseconds = 5 seconds
+                }, 10000);  // 10000 milliseconds = 5 seconds
             });
 
             ////////// <----- END BIRDS, CLOUD, RAIN -----> \\\\\\\\\\
-
-
 
 
 
