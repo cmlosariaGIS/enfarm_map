@@ -4954,55 +4954,69 @@
 
 
 
+
                 draw.on('drawend', function (evt) {
-    const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
+                    const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
 
-    let longestEdgeLength = 0;
-    let longestEdge = [];
+                    let longestEdgeLength = 0;
+                    let longestEdge = [];
 
-    for (let i = 0; i < polygonCoords.length - 1; i++) {
-        const start = polygonCoords[i];
-        const end = polygonCoords[i + 1];
+                    for (let i = 0; i < polygonCoords.length - 1; i++) {
+                        const start = polygonCoords[i];
+                        const end = polygonCoords[i + 1];
 
-        const length = Math.sqrt(Math.pow(end[0] - start[0], 2) + Math.pow(end[1] - start[1], 2));
+                        const length = Math.sqrt(Math.pow(end[0] - start[0], 2) + Math.pow(end[1] - start[1], 2));
 
-        if (length > longestEdgeLength) {
-            longestEdgeLength = length;
-            longestEdge = [start, end];
-        }
-    }
+                        if (length > longestEdgeLength) {
+                            longestEdgeLength = length;
+                            longestEdge = [start, end];
+                        }
+                    }
 
-    const angle = Math.atan2(longestEdge[1][1] - longestEdge[0][1], longestEdge[1][0] - longestEdge[0][0]);
+                    const angle = Math.atan2(longestEdge[1][1] - longestEdge[0][1], longestEdge[1][0] - longestEdge[0][0]);
 
-    extent = evt.feature.getGeometry().getExtent();
+                    extent = evt.feature.getGeometry().getExtent();
 
-    const center = [0.5 * (extent[0] + extent[2]), 0.5 * (extent[1] + extent[3])];
+                    const center = [0.5 * (extent[0] + extent[2]), 0.5 * (extent[1] + extent[3])];
 
-    // Compute diagonal length of the extent to ensure grid covers the entire rotated polygon
-    const extentDiagonalLength = Math.sqrt(Math.pow(extent[2] - extent[0], 2) + Math.pow(extent[3] - extent[1], 2));
+                    // Compute diagonal length of the extent to ensure grid covers the entire rotated polygon
+                    const extentDiagonalLength = Math.sqrt(Math.pow(extent[2] - extent[0], 2) + Math.pow(extent[3] - extent[1], 2));
 
-    const numCells = Math.ceil(extentDiagonalLength / 3) + 2; // add a couple of extra cells for safe measure
+                    const numCells = Math.ceil(extentDiagonalLength / 3) + 2; // add a couple of extra cells for safe measure
 
-    const xCoords = [];
-    for (let x = 0; x <= numCells; x++) {
-        xCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] - extentDiagonalLength], center, angle)); // start from lower left
-        xCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] + extentDiagonalLength], center, angle)); // end at upper right
-    }
+                    const xCoords = [];
+                    for (let x = 0; x <= numCells; x++) {
+                        xCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] - extentDiagonalLength], center, angle)); // start from lower left
+                        xCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] + extentDiagonalLength], center, angle)); // end at upper right
+                    }
 
-    const yCoords = [];
-    for (let y = 0; y <= numCells; y++) {
-        yCoords.push(rotatePoint([extent[0] - extentDiagonalLength, extent[1] + (y * 3)], center, angle)); // start from lower left
-        yCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 3)], center, angle)); // end at upper right
-    }
+                    const yCoords = [];
+                    for (let y = 0; y <= numCells; y++) {
+                        yCoords.push(rotatePoint([extent[0] - extentDiagonalLength, extent[1] + (y * 3)], center, angle)); // start from lower left
+                        yCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 3)], center, angle)); // end at upper right
+                    }
 
-    var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
-    var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
-    var drawnPolygonGeoJSON = turf.polygon([geometry4326]);
+                    var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
+                    var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+                    var drawnPolygonGeoJSON = turf.polygon([geometry4326]);
 
-    addAndTrimFeatures(gridX, xCoords, drawnPolygonGeoJSON);
-    addAndTrimFeatures(gridY, yCoords, drawnPolygonGeoJSON);
-});
+                    addAndTrimFeatures(gridX, xCoords, drawnPolygonGeoJSON);
+                    addAndTrimFeatures(gridY, yCoords, drawnPolygonGeoJSON);
 
+                    // Function to store grid features in local storage
+                    function storeGridFeatures(gridX, gridY) {
+                        const format = new ol.format.GeoJSON();
+
+                        const gridXFeaturesGeoJSON = gridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+                        const gridYFeaturesGeoJSON = gridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+
+                        localStorage.setItem('gridX', JSON.stringify(gridXFeaturesGeoJSON));
+                        localStorage.setItem('gridY', JSON.stringify(gridYFeaturesGeoJSON));
+                    }
+
+                    // Call the function to store grid features
+                    storeGridFeatures(gridX, gridY);
+                });
 
 
 
@@ -5161,11 +5175,6 @@
                 }
 
                 document.getElementById("apply-button").addEventListener("click", rotateGrid);
-
-
-
-
-
 
 
 
@@ -5436,9 +5445,8 @@ height: 30px;
                 startSketchFarm();
             });
 
-
-
             const finishDrawingButton = document.querySelector('.finish-drawing');
+
 
             // Function to show all the hidden buttons
             function showButtonsSkecthFarmInactive() {
@@ -5576,6 +5584,8 @@ height: 30px;
 
             let farmVectorLayer; // Declare the farmVectorLayer variable outside the function
 
+
+
             // Function to retrieve stored polygon from local storage
             function getStoredPolygon() {
                 const storedPolygonString = localStorage.getItem('enfarm_polygon_coordinates');
@@ -5626,6 +5636,7 @@ height: 30px;
                     vectorSource.addFeatures([polygonFeature, farmCenterFeature]); // Add both features to the vector source
 
                     map.addLayer(farmVectorLayer);
+                    console.log('Farm vector layer added:', farmVectorLayer);
 
                     // Retrieve and display the farm's center point
                     const farmCenterLon = storedPolygon.centerPoint.lon;
@@ -5637,27 +5648,26 @@ height: 30px;
 
                     const tooltipElement = document.createElement('div');
                     tooltipElement.style.cssText = `
-      position: absolute;
-      background-color: #ffffff;
-      border: 1px solid #ccc;
-      border-radius: 1000px;
-      padding: 20px 30px;
-      font-family: 'Be Vietnam Pro', Arial, sans-serif;
-      font-size: 30px;
-      font-weight: bold;
-      color: #000000;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 120px;
-      height: 30px;
-    `;
+          position: absolute;
+          background-color: #ffffff;
+          border: 1px solid #ccc;
+          border-radius: 1000px;
+          padding: 20px 30px;
+          font-family: 'Be Vietnam Pro', Arial, sans-serif;
+          font-size: 30px;
+          font-weight: bold;
+          color: #000000;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 120px;
+          height: 30px;
+        `;
 
                     const area = Number(storedPolygon.area.squareMeters); // Convert area to a number
                     const areaDisplay = area >= 10000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + ' m²';
 
-                    //tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="fas fa-seedling" style="font-size: 3px; margin-right: 10px;"></i>${areaDisplay}</span>`;
                     tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="fas fa-seedling" style="font-size: 40px; margin-right: 10px;"></i>${areaDisplay}</span>`;
 
                     const tooltipOverlay = new ol.Overlay({
@@ -5670,11 +5680,73 @@ height: 30px;
 
                     map.addOverlay(tooltipOverlay);
                     tooltipOverlays.push(tooltipOverlay);
+                    console.log('Tooltip overlays:', tooltipOverlays);
                 }
             }
 
+            // Function to retrieve grid features from local storage
+            function retrieveGridFeatures() {
+                const format = new ol.format.GeoJSON();
+
+                const gridXFeaturesGeoJSONString = localStorage.getItem('gridX');
+                const gridYFeaturesGeoJSONString = localStorage.getItem('gridY');
+
+                console.log('Retrieved gridX features:', gridXFeaturesGeoJSONString);
+                console.log('Retrieved gridY features:', gridYFeaturesGeoJSONString);
+
+                if (gridXFeaturesGeoJSONString && gridYFeaturesGeoJSONString) {
+                    const gridXFeaturesGeoJSON = JSON.parse(gridXFeaturesGeoJSONString);
+                    const gridYFeaturesGeoJSON = JSON.parse(gridYFeaturesGeoJSONString);
+
+                    const gridXFeatures = gridXFeaturesGeoJSON.map(feature => format.readFeature(feature));
+                    const gridYFeatures = gridYFeaturesGeoJSON.map(feature => format.readFeature(feature));
+
+                    console.log('Parsed gridX features:', gridXFeatures);
+                    console.log('Parsed gridY features:', gridYFeatures);
+
+                    const gridX = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: gridXFeatures
+                        }),
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: 'black',
+                                width: 4
+                            })
+                        })
+                    });
+
+                    const gridY = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: gridYFeatures
+                        }),
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: 'black',
+                                width: 4
+                            })
+                        })
+                    });
+
+                    map.addLayer(gridX);
+                    map.addLayer(gridY);
+
+                    console.log('GridX layer added:', gridX);
+                    console.log('GridY layer added:', gridY);
+                } else {
+                    console.log('Either gridX or gridY features not found in local storage.');
+                }
+            }
+
+            // Call the function to retrieve and display the stored grid
+            retrieveGridFeatures();
+
             // Call the function to retrieve and display the stored polygon
             getStoredPolygon();
+
+
+
+
 
             // Define and initialize centerPointCoordinates
             let centerPointCoordinates = [];
@@ -6128,6 +6200,7 @@ height: 30px;
 
             ////////// <----- CLEAR ALL DRAWINGS BUTTON FUNCTION (FARM SKETCH AND SENSORS) -----> \\\\\\\\\\
 
+           
             function clearAllDrawings() {
                 // Show the dialog box
                 const dialog = document.getElementById("dialog");
@@ -6217,6 +6290,11 @@ height: 30px;
                     updateClearButtonVisibility();
                 }
             });
+
+
+
+
+
 
             // Load the Lottie animation when the document is ready
             document.addEventListener("DOMContentLoaded", function () {
