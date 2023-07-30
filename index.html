@@ -1452,6 +1452,16 @@
             color: #515151;
         }
 
+        /* Add the following styles to hide the floating titles by default */
+        .measuringAreafloatingTitle,
+        .measuringLengthfloatingTitle,
+        .sketchingFarmfloatingTitle,
+        .addSensorsfloatingTitle {
+            display: none;
+        }
+
+
+
         /***** END CURRENT ACTIVITY FLOATING TITLE ******/
 
 
@@ -1489,7 +1499,7 @@
             font-size: 24px;
             border: 3px solid #898989;
             border-radius: 10px;
-            width: 30px;
+            width: 40px;
             position: relative;
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
         }
@@ -1545,7 +1555,7 @@
                     style="font-size: 30px; margin-right: 5px;">rotate_90_degrees_ccw</i> Xoay lưới trang trại:</label>
             <!--Rotate Farm Grid:-->
             <!--Rotate Farm Grid:-->
-            <input type="text" id="rotate-input" placeholder="   °">
+            <input type="text" id="rotate-input" placeholder="     °">
             <button id="apply-button">Áp dụng</button> <!--Apply-->
             <button id="save-button"><i class="material-icons">done</i></button>
         </div>
@@ -1563,25 +1573,26 @@
 
 
 
-        <div class="measuringAreafloatingTitle" style="display: flex; align-items: center;">
+        <div class="measuringAreafloatingTitle">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">square_foot</i>
-            <span class="measuringAreaTitle" style="display: inline-block;">Measuring Area</span>
+            <span class="measuringAreaTitle">Measuring Area</span>
         </div>
 
-        <div class="measuringLengthfloatingTitle" style="display: flex; align-items: center;">
+        <div class="measuringLengthfloatingTitle">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">straighten</i>
-            <span class="measuringLengthTitle" style="display: inline-block;">Measuring Length</span>
+            <span class="measuringLengthTitle">Measuring Length</span>
         </div>
 
-        <div class="sketchingFarmfloatingTitle" style="display: flex; align-items: center;">
+        <div class="sketchingFarmfloatingTitle">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">create</i>
-            <span class="sketchingFarmTitle" style="display: inline-block;">Sketching a Farm Parcel</span>
+            <span class="sketchingFarmTitle">Sketching a Farm Parcel</span>
         </div>
 
-        <div class="addSensorsfloatingTitle" style="display: flex; align-items: center;">
+        <div class="addSensorsfloatingTitle">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">sensors</i>
-            <span class="addSensorsTitle" style="display: inline-block;">Adding enfarm sensors</span>
+            <span class="addSensorsTitle">Adding enfarm sensors</span>
         </div>
+
 
 
 
@@ -4283,6 +4294,7 @@
                         "addSensorBtn",
                         "tutorialBtn",
                         "windyMapBtn",
+                        "locationBtn",
                         "resetBtn",
                     ];
                     const displayValue = isActive ? "none" : "block";
@@ -4772,7 +4784,7 @@
 
             let buttonsToHideSketchFarmActive = [
                 "searchBar", "searchBtn", "basemapBtn", "measureAreaBtn",
-                "measureLengthBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn",
+                "measureLengthBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn", "resetBtn",
                 "locationBtn"
             ];
 
@@ -6735,29 +6747,13 @@ height: 30px;
 
 
 
+            // Move the JavaScript code inside the window.onload function
             window.onload = function () {
                 // Get a reference to the floating titles
                 const measureAreaFloatingTitle = document.querySelector('.measuringAreafloatingTitle');
                 const measureLengthFloatingTitle = document.querySelector('.measuringLengthfloatingTitle');
                 const sketchingFarmFloatingTitle = document.querySelector('.sketchingFarmfloatingTitle');
                 const addSensorsFloatingTitle = document.querySelector('.addSensorsfloatingTitle');
-
-                // Hide the floating titles
-                if (measureAreaFloatingTitle) {
-                    measureAreaFloatingTitle.style.display = "none";
-                }
-
-                if (measureLengthFloatingTitle) {
-                    measureLengthFloatingTitle.style.display = "none";
-                }
-
-                if (sketchingFarmFloatingTitle) {
-                    sketchingFarmFloatingTitle.style.display = "none";
-                }
-
-                if (addSensorsFloatingTitle) {
-                    addSensorsFloatingTitle.style.display = "none";
-                }
             }
 
 
