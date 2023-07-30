@@ -6200,7 +6200,9 @@ height: 30px;
 
             ////////// <----- CLEAR ALL DRAWINGS BUTTON FUNCTION (FARM SKETCH AND SENSORS) -----> \\\\\\\\\\
 
-           
+            let gridX;
+            let gridY;
+
             function clearAllDrawings() {
                 // Show the dialog box
                 const dialog = document.getElementById("dialog");
@@ -6232,11 +6234,23 @@ height: 30px;
                     // Remove stored sensor points from local storage
                     localStorage.removeItem("enfarm_sensor_coordinates");
 
-                    // Clear sensorVectorLayer and remove all features
-                    if (sensorVectorLayer) {
-                        const source = sensorVectorLayer.getSource();
-                        source.clear();
-                    }
+                    // Remove all vector layers from the map in the first sweep
+                    map.getLayers().forEach(Flayer => {
+                        if (layer instanceof ol.layer.Vector) {
+                            map.removeLayer(layer);
+                        }
+                    });
+
+                    // Remove all vector layers from the map in the second sweep (if any remain)
+                    map.getLayers().forEach(layer => {
+                        if (layer instanceof ol.layer.Vector) {
+                            map.removeLayer(layer);
+                        }
+                    });
+
+                    // Remove stored gridX and gridY points from local storage
+                    localStorage.removeItem("gridX");
+                    localStorage.removeItem("gridY");
 
                     // Hide the dialog box
                     dialog.classList.add("hidden");
@@ -6244,6 +6258,11 @@ height: 30px;
                     // Update the visibility of clearAllDrawingBtn
                     updateClearButtonVisibility();
                 });
+
+
+
+
+
 
                 deleteNoBtn.addEventListener("click", function () {
                     // Hide the dialog box
