@@ -6235,7 +6235,7 @@ height: 30px;
                     localStorage.removeItem("enfarm_sensor_coordinates");
 
                     // Remove all vector layers from the map in the first sweep
-                    map.getLayers().forEach(Flayer => {
+                    map.getLayers().forEach(layer => {
                         if (layer instanceof ol.layer.Vector) {
                             map.removeLayer(layer);
                         }
