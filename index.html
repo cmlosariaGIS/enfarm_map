@@ -1458,7 +1458,7 @@
         .gridAngleInputContainer {
             position: absolute;
             top: 5%;
-            left: 19%;
+            left: 50%;
             z-index: 3;
             font-size: 26px;
             display: flex;
@@ -1473,6 +1473,7 @@
             box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
             transition: top 0.3s ease;
             top: -100%;
+            transform: translateX(-50%);
         }
 
         /* Style the label and input fields */
@@ -1538,10 +1539,10 @@
 
         <div class="gridAngleInputContainer">
             <label for="angle-input" style="display: flex; align-items: center;"><i class="material-icons"
-                    style="font-size: 30px; margin-right: 5px;">rotate_90_degrees_ccw</i> Xoay lưới trang trại:</label>
+                    style="font-size: 30px; margin-right: 5px;">rotate_90_degrees_ccw</i> Xoay lưới trang trại:</label> <!--Rotate Farm Grid:-->
             <!--Rotate Farm Grid:-->
             <input type="text" id="rotate-input" placeholder="   °">
-            <button id="apply-button">Apply</button>
+            <button id="apply-button">Áp dụng</button> <!--Apply-->
             <button id="save-button"><i class="material-icons">done</i></button>
         </div>
 
