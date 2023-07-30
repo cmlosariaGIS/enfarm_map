@@ -1415,15 +1415,6 @@
 
         /****** END ADDING FARMS AND SENSORS SUCCESS MESSAGE*****/
 
-
-
-
-
-
-
-
-
-
         /***** START CURRENT ACTIVITY FLOATING TITLE ******/
         .measuringAreafloatingTitle,
         .measuringLengthfloatingTitle,
@@ -1452,7 +1443,6 @@
             color: #515151;
         }
 
-        /* Add the following styles to hide the floating titles by default */
         .measuringAreafloatingTitle,
         .measuringLengthfloatingTitle,
         .sketchingFarmfloatingTitle,
@@ -1460,15 +1450,13 @@
             display: none;
         }
 
-
-
         /***** END CURRENT ACTIVITY FLOATING TITLE ******/
 
 
         .gridAngleInputContainer {
             position: absolute;
             width: fit-content;
-            top: 5%;
+            top: -100%;
             left: 50%;
             z-index: 3;
             font-size: 26px;
@@ -1482,11 +1470,12 @@
             padding: 20px;
             border-radius: 30px;
             box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-            transition: top 0.3s ease;
-            top: -100%;
+            transition: top 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
             transform: translateX(-50%);
             white-space: nowrap;
         }
+
 
 
         /* Style the label and input fields */
@@ -1527,13 +1516,6 @@
             cursor: pointer;
         }
 
-        /* Add the animation property to .gridAngleInputContainer */
-        .gridAngleInputContainer {
-            /* Other styles... */
-            transition: top 0.3s ease;
-            /* Add the transition for the top property */
-        }
-
         /* Add a class for the animation */
         .gridAngleInputContainer.slide-down {
             top: 78%;
@@ -1553,12 +1535,11 @@
         <div class="gridAngleInputContainer">
             <label for="angle-input" style="display: flex; align-items: center;"><i class="material-icons"
                     style="font-size: 30px; margin-right: 5px;">rotate_90_degrees_ccw</i> Xoay lưới trang trại:</label>
-            <!--Rotate Farm Grid:-->
-            <!--Rotate Farm Grid:-->
             <input type="text" id="rotate-input" placeholder="     °">
-            <button id="apply-button">Áp dụng</button> <!--Apply-->
+            <button id="apply-button">Áp dụng</button>
             <button id="save-button"><i class="material-icons">done</i></button>
         </div>
+
 
 
 
@@ -2552,11 +2533,14 @@
 
             // Function to trigger the slide-down animation
             function slideDownAnimation() {
-                gridAngleInputContainer.style.top = '5%'; // Show the container
+                // Add a delay before starting the animation
+                setTimeout(() => {
+                    gridAngleInputContainer.style.top = '5%'; // Move the container down
+                    gridAngleInputContainer.style.opacity = '1'; // Fade in the container
+                }, 2000); // Delay is 2000 milliseconds, or 2 seconds
             }
 
-            // Trigger the slide-down animation after a delay (e.g., 2 seconds)
-            setTimeout(slideDownAnimation, 2000); // Adjust the delay as needed
+
 
 
 
@@ -5460,6 +5444,8 @@ height: 30px;
                 }
             }
 
+
+
             finishDrawingButton.addEventListener('click', function () {
                 if (draw) {
                     draw.finishDrawing();
@@ -5487,8 +5473,12 @@ height: 30px;
                     if (sketchingFarmFloatingTitle) {
                         sketchingFarmFloatingTitle.style.display = "none";
                     }
+
+                    // Show the gridAngleInputContainer
+                    slideDownAnimation();
                 }
             });
+
 
 
             function deactivateSketchFarm() {
