@@ -37,6 +37,7 @@
     <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
 
 
+
     <style>
         @font-face {
             font-family: 'Be Vietnam Pro', sans-serif;
@@ -1452,44 +1453,78 @@
         }
 
         /***** END CURRENT ACTIVITY FLOATING TITLE ******/
-        .input-container {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 1;
-    font-size: 40px; /* Increase the font size to 40 pixels */
-    display: flex; /* Use flexbox to align items */
-    align-items: center; /* Center items vertically */
-    gap: 20px; /* Add a 20px gap between the input field and button */
-}
-
-/* Style the label and input fields */
-.input-container label {
-    margin-right: 10px; /* Add some space between the label and the input field */
-}
-
-.input-container input[type="text"] {
-    padding: 20px; /* Increase the padding to make the input field taller */
-    font-size: 24px; /* Increase the font size of the input field */
-    border: 2px solid #ccc; /* Add a border for a modern look */
-    border-radius: 10px; /* Round the corners of the input field */
-    width: 50px; /* Increase the width of the input field */
-}
-
-/* Style the button */
-.input-container button {
-    padding: 20px 40px; /* Increase the padding to make the button taller and wider */
-    font-size: 28px; /* Increase the font size of the button */
-    font-weight: bold;
-    background-color: #007BFF; /* Add a background color for a modern look */
-    color: #fff; /* Set text color to white */
-    border: none; /* Remove the default button border */
-    border-radius: 20px; /* Round the corners of the button */
-    cursor: pointer; /* Add a pointer cursor on hover */
-}
 
 
+        .gridAngleInputContainer {
+            position: absolute;
+            top: 5%;
+            left: 19%;
+            z-index: 3;
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-weight: bold;
+            color: #515151;
+            background-color: white;
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+            transition: top 0.3s ease;
+            top: -100%;
+        }
 
+        /* Style the label and input fields */
+        .gridAngleInputContainer label {
+            margin-right: -3px;
+        }
+
+        .gridAngleInputContainer input[type="text"] {
+            padding: 20px;
+            font-size: 24px;
+            border: 3px solid #898989;
+            border-radius: 10px;
+            width: 30px;
+            position: relative;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+        }
+
+        /* Style the Apply button */
+        .gridAngleInputContainer button {
+            padding: 20px 20px;
+            font-size: 25px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+        }
+
+        .gridAngleInputContainer button#save-button {
+            padding: 20px 25px;
+            font-size: 28px;
+            font-weight: bold;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+        }
+
+        /* Add the animation property to .gridAngleInputContainer */
+        .gridAngleInputContainer {
+            /* Other styles... */
+            transition: top 0.3s ease;
+            /* Add the transition for the top property */
+        }
+
+        /* Add a class for the animation */
+        .gridAngleInputContainer.slide-down {
+            top: 78%;
+            /* The final position after the slide-down */
+        }
     </style>
 </head>
 
@@ -1501,11 +1536,25 @@
             <div class="blur-mask"></div>
         </div>
 
-        <div class="input-container">
-            <label for="angle-input">Grid Angle:</label>
-            <input type="text" id="rotate-input">
+        <div class="gridAngleInputContainer">
+            <label for="angle-input" style="display: flex; align-items: center;"><i class="material-icons"
+                    style="font-size: 30px; margin-right: 5px;">rotate_90_degrees_ccw</i> Xoay lưới trang trại:</label>
+            <!--Rotate Farm Grid:-->
+            <input type="text" id="rotate-input" placeholder="   °">
             <button id="apply-button">Apply</button>
+            <button id="save-button"><i class="material-icons">done</i></button>
         </div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2480,6 +2529,21 @@
 
 
         <script>
+
+
+            // Get the gridAngleInputContainer element
+            const gridAngleInputContainer = document.querySelector('.gridAngleInputContainer');
+
+            // Function to trigger the slide-down animation
+            function slideDownAnimation() {
+                gridAngleInputContainer.style.top = '5%'; // Show the container
+            }
+
+            // Trigger the slide-down animation after a delay (e.g., 2 seconds)
+            setTimeout(slideDownAnimation, 2000); // Adjust the delay as needed
+
+
+
 
 
             ////////// <----- START ENFARM MAP PRODUCT TOUR -----> \\\\\\\\\\
@@ -4825,7 +4889,6 @@
 
 
                 let extent;
-
                 const gridX = new ol.layer.Vector({
                     source: new ol.source.Vector(),
                     style: new ol.style.Style({
@@ -4937,30 +5000,123 @@
                     }
                 }
 
+                // Function to remove existing grid layers
+                function removeGridLayers() {
+                    map.removeLayer(gridX);
+                    map.removeLayer(gridY);
+                }
+
+                // Function to add new grid layers based on the rotated angle
+                function addGridLayers(xCoords, yCoords) {
+                    gridX.setSource(new ol.source.Vector());
+                    gridY.setSource(new ol.source.Vector());
+
+                    var xFeatures = xCoords.map(coord => new ol.Feature(new ol.geom.LineString(coord)));
+                    var yFeatures = yCoords.map(coord => new ol.Feature(new ol.geom.LineString(coord)));
+
+                    gridX.getSource().addFeatures(xFeatures);
+                    gridY.getSource().addFeatures(yFeatures);
+
+                    map.addLayer(gridX);
+                    map.addLayer(gridY);
+                }
+
+                // Function to clip grid lines to the extent of the farm polygon
+                function clipGridToFarmPolygon() {
+                    const gridLayers = [gridX, gridY];
+                    const farmLayer = map.getLayers().getArray().find(layer => layer instanceof ol.layer.Vector);
+                    const farmFeatures = farmLayer.getSource().getFeatures();
+                    const farmGeometry = farmFeatures.length > 0 ? farmFeatures[0].getGeometry() : null;
+
+                    if (farmGeometry) {
+                        var farmGeoJSON = turf.polygon([farmGeometry.getCoordinates()[0].map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'))]);
+
+                        gridLayers.forEach(function (layer) {
+                            const source = layer.getSource();
+                            const featuresToKeep = [];
+
+                            source.getFeatures().forEach(function (feature) {
+                                const geometry = feature.getGeometry();
+                                var lineGeoJSON = turf.lineString(geometry.getCoordinates().map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')));
+
+                                var clipped = turf.lineOverlap(lineGeoJSON, farmGeoJSON);
+
+                                if (clipped.features.length > 0) {
+                                    clipped.features.forEach(function (lineSegment) {
+                                        var lineSegment3857 = new ol.geom.LineString(lineSegment.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
+
+                                        featuresToKeep.push(new ol.Feature(lineSegment3857));
+                                    });
+                                }
+                            });
+
+                            source.clear();
+                            source.addFeatures(featuresToKeep);
+                        });
+                    }
+                }
+
+
                 function rotateGrid() {
                     const angle = parseFloat(document.getElementById('rotate-input').value);
-
-                    const gridLayers = [gridX, gridY];
                     const center = ol.extent.getCenter(extent);
 
-                    gridLayers.forEach(function (layer) {
-                        const source = layer.getSource();
+                    const numCellsX = Math.ceil((extent[2] - extent[0]) / 3);
+                    const numCellsY = Math.ceil((extent[3] - extent[1]) / 3);
 
-                        source.getFeatures().forEach(function (feature) {
-                            var geometry3857 = feature.getGeometry().getCoordinates();
-                            var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
-                            var geojson = turf.lineString(geometry4326);
+                    const xCoords = [];
+                    for (let x = 0; x < numCellsX; x++) {
+                        xCoords.push([extent[0] + (x * 3), extent[1]]);
+                        xCoords.push([extent[0] + (x * 3), extent[3]]);
+                    }
 
-                            const center4326 = ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326');
-                            const centerTurf = turf.point(center4326);
+                    const yCoords = [];
+                    for (let y = 0; y < numCellsY; y++) {
+                        yCoords.push([extent[0], extent[1] + (y * 3)]);
+                        yCoords.push([extent[2], extent[1] + (y * 3)]);
+                    }
 
-                            var rotated = turf.transformRotate(geojson, angle, { pivot: centerTurf });
+                    const rotatedXCoords = xCoords.map(coord => rotateCoordinate(coord, center, angle));
+                    const rotatedYCoords = yCoords.map(coord => rotateCoordinate(coord, center, angle));
 
-                            var rotated3857 = new ol.geom.LineString(rotated.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
+                    updateGridFeatures(gridX, rotatedXCoords);
+                    updateGridFeatures(gridY, rotatedYCoords);
 
-                            feature.setGeometry(rotated3857);
-                        });
-                    });
+                    // Update the extent to the new rotated extent
+                    extent = [
+                        Math.min(...rotatedXCoords.flat().map(coord => coord[0])),
+                        Math.min(...rotatedYCoords.flat().map(coord => coord[1])),
+                        Math.max(...rotatedXCoords.flat().map(coord => coord[0])),
+                        Math.max(...rotatedYCoords.flat().map(coord => coord[1]))
+                    ];
+
+                    // Clip the rotated grid lines to the farm polygon extent
+                    clipGridToFarmPolygon();
+                }
+
+                function updateGridFeatures(layer, coords) {
+                    const source = layer.getSource();
+                    source.clear();
+
+                    const lineStrings = [];
+                    for (let i = 0; i < coords.length; i += 2) {
+                        const start = coords[i];
+                        const end = coords[i + 1];
+                        const lineString = new ol.geom.LineString([start, end]);
+                        lineStrings.push(lineString);
+                    }
+
+                    source.addFeatures(lineStrings.map(ls => new ol.Feature(ls)));
+                }
+
+
+
+                function rotateCoordinate(coord, pivot, angle) {
+                    const [x, y] = coord;
+                    const [pivotX, pivotY] = pivot;
+                    const rotatedX = pivotX + (x - pivotX) * Math.cos(angle) - (y - pivotY) * Math.sin(angle);
+                    const rotatedY = pivotY + (x - pivotX) * Math.sin(angle) + (y - pivotY) * Math.cos(angle);
+                    return [rotatedX, rotatedY];
                 }
 
                 document.getElementById("apply-button").addEventListener("click", rotateGrid);
