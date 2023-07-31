@@ -1636,26 +1636,7 @@
         </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        <!--Current Activity Tool -->
         <div class="measuringAreafloatingTitle">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">square_foot</i>
             <span class="measuringAreaTitle">Measuring Area</span>
@@ -1675,9 +1656,6 @@
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">sensors</i>
             <span class="addSensorsTitle">Adding enfarm sensors</span>
         </div>
-
-
-
 
 
         <!--Adding Farm and Sensor Success Message-->
@@ -5008,7 +4986,7 @@
 
 
 
-                //CREATE FARM POLYGON WITH SQUARE GRID
+                /*//CREATE FARM POLYGON WITH SQUARE GRID
                 let extent;
                 const gridX = new ol.layer.Vector({
                     source: new ol.source.Vector(),
@@ -5294,7 +5272,301 @@
                     return [rotatedX, rotatedY];
                 }
 
+                document.getElementById("apply-button").addEventListener("click", rotateGrid);*/
+
+
+                //CREATE FARM POLYGON WITH RECTANGLE GRID
+                let extent;
+                const gridX = new ol.layer.Vector({
+                    source: new ol.source.Vector(),
+                    style: new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: 'black',
+                            width: 4
+                        })
+                    })
+                });
+
+                const gridY = new ol.layer.Vector({
+                    source: new ol.source.Vector(),
+                    style: new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: 'black',
+                            width: 4
+                        })
+                    })
+                });
+
+                map.addLayer(gridX);
+                map.addLayer(gridY);
+
+                const farmVectorLayer = new ol.layer.Vector({
+                    source: vectorSource,
+                    style: new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: "rgba(56, 108, 52, 0.5)"
+                        })
+                    })
+                });
+
+                map.addLayer(farmVectorLayer);
+
+                draw = new ol.interaction.Draw({
+                    source: vectorSource,
+                    type: "Polygon",
+                    style: new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: "rgba(255, 255, 255, 0.1)",
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: "#386c34",
+                            width: 10,
+                        }),
+                        image: new ol.style.Circle({
+                            radius: 18,
+                            fill: new ol.style.Fill({
+                                color: "#386c34",
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: "#ffffff",
+                                width: 9,
+                            }),
+                        }),
+                    }),
+                });
+
+                map.addInteraction(draw);
+                isSketchActive = true;
+
+
+
+
+
+                draw.on('drawend', function (evt) {
+                    const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
+
+                    let longestEdgeLength = 0;
+                    let longestEdge = [];
+
+                    for (let i = 0; i < polygonCoords.length - 1; i++) {
+                        const start = polygonCoords[i];
+                        const end = polygonCoords[i + 1];
+
+                        const length = Math.sqrt(Math.pow(end[0] - start[0], 2) + Math.pow(end[1] - start[1], 2));
+
+                        if (length > longestEdgeLength) {
+                            longestEdgeLength = length;
+                            longestEdge = [start, end];
+                        }
+                    }
+
+                    const angle = Math.atan2(longestEdge[1][1] - longestEdge[0][1], longestEdge[1][0] - longestEdge[0][0]);
+
+                    extent = evt.feature.getGeometry().getExtent();
+
+                    const center = [0.5 * (extent[0] + extent[2]), 0.5 * (extent[1] + extent[3])];
+
+                    // Compute diagonal length of the extent to ensure grid covers the entire rotated polygon
+                    const extentDiagonalLength = Math.sqrt(Math.pow(extent[2] - extent[0], 2) + Math.pow(extent[3] - extent[1], 2));
+
+                    const numCells = Math.ceil(extentDiagonalLength / 3) + 2; // add a couple of extra cells for safe measure
+
+                    const xCoords = [];
+                    for (let x = 0; x <= numCells; x++) {
+                        xCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] - extentDiagonalLength], center, angle)); // start from lower left
+                        xCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] + extentDiagonalLength], center, angle)); // end at upper right
+                    }
+
+                    const yCoords = [];
+                    for (let y = 0; y <= numCells; y++) {
+                        yCoords.push(rotatePoint([extent[0] - extentDiagonalLength, extent[1] + (y * 2.5)], center, angle)); // start from lower left
+                        yCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 2.5)], center, angle)); // end at upper right
+                    }
+
+                    var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
+                    var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+                    var drawnPolygonGeoJSON = turf.polygon([geometry4326]);
+
+                    addAndTrimFeatures(gridX, xCoords, drawnPolygonGeoJSON);
+                    addAndTrimFeatures(gridY, yCoords, drawnPolygonGeoJSON);
+
+                    // Function to store grid features in local storage
+                    function storeGridFeatures(gridX, gridY) {
+                        const format = new ol.format.GeoJSON();
+
+                        const gridXFeaturesGeoJSON = gridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+                        const gridYFeaturesGeoJSON = gridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+
+                        localStorage.setItem('gridX', JSON.stringify(gridXFeaturesGeoJSON));
+                        localStorage.setItem('gridY', JSON.stringify(gridYFeaturesGeoJSON));
+                    }
+
+                    // Call the function to store grid features
+                    storeGridFeatures(gridX, gridY);
+                });
+
+
+
+
+
+                function rotatePoint(point, center, angle) {
+                    const cos = Math.cos(angle);
+                    const sin = Math.sin(angle);
+                    const nx = (cos * (point[0] - center[0])) - (sin * (point[1] - center[1])) + center[0];
+                    const ny = (sin * (point[0] - center[0])) + (cos * (point[1] - center[1])) + center[1];
+                    return [nx, ny];
+                }
+
+
+                function addAndTrimFeatures(layer, coords, polygon) {
+                    const source = layer.getSource();
+
+                    for (let i = 0, len = coords.length; i < len; i += 2) {
+                        const start = coords[i];
+                        const end = coords[i + 1];
+                        const geometry = new ol.geom.LineString([start, end]);
+
+                        var geometry3857 = geometry.getCoordinates();
+                        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+                        var geojson = turf.lineString(geometry4326);
+
+                        var splitted = turf.lineSplit(geojson, polygon);
+
+                        splitted.features.forEach(function (lineSegment) {
+                            if (turf.booleanPointInPolygon(turf.centerOfMass(lineSegment), polygon)) {
+                                var lineSegment3857 = new ol.geom.LineString(lineSegment.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
+
+                                source.addFeature(new ol.Feature(lineSegment3857));
+                            }
+                        });
+                    }
+                }
+
+                // Function to remove existing grid layers
+                function removeGridLayers() {
+                    map.removeLayer(gridX);
+                    map.removeLayer(gridY);
+                }
+
+                // Function to add new grid layers based on the rotated angle
+                function addGridLayers(xCoords, yCoords) {
+                    gridX.setSource(new ol.source.Vector());
+                    gridY.setSource(new ol.source.Vector());
+
+                    var xFeatures = xCoords.map(coord => new ol.Feature(new ol.geom.LineString(coord)));
+                    var yFeatures = yCoords.map(coord => new ol.Feature(new ol.geom.LineString(coord)));
+
+                    gridX.getSource().addFeatures(xFeatures);
+                    gridY.getSource().addFeatures(yFeatures);
+
+                    map.addLayer(gridX);
+                    map.addLayer(gridY);
+                }
+
+                // Function to clip grid lines to the extent of the farm polygon
+                function clipGridToFarmPolygon() {
+                    const gridLayers = [gridX, gridY];
+                    const farmLayer = map.getLayers().getArray().find(layer => layer instanceof ol.layer.Vector);
+                    const farmFeatures = farmLayer.getSource().getFeatures();
+                    const farmGeometry = farmFeatures.length > 0 ? farmFeatures[0].getGeometry() : null;
+
+                    if (farmGeometry) {
+                        var farmGeoJSON = turf.polygon([farmGeometry.getCoordinates()[0].map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'))]);
+
+                        gridLayers.forEach(function (layer) {
+                            const source = layer.getSource();
+                            const featuresToKeep = [];
+
+                            source.getFeatures().forEach(function (feature) {
+                                const geometry = feature.getGeometry();
+                                var lineGeoJSON = turf.lineString(geometry.getCoordinates().map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')));
+
+                                var clipped = turf.lineOverlap(lineGeoJSON, farmGeoJSON);
+
+                                if (clipped.features.length > 0) {
+                                    clipped.features.forEach(function (lineSegment) {
+                                        var lineSegment3857 = new ol.geom.LineString(lineSegment.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
+
+                                        featuresToKeep.push(new ol.Feature(lineSegment3857));
+                                    });
+                                }
+                            });
+
+                            source.clear();
+                            source.addFeatures(featuresToKeep);
+                        });
+                    }
+                }
+
+
+                function rotateGrid() {
+                    const angle = parseFloat(document.getElementById('rotate-input').value);
+                    const center = ol.extent.getCenter(extent);
+
+                    const numCellsX = Math.ceil((extent[2] - extent[0]) / 3);
+                    const numCellsY = Math.ceil((extent[3] - extent[1]) / 3);
+
+                    const xCoords = [];
+                    for (let x = 0; x < numCellsX; x++) {
+                        xCoords.push([extent[0] + (x * 3), extent[1]]);
+                        xCoords.push([extent[0] + (x * 3), extent[3]]);
+                    }
+
+                    const yCoords = [];
+                    for (let y = 0; y < numCellsY; y++) {
+                        yCoords.push([extent[0], extent[1] + (y * 3)]);
+                        yCoords.push([extent[2], extent[1] + (y * 3)]);
+                    }
+
+                    const rotatedXCoords = xCoords.map(coord => rotateCoordinate(coord, center, angle));
+                    const rotatedYCoords = yCoords.map(coord => rotateCoordinate(coord, center, angle));
+
+                    updateGridFeatures(gridX, rotatedXCoords);
+                    updateGridFeatures(gridY, rotatedYCoords);
+
+                    // Update the extent to the new rotated extent
+                    extent = [
+                        Math.min(...rotatedXCoords.flat().map(coord => coord[0])),
+                        Math.min(...rotatedYCoords.flat().map(coord => coord[1])),
+                        Math.max(...rotatedXCoords.flat().map(coord => coord[0])),
+                        Math.max(...rotatedYCoords.flat().map(coord => coord[1]))
+                    ];
+
+                    // Clip the rotated grid lines to the farm polygon extent
+                    clipGridToFarmPolygon();
+                }
+
+                function updateGridFeatures(layer, coords) {
+                    const source = layer.getSource();
+                    source.clear();
+
+                    const lineStrings = [];
+                    for (let i = 0; i < coords.length; i += 2) {
+                        const start = coords[i];
+                        const end = coords[i + 1];
+                        const lineString = new ol.geom.LineString([start, end]);
+                        lineStrings.push(lineString);
+                    }
+
+                    source.addFeatures(lineStrings.map(ls => new ol.Feature(ls)));
+                }
+
+
+
+                function rotateCoordinate(coord, pivot, angle) {
+                    const [x, y] = coord;
+                    const [pivotX, pivotY] = pivot;
+                    const rotatedX = pivotX + (x - pivotX) * Math.cos(angle) - (y - pivotY) * Math.sin(angle);
+                    const rotatedY = pivotY + (x - pivotX) * Math.sin(angle) + (y - pivotY) * Math.cos(angle);
+                    return [rotatedX, rotatedY];
+                }
+
                 document.getElementById("apply-button").addEventListener("click", rotateGrid);
+
+
+
+
+
 
 
 
@@ -5760,7 +6032,6 @@ height: 30px;
                     vectorSource.addFeatures([polygonFeature, farmCenterFeature]); // Add both features to the vector source
 
                     map.addLayer(farmVectorLayer);
-                    console.log('Farm vector layer added:', farmVectorLayer);
 
                     // Retrieve and display the farm's center point
                     const farmCenterLon = storedPolygon.centerPoint.lon;
@@ -5804,7 +6075,6 @@ height: 30px;
 
                     map.addOverlay(tooltipOverlay);
                     tooltipOverlays.push(tooltipOverlay);
-                    console.log('Tooltip overlays:', tooltipOverlays);
                 }
             }
 
@@ -5815,18 +6085,12 @@ height: 30px;
                 const gridXFeaturesGeoJSONString = localStorage.getItem('gridX');
                 const gridYFeaturesGeoJSONString = localStorage.getItem('gridY');
 
-                console.log('Retrieved gridX features:', gridXFeaturesGeoJSONString);
-                console.log('Retrieved gridY features:', gridYFeaturesGeoJSONString);
-
                 if (gridXFeaturesGeoJSONString && gridYFeaturesGeoJSONString) {
                     const gridXFeaturesGeoJSON = JSON.parse(gridXFeaturesGeoJSONString);
                     const gridYFeaturesGeoJSON = JSON.parse(gridYFeaturesGeoJSONString);
 
                     const gridXFeatures = gridXFeaturesGeoJSON.map(feature => format.readFeature(feature));
                     const gridYFeatures = gridYFeaturesGeoJSON.map(feature => format.readFeature(feature));
-
-                    console.log('Parsed gridX features:', gridXFeatures);
-                    console.log('Parsed gridY features:', gridYFeatures);
 
                     const gridX = new ol.layer.Vector({
                         source: new ol.source.Vector({
@@ -5855,8 +6119,6 @@ height: 30px;
                     map.addLayer(gridX);
                     map.addLayer(gridY);
 
-                    console.log('GridX layer added:', gridX);
-                    console.log('GridY layer added:', gridY);
                 } else {
                     console.log('Either gridX or gridY features not found in local storage.');
                 }
@@ -6278,7 +6540,6 @@ height: 30px;
 
             // Load the Lottie animation when the document is ready
             document.addEventListener("DOMContentLoaded", function () {
-                // Replace "LRglt3SwZv.json" with the URL of your Lottie animation JSON file
                 const animationURL = "https://lottie.host/52133049-24ce-4236-a7c1-0f11d4b03ace/LRglt3SwZv.json";
                 const animationContainer = document.getElementById("sensorsuccessAnimationCheck");
                 const animation = lottie.loadAnimation({
@@ -6381,12 +6642,10 @@ height: 30px;
 
                     // Update the visibility of clearAllDrawingBtn
                     updateClearButtonVisibility();
+
+                    // Clear console log
+                    console.clear();
                 });
-
-
-
-
-
 
                 deleteNoBtn.addEventListener("click", function () {
                     // Hide the dialog box
@@ -6433,11 +6692,6 @@ height: 30px;
                     updateClearButtonVisibility();
                 }
             });
-
-
-
-
-
 
             // Load the Lottie animation when the document is ready
             document.addEventListener("DOMContentLoaded", function () {
@@ -6810,7 +7064,6 @@ height: 30px;
 
                 // Check if the zoom level has changed
                 if (zoomLevel !== lastZoomLevel) {
-                    console.log("Current Zoom Level: ", zoomLevel); // Log the current zoom level
                     lastZoomLevel = zoomLevel;
                 }
 
