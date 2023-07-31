@@ -1452,13 +1452,42 @@
 
         /***** END CURRENT ACTIVITY FLOATING TITLE ******/
 
+        /***** Style For Applying Grid Rotation *****/
+
+        .gridPropertiesContainer {
+            position: fixed;
+            top: -100%;
+            /* Start offscreen */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 7;
+            width: 650px;
+            transition: top 0.3s ease, opacity 0.3s ease;
+            /* Add the transition properties */
+        }
+
+        .gridPropertiesContainer.visible {
+            top: 20%;
+            /* Show the container by moving it to the visible area */
+            opacity: 1;
+            /* Fade in the container */
+        }
+
+
+        .gridAngleContainer {
+            position: relative;
+            padding: 0px;
+            background-color: white;
+            border-radius: 10px;
+            z-index: 1;
+        }
 
         .gridAngleInputContainer {
-            position: absolute;
             width: fit-content;
-            top: -100%;
-            left: 50%;
-            z-index: 3;
             font-size: 26px;
             display: flex;
             align-items: center;
@@ -1469,16 +1498,13 @@
             background-color: white;
             padding: 20px;
             border-radius: 30px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
             transition: top 0.3s ease, opacity 0.3s ease;
-            opacity: 0;
-            transform: translateX(-50%);
             white-space: nowrap;
+            margin-top: 0px;
+            /* Adjust the margin to reduce the vertical gap */
+            margin-bottom: -20px;
         }
 
-
-
-        /* Style the label and input fields */
         .gridAngleInputContainer label {
             margin-right: -3px;
         }
@@ -1493,7 +1519,6 @@
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
         }
 
-        /* Style the Apply button */
         .gridAngleInputContainer button {
             padding: 20px 20px;
             font-size: 25px;
@@ -1516,10 +1541,54 @@
             cursor: pointer;
         }
 
-        /* Add a class for the animation */
         .gridAngleInputContainer.slide-down {
             top: 78%;
-            /* The final position after the slide-down */
+        }
+
+        .gridTypeContainer {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 10px;
+            /* Adjust the margin to reduce the vertical gap */
+            margin-bottom: 10px;
+        }
+
+        .gridTypeOptionBtn {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 10px;
+            border: none;
+            padding: 10px 15px;
+            font-size: 25px;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            color: #515151;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin: 0 5px;
+        }
+
+        .gridTypeOptionBtn:hover {
+            background-color: #e6e6e6;
+        }
+
+        .gridTypeOptionBtn.selected {
+            background-color: #4CAF50;
+            border: #4CAF50;
+            color: white;
+        }
+
+        .gridTypeOptionBtn.selected .material-icons-outlined {
+            color: white;
+        }
+
+        .material-icons-outlined {
+            margin-right: 10px;
+            font-family: 'Material Icons Outlined';
+            font-size: 50px;
+            font-weight: normal;
+            color: #515151;
         }
     </style>
 </head>
@@ -1532,13 +1601,50 @@
             <div class="blur-mask"></div>
         </div>
 
-        <div class="gridAngleInputContainer">
-            <label for="angle-input" style="display: flex; align-items: center;"><i class="material-icons"
-                    style="font-size: 30px; margin-right: 5px;">rotate_90_degrees_ccw</i> Xoay lưới trang trại:</label>
-            <input type="text" id="rotate-input" placeholder="     °">
-            <button id="apply-button">Áp dụng</button>
-            <button id="save-button"><i class="material-icons">done</i></button>
+        <div class="gridPropertiesContainer" id="gridPropertiesContainer">
+            <br>
+            <div style="display: flex; align-items: center;">
+                <i class="material-icons" style="font-size: 35px; color: #515151; margin-left: 10px;">grid_on</i>
+                <p
+                    style="font-size: 26px; color: #515151; margin-left: 10px; margin-top: 5px; margin-bottom: 5px; font-weight: bold;">
+                    Chọn mẫu lưới:
+                </p>
+            </div>
+            <div class="gridTypeContainer">
+                <button class="gridTypeOptionBtn">
+                    <span class="material-icons-outlined">crop_square</span>
+                    Vuông 3x3m
+                </button>
+                <button class="gridTypeOptionBtn">
+                    <span class="material-icons-outlined">rectangle</span>
+                    Chữ nhật 3x2.5m
+                </button>
+                <button class="gridTypeOptionBtn">
+                    <span class="material-icons-outlined">change_history</span>
+                    Tam giác 3x3m
+                </button>
+            </div>
+            <div class="gridAngleContainer">
+                <div class="gridAngleInputContainer">
+                    <label for="angle-input" style="display: flex; align-items: center;">
+                        <i class="material-icons"
+                            style="font-size: 35px; color: #515151; margin-right: 5px;">rotate_90_degrees_ccw</i>
+                        Xoay lưới trang trại:
+                    </label>
+                    <input type="text" id="rotate-input" placeholder=" 0°">
+                    <button id="apply-button">Áp dụng</button>
+                    <button id="save-button"><i class="material-icons">done</i></button>
+                </div>
+            </div>
+            <br>
         </div>
+
+
+
+
+
+
+
 
 
 
@@ -2528,19 +2634,38 @@
         <script>
 
 
-            // Get the gridAngleInputContainer element
-            const gridAngleInputContainer = document.querySelector('.gridAngleInputContainer');
-
             // Function to trigger the slide-down animation
             function slideDownAnimation() {
-                // Add a delay before starting the animation
-                setTimeout(() => {
-                    gridAngleInputContainer.style.top = '5%'; // Move the container down
-                    gridAngleInputContainer.style.opacity = '1'; // Fade in the container
-                }, 2000); // Delay is 2000 milliseconds, or 2 seconds
+                // Get the gridPropertiesContainer element
+                const gridPropertiesContainer = document.getElementById('gridPropertiesContainer');
+
+                // Clear any previous transition and opacity styles
+                gridPropertiesContainer.style.transition = '';
+                gridPropertiesContainer.style.opacity = '1';
+
+                // Get the current height of the gridPropertiesContainer
+                const height = gridPropertiesContainer.clientHeight;
+
+                // Force a repaint to make sure the transition is applied
+                void gridPropertiesContainer.offsetHeight;
+
+                // Add the transition styles and set the final position
+                gridPropertiesContainer.style.transition = 'top 0.3s ease, opacity 0.3s ease';
+                gridPropertiesContainer.style.top = '20%'; // Move the container down
+                gridPropertiesContainer.style.opacity = '1'; // Fade in the container
             }
 
 
+
+            // Grid Type Options
+            var buttons = document.querySelectorAll('.gridTypeOptionBtn');
+
+            buttons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    buttons.forEach(btn => btn.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
 
 
 
@@ -4887,8 +5012,7 @@
 
 
 
-
-
+                //CREATE FARM POLYGON WITH SQUARE GRID
                 let extent;
                 const gridX = new ol.layer.Vector({
                     source: new ol.source.Vector(),
@@ -5493,7 +5617,6 @@ height: 30px;
             }
 
 
-
             finishDrawingButton.addEventListener('click', function () {
                 if (draw) {
                     draw.finishDrawing();
@@ -5522,10 +5645,15 @@ height: 30px;
                         sketchingFarmFloatingTitle.style.display = "none";
                     }
 
-                    // Show the gridAngleInputContainer
-                    slideDownAnimation();
+                    // Add a delay of 2 seconds before showing the gridPropertiesContainer
+                    setTimeout(function () {
+                        // Show the gridPropertiesContainer by adding the "visible" class to trigger the slide-down animation
+                        gridPropertiesContainer.classList.add('visible');
+                    }, 2500); // 2000 milliseconds = 2.5 seconds
                 }
             });
+
+
 
 
 
@@ -6690,7 +6818,7 @@ height: 30px;
                     lastZoomLevel = zoomLevel;
                 }
 
-                if (zoomLevel >= 16 && zoomLevel <= 18) {
+                if (zoomLevel >= 15 && zoomLevel <= 17) {
                     // Show birds
                     birds.setVisible(true);
                 } else {
