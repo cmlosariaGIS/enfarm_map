@@ -1452,12 +1452,11 @@
 
         /***** END CURRENT ACTIVITY FLOATING TITLE ******/
 
-        /***** Style For Applying Grid Rotation *****/
+        /***** Style For Applying Grid Type and Rotation *****/
 
         .gridPropertiesContainer {
             position: fixed;
             top: -100%;
-            /* Start offscreen */
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 20px;
@@ -1465,16 +1464,14 @@
             border-radius: 20px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             z-index: 7;
-            width: 650px;
+            width: 700px;
             transition: top 0.3s ease, opacity 0.3s ease;
             /* Add the transition properties */
         }
 
         .gridPropertiesContainer.visible {
-            top: 20%;
-            /* Show the container by moving it to the visible area */
+            top: 25%;
             opacity: 1;
-            /* Fade in the container */
         }
 
 
@@ -1550,8 +1547,7 @@
             justify-content: space-around;
             width: 100%;
             margin-top: 10px;
-            /* Adjust the margin to reduce the vertical gap */
-            margin-bottom: 10px;
+            margin-bottom: 0px;
         }
 
         .gridTypeOptionBtn {
