@@ -1456,17 +1456,17 @@
 
         .gridPropertiesContainer {
             position: fixed;
-            top: -100%;
+            top: -50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -80%);
             padding: 20px;
             background-color: white;
             border-radius: 20px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             z-index: 7;
-            width: 700px;
+            width: 100%;
+            height: fit-content;
             transition: top 0.3s ease, opacity 0.3s ease;
-            /* Add the transition properties */
         }
 
         .gridPropertiesContainer.visible {
@@ -1602,7 +1602,7 @@
             <div style="display: flex; align-items: center;">
                 <i class="material-icons" style="font-size: 35px; color: #515151; margin-left: 10px;">grid_on</i>
                 <p
-                    style="font-size: 26px; color: #515151; margin-left: 10px; margin-top: 5px; margin-bottom: 5px; font-weight: bold;">
+                    style="font-size: 32px; color: #515151; margin-left: 10px; margin-top: 5px; margin-bottom: 5px; font-weight: bold;">
                     Chọn mẫu lưới:
                 </p>
             </div>
@@ -1625,7 +1625,10 @@
                     <label for="angle-input" style="display: flex; align-items: center;">
                         <i class="material-icons"
                             style="font-size: 35px; color: #515151; margin-right: 5px;">rotate_90_degrees_ccw</i>
-                        Xoay lưới trang trại:
+                        <p
+                        style="font-size: 32px; color: #515151; margin-left: 10px; margin-top: 5px; margin-bottom: 5px; font-weight: bold;">
+                            Xoay lưới trang trại:
+                        </p>
                     </label>
                     <input type="text" id="rotate-input" placeholder=" 0°">
                     <button id="apply-button">Áp dụng</button>
@@ -5565,6 +5568,80 @@
 
 
 
+function splitIntersection(gridX, gridY) {
+    const format = new ol.format.GeoJSON();
+
+    const featuresGridX = gridX.getSource().getFeatures();
+    const featuresGridY = gridY.getSource().getFeatures();
+
+    featuresGridX.forEach(featureX => {
+        const geometryX = featureX.getGeometry();
+        var geojsonX = turf.lineString(geometryX.getCoordinates().map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')));
+
+        featuresGridY.forEach(featureY => {
+            const geometryY = featureY.getGeometry();
+            var geojsonY = turf.lineString(geometryY.getCoordinates().map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')));
+
+            // Get the intersection points between two lines
+            var intersects = turf.lineIntersect(geojsonX, geojsonY);
+
+            // Iterate over each intersection point and split the line
+            intersects.features.forEach(intersect => {
+                var splittedX = turf.lineSplit(geojsonX, intersect);
+                var splittedY = turf.lineSplit(geojsonY, intersect);
+
+                // Clear the original lines from the source
+                gridX.getSource().removeFeature(featureX);
+                gridY.getSource().removeFeature(featureY);
+
+                // Add the new split features to the source
+                splittedX.features.forEach(feature => {
+                    var coordinates = feature.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857'));
+                    var lineSegment = new ol.geom.LineString(coordinates);
+                    gridX.getSource().addFeature(new ol.Feature(lineSegment));
+                });
+
+                splittedY.features.forEach(feature => {
+                    var coordinates = feature.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857'));
+                    var lineSegment = new ol.geom.LineString(coordinates);
+                    gridY.getSource().addFeature(new ol.Feature(lineSegment));
+                });
+            });
+        });
+    });
+}
+
+function logIntersections(gridX, gridY) {
+    let count = 0;
+
+    // get features from each layer
+    const gridXFeatures = gridX.getSource().getFeatures();
+    const gridYFeatures = gridY.getSource().getFeatures();
+
+    // transform each line in gridX and gridY to GeoJSON LineString
+    gridXFeatures.forEach((featureX) => {
+        var geometryX3857 = featureX.getGeometry().getCoordinates();
+        var geometryX4326 = geometryX3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+        var lineXGeoJSON = turf.lineString(geometryX4326);
+
+        gridYFeatures.forEach((featureY) => {
+            var geometryY3857 = featureY.getGeometry().getCoordinates();
+            var geometryY4326 = geometryY3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+            var lineYGeoJSON = turf.lineString(geometryY4326);
+
+            // check if lineX intersects with lineY
+            var intersection = turf.lineIntersect(lineXGeoJSON, lineYGeoJSON);
+            if (intersection.features.length > 0) {
+                count += intersection.features.length;
+            }
+        });
+    });
+
+    console.log(`Number of intersections: ${count}`);
+}
+
+// Call the function
+logIntersections(gridX, gridY);
 
 
 
@@ -6129,7 +6206,6 @@ height: 30px;
 
             // Call the function to retrieve and display the stored polygon
             getStoredPolygon();
-
 
 
 
