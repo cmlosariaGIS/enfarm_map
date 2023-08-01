@@ -35,6 +35,10 @@
 
 
     <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+
+
+
 
 
 
@@ -1638,8 +1642,6 @@
         
         
         
-
-
         <!--Current Activity Tool -->
         <div class="measuringAreafloatingTitle">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">square_foot</i>
@@ -5299,7 +5301,7 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
                 document.getElementById("apply-button").addEventListener("click", rotateGrid);*/
 
 
-                //CREATE FARM POLYGON WITH RECTANGLE GRID
+               /* //CREATE FARM POLYGON WITH RECTANGLE GRID
                 let extent;
                 const gridX = new ol.layer.Vector({
                     source: new ol.source.Vector(),
@@ -5662,7 +5664,166 @@ function logIntersections(gridX, gridY) {
 }
 
 // Call the function
-logIntersections(gridX, gridY);
+logIntersections(gridX, gridY);*/
+
+
+
+
+// CREATE TRAINGULAR GRIDS
+/* CREATE FARM POLYGON WITH TRIANGULAR GRID */
+
+let extent;
+
+const grid = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'black',
+            width: 4
+        })
+    })
+});
+
+map.addLayer(grid);
+
+const farmVectorLayer = new ol.layer.Vector({
+    source: vectorSource,
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: "rgba(56, 108, 52, 0.5)"
+        })
+    })
+});
+
+map.addLayer(farmVectorLayer);
+
+draw = new ol.interaction.Draw({
+    source: vectorSource,
+    type: "Polygon",
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: "rgba(255, 255, 255, 0.1)",
+        }),
+        stroke: new ol.style.Stroke({
+            color: "#386c34",
+            width: 10,
+        }),
+        image: new ol.style.Circle({
+            radius: 18,
+            fill: new ol.style.Fill({
+                color: "#386c34",
+            }),
+            stroke: new ol.style.Stroke({
+                color: "#ffffff",
+                width: 9,
+            }),
+        }),
+    }),
+});
+
+map.addInteraction(draw);
+isSketchActive = true;
+
+draw.on('drawend', function (evt) {
+    const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
+    extent = evt.feature.getGeometry().getExtent();
+    const center = ol.extent.getCenter(extent);
+    const halfHeight = Math.sqrt(3) / 2 * 3;
+
+    // grid
+    const gridCoords = [];
+    const rowCount = Math.ceil((extent[3] - extent[1]) / halfHeight);
+    const colCount = Math.ceil((extent[2] - extent[0]) / 3);
+
+    for (let row = 0; row < rowCount; row++) {
+    for (let col = 0; col < colCount; col++) {
+        const x = extent[0] + col * 3;
+        const y = extent[1] + row * halfHeight;
+        if (row % 2 === 0) {
+            // ▽
+            gridCoords.push([
+                [x, y],
+                [x + 1.5, y + halfHeight],
+                [x + 3, y],
+                [x, y],
+            ]);
+            gridCoords.push([
+                [x + 1.5, y + halfHeight],
+                [x + 3, y],
+                [x + 4.5, y + halfHeight],
+                [x + 1.5, y + halfHeight],
+            ]);
+        } else {
+            // △
+            gridCoords.push([
+                [x + 1.5, y],
+                [x + 3, y + halfHeight],
+                [x, y + halfHeight],
+                [x + 1.5, y],
+            ]);
+            gridCoords.push([
+                [x + 3, y + halfHeight],
+                [x + 4.5, y],
+                [x + 6, y + halfHeight],
+                [x + 3, y + halfHeight],
+            ]);
+        }
+    }
+}
+
+
+
+    var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
+    var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+    var drawnPolygonGeoJSON = turf.polygon([geometry4326]);
+
+    addAndTrimFeatures(grid, gridCoords, drawnPolygonGeoJSON);
+
+    function storeGridFeatures(grid) {
+        const format = new ol.format.GeoJSON();
+
+        const gridFeaturesGeoJSON = grid.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+        localStorage.setItem('grid', JSON.stringify(gridFeaturesGeoJSON));
+    }
+
+    storeGridFeatures(grid);
+});
+
+function addAndTrimFeatures(layer, coords, polygon) {
+    const source = layer.getSource();
+
+    coords.forEach(triangleCoords => {
+        const geometry = new ol.geom.Polygon([triangleCoords]);
+
+        var geometry3857 = geometry.getCoordinates()[0];
+        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+        var geojson = turf.polygon([geometry4326]);
+
+        var intersected = turf.intersect(geojson, polygon);
+
+        if (intersected) {
+            var intersected3857 = new ol.geom.Polygon(intersected.geometry.coordinates.map(ring => ring.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857'))));
+
+            source.addFeature(new ol.Feature(intersected3857));
+        }
+    });
+}
+
+function removeGridLayer() {
+    map.removeLayer(grid);
+}
+
+// the new function to add grid layer
+function addGridLayer(coords) {
+    grid.setSource(new ol.source.Vector());
+
+    var features = coords.map(coord => new ol.Feature(new ol.geom.Polygon(coord)));
+
+    grid.getSource().addFeatures(features);
+
+    map.addLayer(grid);
+}
+
 
 
 
