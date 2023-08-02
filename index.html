@@ -1547,52 +1547,57 @@
         }
 
         .gridTypeContainer {
-    display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin-top: 10px;
-    margin-bottom: 0px;
-}
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 0px;
+        }
 
-.gridTypeOptionBtn1, .gridTypeOptionBtn2, .gridTypeOptionBtn3 {
-    display: flex;
-    align-items: center;
-    background-color: #ffffff;
-    border-radius: 10px;
-    border: none;
-    padding: 10px 25px;
-    font-size: 25px;
-    font-family: 'Be Vietnam Pro', Arial, sans-serif;
-    color: #515151;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin: 0 5px;
-}
+        .gridTypeOptionBtn1,
+        .gridTypeOptionBtn2,
+        .gridTypeOptionBtn3 {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border-radius: 10px;
+            border: none;
+            padding: 10px 25px;
+            font-size: 25px;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            color: #515151;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin: 0 5px;
+        }
 
-.gridTypeOptionBtn1:hover, .gridTypeOptionBtn2:hover, .gridTypeOptionBtn3:hover {
-    background-color: #e6e6e6;
-}
+        .gridTypeOptionBtn1:hover,
+        .gridTypeOptionBtn2:hover,
+        .gridTypeOptionBtn3:hover {
+            background-color: #e6e6e6;
+        }
 
-.gridTypeOptionBtn1.selected, .gridTypeOptionBtn2.selected, .gridTypeOptionBtn3.selected {
-    background-color: #4CAF50;
-    border: #4CAF50;
-    color: white;
-}
+        .gridTypeOptionBtn1.selected,
+        .gridTypeOptionBtn2.selected,
+        .gridTypeOptionBtn3.selected {
+            background-color: #4CAF50;
+            border: #4CAF50;
+            color: white;
+        }
 
-.gridTypeOptionBtn1.selected .material-icons-outlined,
-.gridTypeOptionBtn2.selected .material-icons-outlined,
-.gridTypeOptionBtn3.selected .material-icons-outlined {
-    color: white;
-}
+        .gridTypeOptionBtn1.selected .material-icons-outlined,
+        .gridTypeOptionBtn2.selected .material-icons-outlined,
+        .gridTypeOptionBtn3.selected .material-icons-outlined {
+            color: white;
+        }
 
-.material-icons-outlined {
-    margin-right: 10px;
-    font-family: 'Material Icons Outlined';
-    font-size: 50px;
-    font-weight: normal;
-    color: #515151;
-}
-
+        .material-icons-outlined {
+            margin-right: 10px;
+            font-family: 'Material Icons Outlined';
+            font-size: 50px;
+            font-weight: normal;
+            color: #515151;
+        }
     </style>
 </head>
 
@@ -1649,7 +1654,7 @@
             </div>
             <br>
         </div>
-        
+
 
 
 
@@ -2626,56 +2631,56 @@
 
 
             // Function to trigger the slide-down animation
-function slideDownAnimation() {
-    // Get the gridPropertiesContainer element
-    const gridPropertiesContainer = document.getElementById('gridPropertiesContainer');
+            function slideDownAnimation() {
+                // Get the gridPropertiesContainer element
+                const gridPropertiesContainer = document.getElementById('gridPropertiesContainer');
 
-    // Clear any previous transition and opacity styles
-    gridPropertiesContainer.style.transition = '';
-    gridPropertiesContainer.style.opacity = '1';
+                // Clear any previous transition and opacity styles
+                gridPropertiesContainer.style.transition = '';
+                gridPropertiesContainer.style.opacity = '1';
 
-    // Get the current height of the gridPropertiesContainer
-    const height = gridPropertiesContainer.clientHeight;
+                // Get the current height of the gridPropertiesContainer
+                const height = gridPropertiesContainer.clientHeight;
 
-    // Force a repaint to make sure the transition is applied
-    void gridPropertiesContainer.offsetHeight;
+                // Force a repaint to make sure the transition is applied
+                void gridPropertiesContainer.offsetHeight;
 
-    // Add the transition styles and set the final position
-    gridPropertiesContainer.style.transition = 'top 0.3s ease, opacity 0.3s ease';
-    gridPropertiesContainer.style.top = '20%'; // Move the container down
-    gridPropertiesContainer.style.opacity = '1'; // Fade in the container
-}
+                // Add the transition styles and set the final position
+                gridPropertiesContainer.style.transition = 'top 0.3s ease, opacity 0.3s ease';
+                gridPropertiesContainer.style.top = '20%'; // Move the container down
+                gridPropertiesContainer.style.opacity = '1'; // Fade in the container
+            }
 
-// Grid Type Options
-var buttons1 = document.querySelectorAll('.gridTypeOptionBtn1');
-var buttons2 = document.querySelectorAll('.gridTypeOptionBtn2');
-var buttons3 = document.querySelectorAll('.gridTypeOptionBtn3');
+            // Grid Type Options
+            var buttons1 = document.querySelectorAll('.gridTypeOptionBtn1');
+            var buttons2 = document.querySelectorAll('.gridTypeOptionBtn2');
+            var buttons3 = document.querySelectorAll('.gridTypeOptionBtn3');
 
-[...buttons1, ...buttons2, ...buttons3].forEach(function (button) {
-    button.addEventListener('click', function () {
-        [...buttons1, ...buttons2, ...buttons3].forEach(btn => btn.classList.remove('selected'));
-        this.classList.add('selected');
-    });
-});
+            [...buttons1, ...buttons2, ...buttons3].forEach(function (button) {
+                button.addEventListener('click', function () {
+                    [...buttons1, ...buttons2, ...buttons3].forEach(btn => btn.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
 
-// Function to hide gridPropertiesContainer by sliding up
-function hideGridPropertiesContainer() {
-    // Get the gridPropertiesContainer element
-    const gridPropertiesContainer = document.getElementById('gridPropertiesContainer');
+            // Function to hide gridPropertiesContainer by sliding up
+            function hideGridPropertiesContainer() {
+                // Get the gridPropertiesContainer element
+                const gridPropertiesContainer = document.getElementById('gridPropertiesContainer');
 
-    // Set transition properties for sliding up and fading out
-    gridPropertiesContainer.style.transition = 'top 0.3s ease, opacity 0.3s ease';
-    gridPropertiesContainer.style.top = '-100%'; // Slide the container up
-    gridPropertiesContainer.style.opacity = '0'; // Fade out the container
+                // Set transition properties for sliding up and fading out
+                gridPropertiesContainer.style.transition = 'top 0.3s ease, opacity 0.3s ease';
+                gridPropertiesContainer.style.top = '-100%'; // Slide the container up
+                gridPropertiesContainer.style.opacity = '0'; // Fade out the container
 
-    // After transition ends, hide the container
-    setTimeout(() => {
-        gridPropertiesContainer.style.display = 'none';
-    }, 300); // Delay should be equal to transition duration
-}
+                // After transition ends, hide the container
+                setTimeout(() => {
+                    gridPropertiesContainer.style.display = 'none';
+                }, 300); // Delay should be equal to transition duration
+            }
 
-// Attach event listener to the close button
-document.querySelector('.closeGridPropertiesContainer').addEventListener('click', hideGridPropertiesContainer);
+            // Attach event listener to the close button
+            document.querySelector('.closeGridPropertiesContainer').addEventListener('click', hideGridPropertiesContainer);
 
 
 
@@ -5865,7 +5870,324 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
 
 
 
-                                /*
+                /*
+///CREATE FARM POLYGON WITH SQUARE and RECTANGULAR GRID
+let extent;
+const squareGridX = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'black',
+            width: 4
+        })
+    })
+});
+
+const squareGridY = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'black',
+            width: 4
+        })
+    })
+});
+
+const rectangularGridX = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'red',
+            width: 4
+        })
+    })
+});
+
+const rectangularGridY = new ol.layer.Vector({
+    source: new ol.source.Vector(),
+    style: new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'red',
+            width: 4
+        })
+    })
+});
+
+map.addLayer(squareGridX);
+map.addLayer(squareGridY);
+map.addLayer(rectangularGridX);
+map.addLayer(rectangularGridY);
+
+const farmVectorLayer = new ol.layer.Vector({
+    source: vectorSource,
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: "rgba(56, 108, 52, 0.5)"
+        })
+    })
+});
+
+map.addLayer(farmVectorLayer);
+
+draw = new ol.interaction.Draw({
+    source: vectorSource,
+    type: "Polygon",
+    style: new ol.style.Style({
+        fill: new ol.style.Fill({
+            color: "rgba(255, 255, 255, 0.1)",
+        }),
+        stroke: new ol.style.Stroke({
+            color: "#386c34",
+            width: 10,
+        }),
+        image: new ol.style.Circle({
+            radius: 18,
+            fill: new ol.style.Fill({
+                color: "#386c34",
+            }),
+            stroke: new ol.style.Stroke({
+                color: "#ffffff",
+                width: 9,
+            }),
+        }),
+    }),
+});
+
+map.addInteraction(draw);
+isSketchActive = true;
+
+draw.on('drawend', function (evt) {
+    const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
+
+    let longestEdgeLength = 0;
+    let longestEdge = [];
+
+    for (let i = 0; i < polygonCoords.length - 1; i++) {
+        const start = polygonCoords[i];
+        const end = polygonCoords[i + 1];
+
+        const length = Math.sqrt(Math.pow(end[0] - start[0], 2) + Math.pow(end[1] - start[1], 2));
+
+        if (length > longestEdgeLength) {
+            longestEdgeLength = length;
+            longestEdge = [start, end];
+        }
+    }
+
+    const angle = Math.atan2(longestEdge[1][1] - longestEdge[0][1], longestEdge[1][0] - longestEdge[0][0]);
+
+    extent = evt.feature.getGeometry().getExtent();
+
+    const center = [0.5 * (extent[0] + extent[2]), 0.5 * (extent[1] + extent[3])];
+
+    const extentDiagonalLength = Math.sqrt(Math.pow(extent[2] - extent[0], 2) + Math.pow(extent[3] - extent[1], 2));
+
+    const numCells = Math.ceil(extentDiagonalLength / 3) + 2;
+
+    const squareXCoords = [];
+    for (let x = 0; x <= numCells; x++) {
+        squareXCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] - extentDiagonalLength], center, angle));
+        squareXCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] + extentDiagonalLength], center, angle));
+    }
+
+    const squareYCoords = [];
+    for (let y = 0; y <= numCells; y++) {
+        squareYCoords.push(rotatePoint([extent[0] - extentDiagonalLength, extent[1] + (y * 3)], center, angle));
+        squareYCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 3)], center, angle));
+    }
+
+    const rectangularXCoords = [];
+    for (let x = 0; x <= numCells; x++) {
+        rectangularXCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] - extentDiagonalLength - 2.5], center, angle));
+        rectangularXCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] + extentDiagonalLength - 2.5], center, angle));
+    }
+
+    const rectangularYCoords = [];
+    for (let y = 0; y <= numCells; y++) {
+        rectangularYCoords.push(rotatePoint([extent[0] - extentDiagonalLength, extent[1] + (y * 2.5) - 2.5], center, angle));
+        rectangularYCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 2.5) - 2.5], center, angle));
+    }
+
+    var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
+    var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+    var drawnPolygonGeoJSON = turf.polygon([geometry4326]);
+
+    addAndTrimFeatures(squareGridX, squareXCoords, drawnPolygonGeoJSON);
+    addAndTrimFeatures(squareGridY, squareYCoords, drawnPolygonGeoJSON);
+    addAndTrimFeatures(rectangularGridX, rectangularXCoords, drawnPolygonGeoJSON);
+    addAndTrimFeatures(rectangularGridY, rectangularYCoords, drawnPolygonGeoJSON);
+
+    function storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY) {
+        const format = new ol.format.GeoJSON();
+
+        const squareGridXFeaturesGeoJSON = squareGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+        const squareGridYFeaturesGeoJSON = squareGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+
+        const rectangularGridXFeaturesGeoJSON = rectangularGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+        const rectangularGridYFeaturesGeoJSON = rectangularGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+
+        localStorage.setItem('squareGridX', JSON.stringify(squareGridXFeaturesGeoJSON));
+        localStorage.setItem('squareGridY', JSON.stringify(squareGridYFeaturesGeoJSON));
+        localStorage.setItem('rectangularGridX', JSON.stringify(rectangularGridXFeaturesGeoJSON));
+        localStorage.setItem('rectangularGridY', JSON.stringify(rectangularGridYFeaturesGeoJSON));
+    }
+
+    storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY);
+});
+
+function rotatePoint(point, center, angle) {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const nx = (cos * (point[0] - center[0])) - (sin * (point[1] - center[1])) + center[0];
+    const ny = (sin * (point[0] - center[0])) + (cos * (point[1] - center[1])) + center[1];
+    return [nx, ny];
+}
+
+function addAndTrimFeatures(layer, coords, polygon) {
+    const source = layer.getSource();
+
+    for (let i = 0, len = coords.length; i < len; i += 2) {
+        const start = coords[i];
+        const end = coords[i + 1];
+        const geometry = new ol.geom.LineString([start, end]);
+
+        var geometry3857 = geometry.getCoordinates();
+        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+        var geojson = turf.lineString(geometry4326);
+
+        var splitted = turf.lineSplit(geojson, polygon);
+
+        splitted.features.forEach(function (lineSegment) {
+            if (turf.booleanPointInPolygon(turf.centerOfMass(lineSegment), polygon)) {
+                var lineSegment3857 = new ol.geom.LineString(lineSegment.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
+
+                source.addFeature(new ol.Feature(lineSegment3857));
+            }
+        });
+    }
+}
+
+// Function to remove existing grid layers
+function removeGridLayers() {
+    map.removeLayer(squareGridX);
+    map.removeLayer(squareGridY);
+}
+
+// Function to add new grid layers based on the rotated angle
+function addGridLayers(squareXCoords, squareYCoords) {
+    squareGridX.setSource(new ol.source.Vector());
+    squareGridY.setSource(new ol.source.Vector());
+
+    var xFeatures = squareXCoords.map(coord => new ol.Feature(new ol.geom.LineString(coord)));
+    var yFeatures = squareYCoords.map(coord => new ol.Feature(new ol.geom.LineString(coord)));
+
+    squareGridX.getSource().addFeatures(xFeatures);
+    squareGridY.getSource().addFeatures(yFeatures);
+
+    map.addLayer(squareGridX);
+    map.addLayer(squareGridY);
+}
+
+// Function to clip grid lines to the extent of the farm polygon
+function clipSquareGridToFarmPolygon() {
+    const gridLayers = [squareGridX, squareGridY];
+    const farmLayer = map.getLayers().getArray().find(layer => layer instanceof ol.layer.Vector);
+    const farmFeatures = farmLayer.getSource().getFeatures();
+    const farmGeometry = farmFeatures.length > 0 ? farmFeatures[0].getGeometry() : null;
+
+    if (farmGeometry) {
+        var farmGeoJSON = turf.polygon([farmGeometry.getCoordinates()[0].map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'))]);
+
+        gridLayers.forEach(function (layer) {
+            const source = layer.getSource();
+            const featuresToKeep = [];
+
+            source.getFeatures().forEach(function (feature) {
+                const geometry = feature.getGeometry();
+                var lineGeoJSON = turf.lineString(geometry.getCoordinates().map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')));
+
+                var clipped = turf.lineOverlap(lineGeoJSON, farmGeoJSON);
+
+                if (clipped.features.length > 0) {
+                    clipped.features.forEach(function (lineSegment) {
+                        var lineSegment3857 = new ol.geom.LineString(lineSegment.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
+
+                        featuresToKeep.push(new ol.Feature(lineSegment3857));
+                    });
+                }
+            });
+
+            source.clear();
+            source.addFeatures(featuresToKeep);
+        });
+    }
+}
+
+function rotateGrid() {
+    const angle = parseFloat(document.getElementById('rotate-input').value);
+    const center = ol.extent.getCenter(extent);
+
+    const numCellsX = Math.ceil((extent[2] - extent[0]) / 3);
+    const numCellsY = Math.ceil((extent[3] - extent[1]) / 3);
+
+    const squareXCoords = [];
+    for (let x = 0; x < numCellsX; x++) {
+        squareXCoords.push([extent[0] + (x * 3), extent[1]]);
+        squareXCoords.push([extent[0] + (x * 3), extent[3]]);
+    }
+
+    const squareYCoords = [];
+    for (let y = 0; y < numCellsY; y++) {
+        squareYCoords.push([extent[0], extent[1] + (y * 3)]);
+        squareYCoords.push([extent[2], extent[1] + (y * 3)]);
+    }
+
+    const rotatedXCoords = squareXCoords.map(coord => rotateCoordinate(coord, center, angle));
+    const rotatedYCoords = squareYCoords.map(coord => rotateCoordinate(coord, center, angle));
+
+    updateGridFeatures(squareGridX, rotatedXCoords);
+    updateGridFeatures(squareGridY, rotatedYCoords);
+
+    // Update the extent to the new rotated extent
+    extent = [
+        Math.min(...rotatedXCoords.flat().map(coord => coord[0])),
+        Math.min(...rotatedYCoords.flat().map(coord => coord[1])),
+        Math.max(...rotatedXCoords.flat().map(coord => coord[0])),
+        Math.max(...rotatedYCoords.flat().map(coord => coord[1]))
+    ];
+
+    // Clip the rotated grid lines to the farm polygon extent
+    clipSquareGridToFarmPolygon();
+}
+
+function updateGridFeatures(layer, coords) {
+    const source = layer.getSource();
+    source.clear();
+
+    const lineStrings = [];
+    for (let i = 0; i < coords.length; i += 2) {
+        const start = coords[i];
+        const end = coords[i + 1];
+        const lineString = new ol.geom.LineString([start, end]);
+        lineStrings.push(lineString);
+    }
+
+    source.addFeatures(lineStrings.map(ls => new ol.Feature(ls)));
+}
+
+function rotateCoordinate(coord, pivot, angle) {
+    const [x, y] = coord;
+    const [pivotX, pivotY] = pivot;
+    const rotatedX = pivotX + (x - pivotX) * Math.cos(angle) - (y - pivotY) * Math.sin(angle);
+    const rotatedY = pivotY + (x - pivotX) * Math.sin(angle) + (y - pivotY) * Math.cos(angle);
+    return [rotatedX, rotatedY];
+}
+
+document.getElementById("apply-button").addEventListener("click", rotateGrid);
+
+*/
+
+
                 ///CREATE FARM POLYGON WITH SQUARE and RECTANGULAR GRID
                 let extent;
                 const squareGridX = new ol.layer.Vector({
@@ -5892,7 +6214,7 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
                     source: new ol.source.Vector(),
                     style: new ol.style.Style({
                         stroke: new ol.style.Stroke({
-                            color: 'red',
+                            color: 'black',
                             width: 4
                         })
                     })
@@ -5902,7 +6224,7 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
                     source: new ol.source.Vector(),
                     style: new ol.style.Style({
                         stroke: new ol.style.Stroke({
-                            color: 'red',
+                            color: 'black',
                             width: 4
                         })
                     })
@@ -5913,6 +6235,32 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
                 map.addLayer(rectangularGridX);
                 map.addLayer(rectangularGridY);
 
+                // Initially, hide the rectangularGrid.
+                rectangularGridX.setVisible(false);
+                rectangularGridY.setVisible(false);
+
+                // Grid Type Options
+                var button1 = document.querySelector('.gridTypeOptionBtn1');
+                var button2 = document.querySelector('.gridTypeOptionBtn2');
+
+                // Add event listeners to the buttons
+                button1.addEventListener('click', function () {
+                    // When gridTypeOptionBtn1 is clicked, show the squareGrid and hide the rectangularGrid.
+                    squareGridX.setVisible(true);
+                    squareGridY.setVisible(true);
+                    rectangularGridX.setVisible(false);
+                    rectangularGridY.setVisible(false);
+                });
+
+                button2.addEventListener('click', function () {
+                    // When gridTypeOptionBtn2 is clicked, show the rectangularGrid and hide the squareGrid.
+                    squareGridX.setVisible(false);
+                    squareGridY.setVisible(false);
+                    rectangularGridX.setVisible(true);
+                    rectangularGridY.setVisible(true);
+                });
+
+
                 const farmVectorLayer = new ol.layer.Vector({
                     source: vectorSource,
                     style: new ol.style.Style({
@@ -5950,6 +6298,11 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
 
                 map.addInteraction(draw);
                 isSketchActive = true;
+
+                let squareGridXCount = 0;
+                let squareGridYCount = 0;
+                let rectangularGridXCount = 0;
+                let rectangularGridYCount = 0;
 
                 draw.on('drawend', function (evt) {
                     const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
@@ -6007,10 +6360,15 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
                     var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
                     var drawnPolygonGeoJSON = turf.polygon([geometry4326]);
 
-                    addAndTrimFeatures(squareGridX, squareXCoords, drawnPolygonGeoJSON);
-                    addAndTrimFeatures(squareGridY, squareYCoords, drawnPolygonGeoJSON);
-                    addAndTrimFeatures(rectangularGridX, rectangularXCoords, drawnPolygonGeoJSON);
-                    addAndTrimFeatures(rectangularGridY, rectangularYCoords, drawnPolygonGeoJSON);
+                    addAndTrimFeatures(squareGridX, squareXCoords, drawnPolygonGeoJSON, 'squareGridX');
+                    addAndTrimFeatures(squareGridY, squareYCoords, drawnPolygonGeoJSON, 'squareGridY');
+                    addAndTrimFeatures(rectangularGridX, rectangularXCoords, drawnPolygonGeoJSON, 'rectangularGridX');
+                    addAndTrimFeatures(rectangularGridY, rectangularYCoords, drawnPolygonGeoJSON, 'rectangularGridY');
+
+                    console.log(`Square grid X lines inside polygon: ${squareGridXCount}`);
+                    console.log(`Square grid Y lines inside polygon: ${squareGridYCount}`);
+                    console.log(`Rectangular grid X lines inside polygon: ${rectangularGridXCount}`);
+                    console.log(`Rectangular grid Y lines inside polygon: ${rectangularGridYCount}`);
 
                     function storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY) {
                         const format = new ol.format.GeoJSON();
@@ -6038,7 +6396,7 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
                     return [nx, ny];
                 }
 
-                function addAndTrimFeatures(layer, coords, polygon) {
+                function addAndTrimFeatures(layer, coords, polygon, gridType) {
                     const source = layer.getSource();
 
                     for (let i = 0, len = coords.length; i < len; i += 2) {
@@ -6057,17 +6415,48 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
                                 var lineSegment3857 = new ol.geom.LineString(lineSegment.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
 
                                 source.addFeature(new ol.Feature(lineSegment3857));
+
+                                switch (gridType) {
+                                    case 'squareGridX':
+                                        squareGridXCount++;
+                                        break;
+                                    case 'squareGridY':
+                                        squareGridYCount++;
+                                        break;
+                                    case 'rectangularGridX':
+                                        rectangularGridXCount++;
+                                        break;
+                                    case 'rectangularGridY':
+                                        rectangularGridYCount++;
+                                        break;
+                                }
                             }
                         });
                     }
                 }
 
+
+
+
+
+
+
+
                 // Function to remove existing grid layers
                 function removeGridLayers() {
                     map.removeLayer(squareGridX);
                     map.removeLayer(squareGridY);
+                    map.removeLayer(rectangularGridX);
+                    map.removeLayer(rectangularGridY);
                 }
 
+
+
+
+
+
+
+                /*
                 // Function to add new grid layers based on the rotated angle
                 function addGridLayers(squareXCoords, squareYCoords) {
                     squareGridX.setSource(new ol.source.Vector());
@@ -6081,6 +6470,8 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
 
                     map.addLayer(squareGridX);
                     map.addLayer(squareGridY);
+                    map.removeLayer(rectangularGridX);
+                    map.removeLayer(rectangularGridY);
                 }
 
                 // Function to clip grid lines to the extent of the farm polygon
@@ -6118,412 +6509,75 @@ document.querySelector('.closeGridPropertiesContainer').addEventListener('click'
                     }
                 }
 
-                function rotateGrid() {
-                    const angle = parseFloat(document.getElementById('rotate-input').value);
-                    const center = ol.extent.getCenter(extent);
 
-                    const numCellsX = Math.ceil((extent[2] - extent[0]) / 3);
-                    const numCellsY = Math.ceil((extent[3] - extent[1]) / 3);
 
-                    const squareXCoords = [];
-                    for (let x = 0; x < numCellsX; x++) {
-                        squareXCoords.push([extent[0] + (x * 3), extent[1]]);
-                        squareXCoords.push([extent[0] + (x * 3), extent[3]]);
-                    }
-
-                    const squareYCoords = [];
-                    for (let y = 0; y < numCellsY; y++) {
-                        squareYCoords.push([extent[0], extent[1] + (y * 3)]);
-                        squareYCoords.push([extent[2], extent[1] + (y * 3)]);
-                    }
-
-                    const rotatedXCoords = squareXCoords.map(coord => rotateCoordinate(coord, center, angle));
-                    const rotatedYCoords = squareYCoords.map(coord => rotateCoordinate(coord, center, angle));
-
-                    updateGridFeatures(squareGridX, rotatedXCoords);
-                    updateGridFeatures(squareGridY, rotatedYCoords);
-
-                    // Update the extent to the new rotated extent
-                    extent = [
-                        Math.min(...rotatedXCoords.flat().map(coord => coord[0])),
-                        Math.min(...rotatedYCoords.flat().map(coord => coord[1])),
-                        Math.max(...rotatedXCoords.flat().map(coord => coord[0])),
-                        Math.max(...rotatedYCoords.flat().map(coord => coord[1]))
-                    ];
-
-                    // Clip the rotated grid lines to the farm polygon extent
-                    clipSquareGridToFarmPolygon();
-                }
-
-                function updateGridFeatures(layer, coords) {
-                    const source = layer.getSource();
-                    source.clear();
-
-                    const lineStrings = [];
-                    for (let i = 0; i < coords.length; i += 2) {
-                        const start = coords[i];
-                        const end = coords[i + 1];
-                        const lineString = new ol.geom.LineString([start, end]);
-                        lineStrings.push(lineString);
-                    }
-
-                    source.addFeatures(lineStrings.map(ls => new ol.Feature(ls)));
-                }
-
-                function rotateCoordinate(coord, pivot, angle) {
-                    const [x, y] = coord;
-                    const [pivotX, pivotY] = pivot;
-                    const rotatedX = pivotX + (x - pivotX) * Math.cos(angle) - (y - pivotY) * Math.sin(angle);
-                    const rotatedY = pivotY + (x - pivotX) * Math.sin(angle) + (y - pivotY) * Math.cos(angle);
-                    return [rotatedX, rotatedY];
-                }
-
-                document.getElementById("apply-button").addEventListener("click", rotateGrid);
-
-                */
-
-
-///CREATE FARM POLYGON WITH SQUARE and RECTANGULAR GRID
-                let extent;
-                const squareGridX = new ol.layer.Vector({
-                    source: new ol.source.Vector(),
-                    style: new ol.style.Style({
-                        stroke: new ol.style.Stroke({
-                            color: 'black',
-                            width: 4
-                        })
-                    })
-                });
-
-                const squareGridY = new ol.layer.Vector({
-                    source: new ol.source.Vector(),
-                    style: new ol.style.Style({
-                        stroke: new ol.style.Stroke({
-                            color: 'black',
-                            width: 4
-                        })
-                    })
-                });
-
-                const rectangularGridX = new ol.layer.Vector({
-                    source: new ol.source.Vector(),
-                    style: new ol.style.Style({
-                        stroke: new ol.style.Stroke({
-                            color: 'red',
-                            width: 4
-                        })
-                    })
-                });
-
-                const rectangularGridY = new ol.layer.Vector({
-                    source: new ol.source.Vector(),
-                    style: new ol.style.Style({
-                        stroke: new ol.style.Stroke({
-                            color: 'red',
-                            width: 4
-                        })
-                    })
-                });
-
-                map.addLayer(squareGridX);
-map.addLayer(squareGridY);
-map.addLayer(rectangularGridX);
-map.addLayer(rectangularGridY);
-
-// Initially, hide the rectangularGrid.
-rectangularGridX.setVisible(false);
-rectangularGridY.setVisible(false);
-
-// Grid Type Options
-var button1 = document.querySelector('.gridTypeOptionBtn1');
-var button2 = document.querySelector('.gridTypeOptionBtn2');
-
-// Add event listeners to the buttons
-button1.addEventListener('click', function () {
-    // When gridTypeOptionBtn1 is clicked, show the squareGrid and hide the rectangularGrid.
-    squareGridX.setVisible(true);
-    squareGridY.setVisible(true);
-    rectangularGridX.setVisible(false);
-    rectangularGridY.setVisible(false);
-});
-
-button2.addEventListener('click', function () {
-    // When gridTypeOptionBtn2 is clicked, show the rectangularGrid and hide the squareGrid.
-    squareGridX.setVisible(false);
-    squareGridY.setVisible(false);
-    rectangularGridX.setVisible(true);
-    rectangularGridY.setVisible(true);
-});
-
-
-                const farmVectorLayer = new ol.layer.Vector({
-                    source: vectorSource,
-                    style: new ol.style.Style({
-                        fill: new ol.style.Fill({
-                            color: "rgba(56, 108, 52, 0.5)"
-                        })
-                    })
-                });
-
-                map.addLayer(farmVectorLayer);
-
-                draw = new ol.interaction.Draw({
-                    source: vectorSource,
-                    type: "Polygon",
-                    style: new ol.style.Style({
-                        fill: new ol.style.Fill({
-                            color: "rgba(255, 255, 255, 0.1)",
-                        }),
-                        stroke: new ol.style.Stroke({
-                            color: "#386c34",
-                            width: 10,
-                        }),
-                        image: new ol.style.Circle({
-                            radius: 18,
-                            fill: new ol.style.Fill({
-                                color: "#386c34",
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: "#ffffff",
-                                width: 9,
-                            }),
-                        }),
-                    }),
-                });
-
-                map.addInteraction(draw);
-                isSketchActive = true;
-
-                draw.on('drawend', function (evt) {
-                    const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
-
-                    let longestEdgeLength = 0;
-                    let longestEdge = [];
-
-                    for (let i = 0; i < polygonCoords.length - 1; i++) {
-                        const start = polygonCoords[i];
-                        const end = polygonCoords[i + 1];
-
-                        const length = Math.sqrt(Math.pow(end[0] - start[0], 2) + Math.pow(end[1] - start[1], 2));
-
-                        if (length > longestEdgeLength) {
-                            longestEdgeLength = length;
-                            longestEdge = [start, end];
-                        }
-                    }
-
-                    const angle = Math.atan2(longestEdge[1][1] - longestEdge[0][1], longestEdge[1][0] - longestEdge[0][0]);
-
-                    extent = evt.feature.getGeometry().getExtent();
-
-                    const center = [0.5 * (extent[0] + extent[2]), 0.5 * (extent[1] + extent[3])];
-
-                    const extentDiagonalLength = Math.sqrt(Math.pow(extent[2] - extent[0], 2) + Math.pow(extent[3] - extent[1], 2));
-
-                    const numCells = Math.ceil(extentDiagonalLength / 3) + 2;
-
-                    const squareXCoords = [];
-                    for (let x = 0; x <= numCells; x++) {
-                        squareXCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] - extentDiagonalLength], center, angle));
-                        squareXCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] + extentDiagonalLength], center, angle));
-                    }
-
-                    const squareYCoords = [];
-                    for (let y = 0; y <= numCells; y++) {
-                        squareYCoords.push(rotatePoint([extent[0] - extentDiagonalLength, extent[1] + (y * 3)], center, angle));
-                        squareYCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 3)], center, angle));
-                    }
-
-                    const rectangularXCoords = [];
-                    for (let x = 0; x <= numCells; x++) {
-                        rectangularXCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] - extentDiagonalLength - 2.5], center, angle));
-                        rectangularXCoords.push(rotatePoint([extent[0] + (x * 3), extent[1] + extentDiagonalLength - 2.5], center, angle));
-                    }
-
-                    const rectangularYCoords = [];
-                    for (let y = 0; y <= numCells; y++) {
-                        rectangularYCoords.push(rotatePoint([extent[0] - extentDiagonalLength, extent[1] + (y * 2.5) - 2.5], center, angle));
-                        rectangularYCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 2.5) - 2.5], center, angle));
-                    }
-
-                    var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
-                    var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
-                    var drawnPolygonGeoJSON = turf.polygon([geometry4326]);
-
-                    addAndTrimFeatures(squareGridX, squareXCoords, drawnPolygonGeoJSON);
-                    addAndTrimFeatures(squareGridY, squareYCoords, drawnPolygonGeoJSON);
-                    addAndTrimFeatures(rectangularGridX, rectangularXCoords, drawnPolygonGeoJSON);
-                    addAndTrimFeatures(rectangularGridY, rectangularYCoords, drawnPolygonGeoJSON);
-
-                    function storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY) {
-                        const format = new ol.format.GeoJSON();
-
-                        const squareGridXFeaturesGeoJSON = squareGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
-                        const squareGridYFeaturesGeoJSON = squareGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
-
-                        const rectangularGridXFeaturesGeoJSON = rectangularGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
-                        const rectangularGridYFeaturesGeoJSON = rectangularGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
-
-                        localStorage.setItem('squareGridX', JSON.stringify(squareGridXFeaturesGeoJSON));
-                        localStorage.setItem('squareGridY', JSON.stringify(squareGridYFeaturesGeoJSON));
-                        localStorage.setItem('rectangularGridX', JSON.stringify(rectangularGridXFeaturesGeoJSON));
-                        localStorage.setItem('rectangularGridY', JSON.stringify(rectangularGridYFeaturesGeoJSON));
-                    }
-
-                    storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY);
-                });
-
-                function rotatePoint(point, center, angle) {
-                    const cos = Math.cos(angle);
-                    const sin = Math.sin(angle);
-                    const nx = (cos * (point[0] - center[0])) - (sin * (point[1] - center[1])) + center[0];
-                    const ny = (sin * (point[0] - center[0])) + (cos * (point[1] - center[1])) + center[1];
-                    return [nx, ny];
-                }
-
-                function addAndTrimFeatures(layer, coords, polygon) {
-                    const source = layer.getSource();
-
-                    for (let i = 0, len = coords.length; i < len; i += 2) {
-                        const start = coords[i];
-                        const end = coords[i + 1];
-                        const geometry = new ol.geom.LineString([start, end]);
-
-                        var geometry3857 = geometry.getCoordinates();
-                        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
-                        var geojson = turf.lineString(geometry4326);
-
-                        var splitted = turf.lineSplit(geojson, polygon);
-
-                        splitted.features.forEach(function (lineSegment) {
-                            if (turf.booleanPointInPolygon(turf.centerOfMass(lineSegment), polygon)) {
-                                var lineSegment3857 = new ol.geom.LineString(lineSegment.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
-
-                                source.addFeature(new ol.Feature(lineSegment3857));
-                            }
-                        });
-                    }
-                }
-
-                // Function to remove existing grid layers
-                function removeGridLayers() {
-                    map.removeLayer(squareGridX);
-                    map.removeLayer(squareGridY);
-                }
-
-                // Function to add new grid layers based on the rotated angle
-                function addGridLayers(squareXCoords, squareYCoords) {
-                    squareGridX.setSource(new ol.source.Vector());
-                    squareGridY.setSource(new ol.source.Vector());
-
-                    var xFeatures = squareXCoords.map(coord => new ol.Feature(new ol.geom.LineString(coord)));
-                    var yFeatures = squareYCoords.map(coord => new ol.Feature(new ol.geom.LineString(coord)));
-
-                    squareGridX.getSource().addFeatures(xFeatures);
-                    squareGridY.getSource().addFeatures(yFeatures);
-
-                    map.addLayer(squareGridX);
-                    map.addLayer(squareGridY);
-                }
-
-                // Function to clip grid lines to the extent of the farm polygon
-                function clipSquareGridToFarmPolygon() {
-                    const gridLayers = [squareGridX, squareGridY];
-                    const farmLayer = map.getLayers().getArray().find(layer => layer instanceof ol.layer.Vector);
-                    const farmFeatures = farmLayer.getSource().getFeatures();
-                    const farmGeometry = farmFeatures.length > 0 ? farmFeatures[0].getGeometry() : null;
-
-                    if (farmGeometry) {
-                        var farmGeoJSON = turf.polygon([farmGeometry.getCoordinates()[0].map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'))]);
-
-                        gridLayers.forEach(function (layer) {
-                            const source = layer.getSource();
-                            const featuresToKeep = [];
-
-                            source.getFeatures().forEach(function (feature) {
-                                const geometry = feature.getGeometry();
-                                var lineGeoJSON = turf.lineString(geometry.getCoordinates().map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')));
-
-                                var clipped = turf.lineOverlap(lineGeoJSON, farmGeoJSON);
-
-                                if (clipped.features.length > 0) {
-                                    clipped.features.forEach(function (lineSegment) {
-                                        var lineSegment3857 = new ol.geom.LineString(lineSegment.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
-
-                                        featuresToKeep.push(new ol.Feature(lineSegment3857));
-                                    });
-                                }
-                            });
-
-                            source.clear();
-                            source.addFeatures(featuresToKeep);
-                        });
-                    }
-                }
-
-                function rotateGrid() {
-                    const angle = parseFloat(document.getElementById('rotate-input').value);
-                    const center = ol.extent.getCenter(extent);
-
-                    const numCellsX = Math.ceil((extent[2] - extent[0]) / 3);
-                    const numCellsY = Math.ceil((extent[3] - extent[1]) / 3);
-
-                    const squareXCoords = [];
-                    for (let x = 0; x < numCellsX; x++) {
-                        squareXCoords.push([extent[0] + (x * 3), extent[1]]);
-                        squareXCoords.push([extent[0] + (x * 3), extent[3]]);
-                    }
-
-                    const squareYCoords = [];
-                    for (let y = 0; y < numCellsY; y++) {
-                        squareYCoords.push([extent[0], extent[1] + (y * 3)]);
-                        squareYCoords.push([extent[2], extent[1] + (y * 3)]);
-                    }
-
-                    const rotatedXCoords = squareXCoords.map(coord => rotateCoordinate(coord, center, angle));
-                    const rotatedYCoords = squareYCoords.map(coord => rotateCoordinate(coord, center, angle));
-
-                    updateGridFeatures(squareGridX, rotatedXCoords);
-                    updateGridFeatures(squareGridY, rotatedYCoords);
-
-                    // Update the extent to the new rotated extent
-                    extent = [
-                        Math.min(...rotatedXCoords.flat().map(coord => coord[0])),
-                        Math.min(...rotatedYCoords.flat().map(coord => coord[1])),
-                        Math.max(...rotatedXCoords.flat().map(coord => coord[0])),
-                        Math.max(...rotatedYCoords.flat().map(coord => coord[1]))
-                    ];
-
-                    // Clip the rotated grid lines to the farm polygon extent
-                    clipSquareGridToFarmPolygon();
-                }
-
-                function updateGridFeatures(layer, coords) {
-                    const source = layer.getSource();
-                    source.clear();
-
-                    const lineStrings = [];
-                    for (let i = 0; i < coords.length; i += 2) {
-                        const start = coords[i];
-                        const end = coords[i + 1];
-                        const lineString = new ol.geom.LineString([start, end]);
-                        lineStrings.push(lineString);
-                    }
-
-                    source.addFeatures(lineStrings.map(ls => new ol.Feature(ls)));
-                }
-
-                function rotateCoordinate(coord, pivot, angle) {
-                    const [x, y] = coord;
-                    const [pivotX, pivotY] = pivot;
-                    const rotatedX = pivotX + (x - pivotX) * Math.cos(angle) - (y - pivotY) * Math.sin(angle);
-                    const rotatedY = pivotY + (x - pivotX) * Math.sin(angle) + (y - pivotY) * Math.cos(angle);
-                    return [rotatedX, rotatedY];
-                }
-
-                document.getElementById("apply-button").addEventListener("click", rotateGrid);
 
                 
+                function rotateGrid() {
+                    const angle = parseFloat(document.getElementById('rotate-input').value);
+                    const center = ol.extent.getCenter(extent);
+
+                    const numCellsX = Math.ceil((extent[2] - extent[0]) / 3);
+                    const numCellsY = Math.ceil((extent[3] - extent[1]) / 3);
+
+                    const squareXCoords = [];
+                    for (let x = 0; x < numCellsX; x++) {
+                        squareXCoords.push([extent[0] + (x * 3), extent[1]]);
+                        squareXCoords.push([extent[0] + (x * 3), extent[3]]);
+                    }
+
+                    const squareYCoords = [];
+                    for (let y = 0; y < numCellsY; y++) {
+                        squareYCoords.push([extent[0], extent[1] + (y * 3)]);
+                        squareYCoords.push([extent[2], extent[1] + (y * 3)]);
+                    }
+
+                    const rotatedXCoords = squareXCoords.map(coord => rotateCoordinate(coord, center, angle));
+                    const rotatedYCoords = squareYCoords.map(coord => rotateCoordinate(coord, center, angle));
+
+                    updateGridFeatures(squareGridX, rotatedXCoords);
+                    updateGridFeatures(squareGridY, rotatedYCoords);
+                    updateGridFeatures(rectangularGridX, rotatedXCoords);
+                    updateGridFeatures(rectangularGridY, rotatedYCoords);
+
+                    // Update the extent to the new rotated extent
+                    extent = [
+                        Math.min(...rotatedXCoords.flat().map(coord => coord[0])),
+                        Math.min(...rotatedYCoords.flat().map(coord => coord[1])),
+                        Math.max(...rotatedXCoords.flat().map(coord => coord[0])),
+                        Math.max(...rotatedYCoords.flat().map(coord => coord[1]))
+                    ];
+
+                    // Clip the rotated grid lines to the farm polygon extent
+                    clipSquareGridToFarmPolygon();
+                }
+
+                function updateGridFeatures(layer, coords) {
+                    const source = layer.getSource();
+                    source.clear();
+
+                    const lineStrings = [];
+                    for (let i = 0; i < coords.length; i += 2) {
+                        const start = coords[i];
+                        const end = coords[i + 1];
+                        const lineString = new ol.geom.LineString([start, end]);
+                        lineStrings.push(lineString);
+                    }
+
+                    source.addFeatures(lineStrings.map(ls => new ol.Feature(ls)));
+                }
+
+                function rotateCoordinate(coord, pivot, angle) {
+                    const [x, y] = coord;
+                    const [pivotX, pivotY] = pivot;
+                    const rotatedX = pivotX + (x - pivotX) * Math.cos(angle) - (y - pivotY) * Math.sin(angle);
+                    const rotatedY = pivotY + (x - pivotX) * Math.sin(angle) + (y - pivotY) * Math.cos(angle);
+                    return [rotatedX, rotatedY];
+                }
+
+                document.getElementById("apply-button").addEventListener("click", rotateGrid);*/
+
+
 
 
 
