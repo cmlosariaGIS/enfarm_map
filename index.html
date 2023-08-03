@@ -6267,7 +6267,7 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                 // Define a style function for the intersection points
                 function intersectionPointStyle(feature) {
                     const zoom = map.getView().getZoom();
-                    const isZoom19AndAbove = zoom >= 23;
+                    const isZoom19AndAbove = zoom >= 22;
 
                     if (isZoom19AndAbove) {
                         // Show the trees only at zoom level 19 and above
@@ -6662,32 +6662,8 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                 }
 
                 //for triangularGrid
+
                 /*function addAndTrimPolygonFeatures(layer, coords, polygon) {
-                    const source = layer.getSource();
-
-                    coords.forEach(triangleCoords => {
-                        const geometry = new ol.geom.Polygon([triangleCoords]);
-
-                        var geometry3857 = geometry.getCoordinates()[0];
-                        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
-                        var geojson = turf.polygon([geometry4326]);
-
-                        var intersected = turf.intersect(geojson, polygon);
-
-                        if (intersected) {
-                            var intersected3857 = new ol.geom.Polygon(intersected.geometry.coordinates.map(ring => ring.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857'))));
-
-                            source.addFeature(new ol.Feature(intersected3857));
-
-                            // Add the vertices of the intersected triangle to the intersection points layer
-                            intersected3857.getCoordinates()[0].slice(0, -1).forEach(vertex => {
-                                triangularGridIntersectionPoints.getSource().addFeature(new ol.Feature(new ol.geom.Point(vertex)));
-                            });
-                        }
-                    });
-                }*/
-
-                function addAndTrimPolygonFeatures(layer, coords, polygon) {
                     const source = layer.getSource();
 
                     coords.forEach(triangleCoords => {
@@ -6719,7 +6695,46 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                             });
                         }
                     });
+                }*/
+
+                function addAndTrimPolygonFeatures(layer, coords, polygon) {
+                    const source = layer.getSource();
+
+                    // Shrink the polygon slightly
+                    var shrunkPolygon = turf.transformScale(polygon, 0.999);
+
+                    coords.forEach(triangleCoords => {
+                        const geometry = new ol.geom.Polygon([triangleCoords]);
+
+                        var geometry3857 = geometry.getCoordinates()[0];
+                        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+                        var geojson = turf.polygon([geometry4326]);
+
+                        var intersected = turf.intersect(geojson, polygon);
+
+                        if (intersected) {
+                            var intersected3857 = new ol.geom.Polygon(intersected.geometry.coordinates.map(ring => ring.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857'))));
+
+                            source.addFeature(new ol.Feature(intersected3857));
+
+                            // Add the vertices of the intersected triangle to the intersection points layer
+                            intersected3857.getCoordinates()[0].slice(0, -1).forEach(vertex => {
+                                // Convert the vertex to EPSG:4326
+                                var vertex4326 = ol.proj.transform(vertex, 'EPSG:3857', 'EPSG:4326');
+
+                                // Create a turf point from the vertex
+                                var point = turf.point(vertex4326);
+
+                                // Check if the point is inside the shrunk polygon
+                                if (turf.booleanPointInPolygon(point, shrunkPolygon)) {
+                                    triangularGridIntersectionPoints.getSource().addFeature(new ol.Feature(new ol.geom.Point(vertex)));
+                                }
+                            });
+                        }
+                    });
                 }
+
+
 
 
 
