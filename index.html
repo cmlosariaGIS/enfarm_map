@@ -6210,7 +6210,7 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
 */
 
 
-                ///CREATE FARM POLYGON WITH SQUARE and RECTANGULAR GRID
+                ///CREATE FARM POLYGON WITH SQUARE, RECTANGULAR and TRIANGULAR GRID
                 let extent;
                 const squareGridX = new ol.layer.Vector({
                     source: new ol.source.Vector(),
@@ -6485,7 +6485,7 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     console.log(`Number of Coffee Trees (Rectangular Grid): ${numberOfCoffeeTreesForRectangularGrid}`);
 
 
-                    function storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY) {
+                    function storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid) {
                         const format = new ol.format.GeoJSON();
 
                         const squareGridXFeaturesGeoJSON = squareGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
@@ -6494,13 +6494,17 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                         const rectangularGridXFeaturesGeoJSON = rectangularGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
                         const rectangularGridYFeaturesGeoJSON = rectangularGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
 
+                        const triangularGridFeaturesGeoJSON = triangularGrid.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+
                         localStorage.setItem('squareGridX', JSON.stringify(squareGridXFeaturesGeoJSON));
                         localStorage.setItem('squareGridY', JSON.stringify(squareGridYFeaturesGeoJSON));
                         localStorage.setItem('rectangularGridX', JSON.stringify(rectangularGridXFeaturesGeoJSON));
                         localStorage.setItem('rectangularGridY', JSON.stringify(rectangularGridYFeaturesGeoJSON));
+                        localStorage.setItem('triangularGrid', JSON.stringify(triangularGridFeaturesGeoJSON));
                     }
 
-                    storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY);
+                    storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
+
                 });
 
                 function rotatePoint(point, center, angle) {
