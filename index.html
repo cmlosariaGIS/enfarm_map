@@ -6411,39 +6411,40 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     const colCount = Math.ceil((extent[2] - extent[0]) / 3);
                     for (let row = 0; row < rowCount; row++) {
                         for (let col = 0; col < colCount; col++) {
-                            const x = extent[0] + col * 3;
-                            const y = extent[1] + row * halfHeight;
+                            let x = extent[0] + col * 3;
+                            let y = extent[1] + row * halfHeight;
                             if (row % 2 === 0) {
                                 // ▽
                                 triangularGridCoords.push([
-                                    [x, y],
-                                    [x + 1.5, y + halfHeight],
-                                    [x + 3, y],
-                                    [x, y],
+                                    rotatePoint([x, y], center, angle),
+                                    rotatePoint([x + 1.5, y + halfHeight], center, angle),
+                                    rotatePoint([x + 3, y], center, angle),
+                                    rotatePoint([x, y], center, angle),
                                 ]);
                                 triangularGridCoords.push([
-                                    [x + 1.5, y + halfHeight],
-                                    [x + 3, y],
-                                    [x + 4.5, y + halfHeight],
-                                    [x + 1.5, y + halfHeight],
+                                    rotatePoint([x + 1.5, y + halfHeight], center, angle),
+                                    rotatePoint([x + 3, y], center, angle),
+                                    rotatePoint([x + 4.5, y + halfHeight], center, angle),
+                                    rotatePoint([x + 1.5, y + halfHeight], center, angle),
                                 ]);
                             } else {
                                 // △
                                 triangularGridCoords.push([
-                                    [x + 1.5, y],
-                                    [x + 3, y + halfHeight],
-                                    [x, y + halfHeight],
-                                    [x + 1.5, y],
+                                    rotatePoint([x + 1.5, y], center, angle),
+                                    rotatePoint([x + 3, y + halfHeight], center, angle),
+                                    rotatePoint([x, y + halfHeight], center, angle),
+                                    rotatePoint([x + 1.5, y], center, angle),
                                 ]);
                                 triangularGridCoords.push([
-                                    [x + 3, y + halfHeight],
-                                    [x + 4.5, y],
-                                    [x + 6, y + halfHeight],
-                                    [x + 3, y + halfHeight],
+                                    rotatePoint([x + 3, y + halfHeight], center, angle),
+                                    rotatePoint([x + 4.5, y], center, angle),
+                                    rotatePoint([x + 6, y + halfHeight], center, angle),
+                                    rotatePoint([x + 3, y + halfHeight], center, angle),
                                 ]);
                             }
                         }
                     }
+
 
                     var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
                     var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
