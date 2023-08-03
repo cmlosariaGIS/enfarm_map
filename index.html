@@ -1598,6 +1598,22 @@
             font-weight: normal;
             color: #515151;
         }
+
+
+
+
+        #floatingWindow {
+            position: fixed;
+            bottom: 140px;
+            left: 160px;
+            padding: 10px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+        }
     </style>
 </head>
 
@@ -1608,6 +1624,12 @@
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
+
+        <div id="floatingWindow">
+            <p>Number of Coffee Trees (Square Grid): <span id="squareGridCount"></span></p>
+            <p>Number of Coffee Trees (Rectangular Grid): <span id="rectangularGridCount"></span></p>
+        </div>
+
 
         <div class="gridPropertiesContainer" id="gridPropertiesContainer">
             <div style="display: flex; justify-content: flex-end; margin-right: 10px;">
@@ -6230,18 +6252,33 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     })
                 });
 
+                // Create triangularGrid layer
+                const triangularGrid = new ol.layer.Vector({
+                    source: new ol.source.Vector(),
+                    style: new ol.style.Style({
+                        stroke: new ol.style.Stroke({
+                            color: 'black',
+                            width: 4
+                        })
+                    })
+                });
+
+
                 map.addLayer(squareGridX);
                 map.addLayer(squareGridY);
                 map.addLayer(rectangularGridX);
                 map.addLayer(rectangularGridY);
+                map.addLayer(triangularGrid);
 
                 // Initially, hide the rectangularGrid.
                 rectangularGridX.setVisible(false);
                 rectangularGridY.setVisible(false);
+                triangularGrid.setVisible(false);
 
-                // Grid Type Options
+                // Grid Pattern Type Options
                 var button1 = document.querySelector('.gridTypeOptionBtn1');
                 var button2 = document.querySelector('.gridTypeOptionBtn2');
+                var button3 = document.querySelector('.gridTypeOptionBtn3');
 
                 // Add event listeners to the buttons
                 button1.addEventListener('click', function () {
@@ -6250,6 +6287,7 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     squareGridY.setVisible(true);
                     rectangularGridX.setVisible(false);
                     rectangularGridY.setVisible(false);
+                    triangularGrid.setVisible(false);
                 });
 
                 button2.addEventListener('click', function () {
@@ -6258,6 +6296,16 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     squareGridY.setVisible(false);
                     rectangularGridX.setVisible(true);
                     rectangularGridY.setVisible(true);
+                    triangularGrid.setVisible(false);
+                });
+
+                button3.addEventListener('click', function () {
+                    // When gridTypeOptionBtn3 is clicked, show the triangularGrid and hide the squareGrid and rectangularGrid.
+                    squareGridX.setVisible(false);
+                    squareGridY.setVisible(false);
+                    rectangularGridX.setVisible(false);
+                    rectangularGridY.setVisible(false);
+                    triangularGrid.setVisible(true);
                 });
 
 
@@ -6356,19 +6404,85 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                         rectangularYCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 2.5) - 2.5], center, angle));
                     }
 
+                    // Triangular grid
+                    const triangularGridCoords = [];
+                    const halfHeight = Math.sqrt(3) / 2 * 3;
+                    const rowCount = Math.ceil((extent[3] - extent[1]) / halfHeight);
+                    const colCount = Math.ceil((extent[2] - extent[0]) / 3);
+                    for (let row = 0; row < rowCount; row++) {
+                        for (let col = 0; col < colCount; col++) {
+                            const x = extent[0] + col * 3;
+                            const y = extent[1] + row * halfHeight;
+                            if (row % 2 === 0) {
+                                // ▽
+                                triangularGridCoords.push([
+                                    [x, y],
+                                    [x + 1.5, y + halfHeight],
+                                    [x + 3, y],
+                                    [x, y],
+                                ]);
+                                triangularGridCoords.push([
+                                    [x + 1.5, y + halfHeight],
+                                    [x + 3, y],
+                                    [x + 4.5, y + halfHeight],
+                                    [x + 1.5, y + halfHeight],
+                                ]);
+                            } else {
+                                // △
+                                triangularGridCoords.push([
+                                    [x + 1.5, y],
+                                    [x + 3, y + halfHeight],
+                                    [x, y + halfHeight],
+                                    [x + 1.5, y],
+                                ]);
+                                triangularGridCoords.push([
+                                    [x + 3, y + halfHeight],
+                                    [x + 4.5, y],
+                                    [x + 6, y + halfHeight],
+                                    [x + 3, y + halfHeight],
+                                ]);
+                            }
+                        }
+                    }
+
                     var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
                     var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
                     var drawnPolygonGeoJSON = turf.polygon([geometry4326]);
 
-                    addAndTrimFeatures(squareGridX, squareXCoords, drawnPolygonGeoJSON, 'squareGridX');
-                    addAndTrimFeatures(squareGridY, squareYCoords, drawnPolygonGeoJSON, 'squareGridY');
-                    addAndTrimFeatures(rectangularGridX, rectangularXCoords, drawnPolygonGeoJSON, 'rectangularGridX');
-                    addAndTrimFeatures(rectangularGridY, rectangularYCoords, drawnPolygonGeoJSON, 'rectangularGridY');
+                    addAndTrimLineFeatures(squareGridX, squareXCoords, drawnPolygonGeoJSON, 'squareGridX');
+                    addAndTrimLineFeatures(squareGridY, squareYCoords, drawnPolygonGeoJSON, 'squareGridY');
+                    addAndTrimLineFeatures(rectangularGridX, rectangularXCoords, drawnPolygonGeoJSON, 'rectangularGridX');
+                    addAndTrimLineFeatures(rectangularGridY, rectangularYCoords, drawnPolygonGeoJSON, 'rectangularGridY');
+                    addAndTrimPolygonFeatures(triangularGrid, triangularGridCoords, drawnPolygonGeoJSON);
 
-                    console.log(`Square grid X lines inside polygon: ${squareGridXCount}`);
-                    console.log(`Square grid Y lines inside polygon: ${squareGridYCount}`);
-                    console.log(`Rectangular grid X lines inside polygon: ${rectangularGridXCount}`);
-                    console.log(`Rectangular grid Y lines inside polygon: ${rectangularGridYCount}`);
+
+
+                    // Calculate the number of coffee trees for square grids
+                    const numberOfCoffeeTreesForSquareGrid = squareGridXCount * squareGridYCount;
+
+                    // Calculate the number of coffee trees for rectangular grids
+                    const numberOfCoffeeTreesForRectangularGrid = rectangularGridXCount * rectangularGridYCount;
+
+                    // Update the floating window with the calculated values
+                    const squareGridCountElement = document.getElementById('squareGridCount');
+                    const rectangularGridCountElement = document.getElementById('rectangularGridCount');
+
+                    squareGridCountElement.textContent = numberOfCoffeeTreesForSquareGrid;
+                    rectangularGridCountElement.textContent = numberOfCoffeeTreesForRectangularGrid;
+
+
+
+
+
+
+                    console.log(`◇ Square grid X lines inside polygon: ${squareGridXCount}`);
+                    console.log(`◇ Square grid Y lines inside polygon: ${squareGridYCount}`);
+                    console.log(`▭ Rectangular grid X lines inside polygon: ${rectangularGridXCount}`);
+                    console.log(`▭ Rectangular grid Y lines inside polygon: ${rectangularGridYCount}`);
+
+                    console.log(`Number of Coffee Trees (Square Grid): ${numberOfCoffeeTreesForSquareGrid}`);
+                    console.log(`Number of Coffee Trees (Rectangular Grid): ${numberOfCoffeeTreesForRectangularGrid}`);
+
 
                     function storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY) {
                         const format = new ol.format.GeoJSON();
@@ -6396,7 +6510,8 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     return [nx, ny];
                 }
 
-                function addAndTrimFeatures(layer, coords, polygon, gridType) {
+                //For squareGrid and rectangulaGrid
+                function addAndTrimLineFeatures(layer, coords, polygon, gridType) {
                     const source = layer.getSource();
 
                     for (let i = 0, len = coords.length; i < len; i += 2) {
@@ -6435,8 +6550,26 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     }
                 }
 
+                //for triangularGrid
+                function addAndTrimPolygonFeatures(layer, coords, polygon) {
+                    const source = layer.getSource();
 
+                    coords.forEach(triangleCoords => {
+                        const geometry = new ol.geom.Polygon([triangleCoords]);
 
+                        var geometry3857 = geometry.getCoordinates()[0];
+                        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+                        var geojson = turf.polygon([geometry4326]);
+
+                        var intersected = turf.intersect(geojson, polygon);
+
+                        if (intersected) {
+                            var intersected3857 = new ol.geom.Polygon(intersected.geometry.coordinates.map(ring => ring.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857'))));
+
+                            source.addFeature(new ol.Feature(intersected3857));
+                        }
+                    });
+                }
 
 
 
@@ -6448,6 +6581,7 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     map.removeLayer(squareGridY);
                     map.removeLayer(rectangularGridX);
                     map.removeLayer(rectangularGridY);
+                    map.removeLayer(triangularGrid);
                 }
 
 
@@ -6998,7 +7132,7 @@ height: 30px;
 
 
 
-            let farmVectorLayer; // Declare the farmVectorLayer variable outside the function
+            let farmVectorLayer;
             // Function to retrieve stored FARM POLYGON from local storage
             function getStoredPolygon() {
                 const storedPolygonString = localStorage.getItem('enfarm_polygon_coordinates');
