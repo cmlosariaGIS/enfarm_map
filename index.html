@@ -6411,6 +6411,7 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                 let squareGridYCount = 0;
                 let rectangularGridXCount = 0;
                 let rectangularGridYCount = 0;
+                let drawnPolygonGeoJSON;
 
                 draw.on('drawend', function (evt) {
                     const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
@@ -6505,18 +6506,10 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                         }
                     }
 
-                    // Add vertices of triangles to intersectionPoints
-                    // Remove this part
-                    // triangularGridCoords.forEach(triangle => {
-                    //     triangle.slice(0, -1).forEach(vertex => {
-                    //         triangularGridIntersectionPoints.getSource().addFeature(new ol.Feature(new ol.geom.Point(vertex)));
-                    //     });
-                    // });
-
 
                     var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
                     var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
-                    var drawnPolygonGeoJSON = turf.polygon([geometry4326]);
+                    drawnPolygonGeoJSON = turf.polygon([geometry4326]);
 
                     addAndTrimLineFeatures(squareGridX, squareXCoords, drawnPolygonGeoJSON, 'squareGridX');
                     addAndTrimLineFeatures(squareGridY, squareYCoords, drawnPolygonGeoJSON, 'squareGridY');
@@ -6611,6 +6604,11 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
 
                     storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
 
+                    // Use setTimeout to delay the execution of countIntersectionPoints
+                    setTimeout(countIntersectionPoints, 5000); // wait 5000 milliseconds (1 second) before executing countIntersectionPoints
+
+                    // Call the function to count intersection points after they have been calculated
+                    countIntersectionPoints();
                 });
 
                 function rotatePoint(point, center, angle) {
@@ -6732,6 +6730,49 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                             });
                         }
                     });
+                }
+
+
+
+                function countIntersectionPoints() {
+                    const squareGridIntersectionPointCount = countPointsInsidePolygon(squareGridIntersectionPoints, drawnPolygonGeoJSON);
+                    const rectangularGridIntersectionPointCount = countPointsInsidePolygon(rectangularGridIntersectionPoints, drawnPolygonGeoJSON);
+                    const triangularGridIntersectionPointCount = countPointsInsidePolygon(triangularGridIntersectionPoints, drawnPolygonGeoJSON);
+
+                    console.log(`Number of intersection points for square grid: ${squareGridIntersectionPointCount}`);
+                    console.log(`Number of intersection points for rectangular grid: ${rectangularGridIntersectionPointCount}`);
+                    console.log(`Number of intersection points for triangular grid: ${triangularGridIntersectionPointCount}`);
+                }
+
+                function countPointsInsidePolygon(layer, polygon) {
+                    const features = layer.getSource().getFeatures();
+                    let count = 0;
+
+                    // Create a set to store unique points
+                    let uniquePoints = new Set();
+
+                    for (let i = 0; i < features.length; i++) {
+                        const feature = features[i];
+                        const point3857 = feature.getGeometry().getCoordinates();
+                        const point4326 = ol.proj.transform(point3857, 'EPSG:3857', 'EPSG:4326');
+                        const point = turf.point(point4326);
+
+                        // Convert the point to a string and add it to the set
+                        const pointString = JSON.stringify(point);
+                        uniquePoints.add(pointString);
+                    }
+
+                    // Iterate over the unique points and count the ones that are inside the polygon
+                    uniquePoints.forEach(pointString => {
+                        const point = JSON.parse(pointString);
+
+                        // Increase the count if the point is inside the polygon
+                        if (turf.booleanPointInPolygon(point, polygon)) {
+                            count++;
+                        }
+                    });
+
+                    return count;
                 }
 
 
