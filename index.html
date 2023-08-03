@@ -6580,40 +6580,34 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                         calculateIntersectionPoints([triangularGrid], triangularGridIntersectionPoints);
                     }
 
-// Calculate intersection points for given layers and store them in the given intersectionPointsLayer
-function calculateIntersectionPoints(layers, intersectionPointsLayer) {
-    for (let i = 0; i < layers.length; i++) {
-        const features1 = layers[i].getSource().getFeatures();
-        for (let j = i + 1; j < layers.length; j++) {
-            const features2 = layers[j].getSource().getFeatures();
-            features1.forEach(feature1 => {
-                const geom1 = feature1.getGeometry();
-                features2.forEach(feature2 => {
-                    const geom2 = feature2.getGeometry();
-                    const coords1 = geom1.getCoordinates();
-                    const coords2 = geom2.getCoordinates();
-                    for (let k = 0; k < coords1.length - 1; k++) {
-                        for (let l = 0; l < coords2.length - 1; l++) {
-                            const line1 = turf.lineString([coords1[k], coords1[k + 1]]);
-                            const line2 = turf.lineString([coords2[l], coords2[l + 1]]);
-                            const intersect = turf.lineIntersect(line1, line2);
-                            if (intersect.features.length > 0) {
-                                const point = intersect.features[0].geometry.coordinates;
-                                // Transform the point to EPSG:4326 before checking if it's in the polygon
-                                const point4326 = ol.proj.transform(point, 'EPSG:3857', 'EPSG:4326');
-                                const pointGeoJSON = turf.point(point4326);
-                                if (turf.booleanPointInPolygon(pointGeoJSON, drawnPolygonGeoJSON)) {
-                                    // Only add the point as a feature if it's inside the polygon
-                                    intersectionPointsLayer.getSource().addFeature(new ol.Feature(new ol.geom.Point(point)));
-                                }
+                    // Calculate intersection points for given layers and store them in the given intersectionPointsLayer
+                    function calculateIntersectionPoints(layers, intersectionPointsLayer) {
+                        for (let i = 0; i < layers.length; i++) {
+                            const features1 = layers[i].getSource().getFeatures();
+                            for (let j = i + 1; j < layers.length; j++) {
+                                const features2 = layers[j].getSource().getFeatures();
+                                features1.forEach(feature1 => {
+                                    const geom1 = feature1.getGeometry();
+                                    features2.forEach(feature2 => {
+                                        const geom2 = feature2.getGeometry();
+                                        const coords1 = geom1.getCoordinates();
+                                        const coords2 = geom2.getCoordinates();
+                                        for (let k = 0; k < coords1.length - 1; k++) {
+                                            for (let l = 0; l < coords2.length - 1; l++) {
+                                                const line1 = turf.lineString([coords1[k], coords1[k + 1]]);
+                                                const line2 = turf.lineString([coords2[l], coords2[l + 1]]);
+                                                const intersect = turf.lineIntersect(line1, line2);
+                                                if (intersect.features.length > 0) {
+                                                    const point = intersect.features[0].geometry.coordinates;
+                                                    intersectionPointsLayer.getSource().addFeature(new ol.Feature(new ol.geom.Point(point)));
+                                                }
+                                            }
+                                        }
+                                    });
+                                });
                             }
                         }
                     }
-                });
-            });
-        }
-    }
-}
 
                     storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
 
@@ -6667,31 +6661,66 @@ function calculateIntersectionPoints(layers, intersectionPointsLayer) {
                     }
                 }
 
-//for triangularGrid
-function addAndTrimPolygonFeatures(layer, coords, polygon) {
-    const source = layer.getSource();
+                //for triangularGrid
+                /*function addAndTrimPolygonFeatures(layer, coords, polygon) {
+                    const source = layer.getSource();
 
-    coords.forEach(triangleCoords => {
-        const geometry = new ol.geom.Polygon([triangleCoords]);
+                    coords.forEach(triangleCoords => {
+                        const geometry = new ol.geom.Polygon([triangleCoords]);
 
-        var geometry3857 = geometry.getCoordinates()[0];
-        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
-        var geojson = turf.polygon([geometry4326]);
+                        var geometry3857 = geometry.getCoordinates()[0];
+                        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+                        var geojson = turf.polygon([geometry4326]);
 
-        var intersected = turf.intersect(geojson, polygon);
+                        var intersected = turf.intersect(geojson, polygon);
 
-        if (intersected) {
-            var intersected3857 = new ol.geom.Polygon(intersected.geometry.coordinates.map(ring => ring.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857'))));
+                        if (intersected) {
+                            var intersected3857 = new ol.geom.Polygon(intersected.geometry.coordinates.map(ring => ring.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857'))));
 
-            source.addFeature(new ol.Feature(intersected3857));
+                            source.addFeature(new ol.Feature(intersected3857));
 
-            // Add the vertices of the intersected triangle to the intersection points layer
-            intersected3857.getCoordinates()[0].slice(0, -1).forEach(vertex => {
-                triangularGridIntersectionPoints.getSource().addFeature(new ol.Feature(new ol.geom.Point(vertex)));
-            });
-        }
-    });
-}
+                            // Add the vertices of the intersected triangle to the intersection points layer
+                            intersected3857.getCoordinates()[0].slice(0, -1).forEach(vertex => {
+                                triangularGridIntersectionPoints.getSource().addFeature(new ol.Feature(new ol.geom.Point(vertex)));
+                            });
+                        }
+                    });
+                }*/
+
+                function addAndTrimPolygonFeatures(layer, coords, polygon) {
+                    const source = layer.getSource();
+
+                    coords.forEach(triangleCoords => {
+                        const geometry = new ol.geom.Polygon([triangleCoords]);
+
+                        var geometry3857 = geometry.getCoordinates()[0];
+                        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
+                        var geojson = turf.polygon([geometry4326]);
+
+                        var intersected = turf.intersect(geojson, polygon);
+
+                        if (intersected) {
+                            var intersected3857 = new ol.geom.Polygon(intersected.geometry.coordinates.map(ring => ring.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857'))));
+
+                            source.addFeature(new ol.Feature(intersected3857));
+
+                            // Add the vertices of the intersected triangle to the intersection points layer
+                            intersected3857.getCoordinates()[0].slice(0, -1).forEach(vertex => {
+                                // Convert the vertex to EPSG:4326
+                                var vertex4326 = ol.proj.transform(vertex, 'EPSG:3857', 'EPSG:4326');
+
+                                // Create a turf point from the vertex
+                                var point = turf.point(vertex4326);
+
+                                // Check if the point is inside the polygon but not on the boundary
+                                if (turf.booleanPointInPolygon(point, polygon, { ignoreBoundary: true })) {
+                                    triangularGridIntersectionPoints.getSource().addFeature(new ol.Feature(new ol.geom.Point(vertex)));
+                                }
+                            });
+                        }
+                    });
+                }
+
 
 
 
