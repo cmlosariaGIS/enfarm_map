@@ -6264,39 +6264,34 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                 });
 
 
-// Create a new layer to store the intersection points
-const intersectionPoints = new ol.layer.Vector({
-    source: new ol.source.Vector(),
-    style: function (feature) {
-        const zoom = map.getView().getZoom();
-        const isZoom19AndAbove = zoom >= 23;
+                // Create a new layer to store the intersection points (Coffee Points)
+                const intersectionPoints = new ol.layer.Vector({
+                    source: new ol.source.Vector(),
+                    style: function (feature) {
+                        const zoom = map.getView().getZoom();
+                        const isZoom19AndAbove = zoom >= 23;
 
-        if (isZoom19AndAbove) {
-            // Show the trees only at zoom level 19 and above
-            return new ol.style.Style({
-                image: new ol.style.Icon({
-                    src: 'https://i.ibb.co/hDYvzYs/icons8-tree-64.png',
-                    scale: 1,
-                }),
-                stroke: new ol.style.Stroke({
-                    color: 'white',
-                    width: 1,
-                }),
-                fill: new ol.style.Fill({
-                    color: 'green',
-                }),
-            });
-        } else {
-            // Return null style (no tree icon) for zoom levels below 19
-            return null;
-        }
-    },
-})
-
-
-
-
-
+                        if (isZoom19AndAbove) {
+                            // Show the trees only at zoom level 19 and above
+                            return new ol.style.Style({
+                                image: new ol.style.Icon({
+                                    src: 'https://i.ibb.co/hDYvzYs/icons8-tree-64.png',
+                                    scale: 1,
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: 'white',
+                                    width: 1,
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: 'green',
+                                }),
+                            });
+                        } else {
+                            // Return null style (no tree icon) for zoom levels below 19
+                            return null;
+                        }
+                    },
+                })
 
                 map.addLayer(squareGridX);
                 map.addLayer(squareGridY);
@@ -6479,6 +6474,13 @@ const intersectionPoints = new ol.layer.Vector({
                             }
                         }
                     }
+
+                    // Add vertices of triangles to intersectionPoints
+                    triangularGridCoords.forEach(triangle => {
+                        triangle.slice(0, -1).forEach(vertex => {
+                            intersectionPoints.getSource().addFeature(new ol.Feature(new ol.geom.Point(vertex)));
+                        });
+                    });
 
 
                     var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
