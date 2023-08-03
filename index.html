@@ -6263,12 +6263,35 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     })
                 });
 
+                // Create a new layer to store the intersection points
+                const intersectionPoints = new ol.layer.Vector({
+                    source: new ol.source.Vector(),
+                    style: new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: 'https://i.ibb.co/hDYvzYs/icons8-tree-64.png',
+                            scale: .75,
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: 'white',
+                            width: 1
+                        }),
+                        fill: new ol.style.Fill({
+                            color: 'green'
+                        }),
+                    })
+                });
+
+
+
+
+
 
                 map.addLayer(squareGridX);
                 map.addLayer(squareGridY);
                 map.addLayer(rectangularGridX);
                 map.addLayer(rectangularGridY);
                 map.addLayer(triangularGrid);
+                map.addLayer(intersectionPoints);
 
                 // Initially, hide the rectangularGrid.
                 rectangularGridX.setVisible(false);
@@ -6501,6 +6524,34 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                         localStorage.setItem('rectangularGridX', JSON.stringify(rectangularGridXFeaturesGeoJSON));
                         localStorage.setItem('rectangularGridY', JSON.stringify(rectangularGridYFeaturesGeoJSON));
                         localStorage.setItem('triangularGrid', JSON.stringify(triangularGridFeaturesGeoJSON));
+
+                        // Calculate intersection points
+                        const layers = [squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid];
+                        for (let i = 0; i < layers.length; i++) {
+                            const features1 = layers[i].getSource().getFeatures();
+                            for (let j = i + 1; j < layers.length; j++) {
+                                const features2 = layers[j].getSource().getFeatures();
+                                features1.forEach(feature1 => {
+                                    const geom1 = feature1.getGeometry();
+                                    features2.forEach(feature2 => {
+                                        const geom2 = feature2.getGeometry();
+                                        const coords1 = geom1.getCoordinates();
+                                        const coords2 = geom2.getCoordinates();
+                                        for (let k = 0; k < coords1.length - 1; k++) {
+                                            for (let l = 0; l < coords2.length - 1; l++) {
+                                                const line1 = turf.lineString([coords1[k], coords1[k + 1]]);
+                                                const line2 = turf.lineString([coords2[l], coords2[l + 1]]);
+                                                const intersect = turf.lineIntersect(line1, line2);
+                                                if (intersect.features.length > 0) {
+                                                    const point = intersect.features[0].geometry.coordinates;
+                                                    intersectionPoints.getSource().addFeature(new ol.Feature(new ol.geom.Point(point)));
+                                                }
+                                            }
+                                        }
+                                    });
+                                });
+                            }
+                        }
                     }
 
                     storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
