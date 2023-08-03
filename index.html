@@ -1614,6 +1614,80 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             z-index: 9999;
         }
+
+
+
+        /*Coffee Count*/
+
+        #floating-container {
+            position: fixed;
+            bottom: 120px;
+            left: 160px;
+            background-color: rgba(255, 255, 255, 1);
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 20;
+            width: 350px;
+            /* Increase the width to accommodate the image */
+        }
+
+        #floating-container h2 {
+            margin: 0;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 30px;
+            color: #515151;
+
+        }
+
+        #floating-container div {
+            border: 1px solid #ffffff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 30px;
+
+            display: flex;
+            /* New property */
+            align-items: center;
+            /* New property */
+        }
+
+        #floating-container img {
+            margin-right: 10px;
+            /* New property */
+        }
+
+        #floating-container p {
+            margin: 0;
+            /*color: #333;*/
+            font-size: 1em;
+        }
+
+        .countContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.countItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.countItem img {
+    height: 50px;
+    width: 50px;
+}
+
+.countItem p {
+    margin: 0;
+}
+
+
     </style>
 </head>
 
@@ -1625,10 +1699,37 @@
             <div class="blur-mask"></div>
         </div>
 
-        <div id="floatingWindow">
+
+        <!-- Floating Container -->
+        <div id="floating-container">
+            <h2>Information</h2>
+            <div class="countContainer" id="squareGridCountContainer">
+                <div class="countItem">
+                    <img src="https://i.ibb.co/hDYvzYs/icons8-tree-64.png" alt="tree-icon">
+                    <p id="squareGridCount">Loading...</p>
+                </div>
+            </div>
+            <div class="countContainer" id="rectangularGridCountContainer" style="display: none;">
+                <div class="countItem">
+                    <img src="https://i.ibb.co/hDYvzYs/icons8-tree-64.png" alt="tree-icon">
+                    <p id="rectangularGridCount">Loading...</p>
+                </div>
+            </div>
+            <div class="countContainer" id="triangularGridCountContainer" style="display: none;">
+                <div class="countItem">
+                    <img src="https://i.ibb.co/hDYvzYs/icons8-tree-64.png" alt="tree-icon">
+                    <p id="triangularGridCount">Loading...</p>
+                </div>
+            </div>
+        </div>
+        
+        
+
+
+        <!--<div id="floatingWindow">
             <p>Number of Coffee Trees (Square Grid): <span id="squareGridCount"></span></p>
             <p>Number of Coffee Trees (Rectangular Grid): <span id="rectangularGridCount"></span></p>
-        </div>
+        </div>-->
 
 
         <div class="gridPropertiesContainer" id="gridPropertiesContainer">
@@ -6212,6 +6313,12 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
 
                 ///CREATE FARM POLYGON WITH SQUARE, RECTANGULAR and TRIANGULAR GRID
                 let extent;
+                /*let h2Element = document.querySelector('#floating-container h2');*/
+                let squareGridCountElement = document.getElementById('squareGridCount');
+                let rectangularGridCountElement = document.getElementById('rectangularGridCount');
+                let triangularGridCountElement = document.getElementById('triangularGridCount');
+
+
                 const squareGridX = new ol.layer.Vector({
                     source: new ol.source.Vector(),
                     style: new ol.style.Style({
@@ -6342,6 +6449,12 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     squareGridIntersectionPoints.setVisible(true);
                     rectangularGridIntersectionPoints.setVisible(false);
                     triangularGridIntersectionPoints.setVisible(false);
+
+                    /*h2Element.innerText = "Square Grid Estimated Coffee Tree Count";*/
+                    squareGridCountContainer.style.display = "block";
+                    rectangularGridCountContainer.style.display = "none";
+                    triangularGridCountContainer.style.display = "none";
+
                 });
 
                 button2.addEventListener('click', function () {
@@ -6354,6 +6467,12 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     squareGridIntersectionPoints.setVisible(false);
                     rectangularGridIntersectionPoints.setVisible(true);
                     triangularGridIntersectionPoints.setVisible(false);
+
+                    /*h2Element.innerText = "Rectangular Grid Estimated Coffee Tree Count";*/
+                    squareGridCountContainer.style.display = "none";
+                    rectangularGridCountContainer.style.display = "block";
+                    triangularGridCountContainer.style.display = "none";
+
                 });
 
                 button3.addEventListener('click', function () {
@@ -6366,6 +6485,11 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     squareGridIntersectionPoints.setVisible(false);
                     rectangularGridIntersectionPoints.setVisible(false);
                     triangularGridIntersectionPoints.setVisible(true);
+
+                    /*h2Element.innerText = "Triangular Grid Estimated Coffee Tree Count";*/
+                    squareGridCountContainer.style.display = "none";
+                    rectangularGridCountContainer.style.display = "none";
+                    triangularGridCountContainer.style.display = "block";
                 });
 
 
@@ -6412,6 +6536,7 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                 let rectangularGridXCount = 0;
                 let rectangularGridYCount = 0;
                 let drawnPolygonGeoJSON;
+
 
                 draw.on('drawend', function (evt) {
                     const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
@@ -6526,8 +6651,8 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     const numberOfCoffeeTreesForRectangularGrid = rectangularGridXCount * rectangularGridYCount;
 
                     // Update the floating window with the calculated values
-                    const squareGridCountElement = document.getElementById('squareGridCount');
-                    const rectangularGridCountElement = document.getElementById('rectangularGridCount');
+                    //const squareGridCountElement = document.getElementById('squareGridCount');
+                    //const rectangularGridCountElement = document.getElementById('rectangularGridCount');
 
                     squareGridCountElement.textContent = numberOfCoffeeTreesForSquareGrid;
                     rectangularGridCountElement.textContent = numberOfCoffeeTreesForRectangularGrid;
@@ -6542,8 +6667,8 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     console.log(`▭ Rectangular grid X lines inside polygon: ${rectangularGridXCount}`);
                     console.log(`▭ Rectangular grid Y lines inside polygon: ${rectangularGridYCount}`);
 
-                    console.log(`Number of Coffee Trees (Square Grid): ${numberOfCoffeeTreesForSquareGrid}`);
-                    console.log(`Number of Coffee Trees (Rectangular Grid): ${numberOfCoffeeTreesForRectangularGrid}`);
+                    //console.log(`Number of Coffee Trees (Square Grid): ${numberOfCoffeeTreesForSquareGrid}`);
+                    //console.log(`Number of Coffee Trees (Rectangular Grid): ${numberOfCoffeeTreesForRectangularGrid}`);
 
 
                     function storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid) {
@@ -6659,41 +6784,6 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     }
                 }
 
-                //for triangularGrid
-
-                /*function addAndTrimPolygonFeatures(layer, coords, polygon) {
-                    const source = layer.getSource();
-
-                    coords.forEach(triangleCoords => {
-                        const geometry = new ol.geom.Polygon([triangleCoords]);
-
-                        var geometry3857 = geometry.getCoordinates()[0];
-                        var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
-                        var geojson = turf.polygon([geometry4326]);
-
-                        var intersected = turf.intersect(geojson, polygon);
-
-                        if (intersected) {
-                            var intersected3857 = new ol.geom.Polygon(intersected.geometry.coordinates.map(ring => ring.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857'))));
-
-                            source.addFeature(new ol.Feature(intersected3857));
-
-                            // Add the vertices of the intersected triangle to the intersection points layer
-                            intersected3857.getCoordinates()[0].slice(0, -1).forEach(vertex => {
-                                // Convert the vertex to EPSG:4326
-                                var vertex4326 = ol.proj.transform(vertex, 'EPSG:3857', 'EPSG:4326');
-
-                                // Create a turf point from the vertex
-                                var point = turf.point(vertex4326);
-
-                                // Check if the point is inside the polygon but not on the boundary
-                                if (turf.booleanPointInPolygon(point, polygon, { ignoreBoundary: true })) {
-                                    triangularGridIntersectionPoints.getSource().addFeature(new ol.Feature(new ol.geom.Point(vertex)));
-                                }
-                            });
-                        }
-                    });
-                }*/
 
                 function addAndTrimPolygonFeatures(layer, coords, polygon) {
                     const source = layer.getSource();
@@ -6739,9 +6829,15 @@ document.getElementById("apply-button").addEventListener("click", rotateGrid);
                     const rectangularGridIntersectionPointCount = countPointsInsidePolygon(rectangularGridIntersectionPoints, drawnPolygonGeoJSON);
                     const triangularGridIntersectionPointCount = countPointsInsidePolygon(triangularGridIntersectionPoints, drawnPolygonGeoJSON);
 
-                    console.log(`Number of intersection points for square grid: ${squareGridIntersectionPointCount}`);
-                    console.log(`Number of intersection points for rectangular grid: ${rectangularGridIntersectionPointCount}`);
-                    console.log(`Number of intersection points for triangular grid: ${triangularGridIntersectionPointCount}`);
+                    console.log(`Estimated Coffee Tree Count: ${squareGridIntersectionPointCount}`);
+                    squareGridCountElement.innerText = `${squareGridIntersectionPointCount} Coffee Trees`;
+
+                    console.log(`Estimated Coffee Tree Count: ${rectangularGridIntersectionPointCount}`);
+                    rectangularGridCountElement.innerText = `${rectangularGridIntersectionPointCount} Coffee Trees`;
+
+                    console.log(`Estimated Coffee Tree Count: ${triangularGridIntersectionPointCount}`);
+                    triangularGridCountElement.innerText = `${triangularGridIntersectionPointCount} Coffee Trees`;
+
                 }
 
                 function countPointsInsidePolygon(layer, polygon) {
