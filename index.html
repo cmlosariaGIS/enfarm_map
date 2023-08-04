@@ -1327,7 +1327,7 @@
         /****** START SCALE LINE STYLES *******/
         .ol-scale-line {
             position: fixed;
-            top: 840px;
+            top: 90%;
             left: 30px;
             background: none;
             border: none;
@@ -1621,7 +1621,7 @@
 
         #gridPatternInformation {
             position: fixed;
-            bottom: 15%;
+            top: 85%;
             left: 50%;
             transform: translate(-50%, -50%);
             background-color: rgba(255, 255, 255, 1);
@@ -1631,11 +1631,11 @@
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
             font-size: 30px;
             width: fit-content;
-            display: flex;
             align-items: center;
             justify-content: space-around;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+
 
         .countContainer {
             display: flex;
@@ -1671,7 +1671,7 @@
 
 
         <!-- Grid Pattern Information Pill -->
-        <div id="gridPatternInformation">
+        <div id="gridPatternInformation" class="hidden">
 
             <div class="countContainer" id="squareGridTreeCountContainer">
                 <img src="https://i.ibb.co/hDYvzYs/icons8-tree-64.png" alt="tree-icon">
@@ -6302,13 +6302,19 @@ height: 30px;
                         sketchingFarmFloatingTitle.style.display = "none";
                     }
 
-                    // Add a delay of 2 seconds before showing the gridPropertiesContainer
-                    setTimeout(function () {
-                        // Show the gridPropertiesContainer by adding the "visible" class to trigger the slide-down animation
-                        gridPropertiesContainer.classList.add('visible');
-                    }, 2500); // 2000 milliseconds = 2.5 seconds
-                }
-            });
+   // Add a delay of 2 seconds before showing the gridPropertiesContainer
+   setTimeout(function () {
+            // Show the gridPropertiesContainer by adding the "visible" class to trigger the slide-down animation
+            gridPropertiesContainer.classList.add('visible');
+        }, 2500); // 2500 milliseconds = 2.5 seconds
+
+        // Get the gridPatternInformation element
+        const gridPatternInformation = document.querySelector('#gridPatternInformation');
+
+        // Set the display property to flex to show the element
+        gridPatternInformation.style.display = 'flex';
+    }
+});
 
 
 
