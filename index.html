@@ -1650,7 +1650,7 @@
             height: 50px;
             width: 50px;
             vertical-align: middle;
-            /* Adjust the vertical alignment */
+            color: #515151;
         }
 
         .countContainer p {
@@ -1682,12 +1682,12 @@
             </div>
 
             <div class="countContainer" id="squareGridYCountContainer">
-                <span class="material-icons" style="font-size: 50px;">view_headline</span>
+                 <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
                 <p id="squareGridYCount">...</p>
             </div>
 
             <div class="countContainer" id="squareGridXCountContainer">
-                <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
+                <span class="material-icons" style="font-size: 50px;">view_headline</span>
                 <p id="squareGridXCount">...</p>
 
             </div>
@@ -1698,21 +1698,37 @@
             </div>
 
             <div class="countContainer" id="rectangularGridYCountContainer" style="display: none;">
-                <span class="material-icons" style="font-size: 50px;">view_headline</span>
-                <p id="rectangularYCount">...</p>
+                <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
+                <p id="rectangularGridYCount">...</p>
             </div>
 
             <div class="countContainer" id="rectangularGridXCountContainer" style="display: none;">
-                <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
+                <span class="material-icons" style="font-size: 50px;">view_headline</span>
                 <p id="rectangularGridXCount">...</p>
             </div>
-
-
 
             <div class="countContainer" id="triangularGridTreeCountContainer" style="display: none;">
                 <img src="https://i.ibb.co/hDYvzYs/icons8-tree-64.png" alt="tree-icon">
                 <p id="triangularGridCount">Loading...</p>
             </div>
+
+            <div class="countContainer" id="rectangularGridYCountContainer" style="display: none;">
+                <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
+                <p id="triangularGridYCount">...</p>
+            </div>
+
+            <div class="countContainer" id="rectangularGridXCountContainer" style="display: none;">
+                <span class="material-icons" style="font-size: 50px;">view_headline</span>
+                <p id="traingularGridXCount">...</p>
+            </div>
+
+            
+            <div class="countContainer" id="rectangularGridXCountContainer" style="display: none;">
+            <span class="material-icons" style="font-size: 50px; transform: rotate(45deg);">view_headline</span>
+                <p id="traingularGridZCount">...</p>
+            </div>
+
+            
 
         </div>
 
@@ -6709,7 +6725,7 @@
 
 
 
-                    document.getElementById('rectangularYCount').innerText = rectangularGridYCount;
+                    document.getElementById('rectangularGridYCount').innerText = rectangularGridYCount;
                     console.log(`▭ Rectangular grid Y lines inside polygon: ${rectangularGridYCount}`);
 
                     document.getElementById('rectangularGridXCount').innerText = rectangularGridXCount;
