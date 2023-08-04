@@ -1642,7 +1642,6 @@
             align-items: center;
             gap: 10px;
             margin: 10px;
-            /* Add margin to create space between divs */
         }
 
         .countContainer img,
@@ -1657,9 +1656,7 @@
             margin: 0;
             font-size: 1em;
             display: inline;
-            /* Change to inline to display horizontally */
-            line-height: 50px;
-            /* Adjust the line height to vertically center the text */
+            line-height: 1;
         }
     </style>
 </head>
@@ -1675,14 +1672,14 @@
 
         <!-- Floating Container -->
         <div id="gridPatternInformation">
-           
+
             <div class="countContainer" id="squareGridTreeCountContainer">
                 <img src="https://i.ibb.co/hDYvzYs/icons8-tree-64.png" alt="tree-icon">
                 <p id="squareGridCount">...</p>
             </div>
 
             <div class="countContainer" id="squareGridYCountContainer">
-                 <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
+                <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
                 <p id="squareGridYCount">...</p>
             </div>
 
@@ -1722,13 +1719,11 @@
                 <p id="traingularGridXCount">...</p>
             </div>
 
-            
+
             <div class="countContainer" id="rectangularGridXCountContainer" style="display: none;">
-            <span class="material-icons" style="font-size: 50px; transform: rotate(45deg);">view_headline</span>
+                <span class="material-icons" style="font-size: 50px; transform: rotate(45deg);">view_headline</span>
                 <p id="traingularGridZCount">...</p>
             </div>
-
-            
 
         </div>
 
@@ -6539,11 +6534,11 @@
                     //document.getElementById('triangularGridYCountContainer').style.display = 'block';
                     //document.getElementById('triangularrGridXCountContainer').style.display = 'block';
 
-                     // Hide elements when button2 is clicked
-                     document.getElementById('rectangularGridTreeCountContainer').style.display = 'none';
+                    // Hide elements when button2 is clicked
+                    document.getElementById('rectangularGridTreeCountContainer').style.display = 'none';
                     document.getElementById('rectangularGridYCountContainer').style.display = 'none';
                     document.getElementById('rectangularGridXCountContainer').style.display = 'none';
-                    
+
                     document.getElementById('squareGridTreeCountContainer').style.display = 'none';
                     document.getElementById('squareGridYCountContainer').style.display = 'none';
                     document.getElementById('squareGridXCountContainer').style.display = 'none';
