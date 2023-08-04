@@ -1713,17 +1713,16 @@
                 <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
                 <p id="triangularGridYCount">...</p>
             </div>
-            
+
             <div class="countContainer" id="triangularGridXCountContainer" style="display: none;">
                 <span class="material-icons" style="font-size: 50px;">view_headline</span>
                 <p id="triangularGridXCount">...</p>
             </div>
-            
+
             <div class="countContainer" id="triangularGridZCountContainer" style="display: none;">
                 <span class="material-icons" style="font-size: 50px; transform: rotate(45deg);">view_headline</span>
                 <p id="triangularGridZCount">...</p>
             </div>
-            
 
         </div>
 
@@ -5299,10 +5298,19 @@
                     rectangularGridIntersectionPoints.setVisible(false);
                     triangularGridIntersectionPoints.setVisible(false);
 
-                    /*h2Element.innerText = "Square Grid Estimated Coffee Tree Count";*/
-                    squareGridTreeCountContainer.style.display = "block";
-                    rectangularGridTreeCountContainer.style.display = "none";
-                    triangularGridTreeCountContainer.style.display = "none";
+                    document.getElementById('squareGridTreeCountContainer').style.display = 'block';
+                    document.getElementById('squareGridYCountContainer').style.display = 'block';
+                    document.getElementById('squareGridXCountContainer').style.display = 'block';
+
+                    // Hide elements when button1 is clicked
+                    document.getElementById('rectangularGridTreeCountContainer').style.display = 'none';
+                    document.getElementById('rectangularGridYCountContainer').style.display = 'none';
+                    document.getElementById('rectangularGridXCountContainer').style.display = 'none';
+
+                    document.getElementById('triangularGridTreeCountContainer').style.display = 'none';
+                    document.getElementById('triangularGridYCountContainer').style.display = 'none';
+                    document.getElementById('triangularGridXCountContainer').style.display = 'none';
+                    document.getElementById('triangularGridZCountContainer').style.display = 'none';
 
                 });
 
@@ -5317,7 +5325,6 @@
                     rectangularGridIntersectionPoints.setVisible(true);
                     triangularGridIntersectionPoints.setVisible(false);
 
-                    /*h2Element.innerText = "Rectangular Grid Estimated Coffee Tree Count";*/
                     squareGridTreeCountContainer.style.display = "none";
                     rectangularGridTreeCountContainer.style.display = "block";
                     triangularGridTreeCountContainer.style.display = "none";
