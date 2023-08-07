@@ -5827,8 +5827,8 @@
 
 
 
-// Function to remove existing grid layers
-function removeGridLayers() {
+                // Function to remove existing grid layers
+                function removeGridLayers() {
                     map.removeLayer(squareGridX);
                     map.removeLayer(squareGridY);
                     map.removeLayer(rectangularGridX);
@@ -7180,20 +7180,18 @@ height: 30px;
                     // Remove stored sensor points from local storage
                     localStorage.removeItem("enfarm_sensor_coordinates");
 
-                    // Remove all vector layers from the map in the first sweep
-                    map.getLayers().forEach(layer => {
-                        if (layer instanceof ol.layer.Vector) {
-                            map.removeLayer(layer);
-                        }
-                    });
+                    for (let i = 0; i < 5; i++) {
+                        // Remove all vector layers from the map in the first sweep
+                        map.getLayers().forEach(layer => {
+                            if (layer instanceof ol.layer.Vector) {
+                                map.removeLayer(layer);
+                            }
+                        });
+                    }
 
-                    // Remove all vector layers from the map in the second sweep (if any remain)
-                    map.getLayers().forEach(layer => {
-                        if (layer instanceof ol.layer.Vector) {
-                            map.removeLayer(layer);
-                        }
-                    });
-
+                    // Dismiss the gridPatternInformation element
+                    const gridPatternInformation = document.getElementById("gridPatternInformation");
+                    gridPatternInformation.style.display = "none";
 
 
 
@@ -7596,88 +7594,87 @@ height: 30px;
             map.addControl(scale_line);
 
 
-
-            ////////// <----- BIRDS, CLOUD, RAIN -----> \\\\\\\\\\
-
-            // Birds 
-            var birds = new ol.Overlay.AnimatedCanvas({
-                particule: ol.particule.Bird,
-                density: .03,
-                angle: Math.random() * Math.PI * 8,
-                speed: 2
-            });
-            birds.setVisible(false);
-            map.addOverlay(birds);
-
-            // Rain
-            var rain = new ol.Overlay.AnimatedCanvas({
-                particule: ol.particule.Rain,
-                density: 1,
-                angle: 2 * Math.PI / 5,
-                speed: 5
-            });
-            rain.setVisible(false);
-            map.addOverlay(rain);
-
-            // Clouds 
-            var cloud = new ol.Overlay.AnimatedCanvas({
-                particule: ol.particule.Cloud,
-                density: 2,
-                angle: Math.PI / 3,
-                speed: 1
-            });
-            cloud.setVisible(false);
-            map.addOverlay(cloud);
-
-            // Raindrop
-            var raindrop = new ol.Overlay.AnimatedCanvas({
-                particule: ol.particule.RainDrop,
-                density: 1,
-                speed: 5
-            });
-            raindrop.setVisible(false);
-            map.addOverlay(raindrop);
-
-            // Keep track of the last zoom level
-            var lastZoomLevel = -1;
-
-            map.getView().on('change:resolution', function () {
-                var zoomLevel = Math.round(map.getView().getZoom());
-
-                // Check if the zoom level has changed
-                if (zoomLevel !== lastZoomLevel) {
-                    lastZoomLevel = zoomLevel;
-                }
-
-                if (zoomLevel >= 15 && zoomLevel <= 17) {
-                    // Show birds
-                    birds.setVisible(true);
-                } else {
-                    // Hide birds
-                    birds.setVisible(false);
-                }
-
-                if (zoomLevel >= 8 && zoomLevel <= 15) {
-                    // Show clouds
-                    cloud.setVisible(true);
-                } else {
-                    // Hide clouds
-                    cloud.setVisible(false);
-                }
-            });
-
-
-            ol.particule.RainDrop = function (context, timestamp) {
-                // Update the y position based on timestamp
-                this.y = (timestamp % this.lifetime) / this.lifetime * canvas.height;
-
-                // Draw the raindrop at the new position
-                context.beginPath();
-                context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-                context.fillStyle = this.color;
-                context.fill();
-            };
-
+            /*
+                        ////////// <----- BIRDS, CLOUD, RAIN -----> \\\\\\\\\\
+            
+                        // Birds 
+                        var birds = new ol.Overlay.AnimatedCanvas({
+                            particule: ol.particule.Bird,
+                            density: .03,
+                            angle: Math.random() * Math.PI * 8,
+                            speed: 2
+                        });
+                        birds.setVisible(false);
+                        map.addOverlay(birds);
+            
+                        // Rain
+                        var rain = new ol.Overlay.AnimatedCanvas({
+                            particule: ol.particule.Rain,
+                            density: 1,
+                            angle: 2 * Math.PI / 5,
+                            speed: 5
+                        });
+                        rain.setVisible(false);
+                        map.addOverlay(rain);
+            
+                        // Clouds 
+                        var cloud = new ol.Overlay.AnimatedCanvas({
+                            particule: ol.particule.Cloud,
+                            density: 2,
+                            angle: Math.PI / 3,
+                            speed: 1
+                        });
+                        cloud.setVisible(false);
+                        map.addOverlay(cloud);
+            
+                        // Raindrop
+                        var raindrop = new ol.Overlay.AnimatedCanvas({
+                            particule: ol.particule.RainDrop,
+                            density: 1,
+                            speed: 5
+                        });
+                        raindrop.setVisible(false);
+                        map.addOverlay(raindrop);
+            
+                        // Keep track of the last zoom level
+                        var lastZoomLevel = -1;
+            
+                        map.getView().on('change:resolution', function () {
+                            var zoomLevel = Math.round(map.getView().getZoom());
+            
+                            // Check if the zoom level has changed
+                            if (zoomLevel !== lastZoomLevel) {
+                                lastZoomLevel = zoomLevel;
+                            }
+            
+                            if (zoomLevel >= 15 && zoomLevel <= 17) {
+                                // Show birds
+                                birds.setVisible(true);
+                            } else {
+                                // Hide birds
+                                birds.setVisible(false);
+                            }
+            
+                            if (zoomLevel >= 8 && zoomLevel <= 15) {
+                                // Show clouds
+                                cloud.setVisible(true);
+                            } else {
+                                // Hide clouds
+                                cloud.setVisible(false);
+                            }
+                        });
+            
+            
+                        ol.particule.RainDrop = function (context, timestamp) {
+                            // Update the y position based on timestamp
+                            this.y = (timestamp % this.lifetime) / this.lifetime * canvas.height;
+            
+                            // Draw the raindrop at the new position
+                            context.beginPath();
+                            context.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+                            context.fillStyle = this.color;
+                            context.fill();
+                        };*/
 
 
 
