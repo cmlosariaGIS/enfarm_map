@@ -1471,11 +1471,13 @@
             width: 100%;
             height: fit-content;
             transition: top 0.3s ease, opacity 0.3s ease;
+            display: none;
         }
 
         .gridPropertiesContainer.visible {
             top: 25%;
             opacity: 1;
+            display: block;
         }
 
 
@@ -2810,16 +2812,16 @@
                 gridPropertiesContainer.style.top = '-100%'; // Slide the container up
                 gridPropertiesContainer.style.opacity = '0'; // Fade out the container
 
-                // After transition ends, hide the container
+                // After transition ends, hide the container and remove the 'visible' class
                 setTimeout(() => {
                     gridPropertiesContainer.style.display = 'none';
+                    gridPropertiesContainer.classList.remove('visible'); // Remove the 'visible' class
                 }, 300); // Delay should be equal to transition duration
             }
 
-            // Attach event listener to the close button
-            document.querySelector('.closeGridPropertiesContainer').addEventListener('click', hideGridPropertiesContainer);
-
-
+            document.querySelector('.closeGridPropertiesContainer').addEventListener('click', function () {
+                gridPropertiesContainer.classList.remove('visible');
+            });
 
 
 
