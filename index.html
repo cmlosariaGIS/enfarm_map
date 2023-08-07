@@ -5169,7 +5169,6 @@
 
                 ///CREATE FARM POLYGON WITH SQUARE, RECTANGULAR and TRIANGULAR GRID
                 let extent;
-                /*let h2Element = document.querySelector('#floating-container h2');*/
                 let squareGridCountElement = document.getElementById('squareGridCount');
                 let rectangularGridCountElement = document.getElementById('rectangularGridCount');
                 let triangularGridCountElement = document.getElementById('triangularGridCount');
@@ -5450,6 +5449,8 @@
 
 
                 draw.on('drawend', function (evt) {
+
+
                     const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
 
                     let longestEdgeLength = 0;
@@ -7193,6 +7194,10 @@ height: 30px;
                     const gridPatternInformation = document.getElementById("gridPatternInformation");
                     gridPatternInformation.style.display = "none";
 
+                    // Dismiss the gridPropertiesContainer element
+                    //gridPropertiesContainer.style.display = "none"; 
+                  
+                    gridPropertiesContainer.classList.remove('visible');
 
 
 
