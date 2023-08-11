@@ -5840,52 +5840,6 @@
                 }
 
 
-                /*
-                                // Function to clip grid lines to the extent of the farm polygon
-                                function clipSquareGridToFarmPolygon() {
-                                    const gridLayers = [squareGridX, squareGridY];
-                                    const farmLayer = map.getLayers().getArray().find(layer => layer instanceof ol.layer.Vector);
-                                    const farmFeatures = farmLayer.getSource().getFeatures();
-                                    const farmGeometry = farmFeatures.length > 0 ? farmFeatures[0].getGeometry() : null;
-                
-                                    if (farmGeometry) {
-                                        var farmGeoJSON = turf.polygon([farmGeometry.getCoordinates()[0].map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'))]);
-                
-                                        gridLayers.forEach(function (layer) {
-                                            const source = layer.getSource();
-                                            const featuresToKeep = [];
-                
-                                            source.getFeatures().forEach(function (feature) {
-                                                const geometry = feature.getGeometry();
-                                                var lineGeoJSON = turf.lineString(geometry.getCoordinates().map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326')));
-                
-                                                var clipped = turf.lineOverlap(lineGeoJSON, farmGeoJSON);
-                
-                                                if (clipped.features.length > 0) {
-                                                    clipped.features.forEach(function (lineSegment) {
-                                                        var lineSegment3857 = new ol.geom.LineString(lineSegment.geometry.coordinates.map(coord => ol.proj.transform(coord, 'EPSG:4326', 'EPSG:3857')));
-                
-                                                        featuresToKeep.push(new ol.Feature(lineSegment3857));
-                                                    });
-                                                }
-                                            });
-                
-                                            source.clear();
-                                            source.addFeatures(featuresToKeep);
-                                        });
-                                    }
-                                }
-                
-                
-                             */
-
-
-
-
-
-
-
-
 
                 function rotateGrid() {
 
@@ -5960,18 +5914,20 @@
                         for (let col = 0; col < colCount; col++) {
                             let x = extent[0] + col * 3;
                             let y = extent[1] + row * halfHeight;
+
+                            // Inside the loop for populating triangularGridCoords
                             if (row % 2 === 0) {
                                 // ▽
-                                triangularGridCoords.push(rotatePoint([x, y], center, angle));
-                                triangularGridCoords.push(rotatePoint([x + 1.5, y + halfHeight], center, angle));
-                                triangularGridCoords.push(rotatePoint([x + 3, y], center, angle));
-                                triangularGridCoords.push(rotatePoint([x, y], center, angle));
-                            } else {
-                                // △
                                 triangularGridCoords.push(rotatePoint([x + 1.5, y], center, angle));
                                 triangularGridCoords.push(rotatePoint([x + 3, y + halfHeight], center, angle));
                                 triangularGridCoords.push(rotatePoint([x, y + halfHeight], center, angle));
                                 triangularGridCoords.push(rotatePoint([x + 1.5, y], center, angle));
+                            } else {
+                                // △
+                                triangularGridCoords.push(rotatePoint([x, y], center, angle));
+                                triangularGridCoords.push(rotatePoint([x + 1.5, y + halfHeight], center, angle));
+                                triangularGridCoords.push(rotatePoint([x + 3, y], center, angle));
+                                triangularGridCoords.push(rotatePoint([x, y], center, angle));
                             }
                         }
                     }
@@ -6042,7 +5998,7 @@
                     source.clear();
 
                     const lineStrings = [];
-                    for (let i = 0; i < coords.length; i += 3) {
+                    for (let i = 0; i < coords.length; i += 4) {
                         const p1 = coords[i];
                         const p2 = coords[i + 1];
                         const p3 = coords[i + 2];
@@ -6052,6 +6008,7 @@
 
                     source.addFeatures(lineStrings.map(ls => new ol.Feature(ls)));
                 }
+
 
                 function clipGridsToFarmPolygon() {
                     let farmGeometry = farmVectorLayer.getSource().getFeatures()[0].getGeometry();
@@ -6103,6 +6060,11 @@
                     //map.removeLayer(rectangularGridY);
                 }
 */
+
+
+
+
+
 
 
 
