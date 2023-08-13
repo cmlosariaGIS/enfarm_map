@@ -5449,18 +5449,32 @@
 
                 let drawnPolygonGeoJSON;
 
+                let customAngle = null; // To store the custom angle
+                let drawendEvent;
 
-                draw.on('drawend', function (evt) {
+                // Attach the "Apply" button click event listener
+                document.getElementById('apply-button').addEventListener('click', function () {
+                    const inputAngle = document.getElementById('rotate-input').value;
+                    if (inputAngle !== "") {
+                        const customAngle = parseFloat(inputAngle) * (Math.PI / 180); // Convert degree to radian
+                        if (drawendEvent) {
+                            clearExistingLayersAndSources(); // Clear existing grids and points
+                            generateGrids(drawendEvent, customAngle); // Generate grids with custom angle
+                        } else {
+                            // Handle the case where drawendEvent is not defined
+                            console.error("drawendEvent is not defined.");
+                        }
+                    }
+                });
 
 
-                    const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
-
+                function calculateAngleFromLongestEdge(coordinates) {
                     let longestEdgeLength = 0;
                     let longestEdge = [];
 
-                    for (let i = 0; i < polygonCoords.length - 1; i++) {
-                        const start = polygonCoords[i];
-                        const end = polygonCoords[i + 1];
+                    for (let i = 0; i < coordinates.length - 1; i++) {
+                        const start = coordinates[i];
+                        const end = coordinates[i + 1];
 
                         const length = Math.sqrt(Math.pow(end[0] - start[0], 2) + Math.pow(end[1] - start[1], 2));
 
@@ -5470,9 +5484,42 @@
                         }
                     }
 
-                    const angle = Math.atan2(longestEdge[1][1] - longestEdge[0][1], longestEdge[1][0] - longestEdge[0][0]);
+                    return Math.atan2(longestEdge[1][1] - longestEdge[0][1], longestEdge[1][0] - longestEdge[0][0]);
+                }
 
-                    extent = evt.feature.getGeometry().getExtent();
+                draw.on('drawend', function (evt) {
+                    // Store the event object in the drawendEvent variable
+                    drawendEvent = evt;
+
+                    let angle = customAngle || calculateAngleFromLongestEdge(evt.feature.getGeometry().getCoordinates()[0]);
+                    if (customAngle !== null) {
+                        angle = customAngle;
+                    } else {
+                        const polygonCoords = evt.feature.getGeometry().getCoordinates()[0];
+                        let longestEdgeLength = 0;
+                        let longestEdge = [];
+
+                        for (let i = 0; i < polygonCoords.length - 1; i++) {
+                            const start = polygonCoords[i];
+                            const end = polygonCoords[i + 1];
+
+                            const length = Math.sqrt(Math.pow(end[0] - start[0], 2) + Math.pow(end[1] - start[1], 2));
+
+                            if (length > longestEdgeLength) {
+                                longestEdgeLength = length;
+                                longestEdge = [start, end];
+                            }
+                        }
+
+                        angle = Math.atan2(longestEdge[1][1] - longestEdge[0][1], longestEdge[1][0] - longestEdge[0][0]);
+                    }
+
+                    generateGrids(evt, angle); // Pass evt and angle to generateGrids
+                });
+
+
+                function generateGrids(evt, angle) {
+                    const extent = evt.feature.getGeometry().getExtent();
 
                     const center = [0.5 * (extent[0] + extent[2]), 0.5 * (extent[1] + extent[3])];
 
@@ -5568,9 +5615,6 @@
                     let triangularGridZCount = Math.max(rowCount, colCount);
 
 
-
-
-
                     var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
                     var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
                     drawnPolygonGeoJSON = turf.polygon([geometry4326]);
@@ -5648,6 +5692,7 @@
 
                         // Calculate intersection points for triangular grid
                         calculateIntersectionPoints([triangularGrid], triangularGridIntersectionPoints);
+
                     }
 
                     // Calculate intersection points for given layers and store them in the given intersectionPointsLayer
@@ -5686,7 +5731,7 @@
 
                     // Call the function to count intersection points after they have been calculated
                     countIntersectionPoints();
-                });
+                };
 
                 function rotatePoint(point, center, angle) {
                     const cos = Math.cos(angle);
@@ -5824,7 +5869,24 @@
                 }
 
 
+                // Function to clear existing grid and point layers and sources
+                function clearExistingLayersAndSources() {
+                    // Clear squareGridX layer and source
+                    squareGridX.getSource().clear();
+                    // Clear squareGridY layer and source
+                    squareGridY.getSource().clear();
+                    // Clear rectangularGridX layer and source
+                    rectangularGridX.getSource().clear();
+                    // Clear rectangularGridY layer and source
+                    rectangularGridY.getSource().clear();
+                    // Clear triangularGrid layer and source
+                    triangularGrid.getSource().clear();
 
+                    // Clear intersection point layers and sources
+                    squareGridIntersectionPoints.getSource().clear();
+                    rectangularGridIntersectionPoints.getSource().clear();
+                    triangularGridIntersectionPoints.getSource().clear();
+                }
 
 
 
@@ -5841,225 +5903,37 @@
 
 
 
-                function rotateGrid() {
-                    // Extend the extent by a factor of 2 (double the size)
-                    let width = extent[2] - extent[0];
-                    let height = extent[3] - extent[1];
-                    extent = [
-                        extent[0] - width / 2,
-                        extent[1] - height / 2,
-                        extent[2] + width / 2,
-                        extent[3] + height / 2
-                    ];
 
 
-                    // Find the center of the extent
-                    const center = ol.extent.getCenter(extent);
-
-                    // Step 1: Get the current rotation of the map in radians
-                    const mapRotation = map.getView().getRotation();
-
-                    // Step 2: Adjust the rotation angle
-                    const angleInput = parseFloat(document.getElementById('rotate-input').value);
-                    const angleInRadians = ol.math.toRadians(angleInput);
-                    const adjustedAngle = angleInRadians + mapRotation;
-
-                    // Calculate grid coordinates
-                    const squareNumCellsX = Math.ceil((extent[2] - extent[0]) / 3);
-                    const squareNumCellsY = Math.ceil((extent[3] - extent[1]) / 3);
-                    const rectangularNumCellsX = Math.ceil((extent[2] - extent[0]) / 3);
-                    const rectangularNumCellsY = Math.ceil((extent[3] - extent[1]) / 2.5);
-
-                    const squareXCoords = [];
-                    for (let x = 0; x < squareNumCellsX; x++) {
-                        squareXCoords.push([extent[0] + (x * 3), extent[1]]);
-                        squareXCoords.push([extent[0] + (x * 3), extent[3]]);
-                    }
-
-                    const squareYCoords = [];
-                    for (let y = 0; y < squareNumCellsY; y++) {
-                        squareYCoords.push([extent[0], extent[1] + (y * 3)]);
-                        squareYCoords.push([extent[2], extent[1] + (y * 3)]);
-                    }
-
-
-                    const rectangularXCoords = [];
-                    for (let x = 0; x < rectangularNumCellsX; x++) {
-                        rectangularXCoords.push([extent[0] + (x * 3), extent[1]]);
-                        rectangularXCoords.push([extent[0] + (x * 3), extent[3]]);
-                    }
-
-                    const rectangularYCoords = [];
-                    for (let y = 0; y < rectangularNumCellsY; y++) {
-                        rectangularYCoords.push([extent[0], extent[1] + (y * 2.5)]);
-                        rectangularYCoords.push([extent[2], extent[1] + (y * 2.5)]);
-                    }
-
-
-                    // Use the adjusted angle for rotating grid coordinates
-                    const squareRotatedXCoords = squareXCoords.map(coord => rotateCoordinate(coord, center, adjustedAngle));
-                    const squareRotatedYCoords = squareYCoords.map(coord => rotateCoordinate(coord, center, adjustedAngle));
-                    const rectangularRotatedXCoords = rectangularXCoords.map(coord => rotateCoordinate(coord, center, adjustedAngle));
-                    const rectangularRotatedYCoords = rectangularYCoords.map(coord => rotateCoordinate(coord, center, adjustedAngle));
-
-
-                    // Update Grid Features with rotated coordinates
-                    updateGridFeatures(squareGridX, squareRotatedXCoords);
-                    updateGridFeatures(squareGridY, squareRotatedYCoords);
-                    updateGridFeatures(rectangularGridX, rectangularRotatedXCoords);
-                    updateGridFeatures(rectangularGridY, rectangularRotatedYCoords);
-
-
-                    // Triangular grid
-                    const triangularGridCoords = [];
-                    const halfHeight = Math.sqrt(3) / 2 * 3;
-                    const rowCount = Math.ceil((extent[3] - extent[1]) / halfHeight);
-                    const colCount = Math.ceil((extent[2] - extent[0]) / 3);
-                    for (let row = 0; row < rowCount; row++) {
-                        for (let col = 0; col < colCount; col++) {
-                            let x = extent[0] + col * 3;
-                            let y = extent[1] + row * halfHeight;
-                            if (row % 2 === 0) {
-                                // ▽
-                                triangularGridCoords.push([
-                                    rotatePoint([x, y], center, adjustedAngle),
-                                    rotatePoint([x + 1.5, y + halfHeight], center, adjustedAngle),
-                                    rotatePoint([x + 3, y], center, adjustedAngle),
-                                    rotatePoint([x, y], center, adjustedAngle),
-                                ]);
-                                triangularGridCoords.push([
-                                    rotatePoint([x + 1.5, y + halfHeight], center, adjustedAngle),
-                                    rotatePoint([x + 3, y], center, adjustedAngle),
-                                    rotatePoint([x + 4.5, y + halfHeight], center, adjustedAngle),
-                                    rotatePoint([x + 1.5, y + halfHeight], center, adjustedAngle),
-                                ]);
-                            } else {
-                                // △
-                                triangularGridCoords.push([
-                                    rotatePoint([x + 1.5, y], center, adjustedAngle),
-                                    rotatePoint([x + 3, y + halfHeight], center, adjustedAngle),
-                                    rotatePoint([x, y + halfHeight], center, adjustedAngle),
-                                    rotatePoint([x + 1.5, y], center, adjustedAngle),
-                                ]);
-                                triangularGridCoords.push([
-                                    rotatePoint([x + 3, y + halfHeight], center, adjustedAngle),
-                                    rotatePoint([x + 4.5, y], center, adjustedAngle),
-                                    rotatePoint([x + 6, y + halfHeight], center, adjustedAngle),
-                                    rotatePoint([x + 3, y + halfHeight], center, adjustedAngle),
-                                ]);
-                            }
-                        }
-                    }
-
-
-                    updateTriangularGrid(triangularGrid, triangularGridCoords);
-
-
-
-                    extent = [
-                        Math.min(
-                            ...squareRotatedXCoords.flat().map(coord => coord[0]),
-                            ...rectangularRotatedXCoords.flat().map(coord => coord[0]),
-                            ...triangularGridCoords.flat().map(coord => coord[0])
-                        ),
-                        Math.min(
-                            ...squareRotatedYCoords.flat().map(coord => coord[1]),
-                            ...rectangularRotatedYCoords.flat().map(coord => coord[1]),
-                            ...triangularGridCoords.flat().map(coord => coord[1])
-                        ),
-                        Math.max(
-                            ...squareRotatedXCoords.flat().map(coord => coord[0]),
-                            ...rectangularRotatedXCoords.flat().map(coord => coord[0]),
-                            ...triangularGridCoords.flat().map(coord => coord[0])
-                        ),
-                        Math.max(
-                            ...squareRotatedYCoords.flat().map(coord => coord[1]),
-                            ...rectangularRotatedYCoords.flat().map(coord => coord[1]),
-                            ...triangularGridCoords.flat().map(coord => coord[1])
-                        )
-                    ];
-
-
-
-
-
-                    clipGridsToFarmPolygon();
-
-                }
-
-
-
-
-                function updateGridFeatures(layer, coords) {
-                    const source = layer.getSource();
-                    source.clear();
-
-                    const lineStrings = [];
-                    for (let i = 0; i < coords.length; i += 2) {
-                        const start = coords[i];
-                        const end = coords[i + 1];
-                        const lineString = new ol.geom.LineString([start, end]);
-                        lineStrings.push(lineString);
-                    }
-
-                    source.addFeatures(lineStrings.map(ls => new ol.Feature(ls)));
-                }
-
-                function rotateCoordinate(coord, pivot, angle) {
-                    const [x, y] = coord;
-                    const [pivotX, pivotY] = pivot;
-                    const rotatedX = pivotX + (x - pivotX) * Math.cos(angle) - (y - pivotY) * Math.sin(angle);
-                    const rotatedY = pivotY + (x - pivotX) * Math.sin(angle) + (y - pivotY) * Math.cos(angle);
-                    return [rotatedX, rotatedY];
-                }
-
-
-
-                function updateTriangularGrid(layer, coords) {
-                    const source = layer.getSource();
-                    source.clear();
-
-                    const lineStrings = [];
-                    coords.forEach(triangleCoords => {
-                        const lineString = new ol.geom.LineString(triangleCoords);
-                        lineStrings.push(lineString);
-                    });
-
-                    source.addFeatures(lineStrings.map(ls => new ol.Feature(ls)));
-                }
-
-
-
-                function clipGridsToFarmPolygon() {
-                    let farmGeometry = farmVectorLayer.getSource().getFeatures()[0].getGeometry();
-                    console.log(farmGeometry);
-
-                    [squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid].forEach(layer => {
-                        let source = layer.getSource();
-                        let features = source.getFeatures();
-
-                        features.forEach((feature, index) => {
-                            let geometry = feature.getGeometry();
-                            let intersection = farmGeometry.intersects(geometry);
-
-
-                            if (intersection) {
-                                let clippedGeom = geometry.intersection(farmGeometry);
-                                if (clippedGeom) {
-                                    feature.setGeometry(clippedGeom);
-                                } else {
-                                    source.removeFeature(feature);
-                                }
-                            } else {
-                                source.removeFeature(feature);
-                            }
-                        });
-                    });
-                }
-
-                document.getElementById("apply-button").addEventListener("click", rotateGrid);
-
-
+                /* function clipGridsToFarmPolygon() {
+                     let farmGeometry = farmVectorLayer.getSource().getFeatures()[0].getGeometry();
+                     console.log(farmGeometry);
+ 
+                     [squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid].forEach(layer => {
+                         let source = layer.getSource();
+                         let features = source.getFeatures();
+ 
+                         features.forEach((feature, index) => {
+                             let geometry = feature.getGeometry();
+                             let intersection = farmGeometry.intersects(geometry);
+ 
+ 
+                             if (intersection) {
+                                 let clippedGeom = geometry.intersection(farmGeometry);
+                                 if (clippedGeom) {
+                                     feature.setGeometry(clippedGeom);
+                                 } else {
+                                     source.removeFeature(feature);
+                                 }
+                             } else {
+                                 source.removeFeature(feature);
+                             }
+                         });
+                     });
+                 }
+ 
+                 document.getElementById("apply-button").addEventListener("click", rotateGrid);
+ */
 
                 /*
                 // Function to add new grid layers based on the rotated angle
