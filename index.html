@@ -1504,7 +1504,6 @@
             transition: top 0.3s ease, opacity 0.3s ease;
             white-space: nowrap;
             margin-top: 0px;
-            /* Adjust the margin to reduce the vertical gap */
             margin-bottom: -20px;
         }
 
@@ -1522,15 +1521,32 @@
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
         }
 
-        .gridAngleInputContainer button {
+        .gridAngleInputContainer button#apply-button {
             padding: 20px 20px;
             font-size: 25px;
-            background-color: #007BFF;
-            color: #fff;
+            background-color: #ffffff;
+            color: #515151;
             border: none;
             border-radius: 20px;
             cursor: pointer;
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            margin-right: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+        }
+
+        .gridAngleInputContainer button#apply-button i.material-icons {
+            font-size: 28px;
+            /* Adjust the icon size */
+            margin-right: 10px;
+            /* Add space between icon and text */
+        }
+
+        /* To retain the hover effect, update the hover styles */
+        .gridAngleInputContainer button#apply-button:hover {
+            background-color: #f5f5f5;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
         }
 
         .gridAngleInputContainer button#save-button {
@@ -1542,6 +1558,18 @@
             border-radius: 100px;
             cursor: pointer;
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .gridAngleInputContainer button#save-button .material-icons-outlined {
+            margin-right: 10px;
+            font-size: 28px;
+            color: #fff;
+            font-size: 40px;
+
         }
 
         .gridAngleInputContainer.slide-down {
@@ -1787,8 +1815,12 @@
                             Xoay lưới trang trại:</p>
                     </label>
                     <input type="text" id="rotate-input" placeholder=" 0°">
-                    <button id="apply-button">Áp dụng</button>
-                    <button id="save-button">Save</button>
+                    <button id="apply-button">
+                        <i class="material-icons">rotate_90_degrees_ccw</i> Áp dụng
+                    </button>
+                    <button id="save-button">
+                        <span class="material-icons-outlined">save</span> Cứu
+                    </button>
                 </div>
             </div>
             <br>
@@ -5900,66 +5932,6 @@
                     map.removeLayer(rectangularGridY);
                     map.removeLayer(triangularGrid);
                 }
-
-
-
-
-
-                /* function clipGridsToFarmPolygon() {
-                     let farmGeometry = farmVectorLayer.getSource().getFeatures()[0].getGeometry();
-                     console.log(farmGeometry);
- 
-                     [squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid].forEach(layer => {
-                         let source = layer.getSource();
-                         let features = source.getFeatures();
- 
-                         features.forEach((feature, index) => {
-                             let geometry = feature.getGeometry();
-                             let intersection = farmGeometry.intersects(geometry);
- 
- 
-                             if (intersection) {
-                                 let clippedGeom = geometry.intersection(farmGeometry);
-                                 if (clippedGeom) {
-                                     feature.setGeometry(clippedGeom);
-                                 } else {
-                                     source.removeFeature(feature);
-                                 }
-                             } else {
-                                 source.removeFeature(feature);
-                             }
-                         });
-                     });
-                 }
- 
-                 document.getElementById("apply-button").addEventListener("click", rotateGrid);
- */
-
-                /*
-                // Function to add new grid layers based on the rotated angle
-                function addGridLayers(squareXCoords, squareYCoords) {
-                    squareGridX.setSource(new ol.source.Vector());
-                    squareGridY.setSource(new ol.source.Vector());
-
-                    var xFeatures = squareXCoords.map(coord => new ol.Feature(new ol.geom.LineString(coord)));
-                    var yFeatures = squareYCoords.map(coord => new ol.Feature(new ol.geom.LineString(coord)));
-
-                    squareGridX.getSource().addFeatures(xFeatures);
-                    squareGridY.getSource().addFeatures(yFeatures);
-
-                    map.addLayer(squareGridX);
-                    map.addLayer(squareGridY);
-                    map.addLayer(rectangularGridX);
-                    map.addLayer(rectangularGridY);
-
-                    //map.removeLayer(rectangularGridX);
-                    //map.removeLayer(rectangularGridY);
-                }
-*/
-
-
-
-
 
 
 
