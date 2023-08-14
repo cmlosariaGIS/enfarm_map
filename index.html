@@ -5878,8 +5878,6 @@
 
                 //GRID TYPE/PATTERN PROPERTIES
 
-
-
                 // Function to hide gridPropertiesContainer with slide-up animation
                 function hideGridPropertiesContainer() {
                     const gridPropertiesContainer = document.getElementById('gridPropertiesContainer');
@@ -5940,8 +5938,6 @@
                 });
 
 
-
-
                 // Variable to keep track of the last selected grid type
                 var lastSelectedGridType = '';
 
@@ -5978,8 +5974,6 @@
 
 
 
-
-
                 //APPLYING A CUSTOM GRID ORIENTATION ANGLE 
                 // Attach the "Apply" button click event listener
                 document.getElementById('apply-button').addEventListener('click', function () {
@@ -5995,6 +5989,77 @@
                         }
                     }
                 });
+
+                
+// Define the storeIntersectionPoints function
+function storeIntersectionPoints(squareGridIntersectionPoints, rectangularGridIntersectionPoints, triangularGridIntersectionPoints) {
+    // Extract relevant data for each type of grid
+    const storedSquareGridIntersectionPoints = squareGridIntersectionPoints.map(point => ({ x: point[0], y: point[1] }));
+    const storedRectangularGridIntersectionPoints = rectangularGridIntersectionPoints.map(point => ({ x: point[0], y: point[1] }));
+    const storedTriangularGridIntersectionPoints = triangularGridIntersectionPoints.map(point => ({ x: point[0], y: point[1] }));
+
+    // Store the extracted data without circular references
+    localStorage.setItem('squareGridIntersectionPoints', JSON.stringify(storedSquareGridIntersectionPoints));
+    localStorage.setItem('rectangularGridIntersectionPoints', JSON.stringify(storedRectangularGridIntersectionPoints));
+    localStorage.setItem('triangularGridIntersectionPoints', JSON.stringify(storedTriangularGridIntersectionPoints));
+
+    // Log the stored intersection points for debugging
+    console.log('Stored squareGridIntersectionPoints:', storedSquareGridIntersectionPoints);
+    console.log('Stored rectangularGridIntersectionPoints:', storedRectangularGridIntersectionPoints);
+    console.log('Stored triangularGridIntersectionPoints:', storedTriangularGridIntersectionPoints);
+}
+
+
+
+               // Define the storeSelectedGridFeatures function
+function storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid) {
+    const format = new ol.format.GeoJSON();
+
+    // Clear existing grid data from local storage
+    localStorage.removeItem('squareGridX');
+    localStorage.removeItem('squareGridY');
+    localStorage.removeItem('rectangularGridX');
+    localStorage.removeItem('rectangularGridY');
+    localStorage.removeItem('triangularGrid');
+
+    // Determine which grid to store based on the last selected grid type
+    switch (lastSelectedGridType) {
+        case 'squareGrid':
+            const squareGridXFeaturesGeoJSON = squareGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+            const squareGridYFeaturesGeoJSON = squareGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+            localStorage.setItem('squareGridX', JSON.stringify(squareGridXFeaturesGeoJSON));
+            localStorage.setItem('squareGridY', JSON.stringify(squareGridYFeaturesGeoJSON));
+            storeIntersectionPoints(squareGridIntersectionPoints, [], []);
+            break;
+
+        case 'rectangularGrid':
+            const rectangularGridXFeaturesGeoJSON = rectangularGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+            const rectangularGridYFeaturesGeoJSON = rectangularGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+            localStorage.setItem('rectangularGridX', JSON.stringify(rectangularGridXFeaturesGeoJSON));
+            localStorage.setItem('rectangularGridY', JSON.stringify(rectangularGridYFeaturesGeoJSON));
+            storeIntersectionPoints([], rectangularGridIntersectionPoints, []);
+            break;
+
+        case 'triangularGrid':
+            const triangularGridFeaturesGeoJSON = triangularGrid.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+            localStorage.setItem('triangularGrid', JSON.stringify(triangularGridFeaturesGeoJSON));
+            storeIntersectionPoints([], [], triangularGridIntersectionPoints);
+            break;
+    }
+
+    // Inside the storeSelectedGridFeatures function
+console.log('Storing intersection points:', squareGridIntersectionPoints, rectangularGridIntersectionPoints, triangularGridIntersectionPoints);
+storeIntersectionPoints(squareGridIntersectionPoints, rectangularGridIntersectionPoints, triangularGridIntersectionPoints);
+
+}
+
+// Event listener for the save-button
+document.getElementById('save-button').addEventListener('click', function () {
+    storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
+});
+
+
+
 
 
 
@@ -6550,8 +6615,8 @@ height: 30px;
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'black',
-                                width: 4
+                                color: 'white',
+                                width: 10
                             })
                         })
                     });
@@ -6562,8 +6627,8 @@ height: 30px;
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'black',
-                                width: 4
+                                color: 'white',
+                                width: 10
                             })
                         })
                     });
@@ -6604,8 +6669,8 @@ height: 30px;
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'black',
-                                width: 4
+                                color: 'white',
+                                width: 10
                             })
                         })
                     });
@@ -6616,8 +6681,8 @@ height: 30px;
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'black',
-                                width: 4
+                                color: 'white',
+                                width: 10
                             })
                         })
                     });
@@ -6659,8 +6724,8 @@ height: 30px;
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'black',
-                                width: 4
+                                color: 'white',
+                                width: 10
                             })
                         })
                     });
@@ -6677,6 +6742,73 @@ height: 30px;
 
             // Call the function to retrieve and display the stored polygon
             getStoredPolygon();
+
+
+
+
+
+
+
+            function displayIntersectionPoints(points, color) {
+    const format = new ol.format.GeoJSON();
+
+    const features = points.map(point => format.readFeature(point));
+
+    const vectorLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+            features: features
+        }),
+        style: new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 5,
+                fill: new ol.style.Fill({
+                    color: color
+                }),
+                stroke: new ol.style.Stroke({
+                    color: 'white',
+                    width: 2
+                })
+            })
+        })
+    });
+
+    map.addLayer(vectorLayer);
+}
+
+
+
+            function retrieveIntersectionPoints() {
+    const squareGridIntersectionPointsString = localStorage.getItem('squareGridIntersectionPoints');
+    const rectangularGridIntersectionPointsString = localStorage.getItem('rectangularGridIntersectionPoints');
+    const triangularGridIntersectionPointsString = localStorage.getItem('triangularGridIntersectionPoints');
+
+    if (squareGridIntersectionPointsString) {
+        const squareGridIntersectionPoints = JSON.parse(squareGridIntersectionPointsString);
+        // Display squareGridIntersectionPoints using black style
+        displayIntersectionPoints(squareGridIntersectionPoints, 'black');
+    } else {
+        console.log('Square grid intersection points not found in local storage.');
+    }
+
+    if (rectangularGridIntersectionPointsString) {
+        const rectangularGridIntersectionPoints = JSON.parse(rectangularGridIntersectionPointsString);
+        // Display rectangularGridIntersectionPoints using black style
+        displayIntersectionPoints(rectangularGridIntersectionPoints, 'black');
+    } else {
+        console.log('Rectangular grid intersection points not found in local storage.');
+    }
+
+    if (triangularGridIntersectionPointsString) {
+        const triangularGridIntersectionPoints = JSON.parse(triangularGridIntersectionPointsString);
+        // Display triangularGridIntersectionPoints using black style
+        displayIntersectionPoints(triangularGridIntersectionPoints, 'black');
+    } else {
+        console.log('Triangular grid intersection points not found in local storage.');
+    }
+}
+
+// Call the function to retrieve and display the stored intersection points
+retrieveIntersectionPoints();
 
 
 
