@@ -2800,60 +2800,7 @@
 
         <script>
 
-            //GRID TYPE/PATTERN PROPERTIES
-            // Function to trigger the slide-down animation
-            function slideDownAnimation() {
-                // Get the gridPropertiesContainer element
-                const gridPropertiesContainer = document.getElementById('gridPropertiesContainer');
 
-                // Clear any previous transition and opacity styles
-                gridPropertiesContainer.style.transition = '';
-                gridPropertiesContainer.style.opacity = '1';
-
-                // Get the current height of the gridPropertiesContainer
-                const height = gridPropertiesContainer.clientHeight;
-
-                // Force a repaint to make sure the transition is applied
-                void gridPropertiesContainer.offsetHeight;
-
-                // Add the transition styles and set the final position
-                gridPropertiesContainer.style.transition = 'top 0.3s ease, opacity 0.3s ease';
-                gridPropertiesContainer.style.top = '20%'; // Move the container down
-                gridPropertiesContainer.style.opacity = '1'; // Fade in the container
-            }
-
-            // Grid Type Options
-            var buttons1 = document.querySelectorAll('.gridTypeOptionBtn1');
-            var buttons2 = document.querySelectorAll('.gridTypeOptionBtn2');
-            var buttons3 = document.querySelectorAll('.gridTypeOptionBtn3');
-
-            [...buttons1, ...buttons2, ...buttons3].forEach(function (button) {
-                button.addEventListener('click', function () {
-                    [...buttons1, ...buttons2, ...buttons3].forEach(btn => btn.classList.remove('selected'));
-                    this.classList.add('selected');
-                });
-            });
-
-            // Function to hide gridPropertiesContainer by sliding up
-            function hideGridPropertiesContainer() {
-                // Get the gridPropertiesContainer element
-                const gridPropertiesContainer = document.getElementById('gridPropertiesContainer');
-
-                // Set transition properties for sliding up and fading out
-                gridPropertiesContainer.style.transition = 'top 0.3s ease, opacity 0.3s ease';
-                gridPropertiesContainer.style.top = '-100%'; // Slide the container up
-                gridPropertiesContainer.style.opacity = '0'; // Fade out the container
-
-                // After transition ends, hide the container and remove the 'visible' class
-                setTimeout(() => {
-                    gridPropertiesContainer.style.display = 'none';
-                    gridPropertiesContainer.classList.remove('visible'); // Remove the 'visible' class
-                }, 300); // Delay should be equal to transition duration
-            }
-
-            document.querySelector('.closeGridPropertiesContainer').addEventListener('click', function () {
-                gridPropertiesContainer.classList.remove('visible');
-            });
 
 
 
@@ -5484,20 +5431,11 @@
                 let customAngle = null; // To store the custom angle
                 let drawendEvent;
 
-                // Attach the "Apply" button click event listener
-                document.getElementById('apply-button').addEventListener('click', function () {
-                    const inputAngle = document.getElementById('rotate-input').value;
-                    if (inputAngle !== "") {
-                        const customAngle = parseFloat(inputAngle) * (Math.PI / 180); // Convert degree to radian
-                        if (drawendEvent) {
-                            clearExistingLayersAndSources(); // Clear existing grids and points
-                            generateGrids(drawendEvent, customAngle); // Generate grids with custom angle
-                        } else {
-                            // Handle the case where drawendEvent is not defined
-                            console.error("drawendEvent is not defined.");
-                        }
-                    }
-                });
+
+
+
+                
+
 
 
                 function calculateAngleFromLongestEdge(coordinates) {
@@ -5936,6 +5874,79 @@
 
 
 
+                //GRID TYPE/PATTERN PROPERTIES
+                // Function to trigger the slide-down animation
+                function slideDownAnimation() {
+                    // Get the gridPropertiesContainer element
+                    const gridPropertiesContainer = document.getElementById('gridPropertiesContainer');
+
+                    // Clear any previous transition and opacity styles
+                    gridPropertiesContainer.style.transition = '';
+                    gridPropertiesContainer.style.opacity = '1';
+
+                    // Get the current height of the gridPropertiesContainer
+                    const height = gridPropertiesContainer.clientHeight;
+
+                    // Force a repaint to make sure the transition is applied
+                    void gridPropertiesContainer.offsetHeight;
+
+                    // Add the transition styles and set the final position
+                    gridPropertiesContainer.style.transition = 'top 0.3s ease, opacity 0.3s ease';
+                    gridPropertiesContainer.style.top = '20%'; // Move the container down
+                    gridPropertiesContainer.style.opacity = '1'; // Fade in the container
+                }
+
+                // Grid Type Options
+                var buttons1 = document.querySelectorAll('.gridTypeOptionBtn1');
+                var buttons2 = document.querySelectorAll('.gridTypeOptionBtn2');
+                var buttons3 = document.querySelectorAll('.gridTypeOptionBtn3');
+
+                [...buttons1, ...buttons2, ...buttons3].forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        [...buttons1, ...buttons2, ...buttons3].forEach(btn => btn.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
+                });
+
+                // Function to hide gridPropertiesContainer by sliding up
+                function hideGridPropertiesContainer() {
+                    // Get the gridPropertiesContainer element
+                    const gridPropertiesContainer = document.getElementById('gridPropertiesContainer');
+
+                    // Set transition properties for sliding up and fading out
+                    gridPropertiesContainer.style.transition = 'top 0.3s ease, opacity 0.3s ease';
+                    gridPropertiesContainer.style.top = '-100%'; // Slide the container up
+                    gridPropertiesContainer.style.opacity = '0'; // Fade out the container
+
+                    // After transition ends, hide the container and remove the 'visible' class
+                    setTimeout(() => {
+                        gridPropertiesContainer.style.display = 'none';
+                        gridPropertiesContainer.classList.remove('visible'); // Remove the 'visible' class
+                    }, 300); // Delay should be equal to transition duration
+                }
+
+                document.querySelector('.closeGridPropertiesContainer').addEventListener('click', function () {
+                    gridPropertiesContainer.classList.remove('visible');
+                });
+
+
+                //APPLYING A CUSTOM GRID ORIENTATION ANGLE 
+                // Attach the "Apply" button click event listener
+                document.getElementById('apply-button').addEventListener('click', function () {
+                    const inputAngle = document.getElementById('rotate-input').value;
+                    if (inputAngle !== "") {
+                        const customAngle = parseFloat(inputAngle) * (Math.PI / 180); // Convert degree to radian
+                        if (drawendEvent) {
+                            clearExistingLayersAndSources(); // Clear existing grids and points
+                            generateGrids(drawendEvent, customAngle); // Generate grids with custom angle
+                        } else {
+                            // Handle the case where drawendEvent is not defined
+                            console.error("drawendEvent is not defined.");
+                        }
+                    }
+                });
+
+
 
 
                 //Undo Sketch Function
@@ -6294,10 +6305,6 @@ height: 30px;
                     gridPatternInformation.style.display = 'flex';
                 }
             });
-
-
-
-
 
             function deactivateSketchFarm() {
                 const sketchFarmBtn = document.getElementById("sketchFarmBtn");
