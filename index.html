@@ -5916,6 +5916,24 @@
                     }, 300); // Delay should be equal to transition duration
                 }
 
+                // Function to determine grid type and intersection type
+                function determineGridType(button) {
+                    const gridTypes = ['squareGrid', 'rectangularGrid', 'triangularGrid'];
+                    const intersectionTypes = [
+                        'squareGridIntersectionPoints',
+                        'rectangularGridIntersectionPoints',
+                        'triangularGridIntersectionPoints'
+                    ];
+
+                    for (let i = 0; i < gridTypes.length; i++) {
+                        if (button.classList.contains(`gridTypeOptionBtn${i + 1}`)) {
+                            return { gridType: gridTypes[i], gridIntersectionType: intersectionTypes[i] };
+                        }
+                    }
+
+                    return { gridType: '', gridIntersectionType: '' };
+                }
+
                 finishDrawingButton.addEventListener('click', function () {
                     if (draw) {
                         draw.finishDrawing();
@@ -5965,35 +5983,16 @@
                 var lastSelectedGridType = '';
                 var lastSelectedGridIntersectionType = '';
 
-                // Grid Type Options
+                // Grid Type Options and Grid Intersection Options
                 var buttons1 = document.querySelectorAll('.gridTypeOptionBtn1'); // squareGrid
                 var buttons2 = document.querySelectorAll('.gridTypeOptionBtn2'); // rectangularGrid
                 var buttons3 = document.querySelectorAll('.gridTypeOptionBtn3'); // triangularGrid
 
-                // Grid Type Options and Grid Intersection Options
                 [...buttons1, ...buttons2, ...buttons3].forEach(function (button) {
                     button.addEventListener('click', function () {
                         // Determine the type of grid that was clicked
-                        var gridType = '';
-                        if (this.classList.contains('gridTypeOptionBtn1')) {
-                            gridType = 'squareGrid';
-                        } else if (this.classList.contains('gridTypeOptionBtn2')) {
-                            gridType = 'rectangularGrid';
-                        } else if (this.classList.contains('gridTypeOptionBtn3')) {
-                            gridType = 'triangularGrid';
-                        }
+                        const { gridType, gridIntersectionType } = determineGridType(this);
 
-                        // Determine the type of grid intersection that was clicked
-                        var gridIntersectionType = '';
-                        if (this.classList.contains('gridTypeOptionBtn1')) {
-                            gridIntersectionType = 'squareGridIntersectionPoints';
-                        } else if (this.classList.contains('gridTypeOptionBtn2')) {
-                            gridIntersectionType = 'rectangularGridIntersectionPoints';
-                        } else if (this.classList.contains('gridTypeOptionBtn3')) {
-                            gridIntersectionType = 'triangularGridIntersectionPoints';
-                        }
-
-                        // Logging the previous and current grid type and grid intersection type to the console
                         if (lastSelectedGridType) {
                             console.log(`Previous grid type: ${lastSelectedGridType}`);
                         }
@@ -6014,9 +6013,6 @@
                     });
                 });
 
-
-
-
                 //APPLYING A CUSTOM GRID ORIENTATION ANGLE 
                 // Attach the "Apply" button click event listener
                 document.getElementById('apply-button').addEventListener('click', function () {
@@ -6034,98 +6030,84 @@
                 });
 
 
-                // Define the storeIntersectionPoints function
-                function storeIntersectionPoints(squareGridIntersectionPoints, rectangularGridIntersectionPoints, triangularGridIntersectionPoints) {
-                    // Extract relevant data for each type of grid
-                    const storedSquareGridIntersectionPoints = squareGridIntersectionPoints.map(point => ({ x: point[0], y: point[1] }));
-                    const storedRectangularGridIntersectionPoints = rectangularGridIntersectionPoints.map(point => ({ x: point[0], y: point[1] }));
-                    const storedTriangularGridIntersectionPoints = triangularGridIntersectionPoints.map(point => ({ x: point[0], y: point[1] }));
 
-                    // Store the extracted data without circular references
-                    localStorage.setItem('squareGridIntersectionPoints', JSON.stringify(storedSquareGridIntersectionPoints));
-                    localStorage.setItem('rectangularGridIntersectionPoints', JSON.stringify(storedRectangularGridIntersectionPoints));
-                    localStorage.setItem('triangularGridIntersectionPoints', JSON.stringify(storedTriangularGridIntersectionPoints));
 
-                    // Log the stored intersection points for debugging
-                    console.log('Stored squareGridIntersectionPoints:', storedSquareGridIntersectionPoints);
-                    console.log('Stored rectangularGridIntersectionPoints:', storedRectangularGridIntersectionPoints);
-                    console.log('Stored triangularGridIntersectionPoints:', storedTriangularGridIntersectionPoints);
+
+                // Define the storeSelectedIntersectionPoints function
+                function storeSelectedIntersectionPoints() {
+                    const format = new ol.format.GeoJSON();
+
+                    // Clear existing intersection points data from local storage
+                    localStorage.removeItem('squareGridIntersectionPoints');
+                    localStorage.removeItem('rectangularGridIntersectionPoints');
+                    localStorage.removeItem('triangularGridIntersectionPoints');
+
+                    // Determine which intersection points to store based on the last selected grid intersection type
+                    let intersectionPointsToStore = [];
+                    let intersectionPointsGeoJSON = [];
+
+                    switch (lastSelectedGridIntersectionType) {
+                        case 'squareGridIntersectionPoints':
+                            intersectionPointsToStore = squareGridIntersectionPoints;
+                            intersectionPointsGeoJSON = intersectionPointsToStore.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+                            localStorage.setItem('squareGridIntersectionPoints', JSON.stringify(intersectionPointsGeoJSON));
+                            break;
+
+                        case 'rectangularGridIntersectionPoints':
+                            intersectionPointsToStore = rectangularGridIntersectionPoints;
+                            intersectionPointsGeoJSON = intersectionPointsToStore.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+                            localStorage.setItem('rectangularGridIntersectionPoints', JSON.stringify(intersectionPointsGeoJSON));
+                            break;
+
+                        case 'triangularGridIntersectionPoints':
+                            intersectionPointsToStore = triangularGridIntersectionPoints;
+                            intersectionPointsGeoJSON = intersectionPointsToStore.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+                            localStorage.setItem('triangularGridIntersectionPoints', JSON.stringify(intersectionPointsGeoJSON));
+                            break;
+                    }
                 }
 
 
                 // Define the storeSelectedGridFeatures function
-function storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid) {
-    const format = new ol.format.GeoJSON();
+                function storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid) {
+                    const format = new ol.format.GeoJSON();
 
-    // Clear existing grid data from local storage
-    localStorage.removeItem('squareGridX');
-    localStorage.removeItem('squareGridY');
-    localStorage.removeItem('rectangularGridX');
-    localStorage.removeItem('rectangularGridY');
-    localStorage.removeItem('triangularGrid');
+                    // Clear existing grid data from local storage
+                    localStorage.removeItem('squareGridX');
+                    localStorage.removeItem('squareGridY');
+                    localStorage.removeItem('rectangularGridX');
+                    localStorage.removeItem('rectangularGridY');
+                    localStorage.removeItem('triangularGrid');
 
-    // Determine which grid to store based on the last selected grid type
-    switch (lastSelectedGridType) {
-        case 'squareGrid':
-            const squareGridXFeaturesGeoJSON = squareGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
-            const squareGridYFeaturesGeoJSON = squareGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
-            localStorage.setItem('squareGridX', JSON.stringify(squareGridXFeaturesGeoJSON));
-            localStorage.setItem('squareGridY', JSON.stringify(squareGridYFeaturesGeoJSON));
-            break;
+                    // Determine which grid to store based on the last selected grid type
+                    switch (lastSelectedGridType) {
+                        case 'squareGrid':
+                            const squareGridXFeaturesGeoJSON = squareGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+                            const squareGridYFeaturesGeoJSON = squareGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+                            localStorage.setItem('squareGridX', JSON.stringify(squareGridXFeaturesGeoJSON));
+                            localStorage.setItem('squareGridY', JSON.stringify(squareGridYFeaturesGeoJSON));
+                            break;
 
-        case 'rectangularGrid':
-            const rectangularGridXFeaturesGeoJSON = rectangularGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
-            const rectangularGridYFeaturesGeoJSON = rectangularGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
-            localStorage.setItem('rectangularGridX', JSON.stringify(rectangularGridXFeaturesGeoJSON));
-            localStorage.setItem('rectangularGridY', JSON.stringify(rectangularGridYFeaturesGeoJSON));
-            break;
+                        case 'rectangularGrid':
+                            const rectangularGridXFeaturesGeoJSON = rectangularGridX.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+                            const rectangularGridYFeaturesGeoJSON = rectangularGridY.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+                            localStorage.setItem('rectangularGridX', JSON.stringify(rectangularGridXFeaturesGeoJSON));
+                            localStorage.setItem('rectangularGridY', JSON.stringify(rectangularGridYFeaturesGeoJSON));
+                            break;
 
-        case 'triangularGrid':
-            const triangularGridFeaturesGeoJSON = triangularGrid.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
-            localStorage.setItem('triangularGrid', JSON.stringify(triangularGridFeaturesGeoJSON));
-            break;
-    }
+                        case 'triangularGrid':
+                            const triangularGridFeaturesGeoJSON = triangularGrid.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
+                            localStorage.setItem('triangularGrid', JSON.stringify(triangularGridFeaturesGeoJSON));
+                            break;
+                    }
+                }
 
-    // Determine which intersection points to store based on the last selected grid intersection type
-    let intersectionPointsToStore = [];
+                // Event listener for the save-button
+                document.getElementById('save-button').addEventListener('click', function () {
+                    storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
+                    storeSelectedIntersectionPoints();
 
-    switch (lastSelectedGridIntersectionType) {
-        case 'squareGridIntersectionPoints':
-            intersectionPointsToStore = squareGridIntersectionPoints;
-            break;
-
-        case 'rectangularGridIntersectionPoints':
-            intersectionPointsToStore = rectangularGridIntersectionPoints;
-            break;
-
-        case 'triangularGridIntersectionPoints':
-            intersectionPointsToStore = triangularGridIntersectionPoints;
-            break;
-    }
-
-    // Store the intersection points for the selected grid intersection type
-    const intersectionPointsGeoJSON = intersectionPointsToStore.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
-    localStorage.setItem(lastSelectedGridIntersectionType, JSON.stringify(intersectionPointsGeoJSON));
-}
-
-// Event listener for the save-button
-document.getElementById('save-button').addEventListener('click', function () {
-    storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                });
 
 
                 //Undo Sketch Function
