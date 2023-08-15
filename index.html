@@ -6107,7 +6107,34 @@
                     storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
                     storeSelectedIntersectionPoints();
 
+                    // Hide the gridPropertiesContainer with slide-up animation
+                    hideGridPropertiesContainer();
+
+                    // Show the floating container with slide-up animation
+                    showAddFarmSuccess();
                 });
+
+                // Function to show the floating container and trigger the slide-up animation
+                function showAddFarmSuccess() {
+                    const addFarmSuccess = document.getElementById("addFarmSuccess");
+                    addFarmSuccess.style.display = "block"; // Set the container to be visible
+                    addFarmSuccess.classList.add("slide-up"); // Add the slide-up animation class
+
+                    // Hide the container after 2 seconds
+                    setTimeout(() => {
+                        hideAddFarmSuccess();
+                    }, 2000);
+                }
+
+                // Function to hide the floating container (assuming it's already defined)
+                function hideAddFarmSuccess() {
+                    const addFarmSuccess = document.getElementById("addFarmSuccess");
+                    addFarmSuccess.style.display = "none";
+                    addFarmSuccess.classList.remove("slide-up"); // Remove the slide-up animation class
+                }
+
+
+
 
 
                 //Undo Sketch Function
