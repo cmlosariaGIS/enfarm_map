@@ -1708,6 +1708,44 @@
             display: inline;
             line-height: 1;
         }
+
+
+        /*Retreieved Pill on restart*/
+
+        .grid-info-pill {
+            position: absolute;
+            bottom: 20%;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 30px;
+            left: 25%;
+            display: flex;
+            background-color: #fff;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .grid-info-pill .pill-section {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .grid-info-pill .pill-section:first-child {
+            border-left: none;
+        }
+
+        .pill-value {
+            margin-left: 10px;
+            font-weight: bold;
+            color: #515151;
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            font-size: 30px;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 
@@ -1718,6 +1756,31 @@
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
+
+        <!-- Retrieved Grid Information Pill -->
+        <div id="gridInfoPill" class="grid-info-pill hidden">
+            <div id="pillTreeCount" class="pill-section">
+                <img src="https://i.ibb.co/hDYvzYs/icons8-tree-64.png" alt="tree-icon">
+                <span id="intersectionCount" class="pill-value">...</span>
+            </div>
+            <div id="pillYCount" class="pill-section">
+                <span class="material-icons"
+                    style="font-size: 50px; transform: rotate(90deg); color: #515151;">view_headline</span>
+                <span id="gridYCount" class="pill-value">...</span>
+            </div>
+            <div id="pillXCount" class="pill-section">
+                <span class="material-icons" style="font-size: 50px; color: #515151;">view_headline</span>
+                <span id="gridXCount" class="pill-value">...</span>
+            </div>
+            <div id="pillZCount" class="pill-section hidden">
+                <span class="material-icons"
+                    style="font-size: 50px; transform: rotate(45deg); color: #515151;">view_headline</span>
+                <span id="gridZCount" class="pill-value">...</span>
+            </div>
+        </div>
+
+
+
 
 
         <!-- Grid Pattern Information Pill -->
@@ -1775,6 +1838,8 @@
             </div>
 
         </div>
+
+
 
 
 
@@ -5605,36 +5670,36 @@
                     // Calculate the number of coffee trees for rectangular grids
                     const numberOfCoffeeTreesForRectangularGrid = rectangularGridXCount * rectangularGridYCount;
 
-                    squareGridCountElement.textContent = numberOfCoffeeTreesForSquareGrid;
-                    rectangularGridCountElement.textContent = numberOfCoffeeTreesForRectangularGrid;
+                    //squareGridCountElement.textContent = numberOfCoffeeTreesForSquareGrid;
+                    //rectangularGridCountElement.textContent = numberOfCoffeeTreesForRectangularGrid;
 
 
                     document.getElementById('squareGridXCount').innerText = squareGridXCount; // needed to show in the info card
-                    console.log(`◇ Square grid X lines inside polygon: ${squareGridXCount}`);
+                    //console.log(`◇ Square grid X lines inside polygon: ${squareGridXCount}`);
 
                     document.getElementById('squareGridYCount').innerText = squareGridYCount;
-                    console.log(`◇ Square grid Y lines inside polygon: ${squareGridYCount}`);
+                    //console.log(`◇ Square grid Y lines inside polygon: ${squareGridYCount}`);
 
 
 
 
                     document.getElementById('rectangularGridYCount').innerText = rectangularGridYCount;
-                    console.log(`▭ Rectangular grid Y lines inside polygon: ${rectangularGridYCount}`);
+                    //console.log(`▭ Rectangular grid Y lines inside polygon: ${rectangularGridYCount}`);
 
                     document.getElementById('rectangularGridXCount').innerText = rectangularGridXCount;
-                    console.log(`▭ Rectangular grid X lines inside polygon: ${rectangularGridXCount}`);
+                    //console.log(`▭ Rectangular grid X lines inside polygon: ${rectangularGridXCount}`);
 
 
 
 
                     document.getElementById('triangularGridXCount').innerText = triangularGridXCount;
-                    console.log(`△ Triangular grid X lines inside polygon: ${triangularGridXCount}`);
+                    //console.log(`△ Triangular grid X lines inside polygon: ${triangularGridXCount}`);
 
                     document.getElementById('triangularGridYCount').innerText = triangularGridYCount;
-                    console.log(`△ Triangular grid Y lines inside polygon: ${triangularGridYCount}`);
+                    //console.log(`△ Triangular grid Y lines inside polygon: ${triangularGridYCount}`);
 
                     document.getElementById('triangularGridZCount').innerText = triangularGridZCount;
-                    console.log(`△ Triangular grid Z lines inside polygon: ${triangularGridZCount}`);
+                    //console.log(`△ Triangular grid Z lines inside polygon: ${triangularGridZCount}`);
 
 
 
@@ -5821,13 +5886,13 @@
                     const rectangularGridIntersectionPointCount = countPointsInsidePolygon(rectangularGridIntersectionPoints, drawnPolygonGeoJSON);
                     const triangularGridIntersectionPointCount = countPointsInsidePolygon(triangularGridIntersectionPoints, drawnPolygonGeoJSON);
 
-                    console.log(`Estimated Coffee Tree Count: ${squareGridIntersectionPointCount}`);
+                    //console.log(`Estimated Coffee Tree Count: ${squareGridIntersectionPointCount}`);
                     squareGridCountElement.innerText = `${squareGridIntersectionPointCount}`;
 
-                    console.log(`Estimated Coffee Tree Count: ${rectangularGridIntersectionPointCount}`);
+                    //console.log(`Estimated Coffee Tree Count: ${rectangularGridIntersectionPointCount}`);
                     rectangularGridCountElement.innerText = `${rectangularGridIntersectionPointCount}`;
 
-                    console.log(`Estimated Coffee Tree Count: ${triangularGridIntersectionPointCount}`);
+                    //console.log(`Estimated Coffee Tree Count: ${triangularGridIntersectionPointCount}`);
                     triangularGridCountElement.innerText = `${triangularGridIntersectionPointCount}`;
 
                 }
@@ -5994,12 +6059,12 @@
                         const { gridType, gridIntersectionType } = determineGridType(this);
 
                         if (lastSelectedGridType) {
-                            console.log(`Previous grid type: ${lastSelectedGridType}`);
+                            //console.log(`Previous grid type: ${lastSelectedGridType}`);
                         }
                         console.log(`Current grid type: ${gridType} selected!`);
 
                         if (lastSelectedGridIntersectionType) {
-                            console.log(`Previous grid intersection type: ${lastSelectedGridIntersectionType}`);
+                            //console.log(`Previous grid intersection type: ${lastSelectedGridIntersectionType}`);
                         }
                         console.log(`Current grid intersection type: ${gridIntersectionType} selected!`);
 
@@ -6107,31 +6172,86 @@
                     storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
                     storeSelectedIntersectionPoints();
 
+                    // Get intersection and grid counts based on the last selected grid type
+                    let intersectionCount = 0;
+                    let gridXCount = 0;
+                    let gridYCount = 0;
+                    let gridZCount = 0;
+
+                    switch (lastSelectedGridType) {
+                        case 'squareGrid':
+                            intersectionCount = squareGridCountElement.innerText;
+                            gridXCount = document.getElementById('squareGridXCount').innerText;
+                            gridYCount = document.getElementById('squareGridYCount').innerText;
+                            break;
+
+                        case 'rectangularGrid':
+                            intersectionCount = rectangularGridCountElement.innerText;
+                            gridXCount = document.getElementById('rectangularGridXCount').innerText;
+                            gridYCount = document.getElementById('rectangularGridYCount').innerText;
+                            break;
+
+                        case 'triangularGrid':
+                            intersectionCount = triangularGridCountElement.innerText;
+                            gridXCount = document.getElementById('triangularGridXCount').innerText;
+                            gridYCount = document.getElementById('triangularGridYCount').innerText;
+                            gridZCount = document.getElementById('triangularGridZCount').innerText;
+                            break;
+                    }
+
+                    // Log the counts
+                    console.log(`Intersection count: ${intersectionCount}`);
+                    console.log(`GridX count: ${gridXCount}`);
+                    console.log(`GridY count: ${gridYCount}`);
+                    if (lastSelectedGridType === 'triangularGrid') {
+                        console.log(`GridZ count: ${gridZCount}`);
+                    }
+
+                    // Save the counts to local storage
+                    localStorage.setItem('lastSelectedIntersectionCount', intersectionCount);
+                    localStorage.setItem('lastSelectedGridXCount', gridXCount);
+                    localStorage.setItem('lastSelectedGridYCount', gridYCount);
+                    if (lastSelectedGridType === 'triangularGrid') {
+                        localStorage.setItem('lastSelectedGridZCount', gridZCount);
+                    }
+
+
+                    // Save the last selected grid type and intersection type to local storage
+                    localStorage.setItem('lastSelectedGridType', lastSelectedGridType);
+                    localStorage.setItem('lastSelectedGridIntersectionType', lastSelectedGridIntersectionType);
+
                     // Hide the gridPropertiesContainer with slide-up animation
                     hideGridPropertiesContainer();
 
                     // Show the floating container with slide-up animation
                     showAddFarmSuccess();
+
+
+
+                    // Log visible div classes
+                    const visibleDivClasses = [];
+                    const divElements = document.querySelectorAll('.countContainer');
+                    divElements.forEach(div => {
+                        if (div.style.display !== 'none') {
+                            visibleDivClasses.push(div.id);
+                        }
+                    });
+
+                    // Store visible div classes in localStorage
+                    localStorage.setItem('visibleDivClasses', JSON.stringify(visibleDivClasses));
+
+                    console.log("Visible div classes:", visibleDivClasses);
+
                 });
 
-                // Function to show the floating container and trigger the slide-up animation
-                function showAddFarmSuccess() {
-                    const addFarmSuccess = document.getElementById("addFarmSuccess");
-                    addFarmSuccess.style.display = "block"; // Set the container to be visible
-                    addFarmSuccess.classList.add("slide-up"); // Add the slide-up animation class
 
-                    // Hide the container after 2 seconds
-                    setTimeout(() => {
-                        hideAddFarmSuccess();
-                    }, 2000);
-                }
 
-                // Function to hide the floating container (assuming it's already defined)
-                function hideAddFarmSuccess() {
-                    const addFarmSuccess = document.getElementById("addFarmSuccess");
-                    addFarmSuccess.style.display = "none";
-                    addFarmSuccess.classList.remove("slide-up"); // Remove the slide-up animation class
-                }
+
+
+
+
+
+
 
 
 
@@ -6615,8 +6735,8 @@ height: 30px;
                     // Retrieve and display the farm's center point
                     const farmCenterLon = storedPolygon.centerPoint.lon;
                     const farmCenterLat = storedPolygon.centerPoint.lat;
-                    console.log('Farm Center Lon:', farmCenterLon);
-                    console.log('Farm Center Lat:', farmCenterLat);
+                    //console.log('Farm Center Lon:', farmCenterLon);
+                    //console.log('Farm Center Lat:', farmCenterLat);
 
                     const centroid = ol.extent.getCenter(polygonFeature.getGeometry().getExtent());
 
@@ -6702,7 +6822,7 @@ height: 30px;
                     map.addLayer(squareGridY);
 
                 } else {
-                    console.log('Either squareGridX or squareGridY features not found in local storage.');
+                    //console.log('Either squareGridX or squareGridY features not found in local storage.');
                 }
             }
 
@@ -6756,7 +6876,7 @@ height: 30px;
                     map.addLayer(rectangularGridY);
 
                 } else {
-                    console.log('Either rectangularGridX or rectangularGridY features not found in local storage.');
+                    //console.log('Either rectangularGridX or rectangularGridY features not found in local storage.');
                 }
             }
 
@@ -6798,7 +6918,7 @@ height: 30px;
                     map.addLayer(triangularGrid);
 
                 } else {
-                    console.log('Triangular grid features not found in local storage.');
+                    //console.log('Triangular grid features not found in local storage.');
                 }
             }
 
@@ -6851,7 +6971,7 @@ height: 30px;
 
                     map.addLayer(squareGridIntersectionPoints);
                 } else {
-                    console.log('Square grid intersection points not found in local storage.');
+                    //console.log('Square grid intersection points not found in local storage.');
                 }
             }
 
@@ -6898,7 +7018,7 @@ height: 30px;
 
                     map.addLayer(rectangularGridIntersectionPoints);
                 } else {
-                    console.log('Rectangular grid intersection points not found in local storage.');
+                    //console.log('Rectangular grid intersection points not found in local storage.');
                 }
             }
 
@@ -6944,7 +7064,7 @@ height: 30px;
 
                     map.addLayer(triangularGridIntersectionPoints);
                 } else {
-                    console.log('Triangular grid intersection points not found in local storage.');
+                    //console.log('Triangular grid intersection points not found in local storage.');
                 }
             }
             retrieveTriangularGridIntersectionPoints();
@@ -7539,6 +7659,8 @@ height: 30px;
 
 
 
+                    // Get the last selected grid type from local storage before removing it
+                    const lastSelectedGridType = localStorage.getItem('lastSelectedGridType');
 
 
                     // Remove stored gridX and gridY points from local storage
@@ -7546,19 +7668,33 @@ height: 30px;
                     localStorage.removeItem("squareGridY");
 
                     // Remove stored gridX and gridY points from local storage
-                    localStorage.removeItem("rectangularGriddX");
+                    localStorage.removeItem("rectangularGridX");
                     localStorage.removeItem("rectangularGridY");
 
                     // Remove stored triangularGrid from local storage
                     localStorage.removeItem("triangularGrid");
 
+                    localStorage.removeItem("triangularGridIntersectionPoints");
+                    localStorage.removeItem("squareGridIntersectionPoints");
+                    localStorage.removeItem("rectangularGridIntersectionPoints");
 
 
+                    // Remove last selected intersection count, gridX count, gridY count, grid type, and intersection type
+                    localStorage.removeItem('lastSelectedIntersectionCount');
+                    localStorage.removeItem('lastSelectedGridXCount');
+                    localStorage.removeItem('lastSelectedGridYCount');
+                    localStorage.removeItem('lastSelectedGridType');
+                    localStorage.removeItem('lastSelectedGridIntersectionType');
+
+                    // If the last selected grid type was triangularGrid, remove the GridZ count
+                    if (lastSelectedGridType === 'triangularGrid') {
+                        localStorage.removeItem('lastSelectedGridZCount');
+                    }
 
 
-
-
-
+                    // Hide the gridInfoPill element
+                    const gridInfoPill = document.getElementById("gridInfoPill");
+                    gridInfoPill.classList.add("hidden");
 
                     // Hide the dialog box
                     dialog.classList.add("hidden");
@@ -8169,6 +8305,48 @@ height: 30px;
             });*/
 
             ////////// <----- END BIRDS, CLOUD, RAIN -----> \\\\\\\\\\
+
+
+
+            //Function: Retrieve stored values and show on Grid Info Pill on Reload
+
+            window.addEventListener('load', function () {
+    // Delay the execution by 2 seconds
+    setTimeout(function () {
+        // Retrieve the saved counts and grid type
+        const lastSelectedGridType = localStorage.getItem('lastSelectedGridType');
+        const lastSelectedIntersectionCount = localStorage.getItem('lastSelectedIntersectionCount');
+        const lastSelectedGridXCount = localStorage.getItem('lastSelectedGridXCount');
+        const lastSelectedGridYCount = localStorage.getItem('lastSelectedGridYCount');
+        const lastSelectedGridZCount = localStorage.getItem('lastSelectedGridZCount');
+
+        // Check if the values are present in the storage
+        if (lastSelectedGridType && lastSelectedIntersectionCount && lastSelectedGridXCount && lastSelectedGridYCount) {
+            // Log the counts to the console
+            console.log(`Intersection count: ${lastSelectedIntersectionCount}`);
+            console.log(`GridX count: ${lastSelectedGridXCount}`);
+            console.log(`GridY count: ${lastSelectedGridYCount}`);
+            console.log(`GridZ count: ${lastSelectedGridZCount}`);
+
+            // Update the HTML elements with the retrieved counts
+            document.getElementById('intersectionCount').textContent = lastSelectedIntersectionCount;
+            document.getElementById('gridXCount').textContent = lastSelectedGridXCount;
+            document.getElementById('gridYCount').textContent = lastSelectedGridYCount;
+
+            // Remove the hidden class from the main container
+            document.getElementById('gridInfoPill').classList.remove('hidden');
+
+            // Check if the last selected grid type is 'triangularGrid' and lastSelectedGridZCount is not null
+            if (lastSelectedGridType === 'triangularGrid' && lastSelectedGridZCount !== null) {
+                document.getElementById('pillZCount').classList.remove('hidden');
+                document.getElementById('gridZCount').textContent = lastSelectedGridZCount;
+            }
+        }
+    }, 2000); // Delay time in milliseconds (2000ms = 2 seconds)
+});
+
+
+
 
 
 
