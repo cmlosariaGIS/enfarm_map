@@ -8311,39 +8311,39 @@ height: 30px;
             //Function: Retrieve stored values and show on Grid Info Pill on Reload
 
             window.addEventListener('load', function () {
-    // Delay the execution by 2 seconds
-    setTimeout(function () {
-        // Retrieve the saved counts and grid type
-        const lastSelectedGridType = localStorage.getItem('lastSelectedGridType');
-        const lastSelectedIntersectionCount = localStorage.getItem('lastSelectedIntersectionCount');
-        const lastSelectedGridXCount = localStorage.getItem('lastSelectedGridXCount');
-        const lastSelectedGridYCount = localStorage.getItem('lastSelectedGridYCount');
-        const lastSelectedGridZCount = localStorage.getItem('lastSelectedGridZCount');
+                // Delay the execution by 2 seconds
+                setTimeout(function () {
+                    // Retrieve the saved counts and grid type
+                    const lastSelectedGridType = localStorage.getItem('lastSelectedGridType');
+                    const lastSelectedIntersectionCount = localStorage.getItem('lastSelectedIntersectionCount');
+                    const lastSelectedGridXCount = localStorage.getItem('lastSelectedGridXCount');
+                    const lastSelectedGridYCount = localStorage.getItem('lastSelectedGridYCount');
+                    const lastSelectedGridZCount = localStorage.getItem('lastSelectedGridZCount');
 
-        // Check if the values are present in the storage
-        if (lastSelectedGridType && lastSelectedIntersectionCount && lastSelectedGridXCount && lastSelectedGridYCount) {
-            // Log the counts to the console
-            console.log(`Intersection count: ${lastSelectedIntersectionCount}`);
-            console.log(`GridX count: ${lastSelectedGridXCount}`);
-            console.log(`GridY count: ${lastSelectedGridYCount}`);
-            console.log(`GridZ count: ${lastSelectedGridZCount}`);
+                    // Check if the values are present in the storage
+                    if (lastSelectedGridType && lastSelectedIntersectionCount && lastSelectedGridXCount && lastSelectedGridYCount) {
+                        // Log the counts to the console
+                        console.log(`Intersection count: ${lastSelectedIntersectionCount}`);
+                        console.log(`GridX count: ${lastSelectedGridXCount}`);
+                        console.log(`GridY count: ${lastSelectedGridYCount}`);
+                        console.log(`GridZ count: ${lastSelectedGridZCount}`);
 
-            // Update the HTML elements with the retrieved counts
-            document.getElementById('intersectionCount').textContent = lastSelectedIntersectionCount;
-            document.getElementById('gridXCount').textContent = lastSelectedGridXCount;
-            document.getElementById('gridYCount').textContent = lastSelectedGridYCount;
+                        // Update the HTML elements with the retrieved counts
+                        document.getElementById('intersectionCount').textContent = lastSelectedIntersectionCount;
+                        document.getElementById('gridXCount').textContent = lastSelectedGridXCount;
+                        document.getElementById('gridYCount').textContent = lastSelectedGridYCount;
 
-            // Remove the hidden class from the main container
-            document.getElementById('gridInfoPill').classList.remove('hidden');
+                        // Remove the hidden class from the main container
+                        document.getElementById('gridInfoPill').classList.remove('hidden');
 
-            // Check if the last selected grid type is 'triangularGrid' and lastSelectedGridZCount is not null
-            if (lastSelectedGridType === 'triangularGrid' && lastSelectedGridZCount !== null) {
-                document.getElementById('pillZCount').classList.remove('hidden');
-                document.getElementById('gridZCount').textContent = lastSelectedGridZCount;
-            }
-        }
-    }, 2000); // Delay time in milliseconds (2000ms = 2 seconds)
-});
+                        // Check if the last selected grid type is 'triangularGrid' and lastSelectedGridZCount is not null
+                        if (lastSelectedGridType === 'triangularGrid' && lastSelectedGridZCount !== null) {
+                            document.getElementById('pillZCount').classList.remove('hidden');
+                            document.getElementById('gridZCount').textContent = lastSelectedGridZCount;
+                        }
+                    }
+                }, 2000); // Delay time in milliseconds (2000ms = 2 seconds)
+            });
 
 
 
