@@ -1641,6 +1641,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             z-index: 9999;
         }
+
         /***** END STYLE FOR APPLYING GRID TYPE AND ROTATION *****/
 
 
@@ -1657,6 +1658,8 @@
             padding: 10px;
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
             font-size: 30px;
+            font-weight: bold;
+            color: #515151;
             width: fit-content;
             align-items: center;
             justify-content: space-around;
@@ -1709,7 +1712,7 @@
         /*START Style Retreieved Pill on map restart*/
         .grid-info-pill {
             position: absolute;
-            bottom: 20%;
+            top: 75%;
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
@@ -1899,29 +1902,29 @@
         <!--Current Activity Tool -->
         <div class="measuringAreafloatingTitle">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">square_foot</i>
-            <span class="measuringAreaTitle">Measuring Area</span>
+            <span class="measuringAreaTitle">Đo diện tích</span> <!--Measuring Area-->
         </div>
 
         <div class="measuringLengthfloatingTitle">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">straighten</i>
-            <span class="measuringLengthTitle">Measuring Length</span>
+            <span class="measuringLengthTitle">Đo độ dài</span> <!--Measuring Length-->
         </div>
 
         <div class="sketchingFarmfloatingTitle">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">create</i>
-            <span class="sketchingFarmTitle">Sketching a Farm Parcel</span>
+            <span class="sketchingFarmTitle">Vẽ phác thảo một mảnh đất nông trại</span><!--Sketching a Farm Parcel-->
         </div>
 
         <div class="addSensorsfloatingTitle">
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">sensors</i>
-            <span class="addSensorsTitle">Adding enfarm sensors</span>
+            <span class="addSensorsTitle">Thêm cảm biến Enfarm</span><!--Adding enfarm sensors-->
         </div>
 
 
         <!--Adding Farm and Sensor Success Message-->
         <div id="addSensorSuccess" class="addFloating-container">
             <div id="sensorsuccessAnimationCheck" class="animationCheck"></div>
-            <div class="addMessage">cảm biến enfarm / s được thêm vào</div> <!--enfarm sensor/s added-->
+            <div class="addMessage">cảm biến enfarm được thêm vào</div> <!--enfarm sensor/s added-->
         </div>
 
         <div id="addFarmSuccess" class="addFloating-container">
@@ -5498,13 +5501,6 @@
                 let customAngle = null; // To store the custom angle
                 let drawendEvent;
 
-
-
-
-
-
-
-
                 function calculateAngleFromLongestEdge(coordinates) {
                     let longestEdgeLength = 0;
                     let longestEdge = [];
@@ -6040,8 +6036,8 @@
 
                 // close-button on grid pattern type properties
                 //document.querySelector('.closeGridPropertiesContainer').addEventListener('click', function () {
-                    // Hide gridPropertiesContainer with slide-up animation
-                  //  hideGridPropertiesContainer();
+                // Hide gridPropertiesContainer with slide-up animation
+                //  hideGridPropertiesContainer();
                 //});
 
 
@@ -6094,8 +6090,6 @@
                         }
                     }
                 });
-
-
 
 
 
