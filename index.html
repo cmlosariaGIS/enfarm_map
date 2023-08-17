@@ -5676,17 +5676,11 @@
                     document.getElementById('squareGridYCount').innerText = squareGridYCount;
                     //console.log(`◇ Square grid Y lines inside polygon: ${squareGridYCount}`);
 
-
-
-
                     document.getElementById('rectangularGridYCount').innerText = rectangularGridYCount;
                     //console.log(`▭ Rectangular grid Y lines inside polygon: ${rectangularGridYCount}`);
 
                     document.getElementById('rectangularGridXCount').innerText = rectangularGridXCount;
                     //console.log(`▭ Rectangular grid X lines inside polygon: ${rectangularGridXCount}`);
-
-
-
 
                     document.getElementById('triangularGridXCount').innerText = triangularGridXCount;
                     //console.log(`△ Triangular grid X lines inside polygon: ${triangularGridXCount}`);
@@ -5696,8 +5690,6 @@
 
                     document.getElementById('triangularGridZCount').innerText = triangularGridZCount;
                     //console.log(`△ Triangular grid Z lines inside polygon: ${triangularGridZCount}`);
-
-
 
 
                     function storeGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid) {
@@ -5711,11 +5703,11 @@
 
                         const triangularGridFeaturesGeoJSON = triangularGrid.getSource().getFeatures().map(feature => format.writeFeatureObject(feature));
 
-                        localStorage.setItem('squareGridX', JSON.stringify(squareGridXFeaturesGeoJSON));
-                        localStorage.setItem('squareGridY', JSON.stringify(squareGridYFeaturesGeoJSON));
-                        localStorage.setItem('rectangularGridX', JSON.stringify(rectangularGridXFeaturesGeoJSON));
-                        localStorage.setItem('rectangularGridY', JSON.stringify(rectangularGridYFeaturesGeoJSON));
-                        localStorage.setItem('triangularGrid', JSON.stringify(triangularGridFeaturesGeoJSON));
+                        //localStorage.setItem('squareGridX', JSON.stringify(squareGridXFeaturesGeoJSON));
+                        //localStorage.setItem('squareGridY', JSON.stringify(squareGridYFeaturesGeoJSON));
+                        //localStorage.setItem('rectangularGridX', JSON.stringify(rectangularGridXFeaturesGeoJSON));
+                        //localStorage.setItem('rectangularGridY', JSON.stringify(rectangularGridYFeaturesGeoJSON));
+                        //localStorage.setItem('triangularGrid', JSON.stringify(triangularGridFeaturesGeoJSON));
 
                         // Calculate intersection points for square grid
                         calculateIntersectionPoints([squareGridX, squareGridY], squareGridIntersectionPoints);
@@ -5875,8 +5867,6 @@
                     });
                 }
 
-
-
                 function countIntersectionPoints() {
                     const squareGridIntersectionPointCount = countPointsInsidePolygon(squareGridIntersectionPoints, drawnPolygonGeoJSON);
                     const rectangularGridIntersectionPointCount = countPointsInsidePolygon(rectangularGridIntersectionPoints, drawnPolygonGeoJSON);
@@ -5924,7 +5914,6 @@
                     return count;
                 }
 
-
                 // Function to clear existing grid and point layers and sources
                 function clearExistingLayersAndSources() {
                     // Clear squareGridX layer and source
@@ -5944,10 +5933,6 @@
                     triangularGridIntersectionPoints.getSource().clear();
                 }
 
-
-
-
-
                 // Function to remove existing grid layers
                 function removeGridLayers() {
                     map.removeLayer(squareGridX);
@@ -5956,8 +5941,6 @@
                     map.removeLayer(rectangularGridY);
                     map.removeLayer(triangularGrid);
                 }
-
-
 
 
                 //GRID TYPE/PATTERN PROPERTIES
@@ -6075,23 +6058,33 @@
                     });
                 });
 
+
+
+
                 //APPLYING A CUSTOM GRID ORIENTATION ANGLE 
+
+                let lastAppliedCustomAngle = 0;
+
                 // Attach the "Apply" button click event listener
                 document.getElementById('apply-button').addEventListener('click', function () {
                     const inputAngle = document.getElementById('rotate-input').value;
                     if (inputAngle !== "") {
-                        const customAngle = parseFloat(inputAngle) * (Math.PI / 180); // Convert degree to radian
+                        const customAngleDegrees = parseFloat(inputAngle);
+                        const customAngleRadians = customAngleDegrees * (Math.PI / 180); // Convert degree to radian
+
+                        console.log("Last applied custom angle in degrees: " + customAngleDegrees);
+                        localStorage.setItem('lastAppliedCustomAngle', customAngleDegrees); // Save the angle
+
+
                         if (drawendEvent) {
-                            clearExistingLayersAndSources(); // Clear existing grids and points
-                            generateGrids(drawendEvent, customAngle); // Generate grids with custom angle
+                            clearExistingLayersAndSources();
+                            generateGrids(drawendEvent, customAngleRadians); // Use radians for grid generation
                         } else {
                             // Handle the case where drawendEvent is not defined
                             console.error("drawendEvent is not defined.");
                         }
                     }
                 });
-
-
 
                 // Define the storeSelectedIntersectionPoints function
                 function storeSelectedIntersectionPoints() {
@@ -6126,7 +6119,6 @@
                             break;
                     }
                 }
-
 
                 // Define the storeSelectedGridFeatures function
                 function storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid) {
@@ -6166,6 +6158,8 @@
                 document.getElementById('save-button').addEventListener('click', function () {
                     storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
                     storeSelectedIntersectionPoints();
+                    console.log("Last saved custom angle in degrees: " + localStorage.getItem('lastAppliedCustomAngle'));
+
 
                     // Get intersection and grid counts based on the last selected grid type
                     let intersectionCount = 0;
@@ -6208,6 +6202,8 @@
                     localStorage.setItem('lastSelectedGridYCount', gridYCount);
                     if (lastSelectedGridType === 'triangularGrid') {
                         localStorage.setItem('lastSelectedGridZCount', gridZCount);
+
+
                     }
 
 
@@ -6238,18 +6234,6 @@
                     console.log("Visible div classes:", visibleDivClasses);
 
                 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 //Undo Sketch Function
@@ -6485,7 +6469,33 @@ height: 30px;
                                     squareMeters: area.toFixed(2),
                                     hectares: areaHectares
                                 },
-                                address: loggedInfo // Send the logged information as part of the dataToPost
+                                address: loggedInfo, // Send the logged information as part of the dataToPost
+                                consoleLogs: [
+                                    'Center Point Lon: ' + centerPointCoordinates[0],
+                                    'Center Point Lat: ' + centerPointCoordinates[1],
+                                    'Polygon Coordinates: ' + JSON.stringify(polygonPoints),
+                                    'Segment Lengths (m): ' + JSON.stringify(segmentLengths),
+                                    'Polygon Area: ' + 'Area (m²): ' + area.toFixed(2) + ' square meters',
+                                    'Place Name: ' + firstPart,
+                                    'Street Address: ' + streetAddress.trim(),
+                                    'Village: ' + village,
+                                    'Commune: ' + commune,
+                                    'Ward: ' + ward,
+                                    'District: ' + district,
+                                    'City: ' + city,
+                                    'Province: ' + province,
+                                    'Postcode: ' + postcode,
+                                    'Country: ' + country,
+                                    'Address: ' + address,
+                                    'Current grid type: ' + gridType + ' selected!',
+                                    'Current grid intersection type: ' + gridIntersectionType + ' selected!',
+                                    'Intersection count: ' + intersectionCount,
+                                    'GridX count: ' + gridXCount,
+                                    'GridY count: ' + gridYCount,
+                                    'GridZ count: ' + gridZCount,
+                                    'enfarm_sensor_coordinates: ' + JSON.stringify(enfarm_sensor_coordinates),
+                                    'Last applied custom angle in degrees: ' + customAngleDegrees
+                                ]
                             };
 
                             // Send data to React Native App
@@ -6494,7 +6504,6 @@ height: 30px;
                             // Handle the error (or do nothing to prevent logging)
                         }
                     }
-
 
                     // Store polygon coordinates in local storage
                     const storedPolygon = {
@@ -6606,10 +6615,6 @@ height: 30px;
                         gridPropertiesContainer.style.top = '0'; // Show the container at the top
                         gridPropertiesContainer.style.display = 'block';
                     }, 2500); // 2500 milliseconds = 2.5 seconds
-
-
-
-
 
                     // Get the gridPatternInformation element
                     const gridPatternInformation = document.querySelector('#gridPatternInformation');
@@ -6773,8 +6778,6 @@ height: 30px;
             }
 
 
-
-
             // Function to retrieve SQUARE grid features from local storage
             function retrieveSquareGridFeatures() {
                 const format = new ol.format.GeoJSON();
@@ -6795,10 +6798,11 @@ height: 30px;
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'white',
-                                width: 10
+                                color: '#515151',
+                                width: 6
                             })
-                        })
+                        }),
+                        minZoom: 19
                     });
 
                     const squareGridY = new ol.layer.Vector({
@@ -6807,10 +6811,11 @@ height: 30px;
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'white',
-                                width: 10
+                                color: '#515151',
+                                width: 6
                             })
-                        })
+                        }),
+                        minZoom: 19
                     });
 
                     map.addLayer(squareGridX);
@@ -6820,6 +6825,7 @@ height: 30px;
                     //console.log('Either squareGridX or squareGridY features not found in local storage.');
                 }
             }
+
 
             // Call the function to retrieve and display the stored square grid
             retrieveSquareGridFeatures();
@@ -6849,10 +6855,11 @@ height: 30px;
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'white',
-                                width: 10
+                                color: '#515151',
+                                width: 6
                             })
-                        })
+                        }),
+                        minZoom: 19
                     });
 
                     const rectangularGridY = new ol.layer.Vector({
@@ -6861,10 +6868,11 @@ height: 30px;
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'white',
-                                width: 10
+                                color: '#515151',
+                                width: 6
                             })
-                        })
+                        }),
+                        minZoom: 19
                     });
 
                     map.addLayer(rectangularGridX);
@@ -6875,15 +6883,12 @@ height: 30px;
                 }
             }
 
+
             // Call the function to retrieve and display the stored rectangular grid
             retrieveRectangularGridFeatures();
 
             // Call the function to retrieve and display the stored polygon
             getStoredPolygon();
-
-
-
-
 
 
 
@@ -6904,10 +6909,11 @@ height: 30px;
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({
-                                color: 'white',
-                                width: 10
+                                color: '#515151',
+                                width: 6
                             })
-                        })
+                        }),
+                        minZoom: 19
                     });
 
                     map.addLayer(triangularGrid);
@@ -6926,7 +6932,8 @@ height: 30px;
 
 
 
-            //Function to retreieve Square Intersection Points
+
+            //Function to retrieve Square Intersection Points
             function retrieveSquareGridIntersectionPoints() {
                 const format = new ol.format.GeoJSON();
                 const intersectionPointsGeoJSONString = localStorage.getItem('squareGridIntersectionPoints');
@@ -6974,7 +6981,7 @@ height: 30px;
             retrieveSquareGridIntersectionPoints();
 
 
-            //Function to retreieve Rectangular Intersection Points
+            //Function to retrieve Rectangular Intersection Points
             function retrieveRectangularGridIntersectionPoints() {
                 const format = new ol.format.GeoJSON();
                 const intersectionPointsGeoJSONString = localStorage.getItem('rectangularGridIntersectionPoints');
