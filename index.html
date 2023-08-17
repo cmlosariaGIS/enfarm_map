@@ -1668,6 +1668,12 @@
             opacity: 0;
             animation: slide-up 0.5s forwards, fade-in 0.5s forwards;
             animation-delay: 2.5s, 2.5s;
+            white-space: nowrap;
+            /* Prevent text wrapping */
+            overflow: hidden;
+            /* Hide overflowing content */
+            min-width: 300px;
+            /* Minimum width to prevent too narrow container */
         }
 
         /* Define the slide-up animation */
@@ -1704,6 +1710,9 @@
             font-size: 1em;
             display: inline;
             line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /*END Grid Type/Pattern Information Pill*/
@@ -1845,7 +1854,7 @@
 
 
 
-
+        <!-- Grid Properties Container for Pattern and Angle of orientation -->
         <div class="gridPropertiesContainer" id="gridPropertiesContainer">
             <div style="display: flex; justify-content: flex-end; margin-right: 10px;">
                 <!--<button class="closeGridPropertiesContainer"
@@ -5229,8 +5238,8 @@
                     source: new ol.source.Vector(),
                     style: new ol.style.Style({
                         stroke: new ol.style.Stroke({
-                            color: 'black',
-                            width: 4
+                            color: '#515151',
+                            width: 8
                         })
                     })
                 });
@@ -5239,8 +5248,8 @@
                     source: new ol.source.Vector(),
                     style: new ol.style.Style({
                         stroke: new ol.style.Stroke({
-                            color: 'black',
-                            width: 4
+                            color: '#515151',
+                            width: 8
                         })
                     })
                 });
@@ -5249,8 +5258,8 @@
                     source: new ol.source.Vector(),
                     style: new ol.style.Style({
                         stroke: new ol.style.Stroke({
-                            color: 'black',
-                            width: 4
+                            color: '#515151',
+                            width: 8
                         })
                     })
                 });
@@ -5270,8 +5279,8 @@
                     source: new ol.source.Vector(),
                     style: new ol.style.Style({
                         stroke: new ol.style.Stroke({
-                            color: 'black',
-                            width: 4
+                            color: '#515151',
+                            width: 8
                         })
                     })
                 });
@@ -8352,6 +8361,8 @@ height: 30px;
             });
 
             //////////// <----- END FUNCTION: RETRIEVE STORED VALUES AND SHOW ON GRID INFO PILL ON RELOAD -----> \\\\\\\\\\
+
+
 
 
 
