@@ -8354,35 +8354,6 @@ height: 30px;
             //////////// <----- END FUNCTION: RETRIEVE STORED VALUES AND SHOW ON GRID INFO PILL ON RELOAD -----> \\\\\\\\\\
 
 
-// Define the function to check if the farm polygon is visible
-function isFarmPolygonVisible() {
-    const viewExtent = map.getView().calculateExtent(map.getSize());
-    const features = farmVectorLayer.getSource().getFeatures();
-    let isVisible = false;
-    features.forEach((feature) => {
-        const featureExtent = feature.getGeometry().getExtent();
-        if (ol.extent.intersects(viewExtent, featureExtent)) {
-            isVisible = true;
-        }
-    });
-    return isVisible;
-}
-
-// Define the function to update the visibility of the gridInfoPill element
-function updateGridInfoPillVisibility() {
-    if (isFarmPolygonVisible()) {
-        document.getElementById('gridInfoPill').style.display = 'flex'; // Show the element
-    } else {
-        document.getElementById('gridInfoPill').style.display = 'none'; // Hide the element
-    }
-}
-
-// Attach the listener to the view change event
-map.getView().on('change', updateGridInfoPillVisibility);
-
-// Call the function once to set the initial visibility
-updateGridInfoPillVisibility();
-
 
 
 
