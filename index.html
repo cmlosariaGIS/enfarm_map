@@ -1456,12 +1456,11 @@
 
         /***** END CURRENT ACTIVITY FLOATING TITLE ******/
 
-        /***** Style For Applying Grid Type and Rotation *****/
+        /***** START STYLE FOR APPLYING GRID TYPE AND ROTATION *****/
 
         .gridPropertiesContainer {
             position: fixed;
             top: -100%;
-            /* Initial position above the viewport */
             left: 50%;
             transform: translateX(-50%);
             padding: 20px;
@@ -1474,7 +1473,6 @@
             opacity: 0;
             transition: top 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
         }
-
 
         .gridPropertiesContainer.visible {
             top: 25%;
@@ -1631,9 +1629,6 @@
             color: #515151;
         }
 
-
-
-
         #floatingWindow {
             position: fixed;
             bottom: 140px;
@@ -1646,7 +1641,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             z-index: 9999;
         }
-
+        /***** END STYLE FOR APPLYING GRID TYPE AND ROTATION *****/
 
 
         /*START Grid Type/Pattern Information Pill*/
@@ -1686,7 +1681,6 @@
             }
         }
 
-
         .countContainer {
             display: flex;
             align-items: center;
@@ -1709,20 +1703,23 @@
             line-height: 1;
         }
 
+        /*END Grid Type/Pattern Information Pill*/
 
-        /*Retreieved Pill on restart*/
 
+        /*START Style Retreieved Pill on map restart*/
         .grid-info-pill {
             position: absolute;
             bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
             font-family: 'Be Vietnam Pro', Arial, sans-serif;
             font-size: 30px;
-            left: 25%;
             display: flex;
             background-color: #fff;
             border-radius: 50px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            align-items: center;
         }
 
         .grid-info-pill .pill-section {
@@ -1746,6 +1743,8 @@
         .hidden {
             display: none;
         }
+
+        /*END Style Retreieved Pill on map restart*/
     </style>
 </head>
 
@@ -1757,7 +1756,8 @@
             <div class="blur-mask"></div>
         </div>
 
-        <!-- Retrieved Grid Information Pill -->
+
+        <!-- Retrieved Grid Information Pill on browser refresh-->
         <div id="gridInfoPill" class="grid-info-pill hidden">
             <div id="pillTreeCount" class="pill-section">
                 <img src="https://i.ibb.co/hDYvzYs/icons8-tree-64.png" alt="tree-icon">
@@ -1845,10 +1845,10 @@
 
         <div class="gridPropertiesContainer" id="gridPropertiesContainer">
             <div style="display: flex; justify-content: flex-end; margin-right: 10px;">
-                <button class="closeGridPropertiesContainer"
+                <!--<button class="closeGridPropertiesContainer"
                     style="border: none; background: none; cursor: pointer; margin-top: 0px; margin-right: 10px">
                     <i class="material-icons" style="font-size: 50px; color: red;">cancel</i>
-                </button>
+                </button>-->
             </div>
             <br>
             <div style="display: flex; align-items: center;">
@@ -6038,10 +6038,11 @@
                     }
                 });
 
-                document.querySelector('.closeGridPropertiesContainer').addEventListener('click', function () {
+                // close-button on grid pattern type properties
+                //document.querySelector('.closeGridPropertiesContainer').addEventListener('click', function () {
                     // Hide gridPropertiesContainer with slide-up animation
-                    hideGridPropertiesContainer();
-                });
+                  //  hideGridPropertiesContainer();
+                //});
 
 
                 // Variable to keep track of the last selected grid type
@@ -8308,8 +8309,7 @@ height: 30px;
 
 
 
-            //Function: Retrieve stored values and show on Grid Info Pill on Reload
-
+            //////////// <----- START FUNCTION: RETRIEVE STORED VALUES AND SHOW ON GRID INFO PILL ON RELOAD -----> \\\\\\\\\\
             window.addEventListener('load', function () {
                 // Delay the execution by 2 seconds
                 setTimeout(function () {
@@ -8336,16 +8336,21 @@ height: 30px;
                         // Remove the hidden class from the main container
                         document.getElementById('gridInfoPill').classList.remove('hidden');
 
-                        // Check if the last selected grid type is 'triangularGrid' and lastSelectedGridZCount is not null
-                        if (lastSelectedGridType === 'triangularGrid' && lastSelectedGridZCount !== null) {
-                            document.getElementById('pillZCount').classList.remove('hidden');
-                            document.getElementById('gridZCount').textContent = lastSelectedGridZCount;
+                        // If the grid type is not triangularGrid, hide the pillZCount
+                        if (lastSelectedGridType !== 'triangularGrid') {
+                            document.getElementById('pillZCount').style.display = 'none';
+                        } else {
+                            // Check if lastSelectedGridZCount is not null before showing
+                            if (lastSelectedGridZCount !== null) {
+                                document.getElementById('pillZCount').classList.remove('hidden');
+                                document.getElementById('gridZCount').textContent = lastSelectedGridZCount;
+                            }
                         }
                     }
                 }, 2000); // Delay time in milliseconds (2000ms = 2 seconds)
             });
 
-
+            //////////// <----- END FUNCTION: RETRIEVE STORED VALUES AND SHOW ON GRID INFO PILL ON RELOAD -----> \\\\\\\\\\
 
 
 
