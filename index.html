@@ -5270,8 +5270,8 @@
                     source: new ol.source.Vector(),
                     style: new ol.style.Style({
                         stroke: new ol.style.Stroke({
-                            color: 'black',
-                            width: 4
+                            color: '#515151',
+                            width: 8
                         })
                     })
                 });
@@ -8417,6 +8417,7 @@ height: 30px;
                 }
             }
 
+
             // Function to create a counting effect
             function startFastCountingEffect(targetElementId, finalValue) {
                 const targetElement = document.getElementById(targetElementId);
@@ -8440,7 +8441,12 @@ height: 30px;
 
                 // Call the function once to set the initial visibility
                 updateGridInfoPillVisibility();
+
+                // Call the function again after a short delay to ensure visibility on mobile browsers
+                setTimeout(updateGridInfoPillVisibility, 500); // 0.5-second delay
             }
+
+
 
             // Move the JavaScript code inside the window.onload function
             window.onload = function () {
