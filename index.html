@@ -75,8 +75,8 @@
             position: absolute;
             top: 45px;
             left: 30px;
-            width: 320px;
-            height: 130px;
+            width: 290px;
+            height: 110px;
             z-index: 1;
         }
 
@@ -1898,7 +1898,7 @@
                         <i class="material-icons">rotate_90_degrees_ccw</i> Áp dụng
                     </button>
                     <button id="save-button">
-                        <span class="material-icons-outlined">save</span> Cứu
+                        <span class="material-icons-outlined">save</span> Lưu
                     </button>
                 </div>
             </div>
@@ -1928,6 +1928,8 @@
             <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">sensors</i>
             <span class="addSensorsTitle">Thêm cảm biến Enfarm</span><!--Adding enfarm sensors-->
         </div>
+
+
 
 
         <!--Adding Farm and Sensor Success Message-->
@@ -6405,7 +6407,6 @@ height: 30px;
 `;
 
                     const areaInHectares = area > 10000 ? (area / 10000).toFixed(2) + ' ha' : area.toFixed(2) + ' m²';
-                    //tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="material-icons" style="font-size: 40px; margin-right: 10px;">agriculture</i>${areaInHectares}</span>`;
                     tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="fa-solid fa-seedling" style="font-size: 40px; margin-right: 10px;"></i>${areaInHectares}</span>`;
 
                     tooltipOverlay = new ol.Overlay({
@@ -7702,10 +7703,9 @@ height: 30px;
                         localStorage.removeItem('lastSelectedGridZCount');
                     }
 
-
                     // Hide the gridInfoPill element
                     const gridInfoPill = document.getElementById("gridInfoPill");
-                    gridInfoPill.classList.add("hidden");
+                    gridInfoPill.style.display = "none"; // Set display to "none" to hide the element
 
                     // Hide the dialog box
                     dialog.classList.add("hidden");
@@ -8363,7 +8363,41 @@ height: 30px;
             //////////// <----- END FUNCTION: RETRIEVE STORED VALUES AND SHOW ON GRID INFO PILL ON RELOAD -----> \\\\\\\\\\
 
 
+            // Function to check if the farm vector layer is visible in the current view
+            function isFarmVectorLayerVisible() {
+                if (!farmVectorLayer) {
+                    return false;
+                }
+                const viewExtent = map.getView().calculateExtent(map.getSize());
+                const features = farmVectorLayer.getSource().getFeatures();
+                let isVisible = false;
+                features.forEach((feature) => {
+                    const featureExtent = feature.getGeometry().getExtent();
+                    if (ol.extent.intersects(viewExtent, featureExtent)) {
+                        isVisible = true;
+                    }
+                });
+                return isVisible;
+            }
 
+            // Function to update the visibility of the grid info pill based on the farm vector layer visibility
+            function updateGridInfoPillVisibility() {
+                if (isFarmVectorLayerVisible()) {
+                    document.getElementById('gridInfoPill').style.display = 'flex'; // Show the element
+                } else {
+                    document.getElementById('gridInfoPill').style.display = 'none'; // Hide the element
+                }
+            }
+
+            // Check if the required information is present in local storage
+            const intersectionCount = localStorage.getItem('lastSelectedIntersectionCount');
+            if (intersectionCount) {
+                // Attach the listener to the view change event
+                map.getView().on('change', updateGridInfoPillVisibility);
+
+                // Call the function once to set the initial visibility
+                updateGridInfoPillVisibility();
+            }
 
 
 
