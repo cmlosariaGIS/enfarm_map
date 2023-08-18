@@ -8362,7 +8362,7 @@ height: 30px;
 
             //////////// <----- END FUNCTION: RETRIEVE STORED VALUES AND SHOW ON GRID INFO PILL ON RELOAD -----> \\\\\\\\\\
 
-
+            //FUNCTION TO HIDE THE GRID INFO PILL WHEN THE FARM POLYGON IS OUT OF SIGHT
             // Function to check if the farm vector layer is visible in the current view
             function isFarmVectorLayerVisible() {
                 if (!farmVectorLayer) {
@@ -8398,6 +8398,7 @@ height: 30px;
                 // Call the function once to set the initial visibility
                 updateGridInfoPillVisibility();
             }
+
 
 
 
