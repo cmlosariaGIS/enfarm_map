@@ -8363,6 +8363,9 @@ height: 30px;
             //////////// <----- END FUNCTION: RETRIEVE STORED VALUES AND SHOW ON GRID INFO PILL ON RELOAD -----> \\\\\\\\\\
 
             //FUNCTION TO HIDE THE GRID INFO PILL WHEN THE FARM POLYGON IS OUT OF SIGHT
+            // Variable to track if the counting effect has been initiated
+            let countingEffectInitiated = false;
+
             // Function to check if the farm vector layer is visible in the current view
             function isFarmVectorLayerVisible() {
                 if (!farmVectorLayer) {
@@ -8383,10 +8386,50 @@ height: 30px;
             // Function to update the visibility of the grid info pill based on the farm vector layer visibility
             function updateGridInfoPillVisibility() {
                 if (isFarmVectorLayerVisible()) {
-                    document.getElementById('gridInfoPill').style.display = 'flex'; // Show the element
+                    // Delay showing the element by 2 seconds
+                    setTimeout(function () {
+                        document.getElementById('gridInfoPill').style.display = 'flex'; // Show the element
+
+                        // If the counting effect hasn't been initiated, start it
+                        if (!countingEffectInitiated) {
+                            // Start the fast counting effects for each value
+                            const intersectionCount = parseInt(localStorage.getItem('lastSelectedIntersectionCount')) || 0;
+                            startFastCountingEffect('intersectionCount', intersectionCount);
+
+                            const gridXCountValue = parseInt(localStorage.getItem('lastSelectedGridXCount')) || 0;
+                            startFastCountingEffect('gridXCount', gridXCountValue);
+
+                            const gridYCountValue = parseInt(localStorage.getItem('lastSelectedGridYCount')) || 0;
+                            startFastCountingEffect('gridYCount', gridYCountValue);
+
+                            // If you have GridZ count:
+                            const gridZCountValue = parseInt(localStorage.getItem('lastSelectedGridZCount')) || 0;
+                            if (gridZCountValue) {
+                                startFastCountingEffect('triangularGridZCount', gridZCountValue);
+                            }
+
+                            // Mark the counting effect as initiated
+                            countingEffectInitiated = true;
+                        }
+                    }, 2000); // 2-second delay
                 } else {
                     document.getElementById('gridInfoPill').style.display = 'none'; // Hide the element
                 }
+            }
+
+            // Function to create a counting effect
+            function startFastCountingEffect(targetElementId, finalValue) {
+                const targetElement = document.getElementById(targetElementId);
+                let currentValue = 0;
+                const increment = Math.ceil(finalValue / 25); // Divide into 50 increments
+                const interval = setInterval(function () {
+                    currentValue += increment;
+                    targetElement.textContent = currentValue;
+                    if (currentValue >= finalValue) {
+                        clearInterval(interval);
+                        targetElement.textContent = finalValue; // Ensure final value is accurate
+                    }
+                }, 50); // Delay between increments (50 milliseconds)
             }
 
             // Check if the required information is present in local storage
@@ -8398,11 +8441,6 @@ height: 30px;
                 // Call the function once to set the initial visibility
                 updateGridInfoPillVisibility();
             }
-
-
-
-
-
 
             // Move the JavaScript code inside the window.onload function
             window.onload = function () {
