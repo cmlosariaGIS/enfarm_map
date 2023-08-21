@@ -5623,12 +5623,14 @@
                     // Triangular grid
                     const triangularGridCoords = [];
                     const halfHeight = Math.sqrt(3) / 2 * 3;
-                    const rowCount = Math.ceil((extent[3] - extent[1]) / halfHeight);
-                    const colCount = Math.ceil((extent[2] - extent[0]) / 3);
+                    const extentWidth = extent[2] - extent[0];
+                    const extentHeight = extent[3] - extent[1];
+                    const rowCount = Math.ceil((2 * extentHeight) / halfHeight);
+                    const colCount = Math.ceil((2 * extentWidth) / 3);
                     for (let row = 0; row < rowCount; row++) {
                         for (let col = 0; col < colCount; col++) {
-                            let x = extent[0] + col * 3;
-                            let y = extent[1] + row * halfHeight;
+                            let x = extent[0] + col * 3 - extentWidth; // Offset by extentWidth to cover the larger area
+                            let y = extent[1] + row * halfHeight - extentHeight; // Offset by extentHeight to cover the larger area
                             if (row % 2 === 0) {
                                 // ▽
                                 triangularGridCoords.push([
@@ -5660,6 +5662,7 @@
                             }
                         }
                     }
+
 
                     //Counting the Triangular Grid XYZ
 
