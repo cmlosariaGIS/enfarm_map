@@ -1757,6 +1757,30 @@
         }
 
         /*END Style Retreieved Pill on map restart*/
+
+
+        #lineProfileButtons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+
+        #startLineProfile,
+        #clearLineProfile {
+            margin: 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        #clearLineProfile {
+            background-color: #f44336;
+        }
     </style>
 </head>
 
@@ -1767,6 +1791,7 @@
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
+
 
 
         <!-- Retrieved Grid Information Pill on browser refresh-->
@@ -6467,6 +6492,7 @@ height: 30px;
 
                         // Send data to React Native App
                         try {
+                            // Construct the data object with relevant information
                             const dataToPost = {
                                 centerPoint: {
                                     lon: centerPointCoordinates[0],
@@ -6508,8 +6534,16 @@ height: 30px;
                                 ]
                             };
 
-                            // Send data to React Native App
                             window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
+
+                            // Create a React message to indicate the drawing has finished
+                            const reactMessage = {
+                                type: 'finishDrawing',
+                                data: dataToPost
+                            };
+
+                            // Send the React message to the React Native App
+                            window.ReactNativeWebView.postMessage(JSON.stringify(reactMessage));
                         } catch (error) {
                             // Handle the error (or do nothing to prevent logging)
                         }
@@ -7418,6 +7452,7 @@ height: 30px;
                         layer.getSource().getFeatures().length > 0
                 );
 
+                // Send data to React Native App
                 if (hasPoints) {
                     try {
                         const message = { enfarm_sensor_coordinates: retrievePointsFromLocalStorage() };
@@ -8362,7 +8397,7 @@ height: 30px;
 
             //////////// <----- END FUNCTION: RETRIEVE STORED VALUES AND SHOW ON GRID INFO PILL ON RELOAD -----> \\\\\\\\\\
 
-            //FUNCTION TO HIDE THE GRID INFO PILL WHEN THE FARM POLYGON IS OUT OF SIGHT
+            //////////// <----- START FUNCTION TO HIDE THE GRID INFO PILL WHEN THE FARM POLYGON IS OUT OF SIGHT -----> \\\\\\\\\\
             // Variable to track if the counting effect has been initiated
             let countingEffectInitiated = false;
 
@@ -8417,7 +8452,6 @@ height: 30px;
                 }
             }
 
-
             // Function to create a counting effect
             function startFastCountingEffect(targetElementId, finalValue) {
                 const targetElement = document.getElementById(targetElementId);
@@ -8445,6 +8479,13 @@ height: 30px;
                 // Call the function again after a short delay to ensure visibility on mobile browsers
                 setTimeout(updateGridInfoPillVisibility, 500); // 0.5-second delay
             }
+            //////////// <----- END FUNCTION TO HIDE THE GRID INFO PILL WHEN THE FARM POLYGON IS OUT OF SIGHT -----> \\\\\\\\\\
+
+
+
+
+
+
 
 
 
@@ -8456,9 +8497,6 @@ height: 30px;
                 const sketchingFarmFloatingTitle = document.querySelector('.sketchingFarmfloatingTitle');
                 const addSensorsFloatingTitle = document.querySelector('.addSensorsfloatingTitle');
             }
-
-
-
 
             // For Listening to react native app data
             window.addEventListener("message", message => {
