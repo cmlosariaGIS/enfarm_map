@@ -339,6 +339,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
+
         /***** END SEARCH BUTTON FUNCTION *****/
 
 
@@ -912,7 +913,7 @@
 
         .northArrow {
             position: fixed;
-            top: 30%;
+            top: 20%;
             left: 50px;
             transform: translateX(-50%);
             background-color: #fff;
@@ -2955,7 +2956,7 @@
                 addTourStep(tour, 'step-sketch-farm', '#sketchFarmBtn', 'Nhấp vào nút này để phác thảo trang trại của bạn.');
             }
 
-            
+
             function addStepAddSensor(tour) {
                 addTourStep(tour, 'step-add-sensor', '#addSensorBtn', 'Nhấp vào nút này để thêm/các cảm biến enfarm.');
             }
@@ -3928,9 +3929,11 @@
                 view: new ol.View({
                     center: ol.proj.fromLonLat([106.6297, 10.8231]),
                     zoom: 15,
+                    //rotation: Math.PI / 4, // Rotate the map 45 degrees (in radians)
                 }),
                 controls: [],
             });
+
 
             let currentBasemap = 1;
             const basemaps = [streetLayer, satelliteLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer];
@@ -3955,7 +3958,7 @@
                     ];
                     const basemapTitleText = basemapTitles[index];
                     basemapTitleElement.innerHTML = `
-      <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">layers</i>
+      <i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">layers</i>
       <span class="basemapTitle" style="display: inline-block;">${basemapTitleText}</span>
     `;
 
