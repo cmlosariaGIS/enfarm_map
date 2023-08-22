@@ -1030,8 +1030,6 @@ const map = new ol.Map({
 
 
 
-
-
 let currentBasemap = 1;
 const basemaps = [streetLayer, satelliteLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer];
 
@@ -2712,48 +2710,51 @@ async function startSketchFarm() {
             rectangularYCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 2.5) - 2.5], center, angle));
         }
 
-        // Triangular grid
-        const triangularGridCoords = [];
-        const halfHeight = Math.sqrt(3) / 2 * 3;
-        const extentWidth = extent[2] - extent[0];
-        const extentHeight = extent[3] - extent[1];
-        const rowCount = Math.ceil((2 * extentHeight) / halfHeight);
-        const colCount = Math.ceil((2 * extentWidth) / 3);
-        for (let row = 0; row < rowCount; row++) {
-            for (let col = 0; col < colCount; col++) {
-                let x = extent[0] + col * 3 - extentWidth; // Offset by extentWidth to cover the larger area
-                let y = extent[1] + row * halfHeight - extentHeight; // Offset by extentHeight to cover the larger area
-                if (row % 2 === 0) {
-                    // ▽
-                    triangularGridCoords.push([
-                        rotatePoint([x, y], center, angle),
-                        rotatePoint([x + 1.5, y + halfHeight], center, angle),
-                        rotatePoint([x + 3, y], center, angle),
-                        rotatePoint([x, y], center, angle),
-                    ]);
-                    triangularGridCoords.push([
-                        rotatePoint([x + 1.5, y + halfHeight], center, angle),
-                        rotatePoint([x + 3, y], center, angle),
-                        rotatePoint([x + 4.5, y + halfHeight], center, angle),
-                        rotatePoint([x + 1.5, y + halfHeight], center, angle),
-                    ]);
-                } else {
-                    // △
-                    triangularGridCoords.push([
-                        rotatePoint([x + 1.5, y], center, angle),
-                        rotatePoint([x + 3, y + halfHeight], center, angle),
-                        rotatePoint([x, y + halfHeight], center, angle),
-                        rotatePoint([x + 1.5, y], center, angle),
-                    ]);
-                    triangularGridCoords.push([
-                        rotatePoint([x + 3, y + halfHeight], center, angle),
-                        rotatePoint([x + 4.5, y], center, angle),
-                        rotatePoint([x + 6, y + halfHeight], center, angle),
-                        rotatePoint([x + 3, y + halfHeight], center, angle),
-                    ]);
-                }
-            }
+// Buffer the polygon extent by 200 meters
+const bufferedExtent = ol.extent.buffer(extent, 200);
+
+// Triangular grid
+const triangularGridCoords = [];
+const halfHeight = Math.sqrt(3) / 2 * 3;
+const extentWidth = bufferedExtent[2] - bufferedExtent[0];
+const extentHeight = bufferedExtent[3] - bufferedExtent[1];
+const rowCount = Math.ceil((2 * extentHeight) / halfHeight);
+const colCount = Math.ceil((2 * extentWidth) / 3);
+for (let row = 0; row < rowCount; row++) {
+    for (let col = 0; col < colCount; col++) {
+        let x = bufferedExtent[0] + col * 3;
+        let y = bufferedExtent[1] + row * halfHeight;
+        if (row % 2 === 0) {
+            // ▽
+            triangularGridCoords.push([
+                rotatePoint([x, y], center, angle),
+                rotatePoint([x + 1.5, y + halfHeight], center, angle),
+                rotatePoint([x + 3, y], center, angle),
+                rotatePoint([x, y], center, angle),
+            ]);
+            triangularGridCoords.push([
+                rotatePoint([x + 1.5, y + halfHeight], center, angle),
+                rotatePoint([x + 3,y], center ,angle ),
+                rotatePoint([x+4.5,y+halfHeight ],center ,angle ),
+                rotatePoint([x+1.5,y+halfHeight ],center ,angle )
+            ]);
+        } else {
+            // △
+            triangularGridCoords.push([
+                rotatePoint([x + 1.5, y], center, angle),
+                rotatePoint([x + 3, y + halfHeight], center, angle),
+                rotatePoint([x, y + halfHeight], center, angle),
+                rotatePoint([x + 1.5, y], center, angle),
+            ]);
+            triangularGridCoords.push([
+                rotatePoint([x + 3, y + halfHeight], center, angle),
+                rotatePoint([x + 4.5, y], center, angle),
+                rotatePoint([x + 6, y + halfHeight], center, angle),
+                rotatePoint([x + 3, y + halfHeight], center, angle),
+            ]);
         }
+    }
+}
 
 
         //Counting the Triangular Grid XYZ
