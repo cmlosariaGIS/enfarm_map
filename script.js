@@ -2710,51 +2710,51 @@ async function startSketchFarm() {
             rectangularYCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 2.5) - 2.5], center, angle));
         }
 
-// Buffer the polygon extent by 200 meters
-const bufferedExtent = ol.extent.buffer(extent, 200);
+        // Buffer the polygon extent by 200 meters
+        const bufferedExtent = ol.extent.buffer(extent, 200);
 
-// Triangular grid
-const triangularGridCoords = [];
-const halfHeight = Math.sqrt(3) / 2 * 3;
-const extentWidth = bufferedExtent[2] - bufferedExtent[0];
-const extentHeight = bufferedExtent[3] - bufferedExtent[1];
-const rowCount = Math.ceil((2 * extentHeight) / halfHeight);
-const colCount = Math.ceil((2 * extentWidth) / 3);
-for (let row = 0; row < rowCount; row++) {
-    for (let col = 0; col < colCount; col++) {
-        let x = bufferedExtent[0] + col * 3;
-        let y = bufferedExtent[1] + row * halfHeight;
-        if (row % 2 === 0) {
-            // ▽
-            triangularGridCoords.push([
-                rotatePoint([x, y], center, angle),
-                rotatePoint([x + 1.5, y + halfHeight], center, angle),
-                rotatePoint([x + 3, y], center, angle),
-                rotatePoint([x, y], center, angle),
-            ]);
-            triangularGridCoords.push([
-                rotatePoint([x + 1.5, y + halfHeight], center, angle),
-                rotatePoint([x + 3,y], center ,angle ),
-                rotatePoint([x+4.5,y+halfHeight ],center ,angle ),
-                rotatePoint([x+1.5,y+halfHeight ],center ,angle )
-            ]);
-        } else {
-            // △
-            triangularGridCoords.push([
-                rotatePoint([x + 1.5, y], center, angle),
-                rotatePoint([x + 3, y + halfHeight], center, angle),
-                rotatePoint([x, y + halfHeight], center, angle),
-                rotatePoint([x + 1.5, y], center, angle),
-            ]);
-            triangularGridCoords.push([
-                rotatePoint([x + 3, y + halfHeight], center, angle),
-                rotatePoint([x + 4.5, y], center, angle),
-                rotatePoint([x + 6, y + halfHeight], center, angle),
-                rotatePoint([x + 3, y + halfHeight], center, angle),
-            ]);
+        // Triangular grid
+        const triangularGridCoords = [];
+        const halfHeight = Math.sqrt(3) / 2 * 3;
+        const extentWidth = bufferedExtent[2] - bufferedExtent[0];
+        const extentHeight = bufferedExtent[3] - bufferedExtent[1];
+        const rowCount = Math.ceil((2 * extentHeight) / halfHeight);
+        const colCount = Math.ceil((2 * extentWidth) / 3);
+        for (let row = 0; row < rowCount; row++) {
+            for (let col = 0; col < colCount; col++) {
+                let x = bufferedExtent[0] + col * 3;
+                let y = bufferedExtent[1] + row * halfHeight;
+                if (row % 2 === 0) {
+                    // ▽
+                    triangularGridCoords.push([
+                        rotatePoint([x, y], center, angle),
+                        rotatePoint([x + 1.5, y + halfHeight], center, angle),
+                        rotatePoint([x + 3, y], center, angle),
+                        rotatePoint([x, y], center, angle),
+                    ]);
+                    triangularGridCoords.push([
+                        rotatePoint([x + 1.5, y + halfHeight], center, angle),
+                        rotatePoint([x + 3, y], center, angle),
+                        rotatePoint([x + 4.5, y + halfHeight], center, angle),
+                        rotatePoint([x + 1.5, y + halfHeight], center, angle)
+                    ]);
+                } else {
+                    // △
+                    triangularGridCoords.push([
+                        rotatePoint([x + 1.5, y], center, angle),
+                        rotatePoint([x + 3, y + halfHeight], center, angle),
+                        rotatePoint([x, y + halfHeight], center, angle),
+                        rotatePoint([x + 1.5, y], center, angle),
+                    ]);
+                    triangularGridCoords.push([
+                        rotatePoint([x + 3, y + halfHeight], center, angle),
+                        rotatePoint([x + 4.5, y], center, angle),
+                        rotatePoint([x + 6, y + halfHeight], center, angle),
+                        rotatePoint([x + 3, y + halfHeight], center, angle),
+                    ]);
+                }
+            }
         }
-    }
-}
 
 
         //Counting the Triangular Grid XYZ
@@ -3649,7 +3649,7 @@ height: 30px;
         }*/
 
 
-            // Address and Long Lat sent as seperated messages
+            // Address and Long Lat sent as separated messages
             // Send data to React Native App
             try {
                 // Construct the data object with relevant information
@@ -3694,6 +3694,7 @@ height: 30px;
                     ]
                 };
 
+                // Send the data object to React Native WebView
                 window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
 
                 // Create a React message to indicate the drawing has finished
@@ -3721,7 +3722,6 @@ height: 30px;
                     }
                 };
                 window.ReactNativeWebView.postMessage(JSON.stringify(centerPointMessage));
-
             } catch (error) {
                 // Handle the error (or do nothing to prevent logging)
             }
