@@ -1,0 +1,1594 @@
+@font-face {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    /*src: url('fonts/BeVietnamPro-Regular.ttf') format('truetype');*/
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    /*src: url('fonts/BeVietnamPro-Regular.ttf') format('truetype');*/
+    font-weight: bold;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    /*src: url('fonts/BeVietnamPro-Regular.ttf') format('truetype');*/
+}
+
+* .map {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    touch-action: pan-y;
+    touch-action: pan-x;
+}
+
+.logo {
+    position: absolute;
+    top: 45px;
+    left: 30px;
+    width: 290px;
+    height: 110px;
+    z-index: 1;
+}
+
+.basemapBtn,
+.locationBtn,
+.searchBtn,
+.measureAreaBtn,
+.measureLengthBtn,
+.drawFarmBtn,
+.sketchFarmBtn,
+.northArrow,
+.resetBtn,
+.addSensorBtn,
+.undoSensorBtn,
+.undoSketchBtn,
+.tutorialBtn {
+    position: fixed;
+    background-color: #ffffff;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.basemapBtn i,
+.locationBtn i,
+.searchBtn i,
+.measureAreaBtn i,
+.measureLengthBtn i,
+.drawFarmBtn i,
+.sketchFarmBtn i,
+.northArrow i,
+.resetBtn i,
+.addSensorBtn i,
+.undoSensorBtn i,
+.undoSketchBtn i,
+.tutorialBtn i {
+    font-family: "Material Icons";
+    font-size: 65px;
+    color: #515151;
+}
+
+
+/***** START AUTO-DETECT USER LOCATION *****/
+.user-marker {
+    width: 20px;
+    height: 20px;
+    background-color: #007bff;
+    border-radius: 50%;
+    animation: glowing 1s infinite;
+}
+
+@keyframes glowing {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+    }
+
+    50% {
+        box-shadow: 0 0 0 10px rgba(0, 123, 255, 0.7);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+    }
+}
+
+/***** END AUTO-DETECT USER LOCATION *****/
+
+
+/***** START SEARCH BUTTON FUNCTION *****/
+.searchBtn {
+    position: absolute;
+    top: 60px;
+    right: 30px;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.searchBar {
+    display: none;
+    position: absolute;
+    height: 120px;
+    top: 60px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 100px;
+    padding: 2px 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: 890px;
+    z-index: 10;
+}
+
+.searchInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 40px;
+    color: #515151;
+    padding: 20px;
+    padding-left: 40px;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    border-radius: 100px;
+}
+
+
+.searchButton {
+    background-color: #ffffff00;
+    border-radius: 0%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    padding-right: 36px
+}
+
+.searchButton i {
+    color: #686868;
+    font-size: 80px;
+    padding-right: 20px;
+
+}
+
+.suggestionsContainer {
+    position: absolute;
+    top: 140px;
+    left: 0;
+    width: 890px;
+    max-height: 600px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 5;
+    display: none;
+
+}
+
+.suggestionsContainer::-webkit-scrollbar {
+    width: 10px;
+}
+
+.suggestionsContainer::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #f1f1f1;
+}
+
+.suggestionsContainer::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #888;
+}
+
+.suggestionsContainer::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}
+
+
+.suggestionsContainer div {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.suggestionsContainer div:hover {
+    background-color: #f2f2f2;
+}
+
+.suggestionItem {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    padding-left: 100px;
+    color: #515151;
+}
+
+.suggestionText {
+    font-size: 40px;
+    /* Adjust the font size as needed */
+}
+
+/* Add a new class to style the historical search places */
+.historicalPlace {
+    font-style: italic;
+    color: #888888;
+}
+
+.gpsIcon {
+    margin-right: 30px;
+    margin-left: 20px;
+    color: #a8a8a8;
+    font-size: 60px;
+}
+
+/*spinning icon on search bar*/
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.sync-spin {
+    animation: spin 5s infinite linear;
+}
+
+
+/*Search results POI label*/
+.marker-label {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #000;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+
+.suggestionItem .deleteButton {
+    width: 80px;
+    height: 80px;
+    border: none;
+    background-color: transparent;
+    color: #777;
+    font-size: 40px;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+    margin-left: auto;
+}
+
+.deleteButton:hover {
+    color: #ff4d4d;
+}
+
+#clearAllBtn {
+    font-size: 40px;
+    background-color: #ffffff;
+    color: #515151;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/***** END SEARCH BUTTON FUNCTION *****/
+
+
+/***** START SWITCH BASEMAP BUTTON FUNCTION *****/
+
+/*Basemap floating title*/
+.basemapfloatingTitle {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    width: fit-content;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 50px;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+}
+
+
+.basemapfloatingTitle .basemapTitle {
+    font-size: 30px;
+    color: #515151;
+}
+
+
+.basemapBtn {
+    position: absolute;
+    top: 290px;
+    right: 30px;
+    z-index: 1;
+}
+
+.basemapswitcher {
+    position: absolute;
+    top: 185px;
+    right: 0px;
+    z-index: 1;
+}
+
+.basemapSelector {
+    position: absolute;
+    left: 50%;
+    height: 100%;
+    top: 20px;
+    bottom: 0;
+    transform: translateX(-50%) translateY(100%);
+    width: 100%;
+    max-height: calc(100% - 20px);
+    border-radius: 20px 20px 0 0;
+    background-color: rgba(255, 255, 255);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    overflow: auto;
+    transition: transform 0.3s;
+}
+
+.container-content {
+    padding: 20px;
+    text-align: center;
+    font-size: 25px;
+    color: #515151;
+}
+
+.container-content .image-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 40px;
+    margin-top: 80px;
+}
+
+.container-content .image-container img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    border-radius: 50px;
+}
+
+.container-content .image-container .caption {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 5px;
+    color: #515151;
+}
+
+.image-container>div {
+    position: relative;
+}
+
+.image-container>div.selected .selected-basemap-circle {
+    display: block;
+}
+
+.selected-basemap-circle {
+    position: absolute;
+    bottom: 75px;
+    right: 25px;
+    width: 30px;
+    height: 30px;
+    background-color: green;
+    border-radius: 50%;
+    border: 6px solid white;
+    display: none;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px green;
+    }
+
+    100% {
+        box-shadow: 0 0 20px green;
+    }
+}
+
+.close-bm-button {
+    position: absolute;
+    top: 42px;
+    right: 30px;
+    cursor: pointer;
+    color: #ff4d4d;
+}
+
+.close-bm-button i {
+    font-size: 60px;
+}
+
+/*Basemap Attribution*/
+.isric-attribution,
+.osm-attribution,
+.mapbox-attribution,
+.gebco-attribution {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: none;
+    width: 800px;
+}
+
+.isric-attribution p,
+.osm-attribution p,
+.mapbox-attribution p,
+.gebco-attribution p {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 40px;
+}
+
+.isric-attribution .hidden-link,
+.osm-attribution a,
+.mapbox-attribution a,
+.gebco-attribution a {
+    color: blue;
+    text-decoration: underline;
+}
+
+.isric-attribution .close-button,
+.osm-attribution .close-button,
+.mapbox-attribution .close-button,
+.gebco-attribution .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding-bottom: 40px;
+    padding-right: 10px;
+    padding-top: 10px;
+    font-size: 60px;
+    color: #515151;
+    cursor: pointer;
+}
+
+.info-icon:hover,
+.osminfo-icon:hover,
+.mapboxinfo-icon:hover,
+.gebcoinfo-icon:hover {
+    cursor: pointer;
+}
+
+
+/* Basemap Legend */
+/* Legend Containers */
+
+/*Start Terrain Legend*/
+.terrainlegend {
+    position: absolute;
+    top: 60px;
+    right: 170px;
+    background-color: #fdfdfd;
+    border-radius: 10px;
+    padding: 15px 20px;
+    width: fit-content;
+    font-family: Arial, sans-serif;
+    display: none;
+    z-index: 5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.terrainLegend {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.terraincolorValueContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0px;
+}
+
+.terraincolorBox {
+    width: 35px;
+    height: 20px;
+}
+
+.closeterrainLegend {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.closeterrainLegend .material-icons {
+    font-size: 45px;
+    color: #ff4d4d;
+    cursor: pointer;
+}
+
+.textContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.terraincontainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.terrainicon {
+    margin-right: 5px;
+    margin-bottom: -10px;
+}
+
+.terraintext {
+    color: #515151;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    font-size: 35px;
+    margin-bottom: -10px
+}
+
+.low {
+    text-align: left;
+    color: #515151;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    font-size: 25px;
+}
+
+.high {
+    text-align: right;
+    color: #515151;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    font-size: 25px;
+}
+
+/*End Terrain Legend*/
+
+/*Start Carbon, Nitrogen, pH Legend*/
+.carbonLegend,
+.nitrogenLegend,
+.phLegend {
+    width: 135px;
+    height: 820px;
+    background-color: #ffffff;
+    position: absolute;
+    top: 60px;
+    z-index: 9999;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    color: #515151;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 35px;
+    display: none;
+    z-index: 4;
+}
+
+.carbonLegend,
+.phLegend,
+.nitrogenLegend {
+    right: 175px;
+}
+
+/* Legend Text */
+.carbonLegend .text,
+.nitrogenLegend .text,
+.phLegend .text {
+    font-size: 28px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    color: #515151;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    text-align: center;
+}
+
+
+.closecarbonLegend,
+.closenitrogenLegend,
+.closepHLegend {
+    position: absolute;
+    top: 49px;
+    background-color: #ffffff;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 4;
+    right: 165px;
+    display: none;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+}
+
+.closecarbonLegend i,
+.closenitrogenLegend i,
+.closepHLegend i {
+    font-size: 45px;
+    color: #ff4d4d;
+    display: none;
+    position: absolute;
+    top: -10px;
+    right: -7px;
+    z-index: 4;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Scrollbar */
+.carbonLegend::-webkit-scrollbar,
+.nitrogenLegend::-webkit-scrollbar,
+.phLegend::-webkit-scrollbar {
+    display: none;
+}
+
+.carbonLegend::-webkit-scrollbar-thumb,
+.nitrogenLegend::-webkit-scrollbar-thumb,
+.phLegend::-webkit-scrollbar-thumb {
+    background-color: transparent;
+}
+
+.carbonLegend::-webkit-scrollbar-track,
+.nitrogenLegend::-webkit-scrollbar-track,
+.phLegend::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+/* Color Value Container */
+.colorValueContainer {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-top: 3px;
+}
+
+/* Color Box */
+.colorBox {
+    width: 40px;
+    height: 30px;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+
+.carbonLegend,
+.nitrogenLegend,
+.phLegend {
+    background-color: white;
+    transition: background-color 0.3s ease;
+}
+
+.carbonLegend.transparent,
+.nitrogenLegend.transparent,
+.phLegend.transparent {
+    background-color: transparent !important;
+}
+
+/*End Carbon, Nitrogen, pH Legend*/
+
+
+/***** END SWITCH BASEMAP BUTTON FUNCTION *****/
+
+
+/***** START MEASURE AREA AND LINE BUTTON FUNCTION *****/
+
+.measureAreaBtn {
+    position: absolute;
+    top: 620px;
+    right: 30px;
+    z-index: 1;
+}
+
+.measureLengthBtn {
+    position: absolute;
+    top: 760px;
+    right: 30px;
+    z-index: 1;
+}
+
+.floating-message {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffffff;
+    color: #515151;
+    padding: 20px;
+    border-radius: 100px;
+    font-size: 40px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 600px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+}
+
+/*Tap to draw floating message*/
+.floating-message i {
+    font-size: 60px;
+    animation-name: cycling-animation;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes cycling-animation {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(0.8);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/***** END MEASURE AREA AND LINE BUTTON FUNCTION *****/
+
+/***** START SKETCH FARM BUTTON FUNCTION *****/
+
+.sketchFarmBtn {
+    position: absolute;
+    top: 195px;
+    right: 30px;
+    z-index: 1;
+}
+
+.undoSketchBtn {
+    position: absolute;
+    top: 195px;
+    right: 160px;
+    background-color: #2b98fe;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.undoSketchBtn i {
+    color: #ffffff;
+}
+
+.addSensorBtn {
+    position: absolute;
+    top: 335px;
+    right: 30px;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.undoSensorBtn {
+    position: absolute;
+    top: 335px;
+    right: 160px;
+    background-color: #2b98fe;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.undoSensorBtn i {
+    color: #ffffff;
+}
+
+/*Draw Farm Area Size*/
+/*Finish Sketch/Drawing Button*/
+.sketch-buttons {
+    position: absolute;
+    top: 720px;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    display: flex;
+    justify-content: center;
+    width: 800px;
+    flex-wrap: nowrap;
+    gap: 50px;
+}
+
+.finish-measuringArea,
+.finish-measuringLength,
+.finish-drawing,
+.finish-addingsensor {
+    background-color: #ffffff;
+    padding: 30px 50px;
+    border-radius: 100px;
+    font-size: 35px;
+    color: #515151;
+    outline: none;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.finish-measuringArea:hover,
+.finish-measuringLength:hover,
+.finish-drawing:hover,
+.finish-addingsensor:hover {
+    cursor: pointer;
+    background-color: #f1f1f1;
+}
+
+/*finish drawing check icon*/
+.check-icon {
+    margin-right: 10px;
+    font-family: 'Material Icons', sans-serif;
+}
+
+/***** END DRAW FARM BUTTON FUNCTION *****/
+
+.northArrow {
+    position: fixed;
+    top: 20%;
+    left: 50px;
+    transform: translateX(-50%);
+    background-color: #fff;
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+.northArrow .material-icons {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 50px;
+}
+
+.northArrow i {
+    transform: rotate(0deg);
+    transition: transform 0.3s ease-in-out;
+}
+
+
+/***** END NORTH ARROW BUTTON FUNCTION *****/
+
+/***** START MOBILE RESPONSIVENESS *****/
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+
+    /* Adjust map container height for smaller screens */
+    .map {
+        height: 300px;
+    }
+
+    /* Adjust button styles for smaller screens */
+    .basemapBtn,
+    .locationBtn,
+    .searchBtn,
+    .measureAreaBtn,
+    .measureLengthBtn,
+    .drawFarmBtn,
+    .sketchFarmBtn,
+    .northArrow,
+    .resetBtn,
+    .addSensorBtn,
+    .undoSensorBtn,
+    .undoSketchBtn,
+    .tutorialBtn {
+        font-size: 20px;
+        padding: 8px 12px;
+    }
+}
+
+/* Media query for even smaller screens */
+@media (max-width: 480px) {
+
+    /* Adjust map container height for even smaller screens */
+    .map {
+        height: 200px;
+    }
+
+    /* Adjust button styles for even smaller screens */
+    .basemapBtn,
+    .locationBtn,
+    .searchBtn,
+    .measureAreaBtn,
+    .measureLengthBtn,
+    .drawFarmBtn,
+    .sketchFarmBtn,
+    .northArrow,
+    .resetBtn,
+    .addSensorBtn,
+    .undoSensorBtn,
+    .undoSketchBtn,
+    .tutorialBtn {
+        font-size: 16px;
+        padding: 6px 10px;
+    }
+}
+
+/***** END MOBILE RESPONSIVENESS *****/
+
+
+/*
+.hidden {
+    display: none;
+}
+*/
+
+.dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.dialog-content {
+    background-color: white;
+    padding: 100px;
+    border-radius: 30px;
+    text-align: center;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    width: 550px;
+    height: 330px;
+    font-size: 40px;
+    color: #515151;
+    max-width: 100%;
+    box-shadow: #515151;
+}
+
+/* Yes and Cancel Button*/
+.dialog-button {
+    font-size: 40px;
+    margin: 10px;
+    padding: 20px 70px;
+    border-radius: 20px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
+}
+
+.hidden {
+    display: none;
+}
+
+/****** Start  Tutorial Button Styles *******/
+
+#tutorialBtn {
+
+    position: fixed;
+    top: 50%;
+    left: 45px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+
+}
+
+#tutorialBtn i.material-icons {
+    font-size: 60px;
+    color: #515151;
+}
+
+
+/****** END TUTORIAL BUTTON STYLES *******/
+
+
+/****** START WINDY WEATHER STYLES *******/
+:root {
+    --iframe-width: 100%;
+    --iframe-height: 300px;
+    --button-font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    --button-font-size: 30px;
+    --button-background-color: #a51e25;
+    --button-color: white;
+    --button-border-radius: 9999px;
+    --button-padding: 10px 8px;
+    --icon-size: 32px;
+}
+
+#windyMapContainer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+    display: none;
+}
+
+@media screen and (max-width: 767px) {
+    #windyMapContainer iframe {
+        width: var(--iframe-width);
+        height: var(--iframe-height);
+    }
+}
+
+#windyMapBtn {
+    position: absolute;
+    bottom: 80px;
+    right: 60px;
+    font-family: var(--button-font-family);
+    font-size: var(--button-font-size);
+    z-index: 5;
+    padding: var(--button-padding);
+    background-color: var(--button-background-color);
+    color: var(--button-color);
+    border: none;
+    font-weight: bolder;
+    border-radius: var(--button-border-radius);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: width .3s ease-in-out, padding .3s ease-in-out;
+    display: flex;
+    align-items: center;
+}
+
+.windyMapBtn-text {
+    animation: none;
+}
+
+.windyIcon {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    margin-right: 4px;
+}
+
+   /****** END WINDY WEATHER STYLE *******/
+
+
+
+
+/***** CLEAR ALL DRAWINGS BUTTON *****/
+
+#clearAllDrawingBtn {
+
+    position: fixed;
+    top: 360px;
+    left: 70px;
+    background-color: #ff4d4d;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+
+}
+
+#clearAllDrawingBtn i.material-icons {
+    font-size: 40px;
+    color: #ffffff;
+}
+
+/***** END CLEAR ALL DRAWINGS BUTTON *****/
+
+/***** START USER LOCATION BUTTON *****/
+.locationBtn {
+    position: absolute;
+    top: 63%;
+    left: 40px;
+    width: 100px;
+    height: 100px;
+    z-index: 1;
+}
+
+.locationBtn i {
+    /* Define the animation */
+    animation: locationBtn-icon-animation 1s ease-in-out 3;
+}
+
+/***** END USER LOCATION BUTTON *****/
+
+/****** START RESET BUTTON *******/
+#resetBtn {
+    position: absolute;
+    top: 75%;
+    left: 40px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+
+}
+
+#resetBtn i.material-icons {
+    font-size: 65px;
+    color: #515151;
+    animation: resetBtn-icon-animation .5s ease-in-out;
+}
+
+/* Define the keyframes for the animation */
+@keyframes resetBtn-icon-animation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+/****** END RESET BUTTON *******/
+
+
+
+
+
+/****** START ADDING FARMS AND SENSORS SUCCESS MESSAGE*****/
+/* Floating container styles */
+.addFloating-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: fit-content;
+    background-color: white;
+    border-radius: 50px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    z-index: 10;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+/* Slide-up animation class */
+.slide-up {
+    transform: translate(-50%, -50%) translateY(-50px);
+    opacity: 1;
+}
+
+/* Slide-down animation class */
+.slide-down {
+    transform: translate(-50%, -50%) translateY(0);
+    opacity: 0;
+}
+
+/* Animation container styles */
+.animationCheck {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+/* Message styles */
+.addMessage {
+    text-align: center;
+    font-size: 40px;
+    color: #515151;
+    margin-top: 10px;
+}
+
+/****** END ADDING FARMS AND SENSORS SUCCESS MESSAGE*****/
+
+/***** START CURRENT ACTIVITY FLOATING TITLE ******/
+.measuringAreafloatingTitle,
+.measuringLengthfloatingTitle,
+.sketchingFarmfloatingTitle,
+.addSensorsfloatingTitle {
+    position: absolute;
+    top: 140px;
+    left: 50%;
+    width: fit-content;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    background-color: #ffffffc0;
+    border-radius: 50px;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    display: none;
+}
+
+.addSensorsfloatingTitle .addSensorsTitle,
+.sketchingFarmfloatingTitle .sketchingFarmTitle,
+.measuringLengthfloatingTitle .measuringLengthTitle,
+.measuringAreafloatingTitle .measuringAreaTitle {
+    font-size: 28px;
+    color: #515151;
+}
+
+.measuringAreafloatingTitle,
+.measuringLengthfloatingTitle,
+.sketchingFarmfloatingTitle,
+.addSensorsfloatingTitle {
+    display: none;
+}
+
+/***** END CURRENT ACTIVITY FLOATING TITLE ******/
+
+/***** START STYLE FOR APPLYING GRID TYPE AND ROTATION *****/
+
+.gridPropertiesContainer {
+    position: fixed;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    z-index: 7;
+    width: 100%;
+    height: fit-content;
+    opacity: 0;
+    transition: top 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+.gridPropertiesContainer.visible {
+    top: 25%;
+    opacity: 1;
+    display: block;
+}
+
+
+.gridAngleContainer {
+    position: relative;
+    padding: 0px;
+    background-color: white;
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.gridAngleInputContainer {
+    width: fit-content;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    font-weight: bold;
+    color: #515151;
+    background-color: white;
+    padding: 20px;
+    border-radius: 30px;
+    transition: top 0.3s ease, opacity 0.3s ease;
+    white-space: nowrap;
+    margin-top: 0px;
+    margin-bottom: -20px;
+}
+
+.gridAngleInputContainer label {
+    margin-right: -3px;
+}
+
+.gridAngleInputContainer input[type="text"] {
+    padding: 20px;
+    font-size: 24px;
+    border: 3px solid #898989;
+    border-radius: 10px;
+    width: 40px;
+    position: relative;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+}
+
+.gridAngleInputContainer button#apply-button {
+    padding: 20px 20px;
+    font-size: 25px;
+    background-color: #ffffff;
+    color: #515151;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    margin-right: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+}
+
+.gridAngleInputContainer button#apply-button i.material-icons {
+    font-size: 28px;
+    /* Adjust the icon size */
+    margin-right: 10px;
+    /* Add space between icon and text */
+}
+
+/* To retain the hover effect, update the hover styles */
+.gridAngleInputContainer button#apply-button:hover {
+    background-color: #f5f5f5;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.gridAngleInputContainer button#save-button {
+    padding: 20px 25px;
+    font-size: 28px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.gridAngleInputContainer button#save-button .material-icons-outlined {
+    margin-right: 10px;
+    font-size: 28px;
+    color: #fff;
+    font-size: 40px;
+
+}
+
+.gridAngleInputContainer.slide-down {
+    top: 78%;
+}
+
+.gridTypeContainer {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+.gridTypeOptionBtn1,
+.gridTypeOptionBtn2,
+.gridTypeOptionBtn3 {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: none;
+    padding: 10px 25px;
+    font-size: 25px;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    color: #515151;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin: 0 5px;
+}
+
+.gridTypeOptionBtn1:hover,
+.gridTypeOptionBtn2:hover,
+.gridTypeOptionBtn3:hover {
+    background-color: #e6e6e6;
+}
+
+.gridTypeOptionBtn1.selected,
+.gridTypeOptionBtn2.selected,
+.gridTypeOptionBtn3.selected {
+    background-color: #4CAF50;
+    border: #4CAF50;
+    color: white;
+}
+
+.gridTypeOptionBtn1.selected .material-icons-outlined,
+.gridTypeOptionBtn2.selected .material-icons-outlined,
+.gridTypeOptionBtn3.selected .material-icons-outlined {
+    color: white;
+}
+
+.material-icons-outlined {
+    margin-right: 10px;
+    font-family: 'Material Icons Outlined';
+    font-size: 50px;
+    font-weight: normal;
+    color: #515151;
+}
+
+#floatingWindow {
+    position: fixed;
+    bottom: 140px;
+    left: 160px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+}
+
+/***** END STYLE FOR APPLYING GRID TYPE AND ROTATION *****/
+
+
+/*START Grid Type/Pattern Information Pill*/
+
+#gridPatternInformation {
+    position: fixed;
+    top: 81%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 40px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+    color: #515151;
+    width: fit-content;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transform: translate(-50%, 100%);
+    opacity: 0;
+    animation: slide-up 0.5s forwards, fade-in 0.5s forwards;
+    animation-delay: 2.5s, 2.5s;
+    white-space: nowrap;
+    /* Prevent text wrapping */
+    overflow: hidden;
+    /* Hide overflowing content */
+    min-width: 300px;
+    /* Minimum width to prevent too narrow container */
+}
+
+/* Define the slide-up animation */
+@keyframes slide-up {
+    to {
+        transform: translate(-50%, -50%);
+    }
+}
+
+/* Define the fade-in animation */
+@keyframes fade-in {
+    to {
+        opacity: 1;
+    }
+}
+
+.countContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px;
+}
+
+.countContainer img,
+.countContainer .material-icons {
+    height: 50px;
+    width: 50px;
+    vertical-align: middle;
+    color: #515151;
+}
+
+.countContainer p {
+    margin: 0;
+    font-size: 1em;
+    display: inline;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/*END Grid Type/Pattern Information Pill*/
+
+
+/*START Style Retreieved Pill on map restart*/
+.grid-info-pill {
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    font-size: 30px;
+    display: flex;
+    background-color: #fff;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    align-items: center;
+}
+
+.grid-info-pill .pill-section {
+    display: flex;
+    align-items: center;
+    padding: 10px 10px;
+}
+
+.grid-info-pill .pill-section:first-child {
+    border-left: none;
+}
+
+.pill-value {
+    margin-left: 10px;
+    font-weight: bold;
+    color: #515151;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    font-size: 30px;
+}
+
+.hidden {
+    display: none;
+}
+
+/*END Style Retreieved Pill on map restart*/
+
+
+#lineProfileButtons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+#startLineProfile,
+#clearLineProfile {
+    margin: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#clearLineProfile {
+    background-color: #f44336;
+}
