@@ -868,8 +868,8 @@ body {
 
 .northArrow {
     position: fixed;
-    top: 20%;
-    left: 50px;
+    top: 200px;
+    left: 45%;
     transform: translateX(-50%);
     background-color: #fff;
     border-radius: 50%;
@@ -1009,8 +1009,8 @@ body {
 #tutorialBtn {
 
     position: fixed;
-    top: 50%;
-    left: 45px;
+    top: 480px;
+    left: 40px;
     background-color: #ffffff;
     border: none;
     border-radius: 50%;
@@ -1064,9 +1064,9 @@ body {
 }
 
 #windyMapBtn {
-    position: absolute;
-    bottom: 80px;
-    right: 60px;
+    position: fixed;
+    top: 400px;
+    left: 66px;
     font-family: var(--button-font-family);
     font-size: var(--button-font-size);
     z-index: 5;
@@ -1103,8 +1103,8 @@ body {
 #clearAllDrawingBtn {
 
     position: fixed;
-    top: 360px;
-    left: 70px;
+    top: 260px;
+    left: 65px;
     background-color: #ff4d4d;
     border: none;
     border-radius: 50%;
@@ -1127,8 +1127,8 @@ body {
 
 /***** START USER LOCATION BUTTON *****/
 .locationBtn {
-    position: absolute;
-    top: 63%;
+    position: fixed;
+    top: 600px;
     left: 40px;
     width: 100px;
     height: 100px;
@@ -1144,9 +1144,9 @@ body {
 
 /****** START RESET BUTTON *******/
 #resetBtn {
-    position: absolute;
-    top: 75%;
-    left: 40px;
+    position: fixed;
+    top: 720px;
+    left: 45px;
     background-color: #ffffff;
     border: none;
     border-radius: 50%;
@@ -1569,26 +1569,3 @@ body {
 
 /*END Style Retreieved Pill on map restart*/
 
-
-#lineProfileButtons {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1000;
-}
-
-#startLineProfile,
-#clearLineProfile {
-    margin: 5px;
-    padding: 8px 12px;
-    cursor: pointer;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-#clearLineProfile {
-    background-color: #f44336;
-}
