@@ -6488,6 +6488,9 @@ height: 30px;
 
                         console.log(loggedInfo);
 
+                        
+                        // Previous version
+                        /*
                         // Send data to React Native App
                         try {
                             // Construct the data object with relevant information
@@ -6545,7 +6548,87 @@ height: 30px;
                         } catch (error) {
                             // Handle the error (or do nothing to prevent logging)
                         }
+                    }*/
+
+
+                    // Address and Long Lat sent as seperated messages
+                        // Send data to React Native App
+                        try {
+                            // Construct the data object with relevant information
+                            const dataToPost = {
+                                centerPoint: {
+                                    lon: centerPointCoordinates[0],
+                                    lat: centerPointCoordinates[1],
+                                    elevation: centerElevation
+                                },
+                                polygonCoordinates: polygonPoints,
+                                segmentLengths: segmentLengths,
+                                area: {
+                                    squareMeters: area.toFixed(2),
+                                    hectares: areaHectares
+                                },
+                                address: loggedInfo,
+                                consoleLogs: [
+                                    'Center Point Lon: ' + centerPointCoordinates[0],
+                                    'Center Point Lat: ' + centerPointCoordinates[1],
+                                    'Polygon Coordinates: ' + JSON.stringify(polygonPoints),
+                                    'Segment Lengths (m): ' + JSON.stringify(segmentLengths),
+                                    'Polygon Area: ' + 'Area (m²): ' + area.toFixed(2) + ' square meters',
+                                    'Place Name: ' + firstPart,
+                                    'Street Address: ' + streetAddress.trim(),
+                                    'Village: ' + village,
+                                    'Commune: ' + commune,
+                                    'Ward: ' + ward,
+                                    'District: ' + district,
+                                    'City: ' + city,
+                                    'Province: ' + province,
+                                    'Postcode: ' + postcode,
+                                    'Country: ' + country,
+                                    'Address: ' + address,
+                                    'Current grid type: ' + gridType + ' selected!',
+                                    'Current grid intersection type: ' + gridIntersectionType + ' selected!',
+                                    'Intersection count: ' + intersectionCount,
+                                    'GridX count: ' + gridXCount,
+                                    'GridY count: ' + gridYCount,
+                                    'GridZ count: ' + gridZCount,
+                                    'enfarm_sensor_coordinates: ' + JSON.stringify(enfarm_sensor_coordinates),
+                                    'Last applied custom angle in degrees: ' + customAngleDegrees
+                                ]
+                            };
+
+                            window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
+
+                            // Create a React message to indicate the drawing has finished
+                            const reactMessage = {
+                                type: 'finishDrawing',
+                                data: dataToPost
+                            };
+
+                            // Send the React message to the React Native App
+                            window.ReactNativeWebView.postMessage(JSON.stringify(reactMessage));
+
+                            // Send address separately
+                            const addressMessage = {
+                                type: 'addressInfo',
+                                data: loggedInfo
+                            };
+                            window.ReactNativeWebView.postMessage(JSON.stringify(addressMessage));
+
+                            // Send center point longitude and latitude separately
+                            const centerPointMessage = {
+                                type: 'centerPointInfo',
+                                data: {
+                                    lon: centerPointCoordinates[0],
+                                    lat: centerPointCoordinates[1]
+                                }
+                            };
+                            window.ReactNativeWebView.postMessage(JSON.stringify(centerPointMessage));
+
+                        } catch (error) {
+                            // Handle the error (or do nothing to prevent logging)
+                        }
                     }
+
 
                     // Store polygon coordinates in local storage
                     const storedPolygon = {
