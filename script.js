@@ -3723,6 +3723,7 @@ height: 30px;
                 };
                 window.ReactNativeWebView.postMessage(JSON.stringify(centerPointMessage));
             } catch (error) {
+                console.log(error);
                 // Handle the error (or do nothing to prevent logging)
             }
         }
