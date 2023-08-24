@@ -326,7 +326,10 @@ function handleSearchClick(event) {
 
     try {
         const message = { actionType: 'Search', event: 'click' };
-        window.ReactNativeWebView.postMessage(JSON.stringify(message));
+        
+        if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify(message));
+        }
     } catch (error) {
         // Handle the error (or do nothing to prevent logging)
 
@@ -762,10 +765,9 @@ function handleSuggestionClick(suggestion) {
         latitude: latitude,
         longitude: longitude
     };
-    try {
+    
+    if (window.ReactNativeWebView.) {
         window.ReactNativeWebView.postMessage(JSON.stringify(message));
-    } catch (error) {
-        // Handle the error (or do nothing to prevent logging)
     }
 
     // Log the address and lon/lat to the console
@@ -2200,7 +2202,7 @@ async function fetchPlaceName(lon, lat) {
             console.log('Province:', province);
             console.log('Postcode:', postcode);
             console.log('Country:', country);
-            return placeName;
+            return { placeName, firstPart, streetAddress: streetAddress.trim(), village, commune, ward, district, city, province, postcode, country };
         } else {
             console.error(
                 "Failed to fetch place name:",
@@ -3364,7 +3366,12 @@ async function startSketchFarm() {
         localStorage.setItem('visibleDivClasses', JSON.stringify(visibleDivClasses));
 
         console.log("Visible div classes:", visibleDivClasses);
-
+        
+        // Send event to react native app
+        const message = { actionType: 'Save', event: 'click' };
+        if (window.ReactNativeWebVie) {
+            window.ReactNativeWebView.postMessage(JSON.stringify(message));
+        }
     });
 
 
@@ -3505,7 +3512,7 @@ async function startSketchFarm() {
             console.log(`Area (ha): ${areaHectares} hectares`);
         }
 
-        const address = await fetchPlaceName(centerPointCoordinates[0], centerPointCoordinates[1]);
+        const { placeName: address, firstPart, streetAddress, village, commune, ward, district, city, province, postcode, country } = await fetchPlaceName(centerPointCoordinates[0], centerPointCoordinates[1]);
         console.log("Address:", address);
 
         const tooltipElement = document.createElement('div');
@@ -3567,8 +3574,6 @@ height: 30px;
                 console.error("Failed to fetch elevation data for the center point:", error);
             }
 
-            getElevationFromMapbox(centerPointCoordinates);
-
 
             // Log the information
             const loggedInfo = {
@@ -3583,71 +3588,6 @@ height: 30px;
                 postcode: postcode,
                 country: country
             };
-
-            console.log(loggedInfo);
-
-
-            // Previous version
-            /*
-            // Send data to React Native App
-            try {
-                // Construct the data object with relevant information
-                const dataToPost = {
-                    centerPoint: {
-                        lon: centerPointCoordinates[0],
-                        lat: centerPointCoordinates[1],
-                        elevation: centerElevation
-                    },
-                    polygonCoordinates: polygonPoints,
-                    segmentLengths: segmentLengths,
-                    area: {
-                        squareMeters: area.toFixed(2),
-                        hectares: areaHectares
-                    },
-                    address: loggedInfo, // Send the logged information as part of the dataToPost
-                    consoleLogs: [
-                        'Center Point Lon: ' + centerPointCoordinates[0],
-                        'Center Point Lat: ' + centerPointCoordinates[1],
-                        'Polygon Coordinates: ' + JSON.stringify(polygonPoints),
-                        'Segment Lengths (m): ' + JSON.stringify(segmentLengths),
-                        'Polygon Area: ' + 'Area (m²): ' + area.toFixed(2) + ' square meters',
-                        'Place Name: ' + firstPart,
-                        'Street Address: ' + streetAddress.trim(),
-                        'Village: ' + village,
-                        'Commune: ' + commune,
-                        'Ward: ' + ward,
-                        'District: ' + district,
-                        'City: ' + city,
-                        'Province: ' + province,
-                        'Postcode: ' + postcode,
-                        'Country: ' + country,
-                        'Address: ' + address,
-                        'Current grid type: ' + gridType + ' selected!',
-                        'Current grid intersection type: ' + gridIntersectionType + ' selected!',
-                        'Intersection count: ' + intersectionCount,
-                        'GridX count: ' + gridXCount,
-                        'GridY count: ' + gridYCount,
-                        'GridZ count: ' + gridZCount,
-                        'enfarm_sensor_coordinates: ' + JSON.stringify(enfarm_sensor_coordinates),
-                        'Last applied custom angle in degrees: ' + customAngleDegrees
-                    ]
-                };
-
-                window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
-
-                // Create a React message to indicate the drawing has finished
-                const reactMessage = {
-                    type: 'finishDrawing',
-                    data: dataToPost
-                };
-
-                // Send the React message to the React Native App
-                window.ReactNativeWebView.postMessage(JSON.stringify(reactMessage));
-            } catch (error) {
-                // Handle the error (or do nothing to prevent logging)
-            }
-        }*/
-
 
             // Address and Long Lat sent as separated messages
             // Send data to React Native App
@@ -3666,52 +3606,20 @@ height: 30px;
                         hectares: areaHectares
                     },
                     address: loggedInfo,
-                    consoleLogs: [
-                        'Center Point Lon: ' + centerPointCoordinates[0],
-                        'Center Point Lat: ' + centerPointCoordinates[1],
-                        'Polygon Coordinates: ' + JSON.stringify(polygonPoints),
-                        'Segment Lengths (m): ' + JSON.stringify(segmentLengths),
-                        'Polygon Area: ' + 'Area (m²): ' + area.toFixed(2) + ' square meters',
-                        'Place Name: ' + firstPart,
-                        'Street Address: ' + streetAddress.trim(),
-                        'Village: ' + village,
-                        'Commune: ' + commune,
-                        'Ward: ' + ward,
-                        'District: ' + district,
-                        'City: ' + city,
-                        'Province: ' + province,
-                        'Postcode: ' + postcode,
-                        'Country: ' + country,
-                        'Address: ' + address,
-                        'Current grid type: ' + gridType + ' selected!',
-                        'Current grid intersection type: ' + gridIntersectionType + ' selected!',
-                        'Intersection count: ' + intersectionCount,
-                        'GridX count: ' + gridXCount,
-                        'GridY count: ' + gridYCount,
-                        'GridZ count: ' + gridZCount,
-                        'enfarm_sensor_coordinates: ' + JSON.stringify(enfarm_sensor_coordinates),
-                        'Last applied custom angle in degrees: ' + customAngleDegrees
-                    ]
                 };
-
-                // Send the data object to React Native WebView
-                window.ReactNativeWebView.postMessage(JSON.stringify(dataToPost));
 
                 // Create a React message to indicate the drawing has finished
                 const reactMessage = {
-                    type: 'finishDrawing',
+                    actionType: 'Drawing',
+                    event: 'completed',
                     data: dataToPost
                 };
-
-                // Send the React message to the React Native App
-                window.ReactNativeWebView.postMessage(JSON.stringify(reactMessage));
 
                 // Send address separately
                 const addressMessage = {
                     type: 'addressInfo',
                     data: loggedInfo
                 };
-                window.ReactNativeWebView.postMessage(JSON.stringify(addressMessage));
 
                 // Send center point longitude and latitude separately
                 const centerPointMessage = {
@@ -3721,7 +3629,11 @@ height: 30px;
                         lat: centerPointCoordinates[1]
                     }
                 };
-                window.ReactNativeWebView.postMessage(JSON.stringify(centerPointMessage));
+                
+                // Send event to react native app
+                if (window.ReactNativeWebView) {
+                    window.ReactNativeWebView.postMessage(JSON.stringify(reactMessage));
+                }
             } catch (error) {
                 console.log(error);
                 // Handle the error (or do nothing to prevent logging)
@@ -3743,6 +3655,7 @@ height: 30px;
             },
             address: address
         };
+        
         localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
     });
 }
@@ -3881,6 +3794,12 @@ document.getElementById("addSensorBtn").addEventListener("click", deactivateSket
 document.getElementById("sketchFarmBtn").addEventListener("click", function () {
     if (!isSketchActive) {
         showButtonsSkecthFarmInactive();
+    }
+    
+    // Send event to react native app
+    if (window.ReactNativeWebView) {
+        const message = { actionType: 'Drawing', event: isSketchActive ? 'click' : 'unclick' };
+        window.ReactNativeWebView.postMessage(JSON.stringify(message));
     }
 });
 
@@ -4636,7 +4555,10 @@ function disableAddSensor() {
     if (hasPoints) {
         try {
             const message = { enfarm_sensor_coordinates: retrievePointsFromLocalStorage() };
-            window.ReactNativeWebView.postMessage(JSON.stringify(message));
+            
+            if (window.ReactNativeWebView) {
+                window.ReactNativeWebView.postMessage(JSON.stringify(message));
+            }
         } catch (error) {
             // Handle the error (or do nothing to prevent logging)
         }
