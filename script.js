@@ -3612,7 +3612,7 @@ height: 30px;
                 const reactMessage = {
                     actionType: 'Drawing',
                     event: 'completed',
-                    data: dataToPost
+                    data: JSON.stringify(dataToPost),
                 };
 
                 // Send address separately
@@ -3635,7 +3635,7 @@ height: 30px;
                     window.ReactNativeWebView.postMessage(JSON.stringify(reactMessage));
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 // Handle the error (or do nothing to prevent logging)
             }
         }
