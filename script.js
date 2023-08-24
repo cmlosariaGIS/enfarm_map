@@ -5601,6 +5601,30 @@ window.onload = function () {
 
 // For Listening to react native app data
 window.addEventListener("message", message => {
-    alert(message.data);
+    try {
+        const jsonData = JSON.parse(message.data);
+        if (jsonData) {
+            const { actionType, event } = jsonData;
+            if (actionType === 'Search') {
+                if (event === 'close') {
+                    searchBtn.style.display = "block";
+                    searchBar.style.display = "none";
+                    searchInput.value = "";
+                    suggestionsContainer.style.display = "none";
+                }
+            }
+            if (actionType === 'Drawing') {
+                if (event === 'click') {
+                    if (window.ReactNativeWebView) {
+                        const message = { actionType: 'Drawing', event: isSketchActive ? 'click' : 'unclick' };
+                        window.ReactNativeWebView.postMessage(JSON.stringify(message));
+                    }
+                    startSketchFarm();
+                }
+            }
+        }
+    } catch (e) {
+        console.log(e);
+    }
 });
 
