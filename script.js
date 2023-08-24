@@ -3347,6 +3347,12 @@ async function startSketchFarm() {
 
         // Hide the gridPropertiesContainer with slide-up animation
         hideGridPropertiesContainer();
+        
+        // Send event to react native app
+        if (window.ReactNativeWebView) {
+            const message = { actionType: 'Save', event: 'click' };
+            window.ReactNativeWebView.postMessage(JSON.stringify(message));
+        }
 
         // Show the floating container with slide-up animation
         showAddFarmSuccess();
@@ -3366,12 +3372,6 @@ async function startSketchFarm() {
         localStorage.setItem('visibleDivClasses', JSON.stringify(visibleDivClasses));
 
         console.log("Visible div classes:", visibleDivClasses);
-        
-        // Send event to react native app
-        const message = { actionType: 'Save', event: 'click' };
-        if (window.ReactNativeWebVie) {
-            window.ReactNativeWebView.postMessage(JSON.stringify(message));
-        }
     });
 
 
@@ -3655,6 +3655,8 @@ height: 30px;
             },
             address: address
         };
+        
+        await getElevationFromMapbox(centerPointCoordinates);
         
         localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
     });
@@ -5604,7 +5606,7 @@ window.addEventListener("message", message => {
     try {
         const jsonData = JSON.parse(message.data);
         if (jsonData) {
-            const { actionType, event } = jsonData;
+            const { actionType, event, data } = jsonData;
             if (actionType === 'Search') {
                 if (event === 'close') {
                     searchBtn.style.display = "block";
@@ -5612,10 +5614,29 @@ window.addEventListener("message", message => {
                     searchInput.value = "";
                     suggestionsContainer.style.display = "none";
                 }
+                if (event === 'relocate') {
+                    searchBtn.style.display = "block";
+                    searchBar.style.display = "none";
+                    searchInput.value = "";
+                    suggestionsContainer.style.display = "none";
+                    const latitude = data.lat;
+                    const longitude = data.lon;
+                    const center = ol.proj.fromLonLat([longitude, latitude]);
+                
+                    // Smoothly animate the zoom and centering
+                    map.getView().animate({
+                        center: center,
+                        zoom: 21,
+                        duration: 1000, // Adjust the duration as needed
+                        easing: ol.easing.easeOut // Use a suitable easing function for smooth animation
+                    });
+                
+                    const coordinates = ol.proj.fromLonLat([longitude, latitude]);
+                    createMarker(coordinates);
+                }
             }
             if (actionType === 'Drawing') {
                 if (event === 'click') {
-                    isSketchActive = true;
                     startSketchFarm();
                 }
             }
