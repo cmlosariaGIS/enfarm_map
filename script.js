@@ -3612,7 +3612,7 @@ height: 30px;
                 const reactMessage = {
                     actionType: 'Drawing',
                     event: 'completed',
-                    data: dataToPost
+                    data: JSON.stringify(dataToPost),
                 };
 
                 // Send address separately
@@ -3635,7 +3635,7 @@ height: 30px;
                     window.ReactNativeWebView.postMessage(JSON.stringify(reactMessage));
                 }
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 // Handle the error (or do nothing to prevent logging)
             }
         }
@@ -5615,10 +5615,7 @@ window.addEventListener("message", message => {
             }
             if (actionType === 'Drawing') {
                 if (event === 'click') {
-                    if (window.ReactNativeWebView) {
-                        const message = { actionType: 'Drawing', event: isSketchActive ? 'click' : 'unclick' };
-                        window.ReactNativeWebView.postMessage(JSON.stringify(message));
-                    }
+                    isSketchActive = true;
                     startSketchFarm();
                 }
             }
