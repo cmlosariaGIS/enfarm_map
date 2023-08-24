@@ -766,7 +766,7 @@ function handleSuggestionClick(suggestion) {
         longitude: longitude
     };
     
-    if (window.ReactNativeWebView.) {
+    if (window.ReactNativeWebView) {
         window.ReactNativeWebView.postMessage(JSON.stringify(message));
     }
 
