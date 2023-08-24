@@ -3612,7 +3612,7 @@ height: 30px;
                 const reactMessage = {
                     actionType: 'Drawing',
                     event: 'completed',
-                    data: JSON.stringify(dataToPost),
+                    data: dataToPost,
                 };
 
                 // Send address separately
