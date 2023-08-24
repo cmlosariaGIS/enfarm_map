@@ -5615,10 +5615,7 @@ window.addEventListener("message", message => {
             }
             if (actionType === 'Drawing') {
                 if (event === 'click') {
-                    if (window.ReactNativeWebView) {
-                        const message = { actionType: 'Drawing', event: isSketchActive ? 'click' : 'unclick' };
-                        window.ReactNativeWebView.postMessage(JSON.stringify(message));
-                    }
+                    isSketchActive = true;
                     startSketchFarm();
                 }
             }
