@@ -108,6 +108,24 @@ function addTourStep(tour, id, element, text, position = 'left') {
     });
 }
 
+function addTourStepWithDone(id, element, text, position = 'left') {
+    // Create a new instance of Shepherd
+    const tour = new Shepherd.Tour({
+        useModalOverlay: true,
+        defaultStepOptions: {
+            classes: 'shadow-md bg-purple-dark',
+            scrollTo: true,
+        },
+    });
+    tour.addStep({
+        id,
+        classes: 'step-border',
+        text: getText(text),
+        attachTo: { element, on: position },
+        buttons: [{ text: getButtonText('OK'), action: tour.complete }],
+    });
+}
+
 function getText(text) {
     return `<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>${text}</span>`;
 }
@@ -4556,7 +4574,7 @@ function disableAddSensor() {
     // Send data to React Native App
     if (hasPoints) {
         try {
-            const message = { enfarm_sensor_coordinates: retrievePointsFromLocalStorage() };
+            const message = { actionType: 'Sensor', event: 'complete', enfarm_sensor_coordinates: retrievePointsFromLocalStorage() };
             
             if (window.ReactNativeWebView) {
                 window.ReactNativeWebView.postMessage(JSON.stringify(message));
@@ -5200,6 +5218,10 @@ const resetButton = document.getElementById("resetBtn");
 
 // Create a function to reset the webpage
 function resetWebpage() {
+    if (window.ReactNativeWebView) {
+        const message = { actionType: 'Reset', event: 'click' };
+        window.ReactNativeWebView.postMessage(JSON.stringify(message));
+    }
     location.reload();
 }
 
@@ -5634,10 +5656,21 @@ window.addEventListener("message", message => {
                     const coordinates = ol.proj.fromLonLat([longitude, latitude]);
                     createMarker(coordinates);
                 }
+                if (event === 'show-tour') {
+                    addTourStepWithDone('step-search', '#searchBtn', 'Nhấp vào nút này để tìm kiếm các địa điểm.');
+                }
             }
             if (actionType === 'Drawing') {
                 if (event === 'click') {
                     startSketchFarm();
+                }
+                if (event === 'show-tour') {
+                    addTourStepWithDone('step-sketch-farm', '#sketchFarmBtn', 'Nhấp vào nút này để phác thảo trang trại của bạn.');
+                }
+            }
+            if (actionType === 'Sensor') {
+                if (event === 'show-tour') {
+                    addTourStepWithDone('step-add-sensor', '#addSensorBtn', 'Nhấp vào nút này để thêm/các cảm biến enfarm.');
                 }
             }
         }
