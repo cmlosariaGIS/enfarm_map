@@ -124,6 +124,7 @@ function addTourStepWithDone(id, element, text, position = 'left') {
         attachTo: { element, on: position },
         buttons: [{ text: getButtonText('OK'), action: tour.complete }],
     });
+    tour.start();
 }
 
 function getText(text) {
