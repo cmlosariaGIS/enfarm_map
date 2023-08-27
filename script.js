@@ -4575,7 +4575,7 @@ function disableAddSensor() {
     // Send data to React Native App
     if (hasPoints) {
         try {
-            const message = { actionType: 'Sensor', event: 'complete', enfarm_sensor_coordinates: retrievePointsFromLocalStorage() };
+            const message = { actionType: 'Sensor', event: 'save', enfarm_sensor_coordinates: retrievePointsFromLocalStorage() };
             
             if (window.ReactNativeWebView) {
                 window.ReactNativeWebView.postMessage(JSON.stringify(message));
@@ -4778,6 +4778,94 @@ undoSensorBtn.addEventListener("click", undoLastSensor);
 let gridX;
 let gridY;
 
+function clearAction() {
+    // Remove stored polygon from local storage
+    localStorage.removeItem("enfarm_polygon_coordinates");
+
+    // Clear vector source and remove all features
+    vectorSource.clear();
+
+    // Remove farmVectorLayer from the map
+    if (farmVectorLayer) {
+        map.removeLayer(farmVectorLayer);
+        farmVectorLayer = null;
+    }
+
+    // Remove tooltip overlays from the map
+    for (const overlay of tooltipOverlays) {
+        map.removeOverlay(overlay);
+    }
+    tooltipOverlays = [];
+
+    // Remove stored sensor points from local storage
+    localStorage.removeItem("enfarm_sensor_coordinates");
+
+    for (let i = 0; i < 5; i++) {
+        // Remove all vector layers from the map in the first sweep
+        map.getLayers().forEach(layer => {
+            if (layer instanceof ol.layer.Vector) {
+                map.removeLayer(layer);
+            }
+        });
+    }
+
+    // Dismiss the gridPatternInformation element
+    const gridPatternInformation = document.getElementById("gridPatternInformation");
+    gridPatternInformation.style.display = "none";
+
+    // Dismiss the gridPropertiesContainer element
+    //gridPropertiesContainer.style.display = "none"; 
+
+    gridPropertiesContainer.classList.remove('visible');
+
+
+
+    // Get the last selected grid type from local storage before removing it
+    const lastSelectedGridType = localStorage.getItem('lastSelectedGridType');
+
+
+    // Remove stored gridX and gridY points from local storage
+    localStorage.removeItem("squareGridX");
+    localStorage.removeItem("squareGridY");
+
+    // Remove stored gridX and gridY points from local storage
+    localStorage.removeItem("rectangularGridX");
+    localStorage.removeItem("rectangularGridY");
+
+    // Remove stored triangularGrid from local storage
+    localStorage.removeItem("triangularGrid");
+
+    localStorage.removeItem("triangularGridIntersectionPoints");
+    localStorage.removeItem("squareGridIntersectionPoints");
+    localStorage.removeItem("rectangularGridIntersectionPoints");
+
+
+    // Remove last selected intersection count, gridX count, gridY count, grid type, and intersection type
+    localStorage.removeItem('lastSelectedIntersectionCount');
+    localStorage.removeItem('lastSelectedGridXCount');
+    localStorage.removeItem('lastSelectedGridYCount');
+    localStorage.removeItem('lastSelectedGridType');
+    localStorage.removeItem('lastSelectedGridIntersectionType');
+
+    // If the last selected grid type was triangularGrid, remove the GridZ count
+    if (lastSelectedGridType === 'triangularGrid') {
+        localStorage.removeItem('lastSelectedGridZCount');
+    }
+
+    // Hide the gridInfoPill element
+    const gridInfoPill = document.getElementById("gridInfoPill");
+    gridInfoPill.style.display = "none"; // Set display to "none" to hide the element
+
+    // Hide the dialog box
+    dialog.classList.add("hidden");
+
+    // Update the visibility of clearAllDrawingBtn
+    updateClearButtonVisibility();
+
+    // Clear console log
+    console.clear();
+}
+
 function clearAllDrawings() {
     // Show the dialog box
     const dialog = document.getElementById("dialog");
@@ -4788,91 +4876,7 @@ function clearAllDrawings() {
     const deleteNoBtn = document.getElementById("deleteNo");
 
     deleteYesBtn.addEventListener("click", function () {
-        // Remove stored polygon from local storage
-        localStorage.removeItem("enfarm_polygon_coordinates");
-
-        // Clear vector source and remove all features
-        vectorSource.clear();
-
-        // Remove farmVectorLayer from the map
-        if (farmVectorLayer) {
-            map.removeLayer(farmVectorLayer);
-            farmVectorLayer = null;
-        }
-
-        // Remove tooltip overlays from the map
-        for (const overlay of tooltipOverlays) {
-            map.removeOverlay(overlay);
-        }
-        tooltipOverlays = [];
-
-        // Remove stored sensor points from local storage
-        localStorage.removeItem("enfarm_sensor_coordinates");
-
-        for (let i = 0; i < 5; i++) {
-            // Remove all vector layers from the map in the first sweep
-            map.getLayers().forEach(layer => {
-                if (layer instanceof ol.layer.Vector) {
-                    map.removeLayer(layer);
-                }
-            });
-        }
-
-        // Dismiss the gridPatternInformation element
-        const gridPatternInformation = document.getElementById("gridPatternInformation");
-        gridPatternInformation.style.display = "none";
-
-        // Dismiss the gridPropertiesContainer element
-        //gridPropertiesContainer.style.display = "none"; 
-
-        gridPropertiesContainer.classList.remove('visible');
-
-
-
-        // Get the last selected grid type from local storage before removing it
-        const lastSelectedGridType = localStorage.getItem('lastSelectedGridType');
-
-
-        // Remove stored gridX and gridY points from local storage
-        localStorage.removeItem("squareGridX");
-        localStorage.removeItem("squareGridY");
-
-        // Remove stored gridX and gridY points from local storage
-        localStorage.removeItem("rectangularGridX");
-        localStorage.removeItem("rectangularGridY");
-
-        // Remove stored triangularGrid from local storage
-        localStorage.removeItem("triangularGrid");
-
-        localStorage.removeItem("triangularGridIntersectionPoints");
-        localStorage.removeItem("squareGridIntersectionPoints");
-        localStorage.removeItem("rectangularGridIntersectionPoints");
-
-
-        // Remove last selected intersection count, gridX count, gridY count, grid type, and intersection type
-        localStorage.removeItem('lastSelectedIntersectionCount');
-        localStorage.removeItem('lastSelectedGridXCount');
-        localStorage.removeItem('lastSelectedGridYCount');
-        localStorage.removeItem('lastSelectedGridType');
-        localStorage.removeItem('lastSelectedGridIntersectionType');
-
-        // If the last selected grid type was triangularGrid, remove the GridZ count
-        if (lastSelectedGridType === 'triangularGrid') {
-            localStorage.removeItem('lastSelectedGridZCount');
-        }
-
-        // Hide the gridInfoPill element
-        const gridInfoPill = document.getElementById("gridInfoPill");
-        gridInfoPill.style.display = "none"; // Set display to "none" to hide the element
-
-        // Hide the dialog box
-        dialog.classList.add("hidden");
-
-        // Update the visibility of clearAllDrawingBtn
-        updateClearButtonVisibility();
-
-        // Clear console log
-        console.clear();
+        clearAction();
     });
 
     deleteNoBtn.addEventListener("click", function () {
@@ -5672,6 +5676,11 @@ window.addEventListener("message", message => {
             if (actionType === 'Sensor') {
                 if (event === 'show-tour') {
                     addTourStepWithDone('step-add-sensor', '#addSensorBtn', 'Nhấp vào nút này để thêm/các cảm biến enfarm.');
+                }
+            }
+            if (actionType === 'Reset') {
+                if (event === 'click') {
+                    clearAction();
                 }
             }
         }
