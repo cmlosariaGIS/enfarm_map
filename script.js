@@ -3131,45 +3131,6 @@ async function startSketchFarm() {
         return { gridType: '', gridIntersectionType: '' };
     }
 
-    finishDrawingButton.addEventListener('click', function () {
-        if (draw) {
-            draw.finishDrawing();
-            map.removeInteraction(draw);
-            isSketchActive = false;
-
-            sketchFarmBtn.style.backgroundColor = "white";
-            sketchFarmBtnIcon.textContent = "create";
-            sketchFarmBtnIcon.style.color = "#515151";
-            undoSketchBtn.style.display = "none";
-
-            // Show all buttons again after drawing is finished
-            showButtonsSkecthFarmInactive();
-
-            finishDrawingButton.classList.add('hidden');
-
-            // Show the clear all drawing button
-            showButton('clearAllDrawingBtn');
-
-            // After drawing is finished and the "finishDrawingButton" is clicked, show the floating container
-            showAddFarmSuccess();
-
-            // Hide the floating title
-            const sketchingFarmFloatingTitle = document.querySelector('.sketchingFarmfloatingTitle');
-            if (sketchingFarmFloatingTitle) {
-                sketchingFarmFloatingTitle.style.display = "none";
-            }
-
-            // Add a delay before showing the gridPropertiesContainer
-            //setTimeout(showGridPropertiesContainer, 2500); // 2500 milliseconds = 2.5 seconds
-
-            // Get the gridPatternInformation element
-            const gridPatternInformation = document.querySelector('#gridPatternInformation');
-
-            // Set the display property to flex to show the element
-            gridPatternInformation.style.display = 'flex';
-        }
-    });
-
     // close-button on grid pattern type properties
     //document.querySelector('.closeGridPropertiesContainer').addEventListener('click', function () {
     // Hide gridPropertiesContainer with slide-up animation
@@ -3735,6 +3696,7 @@ function showButton(id) {
 
 
 finishDrawingButton.addEventListener('click', function () {
+    finishDrawingButton.innerHTML = 'Đang xử lý...';
     if (draw) {
         draw.finishDrawing();
         map.removeInteraction(draw);
@@ -3747,7 +3709,8 @@ finishDrawingButton.addEventListener('click', function () {
 
         // Show all buttons again after drawing is finished
         showButtonsSkecthFarmInactive();
-
+        
+        finishDrawingButton.innerHTML = '<span class="material-icons" style="font-size: 40px;">done_outline</span>Hoàn Thành';
         finishDrawingButton.classList.add('hidden');
 
         // Show the clear all drawing button
@@ -4333,50 +4296,6 @@ let area;
 let areaHectares;
 
 let address
-
-
-// Update the finishDrawingButton click event to store the polygon in local storage
-finishDrawingButton.onclick = function () {
-    if (draw) {
-        draw.finishDrawing();
-        finishDrawingButton.classList.add('hidden');
-        map.removeInteraction(draw);
-        isSketchActive = false;
-        sketchFarmBtn.style.backgroundColor = 'white';
-        sketchFarmBtnIcon.textContent = 'create';
-        sketchFarmBtnIcon.style.color = '#515151';
-        undoSketchBtn.style.display = "none";
-
-        // Store polygon coordinates in local storage
-        const polygonGeometry = vectorSource.getFeatures()[0].getGeometry();
-        const polygonCoordinates = polygonGeometry.getCoordinates();
-
-        // Ensure polygonCoordinates is an array
-        const polygonCoordinatesArray = Array.isArray(polygonCoordinates)
-            ? polygonCoordinates
-            : polygonCoordinates[0];
-
-        const polygonPoints = polygonCoordinatesArray.map(coordinate => {
-            const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-            return { lon: lonLat[0], lat: lonLat[1] };
-        });
-
-        const storedPolygon = {
-            centerPoint: {
-                lon: centerPointCoordinates[0],
-                lat: centerPointCoordinates[1],
-            },
-            polygonPoints: polygonPoints,
-            segmentLengths: segmentLengths,
-            area: {
-                squareMeters: area ? area.toFixed(2) : undefined, // Use the defined area variable
-                hectares: areaHectares,
-            },
-            address: address,
-        };
-        localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
-    }
-};
 
 // Remove the stored polygon from local storage when the page loads
 window.addEventListener('load', function () {
