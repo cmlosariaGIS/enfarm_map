@@ -3735,7 +3735,7 @@ finishDrawingButton.addEventListener('click', function () {
             gridPropertiesContainer.style.opacity = '1'; // Fade in the container
             gridPropertiesContainer.style.top = '0'; // Show the container at the top
             gridPropertiesContainer.style.display = 'block';
-        }, 2500); // 2500 milliseconds = 2.5 seconds
+        }, 1500); // 1500 milliseconds = 1.5 seconds
 
         // Get the gridPatternInformation element
         const gridPatternInformation = document.querySelector('#gridPatternInformation');
