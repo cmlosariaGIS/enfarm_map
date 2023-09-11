@@ -2731,20 +2731,15 @@ async function startSketchFarm() {
             rectangularYCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 2.5) - 2.5], center, angle));
         }
 
-        // Buffer the polygon extent by 200 meters
-        const bufferedExtent = ol.extent.buffer(extent, 200);
-
         // Triangular grid
         const triangularGridCoords = [];
         const halfHeight = Math.sqrt(3) / 2 * 3;
-        const extentWidth = bufferedExtent[2] - bufferedExtent[0];
-        const extentHeight = bufferedExtent[3] - bufferedExtent[1];
-        const rowCount = Math.ceil((2 * extentHeight) / halfHeight);
-        const colCount = Math.ceil((2 * extentWidth) / 3);
+        const rowCount = Math.ceil((extent[3] - extent[1]) / halfHeight);
+        const colCount = Math.ceil((extent[2] - extent[0]) / 3);
         for (let row = 0; row < rowCount; row++) {
             for (let col = 0; col < colCount; col++) {
-                let x = bufferedExtent[0] + col * 3;
-                let y = bufferedExtent[1] + row * halfHeight;
+                let x = extent[0] + col * 3;
+                let y = extent[1] + row * halfHeight;
                 if (row % 2 === 0) {
                     // ▽
                     triangularGridCoords.push([
@@ -2757,7 +2752,7 @@ async function startSketchFarm() {
                         rotatePoint([x + 1.5, y + halfHeight], center, angle),
                         rotatePoint([x + 3, y], center, angle),
                         rotatePoint([x + 4.5, y + halfHeight], center, angle),
-                        rotatePoint([x + 1.5, y + halfHeight], center, angle)
+                        rotatePoint([x + 1.5, y + halfHeight], center, angle),
                     ]);
                 } else {
                     // △
@@ -2777,28 +2772,45 @@ async function startSketchFarm() {
             }
         }
 
-
-        //Counting the Triangular Grid XYZ
-
+        // Convert the triangular grid to lines
         let triangularGridLines = new Set();
-
         triangularGridCoords.forEach(triangle => {
-            triangle.forEach((point, index) => {
-                let nextPoint = triangle[(index + 1) % 4]; // get the next point, wrapping around to the first point if necessary
-
-                // represent the line as a string of its sorted endpoints
-                let line = JSON.stringify([point, nextPoint].sort());
-
-                // add the line to the set
+            for (let i = 0; i < 3; i++) {
+                let line = JSON.stringify([triangle[i], triangle[i + 1]].sort());
                 triangularGridLines.add(line);
-            });
+            }
+            let line = JSON.stringify([triangle[3], triangle[0]].sort());
+            triangularGridLines.add(line);
         });
 
-        // initialize the counts
+        // Count the lines with almost the same angle
+        let angleThreshold = 5; // in degrees
+        let lineCounts = new Map();
+        triangularGridLines.forEach(line => {
+            let [p1, p2] = JSON.parse(line);
+            let angle = Math.abs(Math.atan2(p2[1] - p1[1], p2[0] - p1[0]) * 180 / Math.PI);
+            let key = Math.round(angle / angleThreshold);
+            if (!lineCounts.has(key)) {
+                lineCounts.set(key, 0);
+            }
+            lineCounts.set(key, lineCounts.get(key) + 1);
+        });
+
+        // Count the number of unique line angles
+        let lineAngleCounts = lineCounts.size;
+
+        // Count the number of lines
+        let lineCount = 0;
+        lineCounts.forEach(count => {
+            lineCount += count;
+        });
+
         // Count the X, Y, and Z lines based on the structure of the triangular grid
         let triangularGridXCount = colCount;
         let triangularGridYCount = rowCount;
         let triangularGridZCount = Math.max(rowCount, colCount);
+
+
 
 
         var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
@@ -2810,8 +2822,6 @@ async function startSketchFarm() {
         addAndTrimLineFeatures(rectangularGridX, rectangularXCoords, drawnPolygonGeoJSON, 'rectangularGridX');
         addAndTrimLineFeatures(rectangularGridY, rectangularYCoords, drawnPolygonGeoJSON, 'rectangularGridY');
         addAndTrimPolygonFeatures(triangularGrid, triangularGridCoords, drawnPolygonGeoJSON);
-
-
 
         // Calculate the number of coffee trees for square grids
         const numberOfCoffeeTreesForSquareGrid = squareGridXCount * squareGridYCount;
