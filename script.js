@@ -5606,5 +5606,5 @@ window.addEventListener("message", message => {
     } catch (e) {
         console.log(e);
     }
-});
+}, true);
 
