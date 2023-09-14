@@ -820,8 +820,8 @@ body {
 /*Draw Farm Area Size*/
 /*Finish Sketch/Drawing Button*/
 .sketch-buttons {
-    position: absolute;
-    top: 720px;
+    position: fixed;
+    bottom: 5vh;
     left: 50%;
     transform: translate(-50%, 50%);
     display: flex;
