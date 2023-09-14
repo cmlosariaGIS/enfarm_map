@@ -2700,11 +2700,14 @@ async function startSketchFarm() {
 
     function generateGrids(evt, angle) {
         const extent = evt.feature.getGeometry().getExtent();
-
+    
         const center = [0.5 * (extent[0] + extent[2]), 0.5 * (extent[1] + extent[3])];
-
-        const extentDiagonalLength = Math.sqrt(Math.pow(extent[2] - extent[0], 2) + Math.pow(extent[3] - extent[1], 2));
-
+    
+        let extentDiagonalLength = Math.sqrt(Math.pow(extent[2] - extent[0], 2) + Math.pow(extent[3] - extent[1], 2));
+    
+        // Quadruple the extent
+        extentDiagonalLength *= 4;
+    
         const numCells = Math.ceil(extentDiagonalLength / 3) + 2;
 
         const squareXCoords = [];
@@ -2809,9 +2812,6 @@ async function startSketchFarm() {
         let triangularGridXCount = colCount;
         let triangularGridYCount = rowCount;
         let triangularGridZCount = Math.max(rowCount, colCount);
-
-
-
 
         var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
         var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
