@@ -821,7 +821,7 @@ body {
 /*Finish Sketch/Drawing Button*/
 .sketch-buttons {
     position: fixed;
-    bottom: 5vh;
+    bottom: 12vh;
     left: 50%;
     transform: translate(-50%, 50%);
     display: flex;
