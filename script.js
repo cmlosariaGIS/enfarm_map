@@ -5540,7 +5540,22 @@ if (intersectionCount) {
 }
 //////////// <----- END FUNCTION TO HIDE THE GRID INFO PILL WHEN THE FARM POLYGON IS OUT OF SIGHT -----> \\\\\\\\\\
 
+///<!-- More Info button for Grid Containers Properties --->
 
+function toggleMoreInfoWindow() {
+    var moreInfoWindow = document.getElementById("moreInfoGridPropertiesWindow");
+    if (moreInfoWindow.style.display === "none" || moreInfoWindow.style.display === "") {
+        moreInfoWindow.style.display = "block";
+    } else {
+        moreInfoWindow.style.display = "none";
+    }
+}
+
+//Dismiss Window Button
+function hideGrid() {
+    var grid = document.getElementById("moreInfoGridPropertiesWindow");
+    grid.style.display = "none";
+}
 
 
 
