@@ -1569,3 +1569,60 @@ body {
 
 /*END Style Retreieved Pill on map restart*/
 
+#moreInfoGridPropertiesWindow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    height: 1000px;
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    font-size: 35px;
+    color: #515151;
+    z-index: 10;
+    overflow-y: scroll; /* Add scrollable overflow */
+    display: none; /* Hide the window on start */
+}
+
+/* Custom styles for the scroll bar */
+#moreInfoGridPropertiesWindow::-webkit-scrollbar {
+    width: 8px;
+}
+
+#moreInfoGridPropertiesWindow::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+#moreInfoGridPropertiesWindow::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+#moreInfoGridPropertiesWindow::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.dismiss-button {
+    border-radius: 20px;
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    padding: 20px 40px;
+    font-size: 35px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 40px;
+    cursor: pointer; /* Added cursor property */
+    transition: background-color 0.3s; /* Added transition for smooth color change */
+  }
+  
+  .dismiss-button:hover {
+    background-color: #00a8ff; /* Updated background color for lighter blue on hover */
+  }
+
+
+
