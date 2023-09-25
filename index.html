@@ -7,8 +7,6 @@
     <title>enfarm Map</title>
     <link rel="stylesheet" href="style.css">
 
-
-
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css" />-->
     <!--<script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>-->
 
@@ -200,6 +198,60 @@
             <div class="blur-mask"></div>
         </div>
 
+              <div id="moreInfoGridPropertiesWindow">
+            <strong>More Information about choosing the Farm Grid System and Orientation Angle</strong>
+            <p style="font-size: 30px; margin-bottom: 5px;"><strong>1. Choosing the appropriate farm grid
+                    system</strong>
+            </p>
+            <p style="font-size: 30px; margin-top: 5px; text-align: justify;">The selection of a grid layout for a farm
+                is a crucial decision. This involves strategically positioning coffee plants within the plot to ensure
+                they are adequately spaced for optimal growth. It also involves accommodating the necessary number of
+                plants per unit area.</p>
+            <img src="https://i.ibb.co/G7rkPNn/grid-gif.gif" alt="Grid GIF"
+                style="width: 200px; height: 200px; display: block; margin: 0 auto;">
+            <p style="font-size: 30px; margin-top: 5px; text-align: justify;"> <strong><i>A. Square Farm Grid
+                        System:</strong></i> This is the most adopted grid system. The
+                farm is divided into squares, with a tree planted at each corner. This makes moving in between trees
+                easy and
+                farming tasks like planting, watering, spraying, and harvesting much simpler.</p>
+            <p style="font-size: 30px; margin-top: 5px; text-align: justify;"> <strong><i>B. Rectangular Farm Grid
+                        System:</strong></i> In this system, the plot is divided into rectangles instead of squares and
+                trees are planted at the four corners of the rectangle. The same advantages which have been mentioned in
+                the square grid system are also enjoyed here. The only difference is that in this system, more plants
+                can be accommodated compared to the square grid system.</p>
+            <p style="font-size: 30px; margin-top: 5px; text-align: justify;"> <strong><i>C. Triangular Farm Grid
+                        System:</strong></i> In most situations, this system can accomodate more plants than the
+                previous 2 grid systems. However it is a difficult system to implement and cultivating the plot under
+                this
+                system becomes more difficult.</p>
+            <p style="font-size: 30px; margin-top: 5px; text-align: justify;"> Each farm grid system has its own
+                advantages and is chosen based on factors such as the slope of land, purpose of utilizing the space,
+                convenience etc. The choice of grid system can also affect light penetration and canopy growth, which
+                are
+                important factors for plant health.</p>
+            <p style="font-size: 30px; margin-bottom: 5px;"><strong>2. Specifying the Orientation Angle
+                    (Optional)</strong>
+            </p>
+            <img src="https://i.ibb.co/SwYvH3n/angle-gif-gif.gif" alt="Grid GIF"
+                style="width: 180px; height: 180px; display: block; margin: 20px auto;">
+            <p style="font-size: 30px; margin-top: 5px; text-align: justify;">Normally, the grid system lines up with
+                the longest side of the farm plot. But, if you want, you can change this by applying a different angle
+                (like 0, 45, 90, 130, etc.). This can influence how many plants you can fit in your farm. </p>
+
+            <img src="https://i.ibb.co/5M41w23/pill-explain.png" alt="Grid GIF"
+                style="width: 550px; height: 250px; display: block; margin: 20px auto;">
+            <p style="font-size: 30px; margin-top: 5px; text-align: justify;"><strong>Conclusion:</strong> Choosing the
+                appropriate farm grid system and optionally, applying an orientation angle can influence the
+                estimated number of coffee trees and grid lines needed to achieve the maximum potential output of a farm
+                parcel.</p>
+
+            <div>
+                <button id="dismissMoreInfoGridPropertiesWindow" class="dismiss-button"
+                    onclick="hideGrid()">Dismiss</button>
+            </div>
+            <br>
+            <br>
+        </div>
 
 
         <!-- Retrieved Grid Information Pill on browser refresh-->
@@ -294,6 +346,14 @@
                     style="border: none; background: none; cursor: pointer; margin-top: 0px; margin-right: 10px">
                     <i class="material-icons" style="font-size: 50px; color: red;">cancel</i>
                 </button>-->
+
+                                <button class="moreInfoBtnGridPropertiesContainer"
+                    style="border: none; background: none; cursor: pointer; margin-top: 0px; margin-right: 10px"
+                    onclick="toggleMoreInfoWindow()">
+                    <i class="material-icons" style="font-size: 50px; color: #515151;">info</i>
+                </button>
+
+                
             </div>
             <br>
             <div style="display: flex; align-items: center;">
