@@ -1583,9 +1583,10 @@ body {
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
     font-size: 35px;
     color: #515151;
+    text-align: justify;
     z-index: 10;
-    overflow-y: scroll; /* Add scrollable overflow */
-    display: none; /* Hide the window on start */
+    overflow-y: scroll;
+    display: none;
 }
 
 /* Custom styles for the scroll bar */
@@ -1616,13 +1617,13 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     margin: 40px;
-    cursor: pointer; /* Added cursor property */
-    transition: background-color 0.3s; /* Added transition for smooth color change */
-  }
-  
-  .dismiss-button:hover {
-    background-color: #00a8ff; /* Updated background color for lighter blue on hover */
-  }
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dismiss-button:hover {
+    background-color: #00a8ff;
+}
 
 
 
