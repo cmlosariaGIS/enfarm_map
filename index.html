@@ -7,6 +7,8 @@
     <title>enfarm Map</title>
     <link rel="stylesheet" href="style.css">
 
+
+
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css" />-->
     <!--<script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>-->
 
@@ -198,10 +200,11 @@
             <div class="blur-mask"></div>
         </div>
 
-               <div id="moreInfoGridPropertiesWindow">
-            <strong>More Information about choosing the Farm Grid System and Orientation Angle</strong>
-            <p style="font-size: 30px; margin-bottom: 5px;"><strong>1. Choosing the appropriate farm grid
-                    system</strong>
+        <!-- More Info on Grid Systems and Orientation Angle-->
+        <div id="moreInfoGridPropertiesWindow">
+            <strong>More information about choosing the Farm Grid System and applying Orientation Angle</strong>
+            <p style="font-size: 30px; margin-bottom: 5px;"><strong><span style="color: green;">STEP 1. Choosing the
+                        appropriate farm grid system</span></strong>
             </p>
             <p style="font-size: 30px; margin-top: 5px; text-align: justify;">The selection of a grid layout for a farm
                 is a crucial decision. This involves strategically positioning coffee plants within the plot to ensure
@@ -227,8 +230,8 @@
                 advantages and is chosen based on factors such as the slope of land, purpose of utilizing the space,
                 convenience etc. The choice of grid system can also affect light penetration and canopy growth, which
                 are important factors for plant health.</p>
-            <p style="font-size: 30px; margin-bottom: 5px;"><strong>2. Specifying the Orientation Angle
-                    (Optional)</strong>
+            <p style="font-size: 30px; margin-bottom: 5px;"><strong><span style="color: green;">STEP 2 (Optional). Specifying the
+                        Orientation Angle</strong>
             </p>
             <img src="https://i.ibb.co/SwYvH3n/angle-gif-gif.gif" alt="Grid GIF"
                 style="width: 180px; height: 180px; display: block; margin: 20px auto;">
@@ -252,7 +255,6 @@
         </div>
 
 
-
         <!-- Retrieved Grid Information Pill on browser refresh-->
         <div id="gridInfoPill" class="grid-info-pill hidden">
             <div id="pillTreeCount" class="pill-section">
@@ -274,9 +276,6 @@
                 <span id="gridZCount" class="pill-value">...</span>
             </div>
         </div>
-
-
-
 
 
         <!-- Grid Pattern Information Pill -->
@@ -346,15 +345,19 @@
                     <i class="material-icons" style="font-size: 50px; color: red;">cancel</i>
                 </button>-->
 
-                                <button class="moreInfoBtnGridPropertiesContainer"
+
+                <button class="moreInfoBtnGridPropertiesContainer"
                     style="border: none; background: none; cursor: pointer; margin-top: 0px; margin-right: 10px"
                     onclick="toggleMoreInfoWindow()">
                     <i class="material-icons" style="font-size: 50px; color: #515151;">info</i>
                 </button>
 
-                
+
+
+
+
+
             </div>
-            <br>
             <div style="display: flex; align-items: center;">
                 <i class="material-icons"
                     style="font-size: 35px; color: #515151; margin-left: 18px; margin-right: 5px;">grid_on</i>
@@ -364,17 +367,20 @@
             </div>
             <div class="gridTypeContainer">
                 <button class="gridTypeOptionBtn1" style="text-align: center; display: block;">
-                    <img src="https://i.ibb.co/XV5MT5b/square-grid-glow.png" alt="Square Grid" width="100" height="100" style="display: block; margin: auto; margin-bottom: 20px;">
+                    <img src="https://i.ibb.co/XV5MT5b/square-grid-glow.png" alt="Square Grid" width="100" height="100"
+                        style="display: block; margin: auto; margin-bottom: 20px;">
                     Vuông 3x3mét
                 </button>
                 <button class="gridTypeOptionBtn2" style="text-align: center; display: block;">
-                    <img src="https://i.ibb.co/px3VKVM/rectangular-grid-glow.png" alt="Rectangle Grid" width="100" height="100" style="display: block; margin: auto; margin-bottom: 20px;">
+                    <img src="https://i.ibb.co/px3VKVM/rectangular-grid-glow.png" alt="Rectangle Grid" width="100"
+                        height="100" style="display: block; margin: auto; margin-bottom: 20px;">
                     Chữ nhật 3x2.5mét
                 </button>
                 <button class="gridTypeOptionBtn3" style="text-align: center; display: block;">
-                    <img src="https://i.ibb.co/y4YsWN0/traingular-grid-glow.png" alt="Triangular Grid" width="100" height="100" style="display: block; margin: auto; margin-bottom: 20px;">
+                    <img src="https://i.ibb.co/y4YsWN0/traingular-grid-glow.png" alt="Triangular Grid" width="100"
+                        height="100" style="display: block; margin: auto; margin-bottom: 20px;">
                     Tam giác 3x3mét
-                </button>         
+                </button>
             </div>
             <div class="gridAngleContainer">
                 <div class="gridAngleInputContainer">
@@ -1370,7 +1376,7 @@
             <i class="material-icons">restart_alt</i>
         </button>
 
-
+        <script src="https://cdn.jsdelivr.net/npm/idb-js@2.0.0/dist/Idb.min.js"></script>
         <script src="script.js"></script>
 </body>
 
