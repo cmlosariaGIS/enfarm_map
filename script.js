@@ -72,7 +72,7 @@ function addStepFindLocation(tour) {
 }
 
 function addStepAccessWeatherMap(tour) {
-    addTourStep(tour, 'step-windyMap', '#windyMapBtn', 'Nhấp vào nút này để truy cập bản đồ thời tiết từ Windy.com.', 'right');
+    addTourStep(tour, 'step-windyMap', '#windyMapBtn', 'Nhấp vào nút này để truy cập bản đồ thời tiết từ Windy.com.');
 }
 
 function addStepRevisitTutorial(tour) {
@@ -2699,14 +2699,11 @@ async function startSketchFarm() {
 
     function generateGrids(evt, angle) {
         const extent = evt.feature.getGeometry().getExtent();
-    
+
         const center = [0.5 * (extent[0] + extent[2]), 0.5 * (extent[1] + extent[3])];
-    
-        let extentDiagonalLength = Math.sqrt(Math.pow(extent[2] - extent[0], 2) + Math.pow(extent[3] - extent[1], 2));
-    
-        // Quadruple the extent
-        extentDiagonalLength *= 4;
-    
+
+        const extentDiagonalLength = Math.sqrt(Math.pow(extent[2] - extent[0], 2) + Math.pow(extent[3] - extent[1], 2));
+
         const numCells = Math.ceil(extentDiagonalLength / 3) + 2;
 
         const squareXCoords = [];
@@ -2733,15 +2730,20 @@ async function startSketchFarm() {
             rectangularYCoords.push(rotatePoint([extent[0] + extentDiagonalLength, extent[1] + (y * 2.5) - 2.5], center, angle));
         }
 
+        // Buffer the polygon extent by 200 meters
+        const bufferedExtent = ol.extent.buffer(extent, 200);
+
         // Triangular grid
         const triangularGridCoords = [];
         const halfHeight = Math.sqrt(3) / 2 * 3;
-        const rowCount = Math.ceil((extent[3] - extent[1]) / halfHeight);
-        const colCount = Math.ceil((extent[2] - extent[0]) / 3);
+        const extentWidth = bufferedExtent[2] - bufferedExtent[0];
+        const extentHeight = bufferedExtent[3] - bufferedExtent[1];
+        const rowCount = Math.ceil((2 * extentHeight) / halfHeight);
+        const colCount = Math.ceil((2 * extentWidth) / 3);
         for (let row = 0; row < rowCount; row++) {
             for (let col = 0; col < colCount; col++) {
-                let x = extent[0] + col * 3;
-                let y = extent[1] + row * halfHeight;
+                let x = bufferedExtent[0] + col * 3;
+                let y = bufferedExtent[1] + row * halfHeight;
                 if (row % 2 === 0) {
                     // ▽
                     triangularGridCoords.push([
@@ -2754,7 +2756,7 @@ async function startSketchFarm() {
                         rotatePoint([x + 1.5, y + halfHeight], center, angle),
                         rotatePoint([x + 3, y], center, angle),
                         rotatePoint([x + 4.5, y + halfHeight], center, angle),
-                        rotatePoint([x + 1.5, y + halfHeight], center, angle),
+                        rotatePoint([x + 1.5, y + halfHeight], center, angle)
                     ]);
                 } else {
                     // △
@@ -2774,43 +2776,29 @@ async function startSketchFarm() {
             }
         }
 
-        // Convert the triangular grid to lines
+
+        //Counting the Triangular Grid XYZ
+
         let triangularGridLines = new Set();
+
         triangularGridCoords.forEach(triangle => {
-            for (let i = 0; i < 3; i++) {
-                let line = JSON.stringify([triangle[i], triangle[i + 1]].sort());
+            triangle.forEach((point, index) => {
+                let nextPoint = triangle[(index + 1) % 4]; // get the next point, wrapping around to the first point if necessary
+
+                // represent the line as a string of its sorted endpoints
+                let line = JSON.stringify([point, nextPoint].sort());
+
+                // add the line to the set
                 triangularGridLines.add(line);
-            }
-            let line = JSON.stringify([triangle[3], triangle[0]].sort());
-            triangularGridLines.add(line);
+            });
         });
 
-        // Count the lines with almost the same angle
-        let angleThreshold = 5; // in degrees
-        let lineCounts = new Map();
-        triangularGridLines.forEach(line => {
-            let [p1, p2] = JSON.parse(line);
-            let angle = Math.abs(Math.atan2(p2[1] - p1[1], p2[0] - p1[0]) * 180 / Math.PI);
-            let key = Math.round(angle / angleThreshold);
-            if (!lineCounts.has(key)) {
-                lineCounts.set(key, 0);
-            }
-            lineCounts.set(key, lineCounts.get(key) + 1);
-        });
-
-        // Count the number of unique line angles
-        let lineAngleCounts = lineCounts.size;
-
-        // Count the number of lines
-        let lineCount = 0;
-        lineCounts.forEach(count => {
-            lineCount += count;
-        });
-
+        // initialize the counts
         // Count the X, Y, and Z lines based on the structure of the triangular grid
         let triangularGridXCount = colCount;
         let triangularGridYCount = rowCount;
         let triangularGridZCount = Math.max(rowCount, colCount);
+
 
         var geometry3857 = evt.feature.getGeometry().getCoordinates()[0];
         var geometry4326 = geometry3857.map(coord => ol.proj.transform(coord, 'EPSG:3857', 'EPSG:4326'));
@@ -2821,6 +2809,8 @@ async function startSketchFarm() {
         addAndTrimLineFeatures(rectangularGridX, rectangularXCoords, drawnPolygonGeoJSON, 'rectangularGridX');
         addAndTrimLineFeatures(rectangularGridY, rectangularYCoords, drawnPolygonGeoJSON, 'rectangularGridY');
         addAndTrimPolygonFeatures(triangularGrid, triangularGridCoords, drawnPolygonGeoJSON);
+
+
 
         // Calculate the number of coffee trees for square grids
         const numberOfCoffeeTreesForSquareGrid = squareGridXCount * squareGridYCount;
@@ -3140,6 +3130,45 @@ async function startSketchFarm() {
         return { gridType: '', gridIntersectionType: '' };
     }
 
+    finishDrawingButton.addEventListener('click', function () {
+        if (draw) {
+            draw.finishDrawing();
+            map.removeInteraction(draw);
+            isSketchActive = false;
+
+            sketchFarmBtn.style.backgroundColor = "white";
+            sketchFarmBtnIcon.textContent = "create";
+            sketchFarmBtnIcon.style.color = "#515151";
+            undoSketchBtn.style.display = "none";
+
+            // Show all buttons again after drawing is finished
+            showButtonsSkecthFarmInactive();
+
+            finishDrawingButton.classList.add('hidden');
+
+            // Show the clear all drawing button
+            showButton('clearAllDrawingBtn');
+
+            // After drawing is finished and the "finishDrawingButton" is clicked, show the floating container
+            showAddFarmSuccess();
+
+            // Hide the floating title
+            const sketchingFarmFloatingTitle = document.querySelector('.sketchingFarmfloatingTitle');
+            if (sketchingFarmFloatingTitle) {
+                sketchingFarmFloatingTitle.style.display = "none";
+            }
+
+            // Add a delay before showing the gridPropertiesContainer
+            //setTimeout(showGridPropertiesContainer, 2500); // 2500 milliseconds = 2.5 seconds
+
+            // Get the gridPatternInformation element
+            const gridPatternInformation = document.querySelector('#gridPatternInformation');
+
+            // Set the display property to flex to show the element
+            gridPatternInformation.style.display = 'flex';
+        }
+    });
+
     // close-button on grid pattern type properties
     //document.querySelector('.closeGridPropertiesContainer').addEventListener('click', function () {
     // Hide gridPropertiesContainer with slide-up animation
@@ -3336,12 +3365,6 @@ async function startSketchFarm() {
 
         // Hide the gridPropertiesContainer with slide-up animation
         hideGridPropertiesContainer();
-        
-        // Send event to react native app
-        if (window.ReactNativeWebView) {
-            const message = { actionType: 'Save', event: 'click' };
-            window.ReactNativeWebView.postMessage(JSON.stringify(message));
-        }
 
         // Show the floating container with slide-up animation
         showAddFarmSuccess();
@@ -3361,6 +3384,12 @@ async function startSketchFarm() {
         localStorage.setItem('visibleDivClasses', JSON.stringify(visibleDivClasses));
 
         console.log("Visible div classes:", visibleDivClasses);
+        
+        // Send event to react native app
+        const message = { actionType: 'Save', event: 'click' };
+        if (window.ReactNativeWebVie) {
+            window.ReactNativeWebView.postMessage(JSON.stringify(message));
+        }
     });
 
 
@@ -3601,7 +3630,7 @@ height: 30px;
                 const reactMessage = {
                     actionType: 'Drawing',
                     event: 'completed',
-                    data: dataToPost,
+                    data: JSON.stringify(dataToPost),
                 };
 
                 // Send address separately
@@ -3644,8 +3673,6 @@ height: 30px;
             },
             address: address
         };
-        
-        await getElevationFromMapbox(centerPointCoordinates);
         
         localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
     });
@@ -3705,7 +3732,6 @@ function showButton(id) {
 
 
 finishDrawingButton.addEventListener('click', function () {
-    finishDrawingButton.innerHTML = 'Đang xử lý...';
     if (draw) {
         draw.finishDrawing();
         map.removeInteraction(draw);
@@ -3718,8 +3744,7 @@ finishDrawingButton.addEventListener('click', function () {
 
         // Show all buttons again after drawing is finished
         showButtonsSkecthFarmInactive();
-        
-        finishDrawingButton.innerHTML = '<span class="material-icons" style="font-size: 40px;">done_outline</span>Hoàn Thành';
+
         finishDrawingButton.classList.add('hidden');
 
         // Show the clear all drawing button
@@ -3744,7 +3769,7 @@ finishDrawingButton.addEventListener('click', function () {
             gridPropertiesContainer.style.opacity = '1'; // Fade in the container
             gridPropertiesContainer.style.top = '0'; // Show the container at the top
             gridPropertiesContainer.style.display = 'block';
-        }, 1500); // 1500 milliseconds = 1.5 seconds
+        }, 2500); // 2500 milliseconds = 2.5 seconds
 
         // Get the gridPatternInformation element
         const gridPatternInformation = document.querySelector('#gridPatternInformation');
@@ -4306,6 +4331,50 @@ let areaHectares;
 
 let address
 
+
+// Update the finishDrawingButton click event to store the polygon in local storage
+finishDrawingButton.onclick = function () {
+    if (draw) {
+        draw.finishDrawing();
+        finishDrawingButton.classList.add('hidden');
+        map.removeInteraction(draw);
+        isSketchActive = false;
+        sketchFarmBtn.style.backgroundColor = 'white';
+        sketchFarmBtnIcon.textContent = 'create';
+        sketchFarmBtnIcon.style.color = '#515151';
+        undoSketchBtn.style.display = "none";
+
+        // Store polygon coordinates in local storage
+        const polygonGeometry = vectorSource.getFeatures()[0].getGeometry();
+        const polygonCoordinates = polygonGeometry.getCoordinates();
+
+        // Ensure polygonCoordinates is an array
+        const polygonCoordinatesArray = Array.isArray(polygonCoordinates)
+            ? polygonCoordinates
+            : polygonCoordinates[0];
+
+        const polygonPoints = polygonCoordinatesArray.map(coordinate => {
+            const lonLat = ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+            return { lon: lonLat[0], lat: lonLat[1] };
+        });
+
+        const storedPolygon = {
+            centerPoint: {
+                lon: centerPointCoordinates[0],
+                lat: centerPointCoordinates[1],
+            },
+            polygonPoints: polygonPoints,
+            segmentLengths: segmentLengths,
+            area: {
+                squareMeters: area ? area.toFixed(2) : undefined, // Use the defined area variable
+                hectares: areaHectares,
+            },
+            address: address,
+        };
+        localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
+    }
+};
+
 // Remove the stored polygon from local storage when the page loads
 window.addEventListener('load', function () {
     if (!localStorage.getItem('enfarm_polygon_coordinates')) {
@@ -4503,7 +4572,7 @@ function disableAddSensor() {
     // Send data to React Native App
     if (hasPoints) {
         try {
-            const message = { actionType: 'Sensor', event: 'save', enfarm_sensor_coordinates: retrievePointsFromLocalStorage() };
+            const message = { enfarm_sensor_coordinates: retrievePointsFromLocalStorage() };
             
             if (window.ReactNativeWebView) {
                 window.ReactNativeWebView.postMessage(JSON.stringify(message));
@@ -4706,94 +4775,6 @@ undoSensorBtn.addEventListener("click", undoLastSensor);
 let gridX;
 let gridY;
 
-function clearAction() {
-    // Remove stored polygon from local storage
-    localStorage.removeItem("enfarm_polygon_coordinates");
-
-    // Clear vector source and remove all features
-    vectorSource.clear();
-
-    // Remove farmVectorLayer from the map
-    if (farmVectorLayer) {
-        map.removeLayer(farmVectorLayer);
-        farmVectorLayer = null;
-    }
-
-    // Remove tooltip overlays from the map
-    for (const overlay of tooltipOverlays) {
-        map.removeOverlay(overlay);
-    }
-    tooltipOverlays = [];
-
-    // Remove stored sensor points from local storage
-    localStorage.removeItem("enfarm_sensor_coordinates");
-
-    for (let i = 0; i < 5; i++) {
-        // Remove all vector layers from the map in the first sweep
-        map.getLayers().forEach(layer => {
-            if (layer instanceof ol.layer.Vector) {
-                map.removeLayer(layer);
-            }
-        });
-    }
-
-    // Dismiss the gridPatternInformation element
-    const gridPatternInformation = document.getElementById("gridPatternInformation");
-    gridPatternInformation.style.display = "none";
-
-    // Dismiss the gridPropertiesContainer element
-    //gridPropertiesContainer.style.display = "none"; 
-
-    gridPropertiesContainer.classList.remove('visible');
-
-
-
-    // Get the last selected grid type from local storage before removing it
-    const lastSelectedGridType = localStorage.getItem('lastSelectedGridType');
-
-
-    // Remove stored gridX and gridY points from local storage
-    localStorage.removeItem("squareGridX");
-    localStorage.removeItem("squareGridY");
-
-    // Remove stored gridX and gridY points from local storage
-    localStorage.removeItem("rectangularGridX");
-    localStorage.removeItem("rectangularGridY");
-
-    // Remove stored triangularGrid from local storage
-    localStorage.removeItem("triangularGrid");
-
-    localStorage.removeItem("triangularGridIntersectionPoints");
-    localStorage.removeItem("squareGridIntersectionPoints");
-    localStorage.removeItem("rectangularGridIntersectionPoints");
-
-
-    // Remove last selected intersection count, gridX count, gridY count, grid type, and intersection type
-    localStorage.removeItem('lastSelectedIntersectionCount');
-    localStorage.removeItem('lastSelectedGridXCount');
-    localStorage.removeItem('lastSelectedGridYCount');
-    localStorage.removeItem('lastSelectedGridType');
-    localStorage.removeItem('lastSelectedGridIntersectionType');
-
-    // If the last selected grid type was triangularGrid, remove the GridZ count
-    if (lastSelectedGridType === 'triangularGrid') {
-        localStorage.removeItem('lastSelectedGridZCount');
-    }
-
-    // Hide the gridInfoPill element
-    const gridInfoPill = document.getElementById("gridInfoPill");
-    gridInfoPill.style.display = "none"; // Set display to "none" to hide the element
-
-    // Hide the dialog box
-    dialog.classList.add("hidden");
-
-    // Update the visibility of clearAllDrawingBtn
-    updateClearButtonVisibility();
-
-    // Clear console log
-    console.clear();
-}
-
 function clearAllDrawings() {
     // Show the dialog box
     const dialog = document.getElementById("dialog");
@@ -4804,7 +4785,91 @@ function clearAllDrawings() {
     const deleteNoBtn = document.getElementById("deleteNo");
 
     deleteYesBtn.addEventListener("click", function () {
-        clearAction();
+        // Remove stored polygon from local storage
+        localStorage.removeItem("enfarm_polygon_coordinates");
+
+        // Clear vector source and remove all features
+        vectorSource.clear();
+
+        // Remove farmVectorLayer from the map
+        if (farmVectorLayer) {
+            map.removeLayer(farmVectorLayer);
+            farmVectorLayer = null;
+        }
+
+        // Remove tooltip overlays from the map
+        for (const overlay of tooltipOverlays) {
+            map.removeOverlay(overlay);
+        }
+        tooltipOverlays = [];
+
+        // Remove stored sensor points from local storage
+        localStorage.removeItem("enfarm_sensor_coordinates");
+
+        for (let i = 0; i < 5; i++) {
+            // Remove all vector layers from the map in the first sweep
+            map.getLayers().forEach(layer => {
+                if (layer instanceof ol.layer.Vector) {
+                    map.removeLayer(layer);
+                }
+            });
+        }
+
+        // Dismiss the gridPatternInformation element
+        const gridPatternInformation = document.getElementById("gridPatternInformation");
+        gridPatternInformation.style.display = "none";
+
+        // Dismiss the gridPropertiesContainer element
+        //gridPropertiesContainer.style.display = "none"; 
+
+        gridPropertiesContainer.classList.remove('visible');
+
+
+
+        // Get the last selected grid type from local storage before removing it
+        const lastSelectedGridType = localStorage.getItem('lastSelectedGridType');
+
+
+        // Remove stored gridX and gridY points from local storage
+        localStorage.removeItem("squareGridX");
+        localStorage.removeItem("squareGridY");
+
+        // Remove stored gridX and gridY points from local storage
+        localStorage.removeItem("rectangularGridX");
+        localStorage.removeItem("rectangularGridY");
+
+        // Remove stored triangularGrid from local storage
+        localStorage.removeItem("triangularGrid");
+
+        localStorage.removeItem("triangularGridIntersectionPoints");
+        localStorage.removeItem("squareGridIntersectionPoints");
+        localStorage.removeItem("rectangularGridIntersectionPoints");
+
+
+        // Remove last selected intersection count, gridX count, gridY count, grid type, and intersection type
+        localStorage.removeItem('lastSelectedIntersectionCount');
+        localStorage.removeItem('lastSelectedGridXCount');
+        localStorage.removeItem('lastSelectedGridYCount');
+        localStorage.removeItem('lastSelectedGridType');
+        localStorage.removeItem('lastSelectedGridIntersectionType');
+
+        // If the last selected grid type was triangularGrid, remove the GridZ count
+        if (lastSelectedGridType === 'triangularGrid') {
+            localStorage.removeItem('lastSelectedGridZCount');
+        }
+
+        // Hide the gridInfoPill element
+        const gridInfoPill = document.getElementById("gridInfoPill");
+        gridInfoPill.style.display = "none"; // Set display to "none" to hide the element
+
+        // Hide the dialog box
+        dialog.classList.add("hidden");
+
+        // Update the visibility of clearAllDrawingBtn
+        updateClearButtonVisibility();
+
+        // Clear console log
+        console.clear();
     });
 
     deleteNoBtn.addEventListener("click", function () {
@@ -5151,10 +5216,6 @@ const resetButton = document.getElementById("resetBtn");
 
 // Create a function to reset the webpage
 function resetWebpage() {
-    if (window.ReactNativeWebView) {
-        const message = { actionType: 'Reset', event: 'click' };
-        window.ReactNativeWebView.postMessage(JSON.stringify(message));
-    }
     location.reload();
 }
 
@@ -5557,11 +5618,6 @@ function hideGrid() {
 }
 
 
-
-
-
-
-
 // Move the JavaScript code inside the window.onload function
 window.onload = function () {
     // Get a reference to the floating titles
@@ -5576,7 +5632,7 @@ window.addEventListener("message", message => {
     try {
         const jsonData = JSON.parse(message.data);
         if (jsonData) {
-            const { actionType, event, data } = jsonData;
+            const { actionType, event } = jsonData;
             if (actionType === 'Search') {
                 if (event === 'close') {
                     searchBtn.style.display = "block";
@@ -5584,50 +5640,15 @@ window.addEventListener("message", message => {
                     searchInput.value = "";
                     suggestionsContainer.style.display = "none";
                 }
-                if (event === 'relocate') {
-                    searchBtn.style.display = "block";
-                    searchBar.style.display = "none";
-                    searchInput.value = "";
-                    suggestionsContainer.style.display = "none";
-                    const latitude = data.lat;
-                    const longitude = data.lon;
-                    const center = ol.proj.fromLonLat([longitude, latitude]);
-                
-                    // Smoothly animate the zoom and centering
-                    map.getView().animate({
-                        center: center,
-                        zoom: 21,
-                        duration: 1000, // Adjust the duration as needed
-                        easing: ol.easing.easeOut // Use a suitable easing function for smooth animation
-                    });
-                
-                    const coordinates = ol.proj.fromLonLat([longitude, latitude]);
-                    createMarker(coordinates);
-                }
-                if (event === 'show-tour') {
-                    addTourStepWithDone('step-search', '#searchBtn', 'Nhấp vào nút này để tìm kiếm các địa điểm.');
-                }
             }
             if (actionType === 'Drawing') {
                 if (event === 'click') {
+                    isSketchActive = true;
                     startSketchFarm();
-                }
-                if (event === 'show-tour') {
-                    addTourStepWithDone('step-sketch-farm', '#sketchFarmBtn', 'Nhấp vào nút này để phác thảo trang trại của bạn.');
-                }
-            }
-            if (actionType === 'Sensor') {
-                if (event === 'show-tour') {
-                    addTourStepWithDone('step-add-sensor', '#addSensorBtn', 'Nhấp vào nút này để thêm/các cảm biến enfarm.');
-                }
-            }
-            if (actionType === 'Reset') {
-                if (event === 'click') {
-                    clearAction();
                 }
             }
         }
     } catch (e) {
         console.log(e);
     }
-}, true);
+});
