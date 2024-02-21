@@ -1093,9 +1093,7 @@ body {
     margin-right: 4px;
 }
 
-   /****** END WINDY WEATHER STYLE *******/
-
-
+/****** END WINDY WEATHER STYLE *******/
 
 
 /***** CLEAR ALL DRAWINGS BUTTON *****/
@@ -1103,7 +1101,7 @@ body {
 #clearAllDrawingBtn {
 
     position: fixed;
-    top: 260px;
+    top: 1060px;
     left: 65px;
     background-color: #ff4d4d;
     border: none;
@@ -1575,7 +1573,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 700px;
-    height: 1000px;
+    height: 1200px;
     background-color: white;
     padding: 40px;
     border-radius: 20px;
@@ -1624,6 +1622,3 @@ body {
 .dismiss-button:hover {
     background-color: #00a8ff;
 }
-
-
-
