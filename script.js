@@ -344,7 +344,7 @@ function handleSearchClick(event) {
 
     try {
         const message = { actionType: 'Search', event: 'click' };
-        
+
         if (window.ReactNativeWebView) {
             window.ReactNativeWebView.postMessage(JSON.stringify(message));
         }
@@ -783,7 +783,7 @@ function handleSuggestionClick(suggestion) {
         latitude: latitude,
         longitude: longitude
     };
-    
+
     if (window.ReactNativeWebView) {
         window.ReactNativeWebView.postMessage(JSON.stringify(message));
     }
@@ -1041,8 +1041,8 @@ const map = new ol.Map({
     target: mapElement,
     layers: [satelliteLayer, streetLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer],
     view: new ol.View({
-        center: ol.proj.fromLonLat([106.6297, 10.8231]),
-        zoom: 15,
+        center: ol.proj.fromLonLat([108.03769776610962, 12.670282155975897]), // Center of Buon Ma Thuot
+        zoom: 17,
         //rotation: Math.PI / 4, // Rotate the map 45 degrees (in radians)
     }),
     controls: [],
@@ -3306,6 +3306,26 @@ async function startSketchFarm() {
         }
     }
 
+
+
+
+    // Disable save-button by default until the user selects a grid type
+    const saveButton = document.getElementById('save-button');
+    saveButton.disabled = true; // Make it disabled
+    saveButton.style.opacity = '0.5'; // Gray it out
+
+    // Function to enable save-button
+    function enableSaveButton() {
+        saveButton.disabled = false;
+        saveButton.style.opacity = '1'; // Restore opacity
+    }
+
+    // Event listeners for grid type buttons
+    document.querySelectorAll('.gridTypeOptionBtn1, .gridTypeOptionBtn2, .gridTypeOptionBtn3').forEach(btn => {
+        btn.addEventListener('click', enableSaveButton);
+    });
+
+
     // Event listener for the save-button
     document.getElementById('save-button').addEventListener('click', function () {
         storeSelectedGridFeatures(squareGridX, squareGridY, rectangularGridX, rectangularGridY, triangularGrid);
@@ -3384,7 +3404,7 @@ async function startSketchFarm() {
         localStorage.setItem('visibleDivClasses', JSON.stringify(visibleDivClasses));
 
         console.log("Visible div classes:", visibleDivClasses);
-        
+
         // Send event to react native app
         const message = { actionType: 'Save', event: 'click' };
         if (window.ReactNativeWebVie) {
@@ -3647,7 +3667,7 @@ height: 30px;
                         lat: centerPointCoordinates[1]
                     }
                 };
-                
+
                 // Send event to react native app
                 if (window.ReactNativeWebView) {
                     window.ReactNativeWebView.postMessage(JSON.stringify(reactMessage));
@@ -3673,7 +3693,7 @@ height: 30px;
             },
             address: address
         };
-        
+
         localStorage.setItem('enfarm_polygon_coordinates', JSON.stringify(storedPolygon));
     });
 }
@@ -3813,7 +3833,7 @@ document.getElementById("sketchFarmBtn").addEventListener("click", function () {
     if (!isSketchActive) {
         showButtonsSkecthFarmInactive();
     }
-    
+
     // Send event to react native app
     if (window.ReactNativeWebView) {
         const message = { actionType: 'Drawing', event: isSketchActive ? 'click' : 'unclick' };
@@ -4573,7 +4593,7 @@ function disableAddSensor() {
     if (hasPoints) {
         try {
             const message = { enfarm_sensor_coordinates: retrievePointsFromLocalStorage() };
-            
+
             if (window.ReactNativeWebView) {
                 window.ReactNativeWebView.postMessage(JSON.stringify(message));
             }
