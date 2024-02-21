@@ -47,7 +47,6 @@ function addStepSketchFarm(tour) {
     addTourStep(tour, 'step-sketch-farm', '#sketchFarmBtn', 'Nhấp vào nút này để phác thảo trang trại của bạn.');
 }
 
-
 function addStepAddSensor(tour) {
     addTourStep(tour, 'step-add-sensor', '#addSensorBtn', 'Nhấp vào nút này để thêm/các cảm biến enfarm.');
 }
@@ -83,12 +82,12 @@ function addStepRevisitTutorial(tour) {
         attachTo: { element: '#tutorialBtn', on: 'left' },
         buttons: [
             {
-                text: getButtonText('Làm lại'),
+                text: getButtonText('⟲ Làm lại'),
                 action: () => tour.show('step-search'),
                 classes: 'shepherd-button-secondary',
             },
             {
-                text: getButtonText('Xong'),
+                text: getButtonText('✔ Xong'), //finish tour button
                 action: () => {
                     localStorage.setItem('tourShown', true);
                     tour.complete();
@@ -104,7 +103,7 @@ function addTourStep(tour, id, element, text, position = 'left') {
         classes: 'step-border',
         text: getText(text),
         attachTo: { element, on: position },
-        buttons: [{ text: getButtonText('Kế tiếp'), action: tour.next }],
+        buttons: [{ text: getButtonText('Kế tiếp ➜'), action: tour.next }],
     });
 }
 
@@ -5632,4 +5631,3 @@ window.addEventListener("message", message => {
         console.log(e);
     }
 }, true);
-
