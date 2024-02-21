@@ -82,12 +82,12 @@ function addStepRevisitTutorial(tour) {
         attachTo: { element: '#tutorialBtn', on: 'left' },
         buttons: [
             {
-                text: getButtonText('⟲ Làm lại'),
+                text: getButtonText('⟲ Làm lại'), //Restart tour button
                 action: () => tour.show('step-search'),
                 classes: 'shepherd-button-secondary',
             },
             {
-                text: getButtonText('✔ Xong'), //finish tour button
+                text: getButtonText('✔ Xong'), //Finish tour button
                 action: () => {
                     localStorage.setItem('tourShown', true);
                     tour.complete();
@@ -103,7 +103,7 @@ function addTourStep(tour, id, element, text, position = 'left') {
         classes: 'step-border',
         text: getText(text),
         attachTo: { element, on: position },
-        buttons: [{ text: getButtonText('Kế tiếp ➜'), action: tour.next }],
+        buttons: [{ text: getButtonText('Kế tiếp ➜'), action: tour.next }], //Next button
     });
 }
 
