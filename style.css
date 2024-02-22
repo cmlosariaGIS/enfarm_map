@@ -17,21 +17,21 @@ body {
     /*src: url('fonts/BeVietnamPro-Regular.ttf') format('truetype');*/
 }
 
-* .map {
-    position: relative;
-    width: 100%;
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 100vh;
-    overflow: hidden;
-    touch-action: pan-y;
-    touch-action: pan-x;
-}
+  }
 
 .enfarmLogo {
     position: absolute;
-    top: 45px;
-    left: 30px;
-    width: 290px;
-    height: 110px;
+    top: 20px;
+    left: 20px;
+    width: 120px;
+    height: 50px;
     z-index: 1;
 }
 
@@ -52,8 +52,8 @@ body {
     position: fixed;
     background-color: #ffffff;
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
+    width: 60px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -78,7 +78,7 @@ body {
 .northArrow i,
 .tutorialBtn i {
     font-family: "Material Icons";
-    font-size: 65px;
+    font-size: 30px;
     color: #515151;
 }
 
@@ -138,8 +138,8 @@ body {
 /***** START SEARCH BUTTON FUNCTION *****/
 .searchBtn {
     position: absolute;
-    top: 60px;
-    right: 30px;
+    top: 25px;
+    right: 25px;
     z-index: 1;
     display: flex;
     justify-content: center;
