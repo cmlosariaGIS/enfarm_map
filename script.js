@@ -1039,7 +1039,7 @@ const nitrogenLayer = new ol.layer.Tile({
 
 
 // Initialize the map
-const map = new ol.Map({
+/*const map = new ol.Map({
     target: mapElement,
     layers: [satelliteLayer, streetLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer],
     view: new ol.View({
@@ -1048,8 +1048,25 @@ const map = new ol.Map({
         //rotation: Math.PI / 4, // Rotate the map 45 degrees (in radians)
     }),
     controls: [],
+});*/
+
+
+// The map
+const map = new ol.PerspectiveMap({
+    target: 'map',
+    view: new ol.View({
+        zoom: 17,
+        rotation: Math.PI / 4, // Rotate the map 45 degrees (in radians)
+        center: ol.proj.fromLonLat([108.03769776610962, 12.670282155975897])
+    }),
+    layers: [satelliteLayer, streetLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer],
+    //layers: [layer]
+    controls: [],
 });
 
+map.on('change:perspective', function (e) {
+    if (!e.animating) $('#angle').val(e.angle);
+})
 
 
 let currentBasemap = 1;
@@ -5274,6 +5291,10 @@ resetButton.addEventListener("click", resetWebpage);
 
 
 
+////////// <----- Perspective  BUTTON FUNCTION -----> \\\\\\\\\\
+
+
+
 ////////// <----- SCALE BAR -----> \\\\\\\\\\
 
 var scale_line = new ol.control.ScaleLine({
@@ -5700,5 +5721,31 @@ window.addEventListener("message", message => {
         }
     } catch (e) {
         console.log(e);
+    }
+});
+
+
+//////////// <----- START FUNCTION TO CHANGE MAP PERSPECTIVE -----> \\\\\\\\\\
+
+// Hide the slider on map load
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("angle").style.opacity = "0";
+});
+
+// Show the slider when perspectiveBtn is clicked
+document.getElementById("perspectiveBtn").addEventListener("click", function() {
+    var slider = document.getElementById("angle");
+    var button = document.getElementById("perspectiveBtn");
+    var icon = document.querySelector("#perspectiveBtn i.material-icons");
+    if (slider.style.opacity === "0") {
+        slider.style.opacity = "1";
+        slider.style.transition = "opacity 0.5s ease-in-out";
+        button.classList.add("active");
+        icon.classList.add("active");
+    } else {
+        slider.style.opacity = "0";
+        slider.style.transition = "opacity 0.5s ease-in-out";
+        button.classList.remove("active");
+        icon.classList.remove("active");
     }
 });
