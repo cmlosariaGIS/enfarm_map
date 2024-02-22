@@ -1053,7 +1053,7 @@ const nitrogenLayer = new ol.layer.Tile({
 
 // The map
 const map = new ol.PerspectiveMap({
-    target: 'map',
+    target: 'mapElement',
     view: new ol.View({
         zoom: 17,
         //rotation: Math.PI / 4, // Rotate the map 45 degrees (in radians)
