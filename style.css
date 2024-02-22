@@ -30,8 +30,8 @@ body {
     position: absolute;
     top: 20px;
     left: 20px;
-    width: 120px;
-    height: 50px;
+    width: 140px;
+    height: 60px;
     z-index: 1;
 }
 
@@ -797,15 +797,15 @@ body {
 
 .sketchFarmBtn {
     position: absolute;
-    top: 195px;
-    right: 30px;
+    top: 10%;
+    right: 25px;
     z-index: 1;
 }
 
 .undoSketchBtn {
     position: absolute;
-    top: 195px;
-    right: 160px;
+    top: 10%;
+    right: 90px;
     background-color: #2b98fe;
     z-index: 1;
     display: flex;
