@@ -7,8 +7,6 @@
     <title>enfarm Map</title>
     <link rel="stylesheet" href="style.css">
 
-
-
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css" />-->
     <!--<script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>-->
 
@@ -42,153 +40,9 @@
     <script src="https://d3js.org/d3.v3.min.js"></script>
 
     <style>
-        /****** START SCALE LINE STYLES *******/
-        .ol-scale-line {
-            position: fixed;
-            bottom: 5vh;
-            left: 30px;
-            background: none;
-            border: none;
-            box-shadow: none;
-            color: #515151;
-            line-height: 1;
-            margin: 0;
-            padding: 0;
-        }
 
-        .ol-scale-line-inner {
-            position: relative;
-            background: #ffffff;
-            border-radius: 3px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-            color: #515151;
-            padding: 3px 6px;
-            font-size: 30px;
-            font-family: Be Vietnam Pro', Arial, sans-serif;
+  
 
-        }
-
-        .ol-scale-line-inner::before,
-        .ol-scale-line-inner::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            width: 1px;
-            height: 50%;
-            background-color: #ffffff;
-        }
-
-        .ol-scale-line-inner::before {
-            left: 25%;
-        }
-
-        .ol-scale-line-inner::after {
-            right: 25%;
-        }
-
-        /****** END SCALE LINE STYLES *******/
-
-        /***** START MAP PRODUCT TOUR *****/
-        /*Next Button*/
-        .shepherd-button {
-            background: #306b1b;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            border: 0;
-            border-radius: 100px;
-            color: white;
-            cursor: pointer;
-            margin-right: .5rem;
-            padding: 1rem 2.5rem;
-            transition: all .5s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-
-        .shepherd-button:not(:disabled):hover {
-            background: green;
-            color: hsla(0, 0%, 100%, .75);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        /*Modal*/
-        .shepherd-element {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
-            max-width: 700px;
-            max-height: 300px;
-            opacity: 0;
-            outline: none;
-            padding-left: 10px;
-            padding-top: 20px;
-            transition: opacity .3s, visibility .3s;
-            visibility: hidden;
-            width: 100%;
-            z-index: 9999
-        }
-
-        .shepherd-button.shepherd-button-secondary {
-            background: #3288e6;
-            color: white;
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-        }
-
-        .shepherd-button.shepherd-button-secondary:not(:disabled):hover {
-            background: #196fcc;
-            color: hsla(0, 0%, 100%, .75);
-        }
-
-        .shepherd-button:disabled {
-            cursor: not-allowed
-        }
-
-        .shepherd-button {
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-        }
-
-        .shepherd-text p {
-            margin-bottom: 20px;
-        }
-
-        .shepherd-has-title .shepherd-content .shepherd-header {
-            background: #e6e6e6;
-            padding: 1em
-        }
-
-        .shepherd-text {
-            color: #515151;
-            font-size: 1rem;
-            line-height: 2.5em;
-            padding: .75em
-        }
-
-        .shepherd-text p:last-child {
-            margin-bottom: 0
-        }
-
-        .shepherd-content {
-            border-radius: 5px;
-            outline: none;
-            padding: 0
-        }
-
-        .shepherd-target.custom-triangle .shepherd-arrow {
-            border-bottom: 10px solid transparent;
-            border-top: 10px solid transparent;
-            border-right: 10px solid white;
-            border-left: 2px solid #515151;
-            /* add border on the left side of the triangle */
-            border-width: 2px;
-            /* specify the border width */
-            border-style: solid;
-            /* specify the border style */
-            border-color: #515151;
-            /* specify the border color */
-        }
-
-        /***** END MAP PRODUCT TOUR *****/
     </style>
 </head>
 
@@ -391,8 +245,6 @@
         </div>
 
 
-
-
         <!-- Grid Properties Container for Pattern and Angle of orientation -->
         <div class="gridPropertiesContainer" id="gridPropertiesContainer">
             <div style="display: flex; justify-content: flex-end; margin-right: 10px;">
@@ -506,7 +358,7 @@
     <!----------///// SEARCH BUTTON AND FUNCTIONS \\\\\---------->
 
     <div>
-        <img src="https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png" alt="Logo" class="logo">
+        <img src="https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png" alt="Logo" class="enfarmLogo">
     </div>
 
     <button id="searchBtn" class="searchBtn">
