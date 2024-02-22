@@ -1066,18 +1066,45 @@ function selectBasemap(index) {
         // Update the basemap title in the floating container
         const basemapTitleElement = document.querySelector(".basemapfloatingTitle");
         const basemapTitles = [
-            "Đường phố",
-            "Vệ tinh",
-            "Địa Hình",
-            "Tín chỉ Các bon",
-            "Bản đồ pH",
-            "Bản đồ Ni tơ",
+            "Đường phố", //street
+            "Vệ tinh", //imagery
+            "Địa Hình", //elevation
+            "Tín chỉ Các bon", //carbon
+            "Bản đồ pH",//pH
+            "Bản đồ Ni tơ", //nitro
         ];
         const basemapTitleText = basemapTitles[index];
+
+        let iconURL;
+        switch (index) {
+            case 0:
+                iconURL = "https://i.ibb.co/F4dSJw6/bm-street-circle.png";
+                break;
+            case 1:
+                iconURL = "https://i.ibb.co/VqnqvQq/bm-imagery-circle.png";
+                break;
+            case 2:
+                iconURL = "https://i.ibb.co/TWX3D3k/bm-elev-circle.png"; //elevation
+                break;
+            case 3:
+                iconURL = "https://i.ibb.co/YRVWZsC/bm-carbon-circle.png";
+                break;
+            case 4:
+                iconURL = "https://i.ibb.co/QbvJ9F2/bm-ph-circle.png";
+                break;
+            case 5:
+                iconURL = "https://i.ibb.co/RcNw7KX/bm-nitrogen-circle.png";
+                break;
+            default:
+                // Default icon URL if index is out of bounds
+                iconURL = "default_icon_url.png";
+        }
+
         basemapTitleElement.innerHTML = `
-<i class="material-icons" style="font-size: 40px; padding-right: 10px; color: #515151;">layers</i>
+<img src="${iconURL}" style="width: 40px; height: 40px; padding-right: 10px;">
 <span class="basemapTitle" style="display: inline-block;">${basemapTitleText}</span>
 `;
+
 
         const logoElement = document.querySelector(".enfarmLogo");
         const logoImage =
