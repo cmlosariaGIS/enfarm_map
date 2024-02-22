@@ -23,7 +23,7 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 100vh;
+    height: 100%;
   }
 
 .enfarmLogo {
@@ -49,7 +49,7 @@ body {
 .sketchFarmBtn,
 .northArrow,
 .tutorialBtn {
-    position: fixed;
+    position: absolute;
     background-color: #ffffff;
     border-radius: 50%;
     width: 60px;
@@ -352,8 +352,8 @@ body {
 
 .basemapBtn {
     position: absolute;
-    top: 290px;
-    right: 30px;
+    top: 50px;
+    right: 25px;
     z-index: 1;
 }
 
@@ -737,15 +737,15 @@ body {
 
 .measureAreaBtn {
     position: absolute;
-    top: 620px;
-    right: 30px;
+    top: 305px;
+    right: 25px;
     z-index: 1;
 }
 
 .measureLengthBtn {
     position: absolute;
-    top: 760px;
-    right: 30px;
+    top: 375px;
+    right: 25px;
     z-index: 1;
 }
 
@@ -797,14 +797,14 @@ body {
 
 .sketchFarmBtn {
     position: absolute;
-    top: 10%;
+    top: 95px;
     right: 25px;
     z-index: 1;
 }
 
 .undoSketchBtn {
     position: absolute;
-    top: 10%;
+    top: 95px;
     right: 90px;
     background-color: #2b98fe;
     z-index: 1;
@@ -820,8 +820,8 @@ body {
 
 .addSensorBtn {
     position: absolute;
-    top: 335px;
-    right: 30px;
+    top: 165px;
+    right: 25px;
     z-index: 1;
     display: flex;
     justify-content: center;
@@ -830,8 +830,8 @@ body {
 
 .undoSensorBtn {
     position: absolute;
-    top: 335px;
-    right: 160px;
+    top: 165px;
+    right: 90px;
     background-color: #2b98fe;
     z-index: 1;
     display: flex;
@@ -848,7 +848,7 @@ body {
 /*Finish Sketch/Drawing Button*/
 .sketch-buttons {
     position: fixed;
-    bottom: 12vh;
+    bottom: 20%;
     left: 50%;
     transform: translate(-50%, 50%);
     display: flex;
