@@ -35,18 +35,19 @@ body {
     z-index: 1;
 }
 
-.basemapBtn,
-.locationBtn,
 .searchBtn,
-.measureAreaBtn,
-.measureLengthBtn,
 .drawFarmBtn,
-.sketchFarmBtn,
-.northArrow,
-.resetBtn,
+.undoSketchBtn,
 .addSensorBtn,
 .undoSensorBtn,
-.undoSketchBtn,
+.basemapBtn,
+.measureAreaBtn,
+.measureLengthBtn,
+.resetBtn,
+.perspectiveBtn,
+.locationBtn,
+.sketchFarmBtn,
+.northArrow,
 .tutorialBtn {
     position: fixed;
     background-color: #ffffff;
@@ -62,18 +63,19 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.basemapBtn i,
-.locationBtn i,
 .searchBtn i,
-.measureAreaBtn i,
-.measureLengthBtn i,
 .drawFarmBtn i,
-.sketchFarmBtn i,
-.northArrow i,
-.resetBtn i,
+.undoSketchBtn i,
 .addSensorBtn i,
 .undoSensorBtn i,
-.undoSketchBtn i,
+.basemapBtn i,
+.measureAreaBtn i,
+.measureLengthBtn i,
+.resetBtn i,
+.perspectiveBtn i,
+.locationBtn i,
+.sketchFarmBtn i,
+.northArrow i,
 .tutorialBtn i {
     font-family: "Material Icons";
     font-size: 65px;
@@ -83,7 +85,6 @@ body {
 
 /****** START TUTORIAL BUTTON STYLES *******/
 #tutorialBtn {
-
     position: fixed;
     top: 180px;
     left: 65px;
@@ -99,113 +100,12 @@ body {
     cursor: pointer;
 
 }
-
 #tutorialBtn i.material-icons {
     font-size: 40px;
     color: #515151;
 }
 
 /****** END TUTORIAL BUTTON STYLES *******/
-
-
-/******* START MAP PRODUCT TOUR *******/
-
-/*Next Button*/
-.shepherd-button {
-    background: #306b1b;
-    font-family: 'Be Vietnam Pro', Arial, sans-serif;
-    border: 0;
-    border-radius: 100px;
-    color: white;
-    cursor: pointer;
-    margin-right: .5rem;
-    padding: 1rem 2.5rem;
-    transition: all .5s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-
-.shepherd-button:not(:disabled):hover {
-    background: green;
-    color: hsla(0, 0%, 100%, .75);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/*Modal*/
-.shepherd-element {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
-    max-width: 700px;
-    max-height: 300px;
-    opacity: 0;
-    outline: none;
-    padding-left: 10px;
-    padding-top: 20px;
-    transition: opacity .3s, visibility .3s;
-    visibility: hidden;
-    width: 100%;
-    z-index: 9999
-}
-
-.shepherd-button.shepherd-button-secondary {
-    background: #3288e6;
-    color: white;
-    font-family: 'Be Vietnam Pro', Arial, sans-serif;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-}
-
-.shepherd-button.shepherd-button-secondary:not(:disabled):hover {
-    background: #196fcc;
-    color: hsla(0, 0%, 100%, .75);
-}
-
-.shepherd-button:disabled {
-    cursor: not-allowed
-}
-
-.shepherd-button {
-    font-family: 'Be Vietnam Pro', Arial, sans-serif;
-}
-
-.shepherd-text p {
-    margin-bottom: 20px;
-}
-
-.shepherd-has-title .shepherd-content .shepherd-header {
-    background: #e6e6e6;
-    padding: 1em
-}
-
-.shepherd-text {
-    color: #515151;
-    font-size: 1rem;
-    line-height: 2.5em;
-    padding: .75em
-}
-
-.shepherd-text p:last-child {
-    margin-bottom: 0
-}
-
-.shepherd-content {
-    border-radius: 5px;
-    outline: none;
-    padding: 0
-}
-
-.shepherd-target.custom-triangle .shepherd-arrow {
-    border-bottom: 10px solid transparent;
-    border-top: 10px solid transparent;
-    border-right: 10px solid white;
-    border-left: 2px solid #515151;
-    border-width: 2px;
-    border-style: solid;
-    border-color: #515151;
-}
-
-/***** END MAP PRODUCT TOUR *****/
 
 
 
@@ -245,7 +145,6 @@ body {
     justify-content: center;
     align-items: center;
 }
-
 
 .searchBar {
     display: none;
@@ -1043,6 +942,7 @@ body {
     .sketchFarmBtn,
     .northArrow,
     .resetBtn,
+    .perspectiveBtn,
     .addSensorBtn,
     .undoSensorBtn,
     .undoSketchBtn,
@@ -1070,6 +970,7 @@ body {
     .sketchFarmBtn,
     .northArrow,
     .resetBtn,
+    .perspectiveBtn,
     .addSensorBtn,
     .undoSensorBtn,
     .undoSketchBtn,
@@ -1280,8 +1181,72 @@ body {
 /****** END RESET BUTTON *******/
 
 
+#perspectiveBtn {
+    position: fixed;
+    top: 730px;
+    left: 41px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
 
+}
 
+#perspectiveBtn i.material-icons {
+    font-size: 65px;
+    color: #515151;
+}
+
+.perspectiveSlider {
+    position: fixed;
+    top: 755px;
+    left: 160px;
+    width: 300px;
+}
+
+/* Styles for the range input */
+.perspectiveSlider {
+    position: fixed;
+    top: 755px;
+    left: 160px;
+    width: 250px;
+    height: 50px;
+    background: #4c3a3a;
+    outline: none;
+    border: none;
+    border-radius: 25px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* Styles for the slider thumb */
+.perspectiveSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 60px;
+    height: 60px;
+    background: #4caf50;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+#perspectiveBtn.active {
+    background-color: #00bfff;
+}
+
+#perspectiveBtn.active i.material-icons {
+    color: #ffffff;
+}
+
+/****** END 3D PERSPECTIVE BUTTON *******/
 
 /****** START ADDING FARMS AND SENSORS SUCCESS MESSAGE*****/
 /* Floating container styles */
