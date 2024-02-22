@@ -26,7 +26,7 @@ body {
     touch-action: pan-x;
 }
 
-.logo {
+.enfarmLogo {
     position: absolute;
     top: 45px;
     left: 30px;
@@ -79,6 +79,134 @@ body {
     font-size: 65px;
     color: #515151;
 }
+
+
+/****** START TUTORIAL BUTTON STYLES *******/
+#tutorialBtn {
+
+    position: fixed;
+    top: 180px;
+    left: 65px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+
+}
+
+#tutorialBtn i.material-icons {
+    font-size: 40px;
+    color: #515151;
+}
+
+/****** END TUTORIAL BUTTON STYLES *******/
+
+
+/******* START MAP PRODUCT TOUR *******/
+
+/*Next Button*/
+.shepherd-button {
+    background: #306b1b;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    border: 0;
+    border-radius: 100px;
+    color: white;
+    cursor: pointer;
+    margin-right: .5rem;
+    padding: 1rem 2.5rem;
+    transition: all .5s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+.shepherd-button:not(:disabled):hover {
+    background: green;
+    color: hsla(0, 0%, 100%, .75);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/*Modal*/
+.shepherd-element {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+    max-width: 700px;
+    max-height: 300px;
+    opacity: 0;
+    outline: none;
+    padding-left: 10px;
+    padding-top: 20px;
+    transition: opacity .3s, visibility .3s;
+    visibility: hidden;
+    width: 100%;
+    z-index: 9999
+}
+
+.shepherd-button.shepherd-button-secondary {
+    background: #3288e6;
+    color: white;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+}
+
+.shepherd-button.shepherd-button-secondary:not(:disabled):hover {
+    background: #196fcc;
+    color: hsla(0, 0%, 100%, .75);
+}
+
+.shepherd-button:disabled {
+    cursor: not-allowed
+}
+
+.shepherd-button {
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+}
+
+.shepherd-text p {
+    margin-bottom: 20px;
+}
+
+.shepherd-has-title .shepherd-content .shepherd-header {
+    background: #e6e6e6;
+    padding: 1em
+}
+
+.shepherd-text {
+    color: #515151;
+    font-size: 1rem;
+    line-height: 2.5em;
+    padding: .75em
+}
+
+.shepherd-text p:last-child {
+    margin-bottom: 0
+}
+
+.shepherd-content {
+    border-radius: 5px;
+    outline: none;
+    padding: 0
+}
+
+.shepherd-target.custom-triangle .shepherd-arrow {
+    border-bottom: 10px solid transparent;
+    border-top: 10px solid transparent;
+    border-right: 10px solid white;
+    border-left: 2px solid #515151;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #515151;
+}
+
+/***** END MAP PRODUCT TOUR *****/
+
 
 
 /***** START AUTO-DETECT USER LOCATION *****/
@@ -1004,33 +1132,7 @@ body {
     display: none;
 }
 
-/****** Start  Tutorial Button Styles *******/
 
-#tutorialBtn {
-
-    position: fixed;
-    top: 480px;
-    left: 40px;
-    background-color: #ffffff;
-    border: none;
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-
-}
-
-#tutorialBtn i.material-icons {
-    font-size: 60px;
-    color: #515151;
-}
-
-
-/****** END TUTORIAL BUTTON STYLES *******/
 
 
 /****** START WINDY WEATHER STYLES *******/
@@ -1101,7 +1203,7 @@ body {
 #clearAllDrawingBtn {
 
     position: fixed;
-    top: 1060px;
+    bottom: 200px;
     left: 65px;
     background-color: #ff4d4d;
     border: none;
@@ -1126,7 +1228,7 @@ body {
 /***** START USER LOCATION BUTTON *****/
 .locationBtn {
     position: fixed;
-    top: 600px;
+    top: 480px;
     left: 40px;
     width: 100px;
     height: 100px;
@@ -1143,7 +1245,7 @@ body {
 /****** START RESET BUTTON *******/
 #resetBtn {
     position: fixed;
-    top: 720px;
+    top: 600px;
     left: 45px;
     background-color: #ffffff;
     border: none;
@@ -1621,3 +1723,54 @@ body {
 .dismiss-button:hover {
     background-color: #00a8ff;
 }
+
+
+/****** START MAP SCALE LINE STYLE *******/
+/* Map scale line container */
+.ol-scale-line {
+    position: fixed;
+    bottom: 5vh;
+    left: 30px;
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: #515151;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+}
+
+/* Map scale line inner */
+.ol-scale-line-inner {
+    position: relative;
+    background: #ffffff;
+    border-radius: 3px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    color: #515151;
+    padding: 3px 6px;
+    font-size: 30px;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+}
+
+/* Map scale line pseudo elements */
+.ol-scale-line-inner::before,
+.ol-scale-line-inner::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 1px;
+    height: 50%;
+    background-color: #ffffff;
+}
+
+/* Map scale line pseudo elements positioning */
+.ol-scale-line-inner::before {
+    left: 25%;
+}
+
+.ol-scale-line-inner::after {
+    right: 25%;
+}
+
+
+/****** END MAP SCALE LINE STYLE *******/
