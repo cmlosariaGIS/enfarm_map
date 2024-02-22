@@ -86,13 +86,13 @@ body {
 /****** START TUTORIAL BUTTON STYLES *******/
 #tutorialBtn {
     position: fixed;
-    top: 180px;
-    left: 65px;
+    top: 100px;
+    left: 40px;
     background-color: #ffffff;
     border: none;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    width: 35px;
+    height: 35px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -101,7 +101,7 @@ body {
 
 }
 #tutorialBtn i.material-icons {
-    font-size: 40px;
+    font-size: 30px;
     color: #515151;
 }
 
@@ -1039,7 +1039,7 @@ body {
 /****** START WINDY WEATHER STYLES *******/
 :root {
     --iframe-width: 100%;
-    --iframe-height: 300px;
+    --iframe-height: 100%;
     --button-font-family: 'Be Vietnam Pro', Arial, sans-serif;
     --button-font-size: 30px;
     --button-background-color: #a51e25;
@@ -1068,8 +1068,8 @@ body {
 
 #windyMapBtn {
     position: fixed;
-    top: 400px;
-    left: 66px;
+    top: 160px;
+    left: 30px;
     font-family: var(--button-font-family);
     font-size: var(--button-font-size);
     z-index: 5;
@@ -1129,10 +1129,10 @@ body {
 /***** START USER LOCATION BUTTON *****/
 .locationBtn {
     position: fixed;
-    top: 480px;
-    left: 40px;
-    width: 100px;
-    height: 100px;
+    top: 230px;
+    left: 25px;
+    width: 60px;
+    height: 60px;
     z-index: 1;
 }
 
@@ -1146,13 +1146,13 @@ body {
 /****** START RESET BUTTON *******/
 #resetBtn {
     position: fixed;
-    top: 600px;
-    left: 41px;
+    top: 300px;
+    left: 25px;
     background-color: #ffffff;
     border: none;
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    width: 60px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1162,7 +1162,7 @@ body {
 }
 
 #resetBtn i.material-icons {
-    font-size: 65px;
+    font-size: 30px;
     color: #515151;
     animation: resetBtn-icon-animation .5s ease-in-out;
 }
@@ -1183,13 +1183,13 @@ body {
 
 #perspectiveBtn {
     position: fixed;
-    top: 730px;
-    left: 41px;
+    top: 370px;
+    left: 25px;
     background-color: #ffffff;
     border: none;
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    width: 60px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1199,13 +1199,13 @@ body {
 }
 
 #perspectiveBtn i.material-icons {
-    font-size: 65px;
+    font-size: 30px;
     color: #515151;
 }
 
 .perspectiveSlider {
     position: fixed;
-    top: 755px;
+    top: 370px;
     left: 160px;
     width: 300px;
 }
@@ -1213,10 +1213,10 @@ body {
 /* Styles for the range input */
 .perspectiveSlider {
     position: fixed;
-    top: 755px;
-    left: 160px;
+    top: 390px;
+    left: 100px;
     width: 250px;
-    height: 50px;
+    height: 20px;
     background: #4c3a3a;
     outline: none;
     border: none;
@@ -1230,8 +1230,8 @@ body {
 .perspectiveSlider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 60px;
-    height: 60px;
+    width: 30px;
+    height: 30px;
     background: #4caf50;
     cursor: pointer;
     border-radius: 50%;
