@@ -24,15 +24,16 @@ function initTour() {
         },
     });
 
+    //Re-arrange order to re-arrange tutorial instruction sequence
     addStepSearch(tour);
     addStepSketchFarm(tour);
     addStepAddSensor(tour);
     addStepBaseMap(tour);
     addStepMeasureArea(tour);
     addStepMeasureLength(tour);
-    addStepAccessWeatherMap(tour);
     addStepReset(tour);
     addStepFindLocation(tour);
+    addStepAccessWeatherMap(tour);
     addStepRevisitTutorial(tour);
 
     // Start the tour
@@ -143,6 +144,7 @@ function resetProductTour() {
 }
 
 ////////// <----- END ENFARM MAP PRODUCT TOUR -----> \\\\\\\\\\
+
 
 
 
@@ -1077,7 +1079,7 @@ function selectBasemap(index) {
 <span class="basemapTitle" style="display: inline-block;">${basemapTitleText}</span>
 `;
 
-        const logoElement = document.querySelector(".logo");
+        const logoElement = document.querySelector(".enfarmLogo");
         const logoImage =
             basemaps[currentBasemap] === satelliteLayer
                 ? "https://i.ibb.co/J3YP1x4/enfarm-4.png"
