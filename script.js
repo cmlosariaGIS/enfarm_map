@@ -1056,11 +1056,10 @@ const map = new ol.PerspectiveMap({
     target: 'map',
     view: new ol.View({
         zoom: 17,
-        rotation: Math.PI / 4, // Rotate the map 45 degrees (in radians)
+        //rotation: Math.PI / 4, // Rotate the map 45 degrees (in radians)
         center: ol.proj.fromLonLat([108.03769776610962, 12.670282155975897])
     }),
     layers: [satelliteLayer, streetLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer],
-    //layers: [layer]
     controls: [],
 });
 
