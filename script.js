@@ -1039,7 +1039,7 @@ const nitrogenLayer = new ol.layer.Tile({
 
 
 // Initialize the map
-/*const map = new ol.Map({
+const map = new ol.PerspectiveMap({
     target: mapElement,
     layers: [satelliteLayer, streetLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer],
     view: new ol.View({
@@ -1048,12 +1048,12 @@ const nitrogenLayer = new ol.layer.Tile({
         //rotation: Math.PI / 4, // Rotate the map 45 degrees (in radians)
     }),
     controls: [],
-});*/
+});
 
 
-// The map
+/*/ The map
 const map = new ol.PerspectiveMap({
-    target: 'mapElement',
+    target: 'map',
     view: new ol.View({
         zoom: 17,
         //rotation: Math.PI / 4, // Rotate the map 45 degrees (in radians)
@@ -1065,7 +1065,7 @@ const map = new ol.PerspectiveMap({
 
 map.on('change:perspective', function (e) {
     if (!e.animating) $('#angle').val(e.angle);
-})
+})*/
 
 
 let currentBasemap = 1;
