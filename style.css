@@ -441,12 +441,12 @@ body {
     border-radius: 50px;
     padding: 10px 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 2;
+    z-index: 10;
 }
 
 
 .basemapfloatingTitle .basemapTitle {
-    font-size: 30px;
+    font-size: 35px;
     color: #515151;
 }
 
@@ -1246,7 +1246,7 @@ body {
 #resetBtn {
     position: fixed;
     top: 600px;
-    left: 45px;
+    left: 41px;
     background-color: #ffffff;
     border: none;
     border-radius: 50%;
