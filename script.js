@@ -990,10 +990,19 @@ const satelliteLayer = new ol.layer.Tile({
     visible: false // set visibility to false initially
 });
 
-const streetLayer = new ol.layer.Tile({
+/*const streetLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         attributions: '© <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+    }),
+    visible: true // set visibility to true initially for default basemap
+});*/
+
+const streetLayer = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+        url: "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=fbV6AyWrR3xmdPjUVtzn",
+        attributions: '© <a href="https://www.maptiler.com/">MapTiler</a> | © <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors',
         maxZoom: 19,
     }),
     visible: true // set visibility to true initially for default basemap
