@@ -3,16 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">-->
     <title>enfarm Map</title>
     <link rel="stylesheet" href="style.css">
 
-    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.2.2/ol.css" />-->
-    <!--<script src="https://cdn.jsdelivr.net/npm/ol@v7.2.2/dist/ol.js"></script>-->
+    <!--Openlayers-->
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
 
-    <script src="https://cdn.jsdelivr.net/npm/ol@v7.4.0/dist/ol.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.4.0/ol.css">
-
+    <!--Product Tour Library-->
     <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css" />
 
@@ -21,19 +21,19 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
 
 
-
+    <!--Fonts-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
 
+    <!--Font Icons-->
     <script src="https://kit.fontawesome.com/0eb73cfc5c.js" crossorigin="anonymous"></script>
-
+    
+    <!--Animation files-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.10/lottie.min.js"></script>
 
-    <script src="
-    https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.js"></script>
-    <link href="
-    https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.css" rel="stylesheet">
 
 
     <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
@@ -183,7 +183,6 @@
         }
 
         /***** END MAP PRODUCT TOUR *****/
-        
     </style>
 </head>
 
@@ -255,51 +254,66 @@
         <div id="moreInfoGridPropertiesWindow">
             <strong>Thông tin thêm về việc chọn Hệ thống lưới trang trại và áp dụng Góc định hướng lưới</strong>
             <p style="font-size: 30px; margin-bottom: 5px;"><strong><span style="color: green;">BƯỚC 1. Chọn
-                hệ thống lưới trang trại thích hợp</span></strong>
+                        hệ thống lưới trang trại thích hợp</span></strong>
             </p>
             <p style="font-size: 30px; margin-top: 5px; text-align: justify;">Lựa chọn sơ đồ lưới cho trang trại
-                là một quyết định quan trọng. Điều này liên quan đến việc định vị chiến lược các cây cà phê trong khu đất để đảm bảo
-                chúng được đặt cách nhau vừa đủ để tăng trưởng tối ưu. Nó cũng liên quan đến việc cung cấp số lượng cần thiết
+                là một quyết định quan trọng. Điều này liên quan đến việc định vị chiến lược các cây cà phê trong khu
+                đất để đảm bảo
+                chúng được đặt cách nhau vừa đủ để tăng trưởng tối ưu. Nó cũng liên quan đến việc cung cấp số lượng cần
+                thiết
                 cây trồng trên một đơn vị diện tích.</p>
             <img src="https://i.ibb.co/G7rkPNn/grid-gif.gif" alt="Grid GIF"
                 style="width: 200px; height: 200px; display: block; margin: 0 auto;">
             <p style="font-size: 30px; margin-top: 5px; text-align: justify;"> <strong><i>A. Lưới trang trại vuông
-                Hệ thống:</strong></i>
-                Đây là hệ thống lưới được áp dụng nhiều nhất. Trang trại được chia thành các ô vuông, mỗi ô trồng một cây
-                 góc. Điều này làm cho việc di chuyển giữa các cây trở nên dễ dàng và các công việc canh tác như trồng, tưới nước, phun thuốc và
-                 thu hoạch đơn giản hơn nhiều.</p>
-            <p style="font-size: 30px; margin-top: 5px; text-align: justify;"> <strong><i>B. Lưới trang trại hình chữ nhật
-                Hệ thống:</strong></i> Trong hệ thống lưới này, ô được chia thành hình chữ nhật thay vì hình vuông
+                        Hệ thống:</strong></i>
+                Đây là hệ thống lưới được áp dụng nhiều nhất. Trang trại được chia thành các ô vuông, mỗi ô trồng một
+                cây
+                góc. Điều này làm cho việc di chuyển giữa các cây trở nên dễ dàng và các công việc canh tác như trồng,
+                tưới nước, phun thuốc và
+                thu hoạch đơn giản hơn nhiều.</p>
+            <p style="font-size: 30px; margin-top: 5px; text-align: justify;"> <strong><i>B. Lưới trang trại hình chữ
+                        nhật
+                        Hệ thống:</strong></i> Trong hệ thống lưới này, ô được chia thành hình chữ nhật thay vì hình
+                vuông
                 và cây được trồng ở 4 góc của hình chữ nhật. Những ưu điểm tương tự đã có
-                được đề cập trong hệ thống lưới vuông cũng được yêu thích ở đây. Sự khác biệt duy nhất là trong hệ thống này,
+                được đề cập trong hệ thống lưới vuông cũng được yêu thích ở đây. Sự khác biệt duy nhất là trong hệ thống
+                này,
                 có thể bố trí được nhiều cây hơn so với hệ thống lưới vuông.</p>
-            <p style="font-size: 30px; margin-top: 5px; text-align: justify;"> <strong><i>C. Lưới trang trại hình tam giác
-                Hệ thống:</strong></i>Trong hầu hết các tình huống, hệ thống này có thể chứa được nhiều cây hơn hệ thống
-                2 hệ thống lưới trước đó. Tuy nhiên, đây là một hệ thống khó thực hiện và canh tác trên mảnh đất trang trại
+            <p style="font-size: 30px; margin-top: 5px; text-align: justify;"> <strong><i>C. Lưới trang trại hình tam
+                        giác
+                        Hệ thống:</strong></i>Trong hầu hết các tình huống, hệ thống này có thể chứa được nhiều cây hơn
+                hệ thống
+                2 hệ thống lưới trước đó. Tuy nhiên, đây là một hệ thống khó thực hiện và canh tác trên mảnh đất trang
+                trại
                 theo hệ thống này trở nên khó khăn hơn.</p>
             <p style="font-size: 30px; margin-top: 5px; text-align: justify;"> Mỗi hệ thống lưới trang trại có riêng
                 lợi thế và được lựa chọn dựa trên các yếu tố như độ dốc của đất, mục đích sử dụng không gian,
-                tiện lợi, v.v. Việc lựa chọn hệ thống lưới cũng có thể ảnh hưởng đến sự thâm nhập ánh sáng và sự phát triển của tán cây, điều này
+                tiện lợi, v.v. Việc lựa chọn hệ thống lưới cũng có thể ảnh hưởng đến sự thâm nhập ánh sáng và sự phát
+                triển của tán cây, điều này
                 là những yếu tố quan trọng đối với sức khỏe thực vật.</p>
             <p style="font-size: 30px; margin-bottom: 5px;"><strong><span style="color: green;">BƯỚC 2 (Tùy chọn).
-                Chỉ định Góc định hướng</strong>
+                        Chỉ định Góc định hướng</strong>
             </p>
             <img src="https://i.ibb.co/SwYvH3n/angle-gif-gif.gif" alt="Grid GIF"
                 style="width: 180px; height: 180px; display: block; margin: 20px auto;">
             <p style="font-size: 30px; margin-top: 5px; text-align: justify;">Thông thường, hệ thống lưới nối với
-                cạnh dài nhất của mảnh đất trang trại. Tuy nhiên, nếu muốn, bạn có thể thay đổi hướng bằng cách áp dụng một
-                góc khác nhau (như 0, 45, 90, 130, v.v.). Điều này có thể ảnh hưởng đến số lượng cây và đường lưới bạn có thể
+                cạnh dài nhất của mảnh đất trang trại. Tuy nhiên, nếu muốn, bạn có thể thay đổi hướng bằng cách áp dụng
+                một
+                góc khác nhau (như 0, 45, 90, 130, v.v.). Điều này có thể ảnh hưởng đến số lượng cây và đường lưới bạn
+                có thể
                 phù hợp với bưu kiện trang trại của bạn.
             </p>
             <img src="https://i.ibb.co/brfttxm/pill-explain-vn.png" alt="Grid GIF"
                 style="width: 550px; height: 250px; display: block; margin: 20px auto;">
             <p style="font-size: 30px; margin-top: 5px; text-align: justify;"><strong>Phần kết luận:</strong> Lựa chọn
-                hệ thống lưới trang trại thích hợp và tùy chọn, việc áp dụng góc định hướng có thể ảnh hưởng đến kết quả ước tính
-                số cây cà phê và đường lưới cần thiết để đạt được sản lượng tiềm năng tối đa của một thửa đất nông nghiệp.
+                hệ thống lưới trang trại thích hợp và tùy chọn, việc áp dụng góc định hướng có thể ảnh hưởng đến kết quả
+                ước tính
+                số cây cà phê và đường lưới cần thiết để đạt được sản lượng tiềm năng tối đa của một thửa đất nông
+                nghiệp.
             </p>
             <div>
-                <button id="dismissMoreInfoGridPropertiesWindow" class="dismiss-button"
-                    onclick="hideGrid()">Miễn nhiệm</button>
+                <button id="dismissMoreInfoGridPropertiesWindow" class="dismiss-button" onclick="hideGrid()">Miễn
+                    nhiệm</button>
             </div>
             <br>
             <br>
