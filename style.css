@@ -101,7 +101,7 @@ body {
 
 }
 #tutorialBtn i.material-icons {
-    font-size: 30px;
+    font-size: 20px;
     color: #515151;
 }
 
@@ -1046,7 +1046,7 @@ body {
     --button-color: white;
     --button-border-radius: 9999px;
     --button-padding: 10px 8px;
-    --icon-size: 32px;
+    --icon-size: 15px;
 }
 
 #windyMapContainer {
@@ -1068,8 +1068,8 @@ body {
 
 #windyMapBtn {
     position: fixed;
-    top: 160px;
-    left: 30px;
+    top: 185px;
+    left: 38px;
     font-family: var(--button-font-family);
     font-size: var(--button-font-size);
     z-index: 5;
@@ -1104,8 +1104,8 @@ body {
 #clearAllDrawingBtn {
 
     position: fixed;
-    bottom: 150px;
-    left: 65px;
+    top: 480px;
+    left: 25px;
     background-color: #ff4d4d;
     border: none;
     border-radius: 50%;
@@ -1129,7 +1129,7 @@ body {
 /***** START USER LOCATION BUTTON *****/
 .locationBtn {
     position: fixed;
-    top: 230px;
+    top: 235px;
     left: 25px;
     width: 60px;
     height: 60px;
@@ -1146,7 +1146,7 @@ body {
 /****** START RESET BUTTON *******/
 #resetBtn {
     position: fixed;
-    top: 300px;
+    top: 305px;
     left: 25px;
     background-color: #ffffff;
     border: none;
@@ -1180,10 +1180,10 @@ body {
 
 /****** END RESET BUTTON *******/
 
-
+/****** START 3D PERSPECTIVE BUTTON *******/
 #perspectiveBtn {
     position: fixed;
-    top: 370px;
+    top: 375px;
     left: 25px;
     background-color: #ffffff;
     border: none;
@@ -1215,7 +1215,7 @@ body {
     position: fixed;
     top: 390px;
     left: 100px;
-    width: 250px;
+    width: 75px;
     height: 20px;
     background: #4c3a3a;
     outline: none;
