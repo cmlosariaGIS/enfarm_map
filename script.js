@@ -31,6 +31,7 @@ function initTour() {
     addStepBaseMap(tour);
     addStepMeasureArea(tour);
     addStepMeasureLength(tour);
+    addperspectiveControl(tour);
     addStepReset(tour);
     addStepFindLocation(tour);
     addStepAccessWeatherMap(tour);
@@ -62,6 +63,10 @@ function addStepMeasureArea(tour) {
 
 function addStepMeasureLength(tour) {
     addTourStep(tour, 'step-measure-length', '#measureLengthBtn', 'Bấm vào nút này để đo chiều dài.');
+}
+
+function addperspectiveControl(tour) {
+    addTourStep(tour, 'step-pespective-control', '#perspectiveBtn', 'thay đổi góc nhìn bản đồ'); //Change map perspective
 }
 
 function addStepReset(tour) {
@@ -167,7 +172,7 @@ showMapButton.addEventListener('click', function () {
             buttonText.textContent = 'x';
             buttonText.style.margin = 'auto';
             iconElement.style.display = 'none';
-            showMapButton.style.width = '60px';
+            showMapButton.style.width = '30px';
             showMapButton.style.padding = '10px';
 
             const initialLatitude = 16.257222;
@@ -1365,7 +1370,7 @@ function startMeasurementArea() {
     const buttonsToHide = [
         "searchBar", "searchBtn", "basemapBtn", "measureLengthBtn",
         "sketchFarmBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn",
-        "resetBtn", "locationBtn"
+        "resetBtn", "locationBtn", "perspectiveBtn"
     ];
 
     if (isActive) {
@@ -1815,6 +1820,7 @@ function startMeasurementLength() {
             "windyMapBtn",
             "locationBtn",
             "resetBtn",
+            "perspectiveBtn",
         ];
         const displayValue = isActive ? "none" : "block";
         buttonsToHide.forEach((btnId) => {
@@ -2095,6 +2101,7 @@ function deactivateMeasurementLength() {
             "windyMapBtn",
             "resetBtn",
             "locationBtn",
+            "perspectiveBtn",
         ];
         buttonsToHide.forEach((btnId) => {
             const btn = document.getElementById(btnId);
@@ -2131,6 +2138,7 @@ document.getElementById("finishMeasuringLength").addEventListener("click", funct
         "windyMapBtn",
         "resetBtn",
         "locationBtn",
+        "perspectiveBtn",
     ];
     buttonsToHide.forEach((btnId) => {
         const btn = document.getElementById(btnId);
@@ -2139,11 +2147,6 @@ document.getElementById("finishMeasuringLength").addEventListener("click", funct
         }
     });
 });
-
-
-
-
-
 
 
 ///// <----- SKETCH FARM BUTTON FUNCTION -----> \\\\\
@@ -2304,7 +2307,7 @@ let sketchFarmBtnIcon;
 let buttonsToHideSketchFarmActive = [
     "searchBar", "searchBtn", "basemapBtn", "measureAreaBtn",
     "measureLengthBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn", "resetBtn",
-    "locationBtn"
+    "locationBtn", "perspectiveBtn"
 ];
 
 function showButtonsSketchFarmInactive() {
@@ -4480,6 +4483,7 @@ const buttonsToHide = [
     "windyMapBtn",
     "resetBtn",
     "locationBtn",
+    "perspectiveBtn"
 ];
 
 function hideButtons() {
