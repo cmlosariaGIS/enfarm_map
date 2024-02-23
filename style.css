@@ -330,7 +330,7 @@ body {
 /*Basemap floating title*/
 .basemapfloatingTitle {
     position: absolute;
-    top: 20%;
+    top: 4%;
     left: 50%;
     width: fit-content;
     transform: translateX(-50%);
@@ -338,40 +338,40 @@ body {
     align-items: center;
     background-color: #ffffff;
     border-radius: 50px;
-    padding: 10px 20px;
+    padding: 10px 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 10;
 }
 
 
 .basemapfloatingTitle .basemapTitle {
-    font-size: 35px;
+    font-size: 15px;
     color: #515151;
 }
 
 
 .basemapBtn {
     position: absolute;
-    top: 50px;
+    top: 235px;
     right: 25px;
     z-index: 1;
 }
 
-.basemapswitcher {
+/*.basemapswitcher {
     position: absolute;
     top: 185px;
     right: 0px;
     z-index: 1;
-}
+}*/
 
 .basemapSelector {
     position: absolute;
     left: 50%;
     height: 100%;
-    top: 20px;
-    bottom: 0;
+    top: 20px; /*adjust height of the slide out basemap selector*/
+    bottom: 10px;
     transform: translateX(-50%) translateY(100%);
-    width: 100%;
+    width: 98%; /*adjust width of the slide out basemap selector*/
     max-height: calc(100% - 20px);
     border-radius: 20px 20px 0 0;
     background-color: rgba(255, 255, 255);
@@ -381,10 +381,10 @@ body {
     transition: transform 0.3s;
 }
 
-.container-content {
+.container-content { /*basemap selector header text*/
     padding: 20px;
     text-align: center;
-    font-size: 25px;
+    font-size: 10px;
     color: #515151;
 }
 
@@ -392,21 +392,21 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 40px;
-    margin-top: 80px;
+    gap: 30px;
+    margin-top: 30px;
 }
 
-.container-content .image-container img {
-    width: 100%;
+.container-content .image-container img { /*basemap thumbnails*/
+    width: 80%;
     height: auto;
     object-fit: cover;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    border-radius: 50px;
+    border-radius: 20px; /*border radius of the basemap thumbnails*/
 }
 
-.container-content .image-container .caption {
-    font-size: 30px;
-    font-weight: bold;
+.container-content .image-container .caption { /*basemap selector title/typetext*/
+    font-size: 13px;
+    /*font-weight: bold;*/
     margin-top: 5px;
     color: #515151;
 }
@@ -419,15 +419,15 @@ body {
     display: block;
 }
 
-.selected-basemap-circle {
+.selected-basemap-circle { /*green selection circle*/
     position: absolute;
-    bottom: 75px;
-    right: 25px;
-    width: 30px;
-    height: 30px;
+    bottom: 30px;
+    right: 20px;
+    width: 13px;
+    height: 13px;
     background-color: green;
     border-radius: 50%;
-    border: 6px solid white;
+    border: 3px solid white;
     display: none;
     animation: glow 1s ease-in-out infinite alternate;
 }
@@ -442,16 +442,16 @@ body {
     }
 }
 
-.close-bm-button {
+.close-bm-button { /*close X button*/
     position: absolute;
-    top: 42px;
+    top: 30px;
     right: 30px;
     cursor: pointer;
     color: #ff4d4d;
 }
 
 .close-bm-button i {
-    font-size: 60px;
+    font-size: 30px;
 }
 
 /*Basemap Attribution*/
@@ -465,11 +465,11 @@ body {
     transform: translate(-50%, -50%);
     z-index: 9999;
     background-color: white;
-    padding: 40px;
+    padding: 20px;
     border-radius: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     display: none;
-    width: 800px;
+    width: 300px; /*adjust size of the attribution banner width*/
 }
 
 .isric-attribution p,
@@ -478,7 +478,7 @@ body {
 .gebco-attribution p {
     margin: 0;
     line-height: 1.5;
-    font-size: 40px;
+    font-size: 15px;
 }
 
 .isric-attribution .hidden-link,
@@ -496,10 +496,10 @@ body {
     position: absolute;
     top: 10px;
     right: 10px;
-    padding-bottom: 40px;
+    padding-bottom: 20px;
     padding-right: 10px;
     padding-top: 10px;
-    font-size: 60px;
+    font-size: 30px;
     color: #515151;
     cursor: pointer;
 }
@@ -1357,11 +1357,11 @@ body {
 
 
 .gridAngleContainer {
-    position: relative;
+    position: absolute;
     padding: 0px;
     background-color: white;
     border-radius: 10px;
-    z-index: 1;
+    z-index: 0;
 }
 
 .gridAngleInputContainer {
