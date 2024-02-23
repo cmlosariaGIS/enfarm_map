@@ -340,9 +340,24 @@ body {
     border-radius: 50px;
     padding: 10px 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    z-index: 1;
+    animation: slideDownUp 5s forwards;
 }
 
+@keyframes slideDownUp {
+    0% {
+        top: -100px; /* Start off-screen */
+    }
+    5% {
+        top: 25px; /* Slide down to this position */
+    }
+    95% {
+        top: 25px; /* Stay at this position for 10 seconds */
+    }
+    100% {
+        top: -100px; /* Slide back up to off-screen */
+    }
+}
 
 .basemapfloatingTitle .basemapTitle {
     font-size: 15px;
@@ -614,7 +629,7 @@ body {
 .nitrogenLegend,
 .phLegend {
     width: 60px;
-    height: 200px;
+    height: 210px;
     background-color: #ffffff;
     position: absolute;
     top: 35px;
@@ -658,11 +673,11 @@ body {
 .closenitrogenLegend,
 .closepHLegend {
     position: absolute;
-    top: 12px;
-    right: 85px;
+    top: 18px;
+    right: 83px;
     background-color: #ffffff;
-    width: 25px;
-    height: 25px;
+    width: 27px;
+    height: 27px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -681,8 +696,8 @@ body {
     color: #ff4d4d;
     display: none;
     position: absolute;
-    top: 0px;
-    right: 0px;
+    top: 1px;
+    right: 1px;
     z-index: 4;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -1311,8 +1326,8 @@ body {
 .measuringLengthfloatingTitle,
 .sketchingFarmfloatingTitle,
 .addSensorsfloatingTitle {
-    position: absolute;
-    top: 140px;
+    position: fixed;
+    top: -100px; /* Start off-screen */
     left: 50%;
     width: fit-content;
     transform: translateX(-50%);
@@ -1323,14 +1338,29 @@ body {
     padding: 10px 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 2;
-    display: none;
+    animation: slideDownUp 5s forwards;
+}
+
+@keyframes slideDownUp {
+    0% {
+        top: -100px; /* Start off-screen */
+    }
+    5% {
+        top: 25px; /* Slide down to this position */
+    }
+    95% {
+        top: 25px; /* Stay at this position for 10 seconds */
+    }
+    100% {
+        top: -100px; /* Slide back up to off-screen */
+    }
 }
 
 .addSensorsfloatingTitle .addSensorsTitle,
 .sketchingFarmfloatingTitle .sketchingFarmTitle,
 .measuringLengthfloatingTitle .measuringLengthTitle,
 .measuringAreafloatingTitle .measuringAreaTitle {
-    font-size: 28px;
+    font-size: 15px;
     color: #515151;
 }
 
@@ -1376,8 +1406,8 @@ body {
 }
 
 .gridAngleInputContainer {
-    width: fit-content;
-    font-size: 26px;
+    width: 200vh;
+    font-size: 13px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1386,7 +1416,7 @@ body {
     color: #515151;
     background-color: white;
     padding: 20px;
-    border-radius: 30px;
+    border-radius: 0px;
     transition: top 0.3s ease, opacity 0.3s ease;
     white-space: nowrap;
     margin-top: 0px;
@@ -1394,38 +1424,37 @@ body {
 }
 
 .gridAngleInputContainer label {
-    margin-right: -3px;
+    margin-right: 0px;
 }
 
 .gridAngleInputContainer input[type="text"] {
-    padding: 20px;
-    font-size: 24px;
-    border: 3px solid #898989;
+    padding: 10px;
+    font-size: 14px;
+    border: 2px solid #898989;
     border-radius: 10px;
-    width: 40px;
+    width: 25px;
     position: relative;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
 }
 
 .gridAngleInputContainer button#apply-button {
-    padding: 20px 20px;
-    font-size: 25px;
-    background-color: #ffffff;
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: #e0e0e0;
     color: #515151;
     border: none;
     border-radius: 20px;
     cursor: pointer;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
-    margin-right: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
 }
 
 .gridAngleInputContainer button#apply-button i.material-icons {
-    font-size: 28px;
+    font-size: 20px;
     /* Adjust the icon size */
-    margin-right: 10px;
+    margin-right: 8px;
     /* Add space between icon and text */
 }
 
@@ -1436,30 +1465,30 @@ body {
 }
 
 .gridAngleInputContainer button#save-button {
-    padding: 20px 25px;
-    font-size: 28px;
+    padding: 10px 15px;
+    font-size: 14px;
     background-color: #4CAF50;
     color: #fff;
     border: none;
     border-radius: 100px;
     cursor: pointer;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
-    margin-left: 10px;
     display: flex;
     align-items: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+
 .gridAngleInputContainer button#save-button .material-icons-outlined {
     margin-right: 10px;
-    font-size: 28px;
+    font-size: 14px;
     color: #fff;
-    font-size: 40px;
+    font-size: 20px;
 
 }
 
 .gridAngleInputContainer.slide-down {
-    top: 78%;
+    top: 500%;
 }
 
 .gridTypeContainer {
@@ -1479,7 +1508,7 @@ body {
     border-radius: 10px;
     border: none;
     padding: 10px 25px;
-    font-size: 25px;
+    font-size: 13px;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
     color: #515151;
     cursor: pointer;
@@ -1510,7 +1539,7 @@ body {
 .material-icons-outlined {
     margin-right: 10px;
     font-family: 'Material Icons Outlined';
-    font-size: 50px;
+    font-size: 25px;
     font-weight: normal;
     color: #515151;
 }
@@ -1543,7 +1572,7 @@ body {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     padding: 10px;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
-    font-size: 30px;
+    font-size: 15px;
     font-weight: bold;
     color: #515151;
     width: fit-content;
@@ -1643,17 +1672,17 @@ body {
 
 #moreInfoGridPropertiesWindow {
     position: fixed;
-    top: 50%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 700px;
-    height: 1200px;
+    width: 300px;
+    height: 300px;
     background-color: white;
     padding: 40px;
-    border-radius: 20px;
+    border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
-    font-size: 35px;
+    font-size: 15px;
     color: #515151;
     text-align: justify;
     z-index: 10;
@@ -1683,12 +1712,12 @@ body {
     background-color: #008CBA;
     color: white;
     border: none;
-    padding: 20px 40px;
-    font-size: 35px;
+    padding: 10px 20px;
+    font-size: 16px;
     position: absolute;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    margin: 40px;
+    left: 35%;
+    transform: translate(-20%, -30%);
+    margin: 20px 20px 40px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
