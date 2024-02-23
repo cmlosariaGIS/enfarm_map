@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>enfarm Map</title>
     <link rel="stylesheet" href="style.css">
 
@@ -559,7 +559,7 @@
 
     <div class="basemapfloatingTitle" style="display: flex; align-items: center;">
         <img src="https://i.ibb.co/F4dSJw6/bm-street-circle.png"
-            style="width: 60px; height: 60px; padding-right: 10px;">
+            style="width: 30px; height: 30px; padding-right: 5px;">
         <span class="basemapTitle" style="display: inline-block;"></span>
     </div>
 
@@ -574,7 +574,7 @@
     <div class="basemapSelector" id="basemapSelector">
         <div class="container-content">
             <h2>
-                <i class="material-icons" style="font-size: 50px; vertical-align: middle;">layers</i>
+                <i class="material-icons" style="font-size: 25px; vertical-align: middle;">layers</i>
                 Chọn bản đồ nền
             </h2>
             <div class="close-bm-button" onclick="closeBasemapSelector()">
@@ -583,9 +583,9 @@
             <div class="image-container">
                 <div onclick="selectBasemap(1)" style="position: relative;">
                     <img src="https://i.ibb.co/Jjg7bMD/bm-street.png" alt="Đường phố">
-                    <div class="osminfo-icon" style="position: absolute; top: 20px; left: 20px;">
+                    <div class="osminfo-icon" style="position: absolute; top: 3px; left: 16px;">
                         <i class="material-icons"
-                            style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                            style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
                     <div class="caption">Đường phố</div>
                     <div class="selected-basemap-circle"></div>
@@ -593,9 +593,9 @@
 
                 <div onclick="selectBasemap(2)" style="position: relative;">
                     <img src="https://i.ibb.co/j3fq23k/bm-imagery.png" alt="Vệ tinh" border="0">
-                    <div class="mapboxinfo-icon" style="position: absolute; top: 20px; left: 20px;">
+                    <div class="mapboxinfo-icon" style="position: absolute; top: 3px; left: 16px;">
                         <i class="material-icons"
-                            style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                            style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
                     <div class="caption">Vệ tinh</div>
                     <div class="selected-basemap-circle"></div>
@@ -603,9 +603,9 @@
 
                 <div onclick="selectBasemap(0)" style="position: relative;">
                     <img src="https://i.ibb.co/52KrTf7/bm-terrain.png" alt="Địa hình" border="0">
-                    <div class="gebcoinfo-icon" style="position: absolute; top: 20px; left: 20px;">
+                    <div class="gebcoinfo-icon" style="position: absolute; top: 3px; left: 16px;">
                         <i class="material-icons"
-                            style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                            style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
                     <div class="caption">Địa hình</div>
                     <div class="selected-basemap-circle"></div>
@@ -613,9 +613,9 @@
 
                 <div onclick="selectBasemap(0)" style="position: relative;">
                     <img src="https://i.ibb.co/VM1tBQj/bm-carbon.png" alt="Tín chỉ Các bon" border="0">
-                    <div class="info-icon" style="position: absolute; top: 20px; left: 20px;">
+                    <div class="info-icon" style="position: absolute; top: 3px; left: 16px;">
                         <i class="material-icons"
-                            style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                            style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
                     <div class="caption">Tín chỉ Các bon</div>
                     <div class="selected-basemap-circle"></div>
@@ -624,9 +624,9 @@
 
                 <div onclick="selectBasemap(3)" style="position: relative;">
                     <img src="https://i.ibb.co/n73N7QY/bm-ph.png" alt="Bản đồ pH" border="0">
-                    <div class="info-icon" style="position: absolute; top: 20px; left: 20px;">
+                    <div class="info-icon" style="position: absolute; top: 3px; left: 16px;">
                         <i class="material-icons"
-                            style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                            style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
                     <div class="caption">Bản đồ pH</div>
                     <div class="selected-basemap-circle"></div>
@@ -634,9 +634,9 @@
 
                 <div onclick="selectBasemap(4)" style="position: relative;">
                     <img src="https://i.ibb.co/Krtp9sf/bm-nitrogen.png" alt="Bản đồ Ni tơ" border="0">
-                    <div class="info-icon" style="position: absolute; top: 20px; left: 20px;">
+                    <div class="info-icon" style="position: absolute; top: 3px; left: 16px;">
                         <i class="material-icons"
-                            style="font-size: 50px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                            style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
                     <div class="caption">Bản đồ Ni tơ</div>
                     <div class="selected-basemap-circle"></div>
