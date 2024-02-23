@@ -854,7 +854,7 @@ function displayHistoricalPlaces() {
 
             const deleteButton = document.createElement("button");
             deleteButton.classList.add("deleteButton");
-            deleteButton.innerHTML = '<i class="material-icons" style="font-size: 50px;">close</i>';
+            deleteButton.innerHTML = '<i class="material-icons" style="font-size: 30px;">close</i>'; //X button to clear the search
 
             deleteButton.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -898,9 +898,9 @@ function displayHistoricalPlaces() {
         const clearAllButton = document.createElement("button");
         clearAllButton.id = "clearAllBtn";
         clearAllButton.innerHTML = `
-<div style="display: flex; align-items: center; justify-content: center; width: 490px; margin: 0 auto; padding-bottom: 30px; padding-top: 30px; font-family: 'Be Vietnam Pro', Arial, sans-serif;">
-<i class="material-icons" style="font-size: 40px; margin-right: 40px;">delete</i>
-<span style="font-size: 25px; color: #515151;">Xóa tất cả tìm kiếm</span> 
+<div style="display: flex; align-items: center; justify-content: center; width: 300px; margin: 0 auto; padding-bottom: 20px; padding-top: 20px; font-family: 'Be Vietnam Pro', Arial, sans-serif;">
+<i class="material-icons" style="font-size: 30px; margin-right: 10px; color:  #ff4d4d;">delete</i>
+<span style="font-size: 20px; color: #515151;">Xóa tất cả tìm kiếm</span> 
 </div>`;
 
 
@@ -1792,8 +1792,6 @@ function deactivateMeasurementArea() {
 }
 
 
-
-
 ///// <----- MEASURE LENGTH BUTTON FUNCTION -----> \\\\\
 
 let drawLength;
@@ -1812,6 +1810,7 @@ function startMeasurementLength() {
         const buttonsToHide = [
             "searchBar",
             "searchBtn",
+            "searchButton",
             "basemapBtn",
             "measureAreaBtn",
             "sketchFarmBtn",
