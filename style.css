@@ -889,7 +889,7 @@ body {
 .finish-drawing,
 .finish-addingsensor {
     background-color: #ffffff;
-    padding: 30px 50px;
+    padding: 15px 20px;
     border-radius: 100px;
     font-size: 35px;
     color: #515151;
@@ -1712,7 +1712,7 @@ body {
     background-color: #008CBA;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 20px 20px;
     font-size: 16px;
     position: absolute;
     left: 35%;
