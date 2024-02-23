@@ -368,7 +368,7 @@ body {
     position: absolute;
     left: 50%;
     height: 100%;
-    top: 20px; /*adjust height of the slide out basemap selector*/
+    top: 100px; /*adjust height of the slide out basemap selector*/
     bottom: 10px;
     transform: translateX(-50%) translateY(100%);
     width: 98%; /*adjust width of the slide out basemap selector*/
