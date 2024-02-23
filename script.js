@@ -454,26 +454,26 @@ function createMarker(coordinates) {
             pillContainer.style.alignItems = "center";
             pillContainer.style.justifyContent = "space-between";
             pillContainer.style.background = "#ffffff";
-            pillContainer.style.padding = "10px 40px";
+            pillContainer.style.padding = "10px 20px";
             pillContainer.style.borderRadius = "100px";
             pillContainer.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.15)";
 
             // Create the place name element
             const placeNameElement = document.createElement("span");
             placeNameElement.textContent = placeName;
-            placeNameElement.style.fontSize = "35px";
+            placeNameElement.style.fontSize = "20px";
             placeNameElement.style.fontFamily = "Be Vietnam Pro', Arial, sans-serif";
             placeNameElement.style.color = "#515151";
             placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)";
-            placeNameElement.style.letterSpacing = "1px";
+            placeNameElement.style.letterSpacing = "0px";
 
             // Create the chevron_right icon element
             const chevronIcon = document.createElement("i");
             chevronIcon.classList.add("material-icons");
             chevronIcon.textContent = "expand_circle_down";
-            chevronIcon.style.fontSize = "50px";
+            chevronIcon.style.fontSize = "20px";
             chevronIcon.style.color = "#515151";
-            chevronIcon.style.marginLeft = "15px";
+            chevronIcon.style.marginLeft = "10px";
 
             // Add hover effect to the chevron icon
             chevronIcon.style.cursor = "pointer";
@@ -510,29 +510,29 @@ function createMarker(coordinates) {
 
                         if (pillContainer.getAttribute('data-expanded') === 'true') {
                             pillContainer.innerHTML = `
-<span style="font-size: 35px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
+<span style="font-size: 20px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
 <span>${placeName}</span>
-<button style="font-size: 50px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
+<button style="font-size: 20px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
 <i class="material-icons" style="transform: rotate(0deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
 </button>
 </span>`;
 
                             pillContainer.style.width = "initial";
-                            pillContainer.style.padding = "10px 40px";
+                            pillContainer.style.padding = "10px 10px";
                             pillContainer.style.borderRadius = "100px";
                             pillContainer.setAttribute('data-expanded', 'false');
 
                         } else if (addressParts.length > 0) {
                             pillContainer.innerHTML = `
-<span style="font-size: 35px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center;">
+<span style="font-size: 20px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center;">
 <strong>${placeName}</strong>, ${addressDetails}
-<button style="font-size: 50px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 430px;">
+<button style="font-size: 20px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 300px;">
 <i class="material-icons" style="transform: rotate(180deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
 </button>
 </span>`;
 
-                            pillContainer.style.width = "500px";
-                            pillContainer.style.padding = "30px 30px";
+                            pillContainer.style.width = "400px";
+                            pillContainer.style.padding = "10px 10px";
                             pillContainer.style.borderRadius = "20px";
                             pillContainer.setAttribute('data-expanded', 'true');
                         }
@@ -655,10 +655,10 @@ function displayPlaceSuggestions(suggestions) {
         // Use "history" icon for historical places
         if (historicalPlaces.includes(suggestion)) {
             gpsIcon.textContent = "history";
-            gpsIcon.style.fontSize = "60px"
+            gpsIcon.style.fontSize = "30px"
         } else {
-            gpsIcon.textContent = "north_east";
-            gpsIcon.style.fontSize = "60px"
+            gpsIcon.textContent = "north_east"; //Search results arrow
+            gpsIcon.style.fontSize = "30px"
         }
 
         const suggestionText = document.createElement("span");
@@ -690,8 +690,8 @@ function displayPlaceSuggestions(suggestions) {
 
             // Add the text below the line
             const historicalPlacesText = document.createElement("div");
-            historicalPlacesText.textContent = "Địa điểm đã tìm kiếm trước đây";
-            historicalPlacesText.style.fontSize = "40px";
+            historicalPlacesText.textContent = "Lịch sử tìm kiếm"; //Previously searched locations (Search History)
+            historicalPlacesText.style.fontSize = "20px";
             historicalPlacesText.style.color = "#515151";
             historicalPlacesText.style.marginLeft = "20px";
             historicalPlacesText.style.fontFamily = "Be Vietnam Pro', Arial, sans-serif";
@@ -845,7 +845,7 @@ function displayHistoricalPlaces() {
             const gpsIcon = document.createElement("i");
             gpsIcon.classList.add("material-icons", "gpsIcon");
             gpsIcon.textContent = "history";
-            gpsIcon.style.fontSize = "60px"; //adjust history icon size
+            gpsIcon.style.fontSize = "30px"; //adjust history icon size
 
             const suggestionText = document.createElement("span");
             suggestionText.textContent = place.display_name;
@@ -894,13 +894,13 @@ function displayHistoricalPlaces() {
             }
         }
 
-        // Create the Clear all search history button
+        // Create the Clear all search history button (Clear Search History)
         const clearAllButton = document.createElement("button");
         clearAllButton.id = "clearAllBtn";
         clearAllButton.innerHTML = `
-<div style="display: flex; align-items: center; justify-content: center; width: 840px; margin: 0 auto; padding-bottom: 30px; padding-top: 30px; font-family: 'Be Vietnam Pro', Arial, sans-serif;">
-<i class="material-icons" style="font-size: 40px; margin-right: 20px;">delete</i>
-<span style="font-size: 45px; color: #515151;">Xóa tất cả tìm kiếm</span> 
+<div style="display: flex; align-items: center; justify-content: center; width: 490px; margin: 0 auto; padding-bottom: 30px; padding-top: 30px; font-family: 'Be Vietnam Pro', Arial, sans-serif;">
+<i class="material-icons" style="font-size: 40px; margin-right: 40px;">delete</i>
+<span style="font-size: 25px; color: #515151;">Xóa tất cả tìm kiếm</span> 
 </div>`;
 
 
@@ -912,15 +912,15 @@ function displayHistoricalPlaces() {
         const noResultsText = document.createElement("div");
         noResultsText.style.display = "flex";
         noResultsText.style.alignItems = "center";
-        noResultsText.style.fontSize = "40px";
-        noResultsText.style.marginLeft = "40px";
+        noResultsText.style.fontSize = "20px";
+        noResultsText.style.marginLeft = "20px";
         noResultsText.style.color = "#515151";
 
         const historyIcon = document.createElement("i");
         historyIcon.classList.add("material-icons");
         historyIcon.textContent = "history";
-        historyIcon.style.fontSize = "60px";
-        historyIcon.style.marginRight = "40px"; // Increased separation
+        historyIcon.style.fontSize = "30px";
+        historyIcon.style.marginRight = "10px"; // Increased separation
 
         const text = document.createElement("span");
         text.textContent = "Không có địa điểm nào được tìm kiếm trước đó";
