@@ -1131,7 +1131,7 @@ function selectBasemap(index) {
         }
 
         basemapTitleElement.innerHTML = `
-<img src="${iconURL}" style="width: 60px; height: 60px; padding-right: 10px;">
+<img src="${iconURL}" style="width: 20px; height: 20px; padding-right: 10px;">
 <span class="basemapTitle" style="display: inline-block;">${basemapTitleText}</span>
 `;
 
