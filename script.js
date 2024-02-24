@@ -1570,7 +1570,8 @@ function addAreaInteraction() {
             measurementUnit = "m²";
         }
 
-        measureAreaTooltipElement.innerHTML = `<div style="display: flex; align-items: center;"><i class="material-icons" style="margin-right: 10px;"></i><span>Khu vực:</span><strong style="margin-left: 10px;">${measurement}${measurementUnit}</strong></div>`;
+        measureAreaTooltipElement.innerHTML = `<div style="display: flex; align-items: center;"><i class="material-icons" style="margin-right: 0px;">square_foot</i><span></span><strong style="margin-left: 0px;">${measurement}${measurementUnit}</strong></div>`; //Khu vực:
+
 
 
         // Hide the finish button
@@ -1581,12 +1582,12 @@ function addAreaInteraction() {
 
         // Add a white background to the measurement size label
         measureAreaTooltipElement.style.backgroundColor = "#ffffff";
-        measureAreaTooltipElement.style.padding = "10px 20px";
-        measureAreaTooltipElement.style.borderRadius = "50px";
+        measureAreaTooltipElement.style.padding = "10px 15px";
+        measureAreaTooltipElement.style.borderRadius = "25px";
         measureAreaTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
         measureAreaTooltipElement.style.color = "#515151";
         measureAreaTooltipElement.style.fontFamily = "Segoe UI";
-        measureAreaTooltipElement.style.fontSize = "35px";
+        measureAreaTooltipElement.style.fontSize = "15px";
 
         // Position the measurement tooltip element in the middle of the map
         measureAreaTooltip.setPosition(center);
@@ -1684,7 +1685,7 @@ function createLineTooltip(length, midpoint, start, end) {
         measurementUnit = "m";
     }
 
-    lineTooltipElement.innerHTML = `Chiều dài: ${measurement}${measurementUnit}`;
+    lineTooltipElement.innerHTML = `${measurement}${measurementUnit}`; //Chiều dài: 
 
     // Add a white background to the line tooltip
     lineTooltipElement.style.backgroundColor = "#ffffff";
@@ -1695,7 +1696,7 @@ function createLineTooltip(length, midpoint, start, end) {
     // Change the font color to Segoe UI (#515151) and set the font size to 12px
     lineTooltipElement.style.color = "#515151";
     lineTooltipElement.style.fontFamily = "Segoe UI";
-    lineTooltipElement.style.fontSize = "28px";
+    lineTooltipElement.style.fontSize = "14px";
 
     const lineTooltip = new ol.Overlay({
         element: lineTooltipElement,
@@ -1986,18 +1987,19 @@ function addLengthInteraction() {
             measurementUnit = "km";
         }
 
-        measureLengthTooltipElement.innerHTML = `Độ dài: <strong>${measurement}</strong>${measurementUnit}`;
+        measureLengthTooltipElement.innerHTML = `<div style="display: flex; align-items: center;"><i class="material-icons" style="margin-right: 0px;">straighten</i><strong style="margin-left: 3px;">${measurement}${measurementUnit}</strong></div>`;
+        //Độ dài: 
 
         // Add a white background to the measurement size label
         measureLengthTooltipElement.style.backgroundColor = "#ffffff";
-        measureLengthTooltipElement.style.padding = "10px 30px";
+        measureLengthTooltipElement.style.padding = "10px 15px";
         measureLengthTooltipElement.style.borderRadius = "40px";
         measureLengthTooltipElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.4)";
 
         // Change the font color to Segoe UI (#515151) and set the font size to 35px
         measureLengthTooltipElement.style.color = "#515151";
         measureLengthTooltipElement.style.fontFamily = "Segoe UI";
-        measureLengthTooltipElement.style.fontSize = "35px";
+        measureLengthTooltipElement.style.fontSize = "15px";
 
         // Position the measurement tooltip element in the middle of the map
         measureLengthTooltip.setPosition(geom.getLastCoordinate());
