@@ -40,8 +40,8 @@
     <!--Animation files-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.10/lottie.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.css" rel="stylesheet">
+    <!--<script src="https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.css" rel="stylesheet">!-->
 
 
     <!-- jQuery -->
@@ -338,21 +338,21 @@
         <!-- Retrieved Grid Information Pill on browser refresh-->
         <div id="gridInfoPill" class="grid-info-pill hidden">
             <div id="pillTreeCount" class="pill-section">
-                <img src="https://i.ibb.co/hDYvzYs/icons8-tree-64.png" alt="tree-icon">
+                <img src="https://i.ibb.co/hDYvzYs/icons8-tree-64.png" alt="tree-icon" width="30" height="30">
                 <span id="intersectionCount" class="pill-value">...</span>
             </div>
             <div id="pillYCount" class="pill-section">
                 <span class="material-icons"
-                    style="font-size: 50px; transform: rotate(90deg); color: #515151;">view_headline</span>
+                    style="font-size: 25px; transform: rotate(90deg); color: #515151;">view_headline</span>
                 <span id="gridYCount" class="pill-value">...</span>
             </div>
             <div id="pillXCount" class="pill-section">
-                <span class="material-icons" style="font-size: 50px; color: #515151;">view_headline</span>
+                <span class="material-icons" style="font-size: 25px; color: #515151;">view_headline</span>
                 <span id="gridXCount" class="pill-value">...</span>
             </div>
             <div id="pillZCount" class="pill-section hidden">
                 <span class="material-icons"
-                    style="font-size: 50px; transform: rotate(45deg); color: #515151;">view_headline</span>
+                    style="font-size: 25px; transform: rotate(45deg); color: #515151;">view_headline</span>
                 <span id="gridZCount" class="pill-value">...</span>
             </div>
         </div>
@@ -367,12 +367,12 @@
             </div>
 
             <div class="countContainer" id="squareGridYCountContainer">
-                <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
+                <span class="material-icons" style="font-size: 25px; transform: rotate(90deg);">view_headline</span>
                 <p id="squareGridYCount">...</p>
             </div>
 
             <div class="countContainer" id="squareGridXCountContainer">
-                <span class="material-icons" style="font-size: 50px;">view_headline</span>
+                <span class="material-icons" style="font-size: 25px;">view_headline</span>
                 <p id="squareGridXCount">...</p>
 
             </div>
@@ -383,12 +383,12 @@
             </div>
 
             <div class="countContainer" id="rectangularGridYCountContainer" style="display: none;">
-                <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
+                <span class="material-icons" style="font-size: 25px; transform: rotate(90deg);">view_headline</span>
                 <p id="rectangularGridYCount">...</p>
             </div>
 
             <div class="countContainer" id="rectangularGridXCountContainer" style="display: none;">
-                <span class="material-icons" style="font-size: 50px;">view_headline</span>
+                <span class="material-icons" style="font-size: 25px;">view_headline</span>
                 <p id="rectangularGridXCount">...</p>
             </div>
 
@@ -398,17 +398,17 @@
             </div>
 
             <div class="countContainer" id="triangularGridYCountContainer" style="display: none;">
-                <span class="material-icons" style="font-size: 50px; transform: rotate(90deg);">view_headline</span>
+                <span class="material-icons" style="font-size: 25px; transform: rotate(90deg);">view_headline</span>
                 <p id="triangularGridYCount">...</p>
             </div>
 
             <div class="countContainer" id="triangularGridXCountContainer" style="display: none;">
-                <span class="material-icons" style="font-size: 50px;">view_headline</span>
+                <span class="material-icons" style="font-size: 25px;">view_headline</span>
                 <p id="triangularGridXCount">...</p>
             </div>
 
             <div class="countContainer" id="triangularGridZCountContainer" style="display: none;">
-                <span class="material-icons" style="font-size: 50px; transform: rotate(45deg);">view_headline</span>
+                <span class="material-icons" style="font-size: 25px; transform: rotate(45deg);">view_headline</span>
                 <p id="triangularGridZCount">...</p>
             </div>
 
@@ -512,7 +512,7 @@
 
     <div id="addFarmSuccess" class="addFloating-container">
         <div id="farmsuccessAnimationCheck" class="animationCheck"></div>
-        <div class="addMessage">Đã thêm ranh giới trang trại</div> <!--Farm boundary added-->
+        <div class="addMessage">Đã thêm ranh giới trang trại</div> <!-- Da tehm ranh gioi trang trai - Farm boundary added-->
     </div>
 
 
@@ -1367,10 +1367,10 @@
     <!-- Delete Confirm Dialog Box -->
     <div id="dialog" class="dialog hidden">
         <div class="dialog-content">
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <div id="deleteAnimationContainer" style="width: 50px; height: 50px;"></div>
-                <p style="margin: 10;">Bạn có muốn xóa bản vẽ?</p>
-            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: -60px;">
+                <div id="deleteAnimationContainer" style="width: 75px; height: 75x;"></div>
+                <p style="margin: 0;">Bạn có muốn xóa bản vẽ?</p>
+            </div>            
             <div style="display: flex; justify-content: center;">
                 <button id="deleteYes" class="dialog-button"
                     style="background-color: #d40133; color: white; display: flex; align-items: center;">
