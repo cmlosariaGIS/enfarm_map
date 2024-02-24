@@ -1129,12 +1129,12 @@ body {
 
     position: fixed;
     top: 480px;
-    left: 25px;
+    left: 36px;
     background-color: #ff4d4d;
     border: none;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    width: 30px;
+    height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1144,7 +1144,7 @@ body {
 }
 
 #clearAllDrawingBtn i.material-icons {
-    font-size: 40px;
+    font-size: 18px;
     color: #ffffff;
 }
 
