@@ -3612,25 +3612,25 @@ async function startSketchFarm() {
 
         const tooltipElement = document.createElement('div');
         tooltipElement.style.cssText = `
-position: absolute;
-background-color: #ffffff;
-border: 1px solid #ccc;
-border-radius: 1000px;
-padding: 20px 30px;
-font-family: 'Be Vietnam Pro', Arial, sans-serif;
-font-size: 30px;
-font-weight: bold;
-color: #000000;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-display: flex;
-align-items: center;
-justify-content: center;
-min-width: 120px;
-height: 30px;
-`;
+        position: absolute;
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        border-radius: 1000px;
+        padding: 10px 10px;
+        font-family: 'Be Vietnam Pro', Arial, sans-serif;
+        font-size: 15px;
+        font-weight: bold;
+        color: #000000;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 90px;
+        height: 20px;
+        `;
 
         const areaInHectares = area > 10000 ? (area / 10000).toFixed(2) + ' ha' : area.toFixed(2) + ' m²';
-        tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="fa-solid fa-seedling" style="font-size: 40px; margin-right: 10px;"></i>${areaInHectares}</span>`;
+        tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="fa-solid fa-seedling" style="font-size: 20px; margin-right: 10px;"></i>${areaInHectares}</span>`;
 
         tooltipOverlay = new ol.Overlay({
             element: tooltipElement,
@@ -3980,27 +3980,27 @@ function getStoredPolygon() {
 
         const tooltipElement = document.createElement('div');
         tooltipElement.style.cssText = `
-position: absolute;
-background-color: #ffffff;
-border: 1px solid #ccc;
-border-radius: 1000px;
-padding: 20px 30px;
-font-family: 'Be Vietnam Pro', Arial, sans-serif;
-font-size: 30px;
-font-weight: bold;
-color: #000000;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-display: flex;
-align-items: center;
-justify-content: center;
-min-width: 120px;
-height: 30px;
-`;
+        position: absolute;
+        background-color: #ffffff;
+        border: 1px solid #ccc;
+        border-radius: 1000px;
+        padding: 10px 10px;
+        font-family: 'Be Vietnam Pro', Arial, sans-serif;
+        font-size: 15px;
+        font-weight: bold;
+        color: #000000;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 90px;
+        height: 20px;
+        `;
 
         const area = Number(storedPolygon.area.squareMeters); // Convert area to a number
         const areaDisplay = area >= 10000 ? (area / 10000).toFixed(2) + 'ha' : area.toFixed(2) + ' m²';
 
-        tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="fas fa-seedling" style="font-size: 40px; margin-right: 10px;"></i>${areaDisplay}</span>`;
+        tooltipElement.innerHTML = `<span style="white-space: nowrap; display: flex; align-items: center; color: #515151;"><i class="fas fa-seedling" style="font-size: 20px; margin-right: 10px;"></i>${areaDisplay}</span>`;
 
         const tooltipOverlay = new ol.Overlay({
             element: tooltipElement,
@@ -5739,12 +5739,12 @@ window.addEventListener("message", message => {
 //////////// <----- START FUNCTION TO CHANGE MAP PERSPECTIVE -----> \\\\\\\\\\
 
 // Hide the slider on map load
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("angle").style.opacity = "0";
 });
 
 // Show the slider when perspectiveBtn is clicked
-document.getElementById("perspectiveBtn").addEventListener("click", function() {
+document.getElementById("perspectiveBtn").addEventListener("click", function () {
     var slider = document.getElementById("angle");
     var button = document.getElementById("perspectiveBtn");
     var icon = document.querySelector("#perspectiveBtn i.material-icons");
