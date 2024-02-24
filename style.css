@@ -1014,8 +1014,8 @@ body {
     display: none;
 }
 */
-
-.dialog {
+/***** DELETE CONFIRM DIALOG BOX *****/
+.dialog {     /*background blur*/
     position: fixed;
     top: 0;
     left: 0;
@@ -1026,17 +1026,18 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 10;
+    backdrop-filter: blur(5px);
 }
 
 .dialog-content {
     background-color: white;
-    padding: 100px;
+    padding: 90px;
     border-radius: 30px;
     text-align: center;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    width: 550px;
-    height: 330px;
-    font-size: 40px;
+    width: 160px;
+    height: 80px;
+    font-size: 20px;
     color: #515151;
     max-width: 100%;
     box-shadow: #515151;
@@ -1044,9 +1045,9 @@ body {
 
 /* Yes and Cancel Button*/
 .dialog-button {
-    font-size: 40px;
+    font-size: 20px;
     margin: 10px;
-    padding: 20px 70px;
+    padding: 15px 30px;
     border-radius: 20px;
     border: none;
     color: white;
@@ -1058,9 +1059,6 @@ body {
 .hidden {
     display: none;
 }
-
-
-
 
 /****** START WINDY WEATHER STYLES *******/
 :root {
@@ -1239,8 +1237,8 @@ body {
 /* Styles for the range input */
 .perspectiveSlider {
     position: fixed;
-    top: 400px;
-    left: 100px;
+    top: 395px;
+    left: 95px;
     width: 75px;
     height: 20px;
     background: #4c3a3a;
@@ -1283,7 +1281,7 @@ body {
     transform: translate(-50%, -50%);
     width: fit-content;
     background-color: white;
-    border-radius: 50px;
+    border-radius: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     padding: 40px;
     z-index: 10;
@@ -1306,15 +1304,16 @@ body {
 
 /* Animation container styles */
 .animationCheck {
-    width: 200px;
-    height: 200px;
+    width: 75px;
+    height: 75px;
     margin: 0 auto;
 }
+
 
 /* Message styles */
 .addMessage {
     text-align: center;
-    font-size: 40px;
+    font-size: 20px;
     color: #515151;
     margin-top: 10px;
 }
@@ -1564,13 +1563,13 @@ body {
 
 #gridPatternInformation {
     position: fixed;
-    top: 81%;
+    top: 80%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: rgba(255, 255, 255, 1);
     border-radius: 40px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-    padding: 10px;
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.2);
+    padding: 6px;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
     font-size: 15px;
     font-weight: bold;
@@ -1585,7 +1584,7 @@ body {
     animation-delay: 2.5s, 2.5s;
     white-space: nowrap;
     overflow: hidden;
-    min-width: 300px;
+    /*min-width: 100px;*/
 }
 
 /* Define the slide-up animation */
@@ -1605,14 +1604,14 @@ body {
 .countContainer {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin: 10px;
+    gap: 5px;
+    margin: 3px;
 }
 
 .countContainer img,
 .countContainer .material-icons {
-    height: 50px;
-    width: 50px;
+    height: 30px;
+    width: 30px;
     vertical-align: middle;
     color: #515151;
 }
@@ -1633,17 +1632,17 @@ body {
 /*START Style Retreieved Pill on map restart*/
 .grid-info-pill {
     position: absolute;
-    top: 75%;
+    top: 80%;
     left: 50%;
     transform: translateX(-50%);
-    font-family: 'Be Vietnam Pro', Arial, sans-serif;
-    font-size: 30px;
+    /*font-family: 'Be Vietnam Pro', Arial, sans-serif;*/
+    /*font-size: 30px;*/
     display: flex;
     background-color: #fff;
-    border-radius: 50px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    align-items: center;
+    border-radius: 40px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /*overflow: hidden;*/
+    /*align-items: center;*/
 }
 
 .grid-info-pill .pill-section {
@@ -1652,16 +1651,16 @@ body {
     padding: 10px 10px;
 }
 
-.grid-info-pill .pill-section:first-child {
+/*.grid-info-pill .pill-section:first-child {
     border-left: none;
-}
+}*/
 
 .pill-value {
-    margin-left: 10px;
+    margin-left: 3px; /*adjusts gaps between count and icons*/
     font-weight: bold;
     color: #515151;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
-    font-size: 30px;
+    font-size: 15px;
 }
 
 .hidden {
