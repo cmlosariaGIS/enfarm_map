@@ -669,8 +669,8 @@ function displayPlaceSuggestions(suggestions) {
     allSuggestions.forEach((suggestion, index) => {
         const suggestionItem = document.createElement("div");
         suggestionItem.classList.add("suggestionItem");
-        suggestionItem.style.paddingTop = "20px";
-        suggestionItem.style.paddingBottom = "20px";
+        suggestionItem.style.paddingTop = "10px"; /*search suggestion  item spacing*/
+        suggestionItem.style.paddingBottom = "10px"; /*search suggestion  item spacing*/
 
         const gpsIcon = document.createElement("i");
         gpsIcon.classList.add("material-icons", "gpsIcon");
@@ -698,11 +698,11 @@ function displayPlaceSuggestions(suggestions) {
         suggestionItem.appendChild(suggestionText);
         suggestionsContainer.appendChild(suggestionItem);
 
-        // Add a horizontal line after displaying suggestions
+        // Add a horizontal line after displaying suggestions (divider)
         if (index === suggestions.length - 1) {
             const separatorContainer = document.createElement("div");
-            separatorContainer.style.paddingTop = "50px";
-            separatorContainer.style.paddingBottom = "50px";
+            separatorContainer.style.paddingTop = "10px";
+            separatorContainer.style.paddingBottom = "10px";
 
             const separatorLine = document.createElement("hr");
             separatorLine.style.width = "50%";
@@ -714,7 +714,7 @@ function displayPlaceSuggestions(suggestions) {
             // Add the text below the line
             const historicalPlacesText = document.createElement("div");
             historicalPlacesText.textContent = "Lịch sử tìm kiếm"; //Previously searched locations (Search History)
-            historicalPlacesText.style.fontSize = "20px";
+            historicalPlacesText.style.fontSize = "16px";
             historicalPlacesText.style.color = "#515151";
             historicalPlacesText.style.marginLeft = "20px";
             historicalPlacesText.style.fontFamily = "Be Vietnam Pro', Arial, sans-serif";
@@ -862,8 +862,8 @@ function displayHistoricalPlaces() {
         recentPlaces.forEach((place) => {
             const suggestionItem = document.createElement("div");
             suggestionItem.classList.add("suggestionItem");
-            suggestionItem.style.paddingTop = "20px";
-            suggestionItem.style.paddingBottom = "20px";
+            suggestionItem.style.paddingTop = "15px";
+            suggestionItem.style.paddingBottom = "0px";
 
             const gpsIcon = document.createElement("i");
             gpsIcon.classList.add("material-icons", "gpsIcon");
@@ -921,9 +921,9 @@ function displayHistoricalPlaces() {
         const clearAllButton = document.createElement("button");
         clearAllButton.id = "clearAllBtn";
         clearAllButton.innerHTML = `
-<div style="display: flex; align-items: center; justify-content: center; width: 300px; margin: 0 auto; padding-bottom: 20px; padding-top: 20px; font-family: 'Be Vietnam Pro', Arial, sans-serif;">
-<i class="material-icons" style="font-size: 30px; margin-right: 10px; color:  #ff4d4d;">delete</i>
-<span style="font-size: 20px; color: #515151;">Xóa tất cả tìm kiếm</span> 
+<div style="display: flex; align-items: center; justify-content: center; width: 320px; margin: 0 auto; padding-bottom: 20px; padding-top: 20px; font-family: 'Be Vietnam Pro', Arial, sans-serif;">
+<i class="material-icons" style="font-size: 22px; margin-right: 10px; color:  #ff4d4d;">delete</i>
+<span style="font-size: 16px; color: #515151;">Xóa tất cả tìm kiếm</span> 
 </div>`;
 
 
@@ -935,14 +935,14 @@ function displayHistoricalPlaces() {
         const noResultsText = document.createElement("div");
         noResultsText.style.display = "flex";
         noResultsText.style.alignItems = "center";
-        noResultsText.style.fontSize = "20px";
+        noResultsText.style.fontSize = "18px";
         noResultsText.style.marginLeft = "20px";
         noResultsText.style.color = "#515151";
 
         const historyIcon = document.createElement("i");
         historyIcon.classList.add("material-icons");
         historyIcon.textContent = "history";
-        historyIcon.style.fontSize = "30px";
+        historyIcon.style.fontSize = "28px";
         historyIcon.style.marginRight = "10px"; // Increased separation
 
         const text = document.createElement("span");
