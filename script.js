@@ -422,16 +422,16 @@ function createMarker(coordinates) {
 
     const markerStyle = new ol.style.Style({
         image: new ol.style.Circle({
-            radius: 22,
+            radius: 8,
             fill: new ol.style.Fill({
                 color: "#ff6666",
             }),
             stroke: new ol.style.Stroke({
                 color: "rgba(255, 255, 255, 0.8)",
-                width: 12,
+                width: 5,
             }),
             shadow: new ol.style.Circle({
-                radius: 18,
+                radius: 9,
                 fill: new ol.style.Fill({
                     color: "rgba(0, 0, 0, 0.5)", // Set the shadow color and transparency
                 }),
@@ -480,7 +480,7 @@ function createMarker(coordinates) {
             // Create the place name element
             const placeNameElement = document.createElement("span");
             placeNameElement.textContent = placeName;
-            placeNameElement.style.fontSize = "20px";
+            placeNameElement.style.fontSize = "16px";
             placeNameElement.style.fontFamily = "Be Vietnam Pro', Arial, sans-serif";
             placeNameElement.style.color = "#515151";
             placeNameElement.style.textShadow = "2px 2px 4px rgba(255, 255, 255, 0.5)";
@@ -529,9 +529,9 @@ function createMarker(coordinates) {
 
                         if (pillContainer.getAttribute('data-expanded') === 'true') {
                             pillContainer.innerHTML = `
-<span style="font-size: 20px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
+<span style="font-size: 16px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
 <span>${placeName}</span>
-<button style="font-size: 20px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 10px;">
+<button style="font-size: 20px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 0px;">
 <i class="material-icons" style="transform: rotate(0deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
 </button>
 </span>`;
@@ -543,14 +543,14 @@ function createMarker(coordinates) {
 
                         } else if (addressParts.length > 0) {
                             pillContainer.innerHTML = `
-<span style="font-size: 20px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center;">
+<span style="font-size: 16px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center;">
 <strong>${placeName}</strong>, ${addressDetails}
-<button style="font-size: 20px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 300px;">
+<button style="font-size: 20px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 180px;">
 <i class="material-icons" style="transform: rotate(180deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
 </button>
 </span>`;
 
-                            pillContainer.style.width = "400px";
+                            pillContainer.style.width = "220px";
                             pillContainer.style.padding = "10px 10px";
                             pillContainer.style.borderRadius = "20px";
                             pillContainer.setAttribute('data-expanded', 'true');
@@ -1028,7 +1028,9 @@ const streetLayer = new ol.layer.Tile({
 /*MapTiler Terrain*/
 const streetLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
+        //url: "https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}@2x.png?key=ygYhKJ5CVp94V87ZZ49x",
         url: "https://api.maptiler.com/maps/topo-v2/256/{z}/{x}/{y}@2x.png?key=ygYhKJ5CVp94V87ZZ49x",
+        //url: "https://api.maptiler.com/maps/outdoor-v2/256/{z}/{x}/{y}@2x.png?key=ygYhKJ5CVp94V87ZZ49x",
         attributions: '© <a href="https://www.maptiler.com">MapTiler</a> contributors',
         maxZoom: 19,
     }),
