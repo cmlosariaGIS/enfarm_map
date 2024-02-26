@@ -1000,9 +1000,9 @@ function cycleBasemap() {
 // Basemap Selection
 const mapElement = document.getElementById("map");
 
-// Layers
+// Basemap Layers
 
-
+/*MapBox Imagery Basemap*/
 const satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw',
@@ -1014,23 +1014,38 @@ const satelliteLayer = new ol.layer.Tile({
     visible: false // set visibility to false initially
 });
 
-/*const streetLayer = new ol.layer.Tile({
+/*OSM Default Basemap
+const streetLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         attributions: '© <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors',
         maxZoom: 19,
     }),
-    visible: true // set visibility to true initially for default basemap
+    visible: false // set visibility to true initially for default basemap
 });*/
 
+
+/*MapTiler Terrain*/
 const streetLayer = new ol.layer.Tile({
+    source: new ol.source.XYZ({
+        url: "https://api.maptiler.com/maps/topo-v2/{z}/{x}/{y}.png?key=ygYhKJ5CVp94V87ZZ49x",
+        attributions: '© <a href="https://www.maptiler.com">MapTiler</a> contributors',
+        maxZoom: 19,
+    }),
+    visible: true // set visibility to true initially for the new basemap
+});
+
+
+/*MapTiler Street
+/*const streetLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=fbV6AyWrR3xmdPjUVtzn",
         attributions: '© <a href="https://www.maptiler.com/">MapTiler</a> | © <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors',
         maxZoom: 19,
     }),
     visible: true // set visibility to true initially for default basemap
-});
+});*/
+
 
 // Add a new layer for the GEBCO WMS
 const gebcoLayer = new ol.layer.Tile({
@@ -1082,6 +1097,7 @@ const map = new ol.PerspectiveMap({
     }),
     controls: [],
 });
+
 
 
 /*/ The map
