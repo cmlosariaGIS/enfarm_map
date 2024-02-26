@@ -169,21 +169,21 @@ showMapButton.addEventListener('click', function () {
     if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
         if (!isMapLoaded) {
             mapContainer.style.display = 'block';
-            
+
             const buttonSpan = document.createElement("span");
             buttonSpan.classList.add("material-icons");
             buttonSpan.innerHTML = "cancel";
-            
+
             // Remove old text from buttonText
             buttonText.innerText = '';
             // Add new span to buttonText
             buttonText.append(buttonSpan);
-            
+
             buttonText.style.margin = 'auto';
             iconElement.style.display = 'none';
             showMapButton.style.width = '55px';
             showMapButton.style.padding = '10px';
-    
+
             const initialLatitude = 16.257222;
             const initialLongitude = 105.512778;
             const initialZoomLevel = 5;
@@ -252,12 +252,12 @@ showMapButton.addEventListener('click', function () {
             buttonText.innerText = '';
             // Add new span to buttonText
             buttonText.append(buttonSpan);
-            
+
             buttonText.style.margin = 'auto';
             iconElement.style.display = 'none';
             showMapButton.style.width = '55px';
             showMapButton.style.padding = '10px';
-            
+
         }
     } else {
         mapContainer.style.display = 'none';
@@ -461,7 +461,7 @@ function createMarker(coordinates) {
             const label = new ol.Overlay({
                 position: coordinates,
                 element: document.createElement("div"),
-                offset: [0, -45],
+                offset: [0, -20],
                 positioning: "bottom-center",
             });
 
@@ -493,6 +493,10 @@ function createMarker(coordinates) {
             chevronIcon.style.fontSize = "20px";
             chevronIcon.style.color = "#515151";
             chevronIcon.style.marginLeft = "10px";
+
+            // Add a rotation transform
+            chevronIcon.style.transform = "rotate(180deg)";
+
 
             // Add hover effect to the chevron icon
             chevronIcon.style.cursor = "pointer";
@@ -532,7 +536,7 @@ function createMarker(coordinates) {
 <span style="font-size: 16px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center; display: flex; align-items: center;">
 <span>${placeName}</span>
 <button style="font-size: 20px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 0px;">
-<i class="material-icons" style="transform: rotate(0deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
+<i class="material-icons" style="transform: rotate(180deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
 </button>
 </span>`;
 
@@ -546,7 +550,7 @@ function createMarker(coordinates) {
 <span style="font-size: 16px; font-family: 'Be Vietnam Pro', Arial, sans-serif; color: #515151; text-align: center;">
 <strong>${placeName}</strong>, ${addressDetails}
 <button style="font-size: 20px; color: inherit; background-color: transparent; border: none; cursor: pointer; display: flex; align-items: center; margin-left: 180px;">
-<i class="material-icons" style="transform: rotate(180deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
+<i class="material-icons" style="transform: rotate(0deg); font-size: inherit; transition: transform 0.3s ease-in-out;">expand_circle_down</i>
 </button>
 </span>`;
 
@@ -1005,14 +1009,16 @@ const mapElement = document.getElementById("map");
 /*MapBox Imagery Basemap*/
 const satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw',
+        url: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw' + 'https://api.maptiler.com/maps/topo-v2/256/{z}/{x}/{y}@2x.png?key=ygYhKJ5CVp94V87ZZ49x',
         tileSize: 512,
         maxZoom: 22,
         attribution: '© <a href="https://www.mapbox.com">Mapbox</a>',
         crossOrigin: 'anonymous'
     }),
-    visible: false // set visibility to false initially
+    visible: false, // set visibility to false initially
+    opacity: 0.8 // set opacity to 0.5 for 50% transparency
 });
+
 
 /*OSM Default Basemap
 const streetLayer = new ol.layer.Tile({
@@ -5790,10 +5796,10 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
     const angleSlider = document.getElementById("angle");
     const btnElement = document.getElementById("perspectiveBtn");
     const btnIcon = document.querySelector("#perspectiveBtn i.material-icons");
-    
+
     if (!isSliderVisible) {
         angleSlider.style.display = ''; // Reset display property to default value
-        
+
         angleSlider.style.transition = "opacity 0.5s ease-in-out";
         btnElement.classList.add('active');
         btnIcon.classList.add('active');
