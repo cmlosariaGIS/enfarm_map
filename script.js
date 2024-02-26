@@ -1028,7 +1028,7 @@ const streetLayer = new ol.layer.Tile({
 /*MapTiler Terrain*/
 const streetLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: "https://api.maptiler.com/maps/topo-v2/{z}/{x}/{y}.png?key=ygYhKJ5CVp94V87ZZ49x",
+        url: "https://api.maptiler.com/maps/topo-v2/256/{z}/{x}/{y}@2x.png?key=ygYhKJ5CVp94V87ZZ49x",
         attributions: '© <a href="https://www.maptiler.com">MapTiler</a> contributors',
         maxZoom: 19,
     }),
