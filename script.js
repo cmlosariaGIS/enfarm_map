@@ -1004,21 +1004,18 @@ function cycleBasemap() {
 // Basemap Selection
 const mapElement = document.getElementById("map");
 
-// Basemap Layers
-
-/*MapBox Imagery Basemap*/
-const satelliteLayer = new ol.layer.Tile({
+  // Basemap Layers
+  /*MapBox Imagery Basemap*/
+  const satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
-        url: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw' + 'https://api.maptiler.com/maps/topo-v2/256/{z}/{x}/{y}@2x.png?key=ygYhKJ5CVp94V87ZZ49x',
+        url: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw',
         tileSize: 512,
         maxZoom: 22,
         attribution: '© <a href="https://www.mapbox.com">Mapbox</a>',
         crossOrigin: 'anonymous'
     }),
-    visible: false, // set visibility to false initially
-    opacity: 0.8 // set opacity to 0.5 for 50% transparency
+    visible: false // set visibility to false initially
 });
-
 
 /*OSM Default Basemap
 const streetLayer = new ol.layer.Tile({
