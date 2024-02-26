@@ -133,11 +133,11 @@ function addTourStepWithDone(id, element, text, position = 'left') {
 }
 
 function getText(text) {
-    return `<span style="display: flex; align-items: center; font-size: 40px;"><i class="material-icons" style="font-size: 60px; margin-right: 20px;">info</i>${text}</span>`;
+    return `<span style="display: flex; align-items: center; font-size: 20px;"><i class="material-icons" style="font-size: 30px; margin-right: 15px;">info</i>${text}</span>`;
 }
 
 function getButtonText(text) {
-    return `<span style="font-size: 40px;">${text}</span>`;
+    return `<span style="font-size: 20px;">${text}</span>`;
 }
 
 function resetProductTour() {
@@ -169,15 +169,24 @@ showMapButton.addEventListener('click', function () {
     if (mapContainer.style.display === 'none' || mapContainer.style.display === '') {
         if (!isMapLoaded) {
             mapContainer.style.display = 'block';
-            buttonText.textContent = 'x';
+            
+            const buttonSpan = document.createElement("span");
+            buttonSpan.classList.add("material-icons");
+            buttonSpan.innerHTML = "cancel";
+            
+            // Remove old text from buttonText
+            buttonText.innerText = '';
+            // Add new span to buttonText
+            buttonText.append(buttonSpan);
+            
             buttonText.style.margin = 'auto';
             iconElement.style.display = 'none';
-            showMapButton.style.width = '30px';
+            showMapButton.style.width = '55px';
             showMapButton.style.padding = '10px';
-
+    
             const initialLatitude = 16.257222;
             const initialLongitude = 105.512778;
-            const initialZoomLevel = 6;
+            const initialZoomLevel = 5;
 
             iframe = document.createElement('iframe');
             iframe.width = '100%';
@@ -190,12 +199,12 @@ showMapButton.addEventListener('click', function () {
 
             messageElement = document.createElement('div');
             messageElement.textContent = 'Định vị người dùng...'; //Locating user...
-            messageElement.style.fontWeight = 'bold';
+            /*messageElement.style.fontWeight = 'bold';*/
             messageElement.style.position = 'absolute';
             messageElement.style.top = '50%';
             messageElement.style.left = '50%';
             messageElement.style.transform = 'translate(-50%, -50%)';
-            messageElement.style.fontSize = '30px';
+            messageElement.style.fontSize = '15px';
             messageElement.style.fontFamily = "'Be Vietnam Pro', Arial, sans-serif";
             messageElement.style.padding = '10px 20px';
             messageElement.style.backgroundColor = '#fff';
@@ -234,11 +243,21 @@ showMapButton.addEventListener('click', function () {
             isMapLoaded = true;
         } else {
             mapContainer.style.display = 'block';
-            buttonText.textContent = 'x';
+
+            const buttonSpan = document.createElement("span");
+            buttonSpan.classList.add("material-icons");
+            buttonSpan.innerHTML = "cancel";
+
+            // Remove old text from buttonText
+            buttonText.innerText = '';
+            // Add new span to buttonText
+            buttonText.append(buttonSpan);
+            
             buttonText.style.margin = 'auto';
             iconElement.style.display = 'none';
-            showMapButton.style.width = '60px';
+            showMapButton.style.width = '55px';
             showMapButton.style.padding = '10px';
+            
         }
     } else {
         mapContainer.style.display = 'none';
@@ -2491,7 +2510,7 @@ async function startSketchFarm() {
             return new ol.style.Style({
                 image: new ol.style.Icon({
                     src: 'https://i.ibb.co/hDYvzYs/icons8-tree-64.png',
-                    scale: 1,
+                    scale: 0.5,
                 }),
                 stroke: new ol.style.Stroke({
                     color: 'white',
@@ -3548,13 +3567,13 @@ async function startSketchFarm() {
         pointFeature.setStyle(
             new ol.style.Style({
                 image: new ol.style.Circle({
-                    radius: 16,
+                    radius: 8,
                     fill: new ol.style.Fill({
                         color: '#386c34',
                     }),
                     stroke: new ol.style.Stroke({
                         color: 'white',
-                        width: 8,
+                        width: 4,
                     }),
                 }),
             })
@@ -3636,7 +3655,7 @@ async function startSketchFarm() {
 
         tooltipOverlay = new ol.Overlay({
             element: tooltipElement,
-            offset: [0, -100],
+            offset: [0, -65],
             positioning: 'bottom-center',
         });
 
@@ -3949,18 +3968,18 @@ function getStoredPolygon() {
                     }),
                     stroke: new ol.style.Stroke({
                         color: '#386c34',
-                        width: 10,
+                        width: 5,
                     }),
                 }),
                 new ol.style.Style({
                     image: new ol.style.Circle({
-                        radius: 16,
+                        radius: 8,
                         fill: new ol.style.Fill({
                             color: '#386c34',
                         }),
                         stroke: new ol.style.Stroke({
                             color: 'white',
-                            width: 8,
+                            width: 4,
                         }),
                     }),
                     geometry: farmCenterFeature.getGeometry(),
@@ -4006,7 +4025,7 @@ function getStoredPolygon() {
 
         const tooltipOverlay = new ol.Overlay({
             element: tooltipElement,
-            offset: [0, -100],
+            offset: [0, -65], //farm size label offset
             positioning: 'bottom-center',
         });
 
@@ -4194,7 +4213,7 @@ function retrieveSquareGridIntersectionPoints() {
                     return new ol.style.Style({
                         image: new ol.style.Icon({
                             src: 'https://i.ibb.co/hDYvzYs/icons8-tree-64.png',
-                            scale: .75,
+                            scale: .5,
                         }),
                         stroke: new ol.style.Stroke({
                             color: 'white',
@@ -4242,7 +4261,7 @@ function retrieveRectangularGridIntersectionPoints() {
                     return new ol.style.Style({
                         image: new ol.style.Icon({
                             src: 'https://i.ibb.co/hDYvzYs/icons8-tree-64.png',
-                            scale: .75,
+                            scale: .5,
                         }),
                         stroke: new ol.style.Stroke({
                             color: 'white',
@@ -4288,7 +4307,7 @@ function retrieveTriangularGridIntersectionPoints() {
                     return new ol.style.Style({
                         image: new ol.style.Icon({
                             src: 'https://i.ibb.co/hDYvzYs/icons8-tree-64.png',
-                            scale: .75,
+                            scale: .5,
                         }),
                         stroke: new ol.style.Stroke({
                             color: 'white',
@@ -5742,23 +5761,31 @@ window.addEventListener("message", message => {
 
 // Hide the slider on map load
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("angle").style.opacity = "0";
+    const angleSlider = document.getElementById("angle");
+    angleSlider.style.display = 'none'; // Set to none instead of opacity=0 for better control
 });
 
 // Show the slider when perspectiveBtn is clicked
+let isSliderVisible = false; // Track slider visibility state
+
 document.getElementById("perspectiveBtn").addEventListener("click", function () {
-    var slider = document.getElementById("angle");
-    var button = document.getElementById("perspectiveBtn");
-    var icon = document.querySelector("#perspectiveBtn i.material-icons");
-    if (slider.style.opacity === "0") {
-        slider.style.opacity = "1";
-        slider.style.transition = "opacity 0.5s ease-in-out";
-        button.classList.add("active");
-        icon.classList.add("active");
+    const angleSlider = document.getElementById("angle");
+    const btnElement = document.getElementById("perspectiveBtn");
+    const btnIcon = document.querySelector("#perspectiveBtn i.material-icons");
+    
+    if (!isSliderVisible) {
+        angleSlider.style.display = ''; // Reset display property to default value
+        
+        angleSlider.style.transition = "opacity 0.5s ease-in-out";
+        btnElement.classList.add('active');
+        btnIcon.classList.add('active');
+        isSliderVisible = true;
     } else {
-        slider.style.opacity = "0";
-        slider.style.transition = "opacity 0.5s ease-in-out";
-        button.classList.remove("active");
-        icon.classList.remove("active");
+        angleSlider.style.display = 'none';
+        btnElement.classList.remove('active');
+        btnIcon.classList.remove('active');
+        isSliderVisible = false;
     }
 });
+
+
