@@ -47,6 +47,9 @@
     <!-- jQuery -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 
+    <!--MapTiler Basemap-->
+    <script src="https://unpkg.com/ol-mapbox-style@12.1.1/dist/olms.js"></script>
+
 
     <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
     <script src="https://d3js.org/d3.v3.min.js"></script>
@@ -651,14 +654,17 @@
         <i class="material-icons close-button" onclick="closeAttribution('.osm-attribution')"
             style="color: #ff4d4d;">cancel</i>
         <br><br>
-        <p>Map data <a href="https://www.openstreetmap.org/" target="_blank">© OpenStreetMap contributors</a></p>
+        <p>Map data 
+            <p><a href="https://www.maptiler.com/" target="_blank">©MapTiler</a></p>
+        <p><a href="https://www.openstreetmap.org/" target="_blank">©OpenStreetMap contributors</a></p></p>
+        
     </div>
 
     <div class="mapbox-attribution">
         <i class="material-icons close-button" onclick="closeAttribution('.mapbox-attribution')"
             style="color: #ff4d4d;">cancel</i>
         <br><br>
-        <p>Map data <a href="https://www.mapbox.com/" target="_blank">© Mapbox</a></p>
+        <p>Map data <a href="https://www.mapbox.com/" target="_blank">©Mapbox</a></p>
     </div>
 
 
@@ -666,7 +672,7 @@
         <i class="material-icons close-button" onclick="closeAttribution('.gebco-attribution')"
             style="color: #ff4d4d;">cancel</i>
         <br><br>
-        <p>Map data <a href="https://www.gebco.net" target="_blank">© GEBCO</a></p>
+        <p>Map data <a href="https://www.gebco.net" target="_blank">©GEBCO</a></p>
         <p>Imagery reproduced from the GEBCO_2022 Grid, GEBCO Compilation Group (2022) GEBCO 2022 Grid
             (doi:10.5285/e0f0bb80-ab44-2739-e053-6c86abc0289c)</p>
     </div>
