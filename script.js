@@ -797,7 +797,7 @@ function handleSuggestionClick(suggestion) {
     // Smoothly animate the zoom and centering
     map.getView().animate({
         center: center,
-        zoom: 21,
+        zoom: 17,
         duration: 1000, // Adjust the duration as needed
         easing: ol.easing.easeOut // Use a suitable easing function for smooth animation
     });
@@ -1004,9 +1004,9 @@ function cycleBasemap() {
 // Basemap Selection
 const mapElement = document.getElementById("map");
 
-  // Basemap Layers
-  /*MapBox Imagery Basemap*/
-  const satelliteLayer = new ol.layer.Tile({
+// Basemap Layers
+/*MapBox Imagery Basemap*/
+const satelliteLayer = new ol.layer.Tile({
     source: new ol.source.XYZ({
         url: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw',
         tileSize: 512,
@@ -1106,7 +1106,7 @@ const map = new ol.PerspectiveMap({
 
 
 /*/ The map
-const map = new ol.PerspectiveMap({
+const map = new ol.Map({
     target: 'map',
     view: new ol.View({
         zoom: 17,
@@ -2348,7 +2348,7 @@ let sketchFarmBtnIcon;
 let buttonsToHideSketchFarmActive = [
     "searchBar", "searchBtn", "basemapBtn", "measureAreaBtn",
     "measureLengthBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn", "resetBtn",
-    "locationBtn", "perspectiveBtn"
+    "locationBtn", "perspectiveBtn", "perspectiveSlider",
 ];
 
 function showButtonsSketchFarmInactive() {
@@ -2693,7 +2693,7 @@ async function startSketchFarm() {
 
     });
 
-
+    //SKETCH FARM PROPERTIES
     const farmVectorLayer = new ol.layer.Vector({
         source: vectorSource,
         style: new ol.style.Style({
@@ -2714,16 +2714,16 @@ async function startSketchFarm() {
             }),
             stroke: new ol.style.Stroke({
                 color: "#386c34",
-                width: 10,
+                width: 5,
             }),
             image: new ol.style.Circle({
-                radius: 18,
+                radius: 10,
                 fill: new ol.style.Fill({
                     color: "#386c34",
                 }),
                 stroke: new ol.style.Stroke({
                     color: "#ffffff",
-                    width: 9,
+                    width: 4,
                 }),
             }),
         }),
@@ -4046,7 +4046,7 @@ function getStoredPolygon() {
 
         const tooltipOverlay = new ol.Overlay({
             element: tooltipElement,
-            offset: [0, -65], //farm size label offset
+            offset: [0, -55], //farm size label offset
             positioning: 'bottom-center',
         });
 
@@ -4548,9 +4548,9 @@ function showButtons() {
 let sensorDrawCount = 0;
 let sensorPointStyle = new ol.style.Style({
     image: new ol.style.Icon({
-        src: 'https://i.ibb.co/gWyRjHP/icons8-pin-96-xxhdpi.png',
+        src: 'https://i.ibb.co/gWyRjHP/icons8-pin-96-xxhdpi.png', //Enfarm Sensor Icon
         anchor: [0.5, 1],
-        scale: 0.75,
+        scale: 0.4,
         rotateWithView: true,
     }),
 });
@@ -5169,7 +5169,7 @@ function panToUserLocation() {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 updateUserLocationMarker(markerOverlay, position);
-                map.getView().animate({ center: markerOverlay.getPosition(), zoom: 19 });
+                map.getView().animate({ center: markerOverlay.getPosition(), zoom: 17 });
             },
             handleGeolocationError
         );
@@ -5186,13 +5186,13 @@ const userLocationLayer = new ol.layer.Vector({
     source: new ol.source.Vector(),
     style: new ol.style.Style({
         image: new ol.style.Circle({
-            radius: 18,
+            radius: 9,
             fill: new ol.style.Fill({
                 color: '#007bff',
             }),
             stroke: new ol.style.Stroke({
                 color: 'white',
-                width: 8,
+                width: 4,
             }),
         }),
     }),
@@ -5344,10 +5344,6 @@ resetButton.addEventListener("click", resetWebpage);
 
 
 
-////////// <----- Perspective  BUTTON FUNCTION -----> \\\\\\\\\\
-
-
-
 ////////// <----- SCALE BAR -----> \\\\\\\\\\
 
 var scale_line = new ol.control.ScaleLine({
@@ -5355,8 +5351,8 @@ var scale_line = new ol.control.ScaleLine({
     bar: false,
     steps: 6,
     text: true,
-    minWidth: 240,
-    fontSize: 40,
+    minWidth: 100,  //adjust scale bar length
+    fontSize: 25,
     target: 'scale_bar',
 });
 map.addControl(scale_line);
