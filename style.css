@@ -30,7 +30,7 @@ body {
     position: absolute;
     top: 20px;
     left: 20px;
-    width: 140px;
+    width: 150px;
     height: 60px;
     z-index: 1;
 }
@@ -149,7 +149,7 @@ body {
 .searchBar {
     display: none;
     position: absolute;
-    height: 60px; /*adjust height of searchbar*/
+    height: 54px; /*adjust height of searchbar*/
     top: 25px;
     right: 30px;
     display: flex;
@@ -172,7 +172,7 @@ body {
     padding-left: 5px;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
     display: flex;
-    height: 30px;
+    height: 28px;
     align-items: center;
     border-radius: 100px;
 }
@@ -251,7 +251,7 @@ body {
 }
 
 .suggestionText {
-    font-size: 20px;
+    font-size: 16px;
     /* Adjust the font size as needed */
 }
 
@@ -383,10 +383,10 @@ body {
     position: absolute;
     left: 50%;
     height: 100%;
-    top: 100px; /*adjust height of the slide out basemap selector*/
+    top: 20px; /*adjust height of the slide out basemap selector*/
     bottom: 10px;
     transform: translateX(-50%) translateY(100%);
-    width: 98%; /*adjust width of the slide out basemap selector*/
+    width: 97%; /*adjust width of the slide out basemap selector*/
     max-height: calc(100% - 20px);
     border-radius: 20px 20px 0 0;
     background-color: rgba(255, 255, 255);
@@ -407,12 +407,12 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 30px;
+    gap: 20px;
     margin-top: 30px;
 }
 
 .container-content .image-container img { /*basemap thumbnails*/
-    width: 80%;
+    width: 90%;
     height: auto;
     object-fit: cover;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
@@ -420,7 +420,7 @@ body {
 }
 
 .container-content .image-container .caption { /*basemap selector title/typetext*/
-    font-size: 13px;
+    font-size: 14px;
     /*font-weight: bold;*/
     margin-top: 5px;
     color: #515151;
@@ -436,8 +436,8 @@ body {
 
 .selected-basemap-circle { /*green selection circle*/
     position: absolute;
-    bottom: 30px;
-    right: 20px;
+    bottom: 33px;
+    right: 15px;
     width: 13px;
     height: 13px;
     background-color: green;
@@ -500,8 +500,8 @@ body {
 .osm-attribution a,
 .mapbox-attribution a,
 .gebco-attribution a {
-    color: blue;
-    text-decoration: underline;
+    color: rgb(26, 154, 197);
+    text-decoration: none;
 }
 
 .isric-attribution .close-button,
@@ -1334,7 +1334,7 @@ body {
     align-items: center;
     background-color: #ffffffc0;
     border-radius: 50px;
-    padding: 10px 20px;
+    padding: 10px 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 2;
     animation: slideDownUp 5s forwards;
@@ -1359,7 +1359,7 @@ body {
 .sketchingFarmfloatingTitle .sketchingFarmTitle,
 .measuringLengthfloatingTitle .measuringLengthTitle,
 .measuringAreafloatingTitle .measuringAreaTitle {
-    font-size: 15px;
+    font-size: 14px;
     color: #515151;
 }
 
