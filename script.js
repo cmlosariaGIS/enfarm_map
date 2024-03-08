@@ -1414,7 +1414,7 @@ function startMeasurementArea() {
     const buttonsToHide = [
         "searchBar", "searchBtn", "basemapBtn", "measureLengthBtn",
         "sketchFarmBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn",
-        "resetBtn", "locationBtn", "perspectiveBtn", "angle", "elevProfileBtn"
+        "resetBtn", "locationBtn", "perspectiveBtn", "elevProfileBtn"
     ];
 
     if (isActive) {
@@ -1865,7 +1865,6 @@ function startMeasurementLength() {
             "locationBtn",
             "resetBtn",
             "perspectiveBtn",
-            "angle", //Perspective Slider Control
             "elevProfileBtn",
         ];
         const displayValue = isActive ? "none" : "block";
@@ -2149,7 +2148,6 @@ function deactivateMeasurementLength() {
             "resetBtn",
             "locationBtn",
             "perspectiveBtn",
-            "angle",
             "elevProfileBtn"
         ];
         buttonsToHide.forEach((btnId) => {
@@ -2188,7 +2186,6 @@ document.getElementById("finishMeasuringLength").addEventListener("click", funct
         "resetBtn",
         "locationBtn",
         "perspectiveBtn",
-        "angle",
         "elevProfileBtn",
     ];
     buttonsToHide.forEach((btnId) => {
@@ -5942,12 +5939,12 @@ function dismissLengthContainer() {
     }
 }
 
-/*
+
 // Event listener to close the elevation container when the x close icon is clicked
 document.getElementById('close-elevation-container').addEventListener('click', function () {
     var elevationContainer = document.getElementById('elevation-container');
     elevationContainer.classList.remove('open');
-});*/
+});
 
 
 
