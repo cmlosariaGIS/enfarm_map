@@ -4533,7 +4533,7 @@ const buttonsToHide = [
     "resetBtn",
     "locationBtn",
     "perspectiveBtn",
-    "angle",
+    //"angle",
     "elevProfileBtn",
 ];
 
@@ -5795,14 +5795,27 @@ document.addEventListener("DOMContentLoaded", function () {
 // Show the slider when perspectiveBtn is clicked
 let isSliderVisible = false; // Track slider visibility state
 
-
-
-
-
 document.getElementById("perspectiveBtn").addEventListener("click", function () {
     const angleSlider = document.getElementById("angle");
     const btnElement = document.getElementById("perspectiveBtn");
     const btnIcon = document.querySelector("#perspectiveBtn i.material-icons");
+
+    // Array of button IDs to hide
+    const buttonsToHide = [
+        "searchBar",
+        "searchBtn",
+        "material-icons",
+        "basemapBtn",
+        "measureAreaBtn",
+        "measureLengthBtn",
+        "sketchFarmBtn",
+        "addSensorBtn",
+        "tutorialBtn",
+        "windyMapBtn",
+        "resetBtn",
+        "locationBtn",
+        "elevProfileBtn"
+    ];
 
     if (!isSliderVisible) {
         angleSlider.style.display = ''; // Reset display property to default value
@@ -5810,6 +5823,14 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
         btnElement.classList.add('active');
         btnIcon.classList.add('active');
         isSliderVisible = true;
+
+        // Hide buttons
+        buttonsToHide.forEach(btnId => {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.style.display = 'none';
+            }
+        });
 
         // Get current map view
         const mapView = map.getView();
@@ -5833,6 +5854,14 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
         btnIcon.classList.remove('active');
         isSliderVisible = false;
 
+        // Show buttons again
+        buttonsToHide.forEach(btnId => {
+            const btn = document.getElementById(btnId);
+            if (btn) {
+                btn.style.display = ''; // Reset display property to default value
+            }
+        });
+
         // Get current map view
         const mapView = map.getView();
         const currentCenter = mapView.getCenter();
@@ -5853,46 +5882,7 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
 });
 
 
-
 ////////// <----- FUNCTION TO GENERATE ELEVATION PROFILE -----> \\\\\\\\\\
-
-
-/*
-// Initialize the map
- var map = new ol.Map({
-    target: 'map',
-    layers: [
-        new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: "https://api.maptiler.com/maps/topo-v2/256/{z}/{x}/{y}@2x.png?key=ygYhKJ5CVp94V87ZZ49x",
-                attributions: '© <a href="https://www.maptiler.com/copyright/">MapTiler</a>'
-            })
-        })
-    ],
-    view: new ol.View({
-        center: ol.proj.fromLonLat([108.0378392, 12.348229]),
-        zoom: 15
-    })
-});
-
-
-// Initialize the map
-var map = new ol.Map({
-    target: 'map',
-    layers: [
-        new ol.layer.Tile({
-            source: new ol.source.XYZ({
-                url: 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY21sb3NhcmlhIiwiYSI6ImNsZGJ4cHp2ajAwMGszb3FmeXpxYmVpMHkifQ.3wsPFc9FkszxcH27eEq2dw',
-                attributions: '<a href="https://www.mapbox.com/about/maps/">© Mapbox</a>, <a href="http://www.openstreetmap.org/about/">© OpenStreetMap</a>'
-            })
-        })
-    ],
-    view: new ol.View({
-        center: ol.proj.fromLonLat([108.0378392, 12.348229]),
-        zoom: 15
-    })
-});*/
-
 
 // Hide the button on map load
 document.getElementById('finishdrawLineElevProfile').style.display = 'none';
@@ -5945,8 +5935,6 @@ document.getElementById('close-elevation-container').addEventListener('click', f
     var elevationContainer = document.getElementById('elevation-container');
     elevationContainer.classList.remove('open');
 });
-
-
 
 //Functions to show and hide the Elevation Profile Disclaimer Message
 document.addEventListener('DOMContentLoaded', function () {
@@ -6039,14 +6027,13 @@ function resetClickCounter() {
 }
 
 
-
-
-
-
-
+//Function to start adding points and line and fetch elevation data
 // Event listener for the elevation profile button
 document.getElementById('elevProfileBtn').addEventListener('click', function () {
     if (!isElevationProfileActive) {
+
+        // Hide specified elements
+        hideElements();
 
         // Event listener for the map click event (elevation point)
         map.on('click', function (event) {
@@ -6114,6 +6101,32 @@ document.getElementById('elevProfileBtn').addEventListener('click', function () 
                     });
             }
         });
+
+        // Function to hide specified elements
+        function hideElements() {
+            var elementsToHide = [
+                "searchBar",
+                "searchBtn",
+                "material-icons",
+                "basemapBtn",
+                "measureAreaBtn",
+                "measureLengthBtn",
+                "sketchFarmBtn",
+                "addSensorBtn",
+                "tutorialBtn",
+                "windyMapBtn",
+                "resetBtn",
+                "locationBtn",
+                "perspectiveBtn"
+            ];
+
+            elementsToHide.forEach(function (elementId) {
+                var element = document.getElementById(elementId);
+                if (element) {
+                    element.style.display = 'none'; // Hide the element
+                }
+            });
+        }
 
         // Enable draw elevation measure line interaction
         drawLineElevProfile = new ol.layer.Vector({
@@ -6261,7 +6274,6 @@ to {
 
         ///////////////////End Mesasure Length Elevation Profile function\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-
         // Event listener to handle drawing completion
         draw.on('drawend', function (event) {
             var lineString = event.feature.getGeometry();
@@ -6311,12 +6323,12 @@ to {
         // Hide the chart container
         document.getElementById('chart').style.display = 'none';
 
-
         // Hide the elements related to min and max elevation text display
         document.getElementById('min-elevation').style.display = 'none';
         document.getElementById('max-elevation').style.display = 'none';
 
-
+        // Show the previously hidden elements
+        showElements(); // Add this line
 
         // Dismiss the elevation container
         var elevationContainer = document.getElementById('elevation-container');
@@ -6324,7 +6336,6 @@ to {
 
         // Hide floating title
         document.querySelector('.generateElevationProfilefloatingTitle').style.display = 'none';
-
 
         // Dismiss the length container
         dismissLengthContainer();
@@ -6355,11 +6366,37 @@ to {
         // Set drawing activation flag to false when deactivating elevation profile
         isDrawingActivated = false;
 
-
-
+        // Show hidden buttons when function is inactive
+        showElements();
     }
+
 });
 
+// Define the showElements function
+function showElements() {
+    var elementsToShow = [
+        "searchBar",
+        "searchBtn",
+        "material-icons",
+        "basemapBtn",
+        "measureAreaBtn",
+        "measureLengthBtn",
+        "sketchFarmBtn",
+        "addSensorBtn",
+        "tutorialBtn",
+        "windyMapBtn",
+        "resetBtn",
+        "locationBtn",
+        "perspectiveBtn"
+    ];
+
+    elementsToShow.forEach(function (elementId) {
+        var element = document.getElementById(elementId);
+        if (element) {
+            element.style.display = ''; // Restore default display property
+        }
+    });
+}
 
 ////////////Function to calculate distance between two points using Haversine formula\\\\\\\\\\
 function calculateDistance(lat1, lon1, lat2, lon2) {
