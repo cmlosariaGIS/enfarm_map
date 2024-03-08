@@ -391,7 +391,7 @@ body {
     border-radius: 20px 20px 0 0;
     background-color: rgba(255, 255, 255);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    z-index: 10;
+    z-index: 9999;
     overflow: auto;
     transition: transform 0.3s;
 }
@@ -1777,29 +1777,7 @@ body {
 /****** END MAP SCALE LINE STYLE *******/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/****** START ELEVATTION PROFLE STYLE *******/
   .material-symbols-outlined {
             font-variation-settings:
                 'FILL' 0,
@@ -1812,8 +1790,9 @@ body {
         #elevation-container {
             position: fixed;
             bottom: 0;
-            left: 0;
-            width: 100%;
+            left: 50%; /* Position it at the horizontal middle */
+            transform: translateX(-50%); /* Move it back by half of its width */
+            width: 97%;
             height: 0;
             background-color: #ffffff;
             overflow: hidden;
@@ -1824,8 +1803,8 @@ body {
             justify-content: center;
             align-items: center;
             border-radius: 20px 20px 0px 0px;
-
         }
+        
 
         #elevation-text {
             font-size: 16px;
@@ -1844,6 +1823,7 @@ body {
 
         #elevation-container.open {
             height: 320px;
+            width: ;
             /* Adjust the height as needed */
         }
 
