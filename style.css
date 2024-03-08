@@ -777,26 +777,26 @@ body {
 
 .floating-message {
     position: absolute;
-    top: 60px;
+    top: 50%;
     left: 50%;
     transform: translateX(-50%);
     background-color: #ffffff;
     color: #515151;
-    padding: 20px;
-    border-radius: 100px;
-    font-size: 40px;
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 20px;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 600px;
+    width: 200px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     z-index: 3;
 }
 
 /*Tap to draw floating message*/
 .floating-message i {
-    font-size: 60px;
+    font-size: 12px;
     animation-name: cycling-animation;
     animation-duration: 1s;
     animation-iteration-count: infinite;
@@ -1776,3 +1776,264 @@ body {
 
 /****** END MAP SCALE LINE STYLE *******/
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+
+
+        #elevation-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background-color: #ffffff;
+            overflow: hidden;
+            transition: height 0.5s;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px 20px 0px 0px;
+
+        }
+
+        #elevation-text {
+            font-size: 16px;
+            /*font-weight: bold;*/
+        }
+
+        #icon-elevation-container {
+            display: flex;
+            align-items: center;
+        }
+
+        #icon-elevation-container .material-symbols-outlined {
+            margin-right: 5px;
+            /* Adjust spacing between icon and text as needed */
+        }
+
+        #elevation-container.open {
+            height: 320px;
+            /* Adjust the height as needed */
+        }
+
+        #chart {
+            width: 100%;
+            height: 200%;
+            padding: 25px 10px;
+        }
+
+        #close-elevation-container {
+            /*close button*/
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+
+        #elevProfileBtn {
+            position: fixed;
+            top: 445px;
+            right: 25px;
+            background-color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+
+        }
+
+        #elevProfileBtn i.material-symbols-outlined {
+            font-size: 30px;
+            color: #515151;
+        }
+
+        #elevProfileBtn.active {
+            background-color: #FF6666;
+        }
+
+        #elevProfileBtn.active i.material-symbols-outlined {
+            color: #ffffff;
+        }
+
+        #finishdrawLineElevProfile {
+            position: fixed;
+            bottom: 20%;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
+
+        .finish-drawLineElevProfile {
+            background-color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 100px;
+            font-size: 35px;
+            color: #515151;
+            outline: none;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        .finish-drawLineElevProfile {
+            cursor: pointer;
+            background-color: #f1f1f1;
+        }
+
+        /*finish drawing check icon*/
+        .check-icon {
+            margin-right: 10px;
+            font-family: 'Material Icons', sans-serif;
+        }
+
+
+
+        #min-elevation,
+        #max-elevation {
+            font-size: 10px;
+            display: block;
+            text-align: center;
+            margin: 0px 10px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            color: #515151;
+        }
+
+
+        /***** START CURRENT ACTIVITY FLOATING TITLE ******/
+
+        .generateElevationProfilefloatingTitle {
+            position: fixed;
+            top: -100px;
+            /* Start off-screen */
+            left: 50%;
+            width: fit-content;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            background-color: #ffffffc0;
+            border-radius: 50px;
+            padding: 10px 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            animation: slideDownUp 5s forwards;
+        }
+
+        @keyframes slideDownUp {
+            0% {
+                top: -100px;
+                /* Start off-screen */
+            }
+
+            5% {
+                top: 25px;
+                /* Slide down to this position */
+            }
+
+            95% {
+                top: 25px;
+                /* Stay at this position for 10 seconds */
+            }
+
+            100% {
+                top: -100px;
+                /* Slide back up to off-screen */
+            }
+        }
+
+        .generateElevationProfileTitle {
+            font-size: 14px;
+            color: #515151;
+
+        }
+
+        .generateElevationProfilefloatingTitle {
+            display: none;
+        }
+
+        /***** END CURRENT ACTIVITY FLOATING TITLE ******/
+
+        .pointElevMap-Label {
+            position: absolute;
+            background-color: rgba(255, 225, 0, 0.8);
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /*z-index: 9999;*/
+        }
+
+        .elevation-tool-disclaimer {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 1);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-width: 200px;
+            font-size: 12px;
+            text-align: justify;
+            /* Add this to make the close button positioned relative to the container */
+        }
+
+        .close-ElevProfile-disclaimer-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            bottom: 200px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #515151;
+        }
+
+
+        #info-ElevProfile-disclaimer-btn {
+            /*info button*/
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
