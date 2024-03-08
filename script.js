@@ -2355,7 +2355,8 @@ let sketchFarmBtnIcon;
 let buttonsToHideSketchFarmActive = [
     "searchBar", "searchBtn", "basemapBtn", "measureAreaBtn",
     "measureLengthBtn", "addSensorBtn", "tutorialBtn", "windyMapBtn", "resetBtn",
-    "locationBtn", "perspectiveBtn", "angle", "elevProfileBtn",
+    "locationBtn", "perspectiveBtn", //"angle", 
+    "elevProfileBtn",
 ];
 
 function showButtonsSketchFarmInactive() {
@@ -5869,7 +5870,7 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
 
         // Change map back to ol.Map
         map.dispose(); // Dispose the current map instance
-        map = new ol.Map({
+        map = new ol.PerspectiveMap({
             target: 'map',
             view: new ol.View({
                 zoom: currentZoom,
