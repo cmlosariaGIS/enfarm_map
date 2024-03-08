@@ -32,6 +32,13 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+
+    <!-- Load Chart.js for displaying elevation profile -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
     <!--Font Icons-->
@@ -55,52 +62,6 @@
     <script src="https://d3js.org/d3.v3.min.js"></script>
 
     <style>
-        /****** START SCALE LINE STYLES *******/
-        .ol-scale-line {
-            position: fixed;
-            bottom: 5vh;
-            left: 20px;
-            background: none;
-            border: none;
-            box-shadow: none;
-            color: #515151;
-            line-height: 1;
-            margin: 0;
-            padding: 0;
-        }
-
-        .ol-scale-line-inner {
-            position: relative;
-            background: #ffffff;
-            border-radius: 3px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-            color: #515151;
-            padding: 2px 2px;
-            font-size: 14px;
-            font-family: Be Vietnam Pro', Arial, sans-serif;
-
-        }
-
-        .ol-scale-line-inner::before,
-        .ol-scale-line-inner::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            width: 0.25px !important;
-            height: 5%;
-            background-color: #ffffff;
-        }
-
-        .ol-scale-line-inner::before {
-            left: 25%;
-        }
-
-        .ol-scale-line-inner::after {
-            right: 25%;
-        }
-
-        /****** END SCALE LINE STYLES *******/
-
         /***** START MAP PRODUCT TOUR *****/
         /*Next Button*/
         .shepherd-button {
@@ -110,7 +71,8 @@
             border-radius: 100px;
             color: white;
             cursor: pointer;
-            margin-right: .5rem; /*green next button padding*/
+            margin-right: .5rem;
+            /*green next button padding*/
             padding: 0.5rem 1rem;
             transition: all .5s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -198,6 +160,53 @@
         }
 
         /***** END MAP PRODUCT TOUR *****/
+
+
+        /****** START SCALE LINE STYLES *******/
+        .ol-scale-line {
+            position: fixed;
+            bottom: 5vh;
+            left: 20px;
+            background: none;
+            border: none;
+            box-shadow: none;
+            color: #515151;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+        }
+
+        .ol-scale-line-inner {
+            position: relative;
+            background: #ffffff;
+            border-radius: 3px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+            color: #515151;
+            padding: 2px 2px;
+            font-size: 14px;
+            font-family: Be Vietnam Pro', Arial, sans-serif;
+
+        }
+
+        .ol-scale-line-inner::before,
+        .ol-scale-line-inner::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            width: 0.25px !important;
+            height: 5%;
+            background-color: #ffffff;
+        }
+
+        .ol-scale-line-inner::before {
+            left: 25%;
+        }
+
+        .ol-scale-line-inner::after {
+            right: 25%;
+        }
+
+        /****** END SCALE LINE STYLES *******/
     </style>
 </head>
 
@@ -515,7 +524,8 @@
 
     <div id="addFarmSuccess" class="addFloating-container">
         <div id="farmsuccessAnimationCheck" class="animationCheck"></div>
-        <div class="addMessage">Đã thêm ranh giới trang trại</div> <!-- Da tehm ranh gioi trang trai - Farm boundary added-->
+        <div class="addMessage">Đã thêm ranh giới trang trại</div>
+        <!-- Da tehm ranh gioi trang trai - Farm boundary added-->
     </div>
 
 
@@ -561,8 +571,7 @@
     <!----------///// BASEMAP BUTTON AND FUNCTIONS \\\\\---------->
 
     <div class="basemapfloatingTitle" style="display: flex; align-items: center;">
-        <img src="https://i.ibb.co/F4dSJw6/bm-street-circle.png"
-            style="width: 30px; height: 30px; padding-right: 5px;">
+        <img src="https://i.ibb.co/F4dSJw6/bm-street-circle.png" style="width: 30px; height: 30px; padding-right: 5px;">
         <span class="basemapTitle" style="display: inline-block;"></span>
     </div>
 
@@ -654,10 +663,11 @@
         <i class="material-icons close-button" onclick="closeAttribution('.osm-attribution')"
             style="color: #ff4d4d;">cancel</i>
         <br><br>
-        <p>Map data 
-            <p><a href="https://www.maptiler.com/" target="_blank">©MapTiler</a></p>
-        <p><a href="https://www.openstreetmap.org/" target="_blank">©OpenStreetMap contributors</a></p></p>
-        
+        <p>Map data
+        <p><a href="https://www.maptiler.com/" target="_blank">©MapTiler</a></p>
+        <p><a href="https://www.openstreetmap.org/" target="_blank">©OpenStreetMap contributors</a></p>
+        </p>
+
     </div>
 
     <div class="mapbox-attribution">
@@ -1373,10 +1383,11 @@
     <!-- Delete Confirm Dialog Box -->
     <div id="dialog" class="dialog hidden">
         <div class="dialog-content">
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: -60px;">
+            <div
+                style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: -60px;">
                 <div id="deleteAnimationContainer" style="width: 75px; height: 75x;"></div>
                 <p style="margin: 0;">Bạn có muốn xóa bản vẽ?</p>
-            </div>            
+            </div>
             <div style="display: flex; justify-content: center;">
                 <button id="deleteYes" class="dialog-button"
                     style="background-color: #d40133; color: white; display: flex; align-items: center;">
@@ -1430,7 +1441,7 @@
     <!----------///// PRODUCT TOUR TUTORIAL BUTTON AND FUNCTIONS \\\\\---------->
 
     <button id="tutorialBtn">
-        <i class="material-icons">info</i>
+        <i class="material-icons">menu_book</i>
     </button>
 
     <!----------///// CLEAR ALL DRAWINGS BUTTON AND FUNCTIONS \\\\\---------->
@@ -1466,9 +1477,60 @@
     </button>
 
     <input id="angle" type="range" step="1" min="0" max="15" onchange="map.setPerspective(this.value)" value="0"
-        style="vertical-align: middle;" class="perspectiveSlider"/>
+        style="vertical-align: middle;" class="perspectiveSlider" />
 
 
+
+
+
+    <!--<h1>OpenLayers Elevation Profile</h1>-->
+    <!--<div id="map"></div>-->
+
+    <!------------------------------------------------///// Current Tool Activated Floating Message \\\\\--------------------------------------------------------------->
+
+    <div class="generateElevationProfilefloatingTitle">
+        <i class="material-symbols-outlined" style="font-size: 30px; padding-right: 5px; color: #515151;">elevation</i>
+        <span class="generateElevationProfileTitle">Đo chiều cao</span> <!-- Generate Elevation Profile -->
+    </div>
+
+
+    <button id="elevProfileBtn">
+        <i class="material-symbols-outlined">elevation</i>
+    </button>
+
+    <div id="elevation-container">
+        <div id="icon-elevation-container">
+            <span class="material-icons-outlined"
+                style="font-size: 15px; margin-right: -5px; vertical-align: middle;">trending_up</span>
+            <span class="material-icons-outlined" style="font-size: 30px;">landscape</span>
+            <div id="elevation-text">Elevation Profile</div>
+        </div>
+        <canvas id="chart" style="display: none;"></canvas>
+        <div id="animation-container" style="width: 200px; height: 200px;"></div>
+        <div id="elevation-values" style="display: flex; justify-content: space-between;">
+            <span id="min-elevation"></span>
+            <span id="max-elevation"></span>
+        </div>
+        <!--<span id="close-elevation-container" class="material-icons-outlined" style="font-size: 24px;">cancel</span>-->
+        <span id="info-ElevProfile-disclaimer-btn" class="material-icons-outlined" style="font-size: 24px;">info</span>
+    </div>
+
+    <button id="finishdrawLineElevProfile" class="finish-drawLineElevProfile hidden"
+        style="font-size: 18px; background-color: #386c34; color: white;">
+        <span class="material-icons" style="font-size: 20px;">done_outline</span>
+        Hoàn Thành
+    </button>
+
+    <!--<button class="info-ElevProfile-disclaimer-btn">Show Disclaimer</button>-->
+
+    <div class="elevation-tool-disclaimer" id="elevationToolDisclaimer" style="display: none;">
+        <button class="close-ElevProfile-disclaimer-btn">
+            <span class="material-symbols-outlined">cancel</span>
+        </button>
+        <p>This tool is meant to show indicative elevation values and is not meant to replace on-ground survey or be
+            used for engineering
+            purposes.</p>
+    </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/idb-js@2.0.0/dist/Idb.min.js"></script>
