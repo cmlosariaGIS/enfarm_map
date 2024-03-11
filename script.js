@@ -1115,10 +1115,12 @@ let map = new ol.Map({
     target: 'map',
     view: new ol.View({
         zoom: 17,
-        center: ol.proj.fromLonLat([108.03769776610962, 12.670282155975897])
+        center: ol.proj.fromLonLat([108.03769776610962, 12.670282155975897]),
+        //rotation: Math.PI / 4, // Rotate the map 45 degrees (in radians)
     }),
     layers: [satelliteLayer, streetLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer],
     controls: [],
+
 });
 
 map.on('change:perspective', function (e) {
@@ -5838,6 +5840,9 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
         const currentCenter = mapView.getCenter();
         const currentZoom = mapView.getZoom();
 
+        // Save map features before changing to PerspectiveMap
+        const savedFeatures = saveMapFeatures(map);
+
         // Change map to PerspectiveMap
         map.dispose(); // Dispose the current map instance
         map = new ol.PerspectiveMap({
@@ -5848,7 +5853,11 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
                 zoom: currentZoom,
             }),
             controls: [],
+            preserveDrawingBuffer: true // Preserve the drawing buffer for labels and centroids
         });
+
+        // Restore saved map features on PerspectiveMap
+        restoreMapFeatures(map, savedFeatures);
     } else {
         angleSlider.style.display = 'none';
         btnElement.classList.remove('active');
@@ -5868,9 +5877,12 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
         const currentCenter = mapView.getCenter();
         const currentZoom = mapView.getZoom();
 
+        // Save map features before changing back to ol.Map
+        const savedFeatures = saveMapFeatures(map);
+
         // Change map back to ol.Map
         map.dispose(); // Dispose the current map instance
-        map = new ol.PerspectiveMap({
+        map = new ol.Map({
             target: 'map',
             view: new ol.View({
                 zoom: currentZoom,
@@ -5878,9 +5890,26 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
             }),
             layers: [satelliteLayer, streetLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer],
             controls: [],
+            preserveDrawingBuffer: true // Preserve the drawing buffer for labels and centroids
         });
+
+        // Restore saved map features on ol.Map
+        restoreMapFeatures(map, savedFeatures);
     }
 });
+
+function saveMapFeatures(map) {
+    // Save the current map features before switching maps
+    return map.getLayers().getArray().filter(layer => layer instanceof ol.layer.Vector);
+}
+
+function restoreMapFeatures(map, savedFeatures) {
+    // Add back the saved features to the new map instance
+    savedFeatures.forEach(layer => {
+        map.addLayer(layer);
+    });
+}
+
 
 
 ////////// <----- FUNCTION TO GENERATE ELEVATION PROFILE -----> \\\\\\\\\\
@@ -6402,7 +6431,7 @@ to {
         if (floatingMessage && floatingMessage.parentNode) {
             floatingMessage.parentNode.removeChild(floatingMessage);
         }
-    
+
         // Show hidden buttons when function is inactive
         showElements();
     }
