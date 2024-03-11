@@ -61,6 +61,21 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.searchBtn:hover,
+.drawFarmBtn:hover,
+.undoSketchBtn:hover,
+.addSensorBtn:hover,
+.undoSensorBtn:hover,
+.basemapBtn:hover,
+.measureAreaBtn:hover,
+.measureLengthBtn:hover,
+.resetBtn:hover,
+.perspectiveBtn:hover,
+.locationBtn:hover,
+.sketchFarmBtn:hover {
+    background-color: #ccc; /* Change background color on hover */
+}
+
 .searchBtn i,
 .drawFarmBtn i,
 .undoSketchBtn i,
@@ -93,9 +108,13 @@ body {
     justify-content: center;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-
+    cursor: pointer; /* Change cursor to pointer */
 }
+
+#tutorialBtn:hover {
+    background-color: #ccc; /* Change background color on hover */
+}
+
 #tutorialBtn i.material-icons {
     font-size: 20px;
     color: #515151;
@@ -140,7 +159,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer; /* Change cursor to pointer */
 }
+
+.searchBtn:hover {
+    background-color: #ccc; /* Change background color on hover */
+}
+
 
 .searchBar {
     display: none;
@@ -825,6 +850,10 @@ body {
     z-index: 1;
 }
 
+.sketchFarmBtn:hover {
+    background-color: #ccc; /* Change background color on hover */
+}
+
 .undoSketchBtn {
     position: absolute;
     top: 95px;
@@ -849,6 +878,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.addSensorBtn:hover {
+    background-color: #ccc; /* Change background color on hover */
 }
 
 .undoSensorBtn {
@@ -918,15 +951,21 @@ body {
 
 .northArrow {
     position: fixed;
-    top: 480px;
-    right: 33px;
+    top: 185px;
+    left: 25px;
     transform: translateX(-50%);
     background-color: #fff;
     border-radius: 50%;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     z-index: 1;
     box-sizing: border-box;
+    transition: background-color 0.3s ease; /* Transition for hover effect */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+.northArrow:hover {
+    background-color: #ccc; /* Change background color on hover */
 }
 
 .northArrow .material-icons {
@@ -1089,7 +1128,7 @@ body {
 
 #windyMapBtn {
     position: fixed;
-    top: 160px;
+    top: 130px;
     left: 18px;
     font-family: var(--button-font-family);
     font-size: var(--button-font-size);
@@ -1106,6 +1145,7 @@ body {
     display: flex;
     align-items: center;
 }
+
 
 .windyMapBtn-text {
     animation: none;
@@ -1126,7 +1166,7 @@ body {
 
     position: fixed;
     top: 480px;
-    left: 36px;
+    left: 30px;
     background-color: #ff4d4d;
     border: none;
     border-radius: 50%;
@@ -1181,6 +1221,9 @@ body {
     cursor: pointer;
 
 }
+#resetBtn:hover {
+    background-color: #ccc; /* Change background color on hover */
+}
 
 #resetBtn i.material-icons {
     font-size: 30px;
@@ -1217,6 +1260,10 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     cursor: pointer;
 
+}
+
+#perspectiveBtn:hover {
+    background-color: #ccc; /* Change background color on hover */
 }
 
 #perspectiveBtn i.material-icons {
@@ -1854,6 +1901,10 @@ body {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             cursor: pointer;
 
+        }
+
+        #elevProfileBtn:hover {
+            background-color: #ccc; /* Change background color on hover */
         }
 
         #elevProfileBtn i.material-symbols-outlined {
