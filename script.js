@@ -1,4 +1,5 @@
 
+
 ////////// <----- START ENFARM MAP PRODUCT TOUR -----> \\\\\\\\\\
 
 // Check if the tour has already been shown
@@ -5835,29 +5836,17 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
             }
         });
 
-        // Get current map view
-        const mapView = map.getView();
-        const currentCenter = mapView.getCenter();
-        const currentZoom = mapView.getZoom();
-
-        // Save map features before changing to PerspectiveMap
+        // Save drawn features before changing to PerspectiveMap
         const savedFeatures = saveMapFeatures(map);
 
-        // Change map to PerspectiveMap
-        map.dispose(); // Dispose the current map instance
-        map = new ol.PerspectiveMap({
-            target: 'map',
-            layers: [satelliteLayer, streetLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer],
-            view: new ol.View({
-                center: currentCenter,
-                zoom: currentZoom,
-            }),
-            controls: [],
-            preserveDrawingBuffer: true // Preserve the drawing buffer for labels and centroids
-        });
+        // Toggle map mode
+        toggleMapMode();
 
-        // Restore saved map features on PerspectiveMap
+        // Restore saved features on PerspectiveMap
         restoreMapFeatures(map, savedFeatures);
+
+        // Log that map switched to ol.PerspectiveMap
+        console.log("Switched to ol.PerspectiveMap");
     } else {
         angleSlider.style.display = 'none';
         btnElement.classList.remove('active');
@@ -5872,43 +5861,95 @@ document.getElementById("perspectiveBtn").addEventListener("click", function () 
             }
         });
 
-        // Get current map view
-        const mapView = map.getView();
-        const currentCenter = mapView.getCenter();
-        const currentZoom = mapView.getZoom();
-
-        // Save map features before changing back to ol.Map
+        // Save drawn features before changing back to ol.Map
         const savedFeatures = saveMapFeatures(map);
 
+        // Toggle map mode
+        toggleMapMode();
+
+        // Restore saved features on ol.Map
+        restoreMapFeatures(map, savedFeatures);
+
+        // Log that map switched to ol.Map
+        console.log("Switched to ol.Map");
+    }
+});
+
+// Function to toggle between ol.Map and ol.PerspectiveMap
+function toggleMapMode() {
+    if (isSliderVisible) {
+        // Change map to PerspectiveMap
+        map.dispose(); // Dispose the current map instance
+        map = new ol.PerspectiveMap({
+            target: 'map',
+            layers: [satelliteLayer, streetLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer],
+            view: new ol.View({
+                center: map.getView().getCenter(),
+                zoom: map.getView().getZoom(),
+            }),
+            controls: [],
+            preserveDrawingBuffer: true // Preserve the drawing buffer for labels and centroids
+        });
+
+        // Reattach map click event listener
+        attachMapClickListener();
+    } else {
         // Change map back to ol.Map
         map.dispose(); // Dispose the current map instance
         map = new ol.Map({
             target: 'map',
             view: new ol.View({
-                zoom: currentZoom,
-                center: currentCenter
+                zoom: map.getView().getZoom(),
+                center: map.getView().getCenter()
             }),
             layers: [satelliteLayer, streetLayer, gebcoLayer, carbonLayer, phLayer, nitrogenLayer],
             controls: [],
             preserveDrawingBuffer: true // Preserve the drawing buffer for labels and centroids
         });
 
-        // Restore saved map features on ol.Map
-        restoreMapFeatures(map, savedFeatures);
+        // Reattach map click event listener
+        attachMapClickListener();
     }
-});
+}
 
+// Function to save map features before switching maps
 function saveMapFeatures(map) {
-    // Save the current map features before switching maps
     return map.getLayers().getArray().filter(layer => layer instanceof ol.layer.Vector);
 }
 
+// Function to restore saved features on the new map instance
 function restoreMapFeatures(map, savedFeatures) {
-    // Add back the saved features to the new map instance
     savedFeatures.forEach(layer => {
         map.addLayer(layer);
     });
 }
+
+// Function to attach map click event listener
+function attachMapClickListener() {
+    // Remove existing click event listener
+    map.un('click', handleMapClick);
+
+    // Add click event listener
+    map.on('click', handleMapClick);
+}
+
+// Function to handle map click event
+function handleMapClick(event) {
+    // Only start counting clicks when drawing is activated
+    if (isDrawingActivated) {
+        // Increment click counter
+        clickCounter++;
+
+        // If the click counter reaches 2, show the button
+        if (clickCounter === 2) {
+            document.getElementById('finishdrawLineElevProfile').style.display = 'block';
+        }
+    }
+}
+
+
+
+
 
 
 
@@ -6038,6 +6079,7 @@ document.getElementById('finishdrawLineElevProfile').addEventListener('click', f
 
 // Event listener for the map click event
 map.on('click', function (event) {
+
     // Only start counting clicks when drawing is activated
     if (isDrawingActivated) {
         // Increment click counter
