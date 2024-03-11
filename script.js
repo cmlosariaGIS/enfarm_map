@@ -6103,6 +6103,35 @@ document.getElementById('elevProfileBtn').addEventListener('click', function () 
             }
         });
 
+
+
+
+
+
+
+        //Add floating message
+        const floatingMessage = document.createElement("div");
+        floatingMessage.className = "floating-message";
+        floatingMessage.id = "floatingMessageArea";
+        const infoIcon = document.createElement("i");
+        infoIcon.className = "material-icons";
+        infoIcon.textContent = "touch_app";
+        infoIcon.style.fontSize = "50px";
+        floatingMessage.appendChild(infoIcon);
+        floatingMessage.innerHTML += "Nhấn vào bản đồ để vẽ một đường thẳng"; // "Tap the map to draw a straight line"
+        map.getViewport().appendChild(floatingMessage);
+
+        const floatingMessageAreaTimeoutId = setTimeout(function () {
+            if (floatingMessage.parentNode === map.getViewport()) {
+                map.getViewport().removeChild(floatingMessage);
+            }
+        }, 5000);
+
+
+
+
+
+
         // Function to hide specified elements
         function hideElements() {
             var elementsToHide = [
@@ -6367,6 +6396,13 @@ to {
         // Set drawing activation flag to false when deactivating elevation profile
         isDrawingActivated = false;
 
+        // Clear timeout and hide the floating message immediately
+        clearTimeout(floatingMessageAreaTimeoutId);
+        const floatingMessage = document.getElementById("floatingMessageArea");
+        if (floatingMessage && floatingMessage.parentNode) {
+            floatingMessage.parentNode.removeChild(floatingMessage);
+        }
+    
         // Show hidden buttons when function is inactive
         showElements();
     }
