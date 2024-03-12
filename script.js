@@ -1,5 +1,5 @@
 
-////////// <----- START ENFARM LOGO URL REDIRECT -----> \\\\\\\\\\
+/*////////// <----- START ENFARM LOGO URL REDIRECT -----> \\\\\\\\\\
 
 document.getElementById('logoDiv').addEventListener('click', function() {
     //var confirmation = confirm("Do you want to open the browser and navigate to https://enfarm.com/?");
@@ -9,7 +9,7 @@ document.getElementById('logoDiv').addEventListener('click', function() {
     }
 });
 
-////////// <----- END ENFARM LOGO URL REDIRECT -----> \\\\\\\\\\
+////////// <----- END ENFARM LOGO URL REDIRECT -----> \\\\\\\\\\*/
 
 
 ////////// <----- START ENFARM MAP PRODUCT TOUR -----> \\\\\\\\\\
