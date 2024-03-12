@@ -24,7 +24,7 @@ body {
     left: 0;
     right: 0;
     height: 100%;
-  }
+}
 
 .enfarmLogo {
     position: absolute;
@@ -33,6 +33,10 @@ body {
     width: 150px;
     height: 60px;
     z-index: 1;
+}
+
+#logoDiv {
+    cursor: pointer;
 }
 
 .searchBtn,
@@ -73,7 +77,8 @@ body {
 .perspectiveBtn:hover,
 .locationBtn:hover,
 .sketchFarmBtn:hover {
-    background-color: #ccc; /* Change background color on hover */
+    background-color: #ccc;
+    /* Change background color on hover */
 }
 
 .searchBtn i,
@@ -108,11 +113,13 @@ body {
     justify-content: center;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    cursor: pointer; /* Change cursor to pointer */
+    cursor: pointer;
+    /* Change cursor to pointer */
 }
 
 #tutorialBtn:hover {
-    background-color: #ccc; /* Change background color on hover */
+    background-color: #ccc;
+    /* Change background color on hover */
 }
 
 #tutorialBtn i.material-icons {
@@ -159,21 +166,26 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer; /* Change cursor to pointer */
+    cursor: pointer;
+    /* Change cursor to pointer */
 }
 
 .searchBtn:hover {
-    background-color: #ccc; /* Change background color on hover */
+    background-color: #ccc;
+    /* Change background color on hover */
 }
 
 
 .searchBar {
     display: none;
     position: absolute;
-    height: 54px; /* Adjust height of searchbar */
+    height: 54px;
+    /* Adjust height of searchbar */
     top: 25px;
-    left: calc(10px + 15px); /* 10px from left edge + 15px for additional spacing */
-    right: calc(10px + 15px); /* 10px from right edge + 15px for additional spacing */
+    left: calc(10px + 15px);
+    /* 10px from left edge + 15px for additional spacing */
+    right: calc(10px + 15px);
+    /* 10px from right edge + 15px for additional spacing */
     display: flex;
     align-items: center;
     background-color: #ffffff;
@@ -190,7 +202,8 @@ body {
     outline: none;
     font-size: 2px;
     color: #515151;
-    padding: 5px; /*adjust height of searchbar*/
+    padding: 5px;
+    /*adjust height of searchbar*/
     padding-left: 5px;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
     display: flex;
@@ -224,7 +237,8 @@ body {
     position: absolute;
     top: 70px;
     left: 0;
-    width: 85%; /* Adjust this value as needed */
+    width: 85%;
+    /* Adjust this value as needed */
     max-height: 600px;
     overflow-y: auto;
     background-color: #ffffff;
@@ -344,6 +358,9 @@ body {
     transition: background-color 0.3s ease;
 }
 
+
+
+
 /***** END SEARCH BUTTON FUNCTION *****/
 
 
@@ -351,8 +368,8 @@ body {
 
 /*Basemap floating title*/
 .basemapfloatingTitle {
-    position: absolute;
-    top: 4%;
+    position: fixed;
+    bottom: -100px; /* Initial position off-screen */
     left: 50%;
     width: fit-content;
     transform: translateX(-50%);
@@ -360,24 +377,27 @@ body {
     align-items: center;
     background-color: #ffffff;
     border-radius: 50px;
-    padding: 10px 10px;
+    padding: 10px 10px; /* Increased padding for better appearance */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1;
-    animation: slideDownUp 5s forwards;
+    animation: slideUpDown 5s forwards;
 }
 
-@keyframes slideDownUp {
+@keyframes slideUpDown {
     0% {
-        top: -100px; /* Start off-screen */
+        bottom: -100px; /* Start off-screen */
     }
+
     5% {
-        top: 25px; /* Slide down to this position */
+        bottom: calc(30% - 50px); /* Slide up to position 30% from bottom */
     }
+
     95% {
-        top: 25px; /* Stay at this position for 10 seconds */
+        bottom: calc(30% - 50px); /* Stay in this position */
     }
+
     100% {
-        top: -100px; /* Slide back up to off-screen */
+        bottom: -100px; /* Slide back down to off-screen */
     }
 }
 
@@ -385,7 +405,6 @@ body {
     font-size: 15px;
     color: #515151;
 }
-
 
 .basemapBtn {
     position: absolute;
@@ -405,10 +424,12 @@ body {
     position: absolute;
     left: 50%;
     height: 100%;
-    top: 20px; /*adjust height of the slide out basemap selector*/
+    top: 20px;
+    /*adjust height of the slide out basemap selector*/
     bottom: 10px;
     transform: translateX(-50%) translateY(100%);
-    width: 97%; /*adjust width of the slide out basemap selector*/
+    width: 97%;
+    /*adjust width of the slide out basemap selector*/
     max-height: calc(100% - 20px);
     border-radius: 20px 20px 0 0;
     background-color: rgba(255, 255, 255);
@@ -418,7 +439,8 @@ body {
     transition: transform 0.3s;
 }
 
-.container-content { /*basemap selector header text*/
+.container-content {
+    /*basemap selector header text*/
     padding: 20px;
     text-align: center;
     font-size: 10px;
@@ -433,15 +455,18 @@ body {
     margin-top: 30px;
 }
 
-.container-content .image-container img { /*basemap thumbnails*/
+.container-content .image-container img {
+    /*basemap thumbnails*/
     width: 90%;
     height: auto;
     object-fit: cover;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    border-radius: 20px; /*border radius of the basemap thumbnails*/
+    border-radius: 20px;
+    /*border radius of the basemap thumbnails*/
 }
 
-.container-content .image-container .caption { /*basemap selector title/typetext*/
+.container-content .image-container .caption {
+    /*basemap selector title/typetext*/
     font-size: 14px;
     /*font-weight: bold;*/
     margin-top: 5px;
@@ -456,7 +481,8 @@ body {
     display: block;
 }
 
-.selected-basemap-circle { /*green selection circle*/
+.selected-basemap-circle {
+    /*green selection circle*/
     position: absolute;
     bottom: 33px;
     right: 15px;
@@ -479,7 +505,8 @@ body {
     }
 }
 
-.close-bm-button { /*close X button*/
+.close-bm-button {
+    /*close X button*/
     position: absolute;
     top: 30px;
     right: 30px;
@@ -506,7 +533,8 @@ body {
     border-radius: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     display: none;
-    width: 300px; /*adjust size of the attribution banner width*/
+    width: 300px;
+    /*adjust size of the attribution banner width*/
 }
 
 .isric-attribution p,
@@ -553,7 +581,8 @@ body {
 /* Legend Containers */
 
 /*Start Terrain Legend*/
-.terrainlegend { /*the bounding container box*/
+.terrainlegend {
+    /*the bounding container box*/
     position: absolute;
     top: 20px;
     right: 111px;
@@ -579,7 +608,8 @@ body {
     margin-bottom: 0px;
 }
 
-.terraincolorBox { /*adjust the color boxes*/
+.terraincolorBox {
+    /*adjust the color boxes*/
     width: 14px;
     height: 8px;
 }
@@ -620,7 +650,8 @@ body {
 
 }
 
-.terraintext { /*title header Dia hinh*/
+.terraintext {
+    /*title header Dia hinh*/
     color: #515151;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
     font-size: 15px;
@@ -628,7 +659,8 @@ body {
     margin-top: -35px;
 }
 
-.low {  /*thap text*/
+.low {
+    /*thap text*/
     text-align: left;
     color: #515151;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
@@ -636,7 +668,8 @@ body {
     margin-top: -5px;
 }
 
-.high { /*cao text*/
+.high {
+    /*cao text*/
     text-align: right;
     color: #515151;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
@@ -711,7 +744,8 @@ body {
 
 }
 
-.closecarbonLegend i, /*close button*/
+.closecarbonLegend i,
+/*close button*/
 .closenitrogenLegend i,
 .closepHLegend i {
     font-size: 25px;
@@ -851,7 +885,8 @@ body {
 }
 
 .sketchFarmBtn:hover {
-    background-color: #ccc; /* Change background color on hover */
+    background-color: #ccc;
+    /* Change background color on hover */
 }
 
 .undoSketchBtn {
@@ -881,7 +916,8 @@ body {
 }
 
 .addSensorBtn:hover {
-    background-color: #ccc; /* Change background color on hover */
+    background-color: #ccc;
+    /* Change background color on hover */
 }
 
 .undoSensorBtn {
@@ -960,12 +996,15 @@ body {
     height: 40px;
     z-index: 1;
     box-sizing: border-box;
-    transition: background-color 0.3s ease; /* Transition for hover effect */
-    cursor: pointer; /* Change cursor to pointer */
+    transition: background-color 0.3s ease;
+    /* Transition for hover effect */
+    cursor: pointer;
+    /* Change cursor to pointer */
 }
 
 .northArrow:hover {
-    background-color: #ccc; /* Change background color on hover */
+    background-color: #ccc;
+    /* Change background color on hover */
 }
 
 .northArrow .material-icons {
@@ -1051,7 +1090,8 @@ body {
 }
 */
 /***** DELETE CONFIRM DIALOG BOX *****/
-.dialog {     /*background blur*/
+.dialog {
+    /*background blur*/
     position: fixed;
     top: 0;
     left: 0;
@@ -1163,9 +1203,8 @@ body {
 /***** CLEAR ALL DRAWINGS BUTTON *****/
 
 #clearAllDrawingBtn {
-
     position: fixed;
-    top: 480px;
+    top: 450px;
     left: 30px;
     background-color: #ff4d4d;
     border: none;
@@ -1183,6 +1222,10 @@ body {
 #clearAllDrawingBtn i.material-icons {
     font-size: 18px;
     color: #ffffff;
+}
+
+#clearAllDrawingBtn:hover {
+    background-color: rgb(253, 0, 0); /* Change background color to red on hover */
 }
 
 /***** END CLEAR ALL DRAWINGS BUTTON *****/
@@ -1221,8 +1264,10 @@ body {
     cursor: pointer;
 
 }
+
 #resetBtn:hover {
-    background-color: #ccc; /* Change background color on hover */
+    background-color: #ccc;
+    /* Change background color on hover */
 }
 
 #resetBtn i.material-icons {
@@ -1263,7 +1308,8 @@ body {
 }
 
 #perspectiveBtn:hover {
-    background-color: #ccc; /* Change background color on hover */
+    background-color: #ccc;
+    /* Change background color on hover */
 }
 
 #perspectiveBtn i.material-icons {
@@ -1370,7 +1416,8 @@ body {
 .sketchingFarmfloatingTitle,
 .addSensorsfloatingTitle {
     position: fixed;
-    top: -100px; /* Start off-screen */
+    top: -100px;
+    /* Start off-screen */
     left: 50%;
     width: fit-content;
     transform: translateX(-50%);
@@ -1386,16 +1433,23 @@ body {
 
 @keyframes slideDownUp {
     0% {
-        top: -100px; /* Start off-screen */
+        top: -100px;
+        /* Start off-screen */
     }
+
     5% {
-        top: 25px; /* Slide down to this position */
+        top: 25px;
+        /* Slide down to this position */
     }
+
     95% {
-        top: 25px; /* Stay at this position for 10 seconds */
+        top: 25px;
+        /* Stay at this position for 10 seconds */
     }
+
     100% {
-        top: -100px; /* Slide back up to off-screen */
+        top: -100px;
+        /* Slide back up to off-screen */
     }
 }
 
@@ -1700,7 +1754,8 @@ body {
 }*/
 
 .pill-value {
-    margin-left: 3px; /*adjusts gaps between count and icons*/
+    margin-left: 3px;
+    /*adjusts gaps between count and icons*/
     font-weight: bold;
     color: #515151;
     font-family: 'Be Vietnam Pro', Arial, sans-serif;
@@ -1822,246 +1877,250 @@ body {
 
 
 /****** START ELEVATTION PROFLE STYLE *******/
-  .material-symbols-outlined {
-            font-variation-settings:
-                'FILL' 0,
-                'wght' 400,
-                'GRAD' 0,
-                'opsz' 24
-        }
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+}
 
 
-        #elevation-container {
-            position: fixed;
-            bottom: 0;
-            left: 50%; /* Position it at the horizontal middle */
-            transform: translateX(-50%); /* Move it back by half of its width */
-            width: 97%;
-            height: 0;
-            background-color: #ffffff;
-            overflow: hidden;
-            transition: height 0.5s;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 20px 20px 0px 0px;
-        }
-        
-
-        #elevation-text {
-            font-size: 16px;
-            /*font-weight: bold;*/
-        }
-
-        #icon-elevation-container {
-            display: flex;
-            align-items: center;
-        }
-
-        #icon-elevation-container .material-symbols-outlined {
-            margin-right: 5px;
-            /* Adjust spacing between icon and text as needed */
-        }
-
-        #elevation-container.open {
-            height: 320px;
-            width: ;
-            /* Adjust the height as needed */
-        }
-
-        #chart {
-            width: 100%;
-            height: 200%;
-            padding: 25px 10px;
-        }
-
-        #close-elevation-container {
-            /*close button*/
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        }
+#elevation-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    /* Position it at the horizontal middle */
+    transform: translateX(-50%);
+    /* Move it back by half of its width */
+    width: 97%;
+    height: 0;
+    background-color: #ffffff;
+    overflow: hidden;
+    transition: height 0.5s;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px 20px 0px 0px;
+}
 
 
-        #elevProfileBtn {
-            position: fixed;
-            top: 445px;
-            right: 15px;
-            background-color: #ffffff;
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
+#elevation-text {
+    font-size: 16px;
+    /*font-weight: bold;*/
+}
 
-        }
+#icon-elevation-container {
+    display: flex;
+    align-items: center;
+}
 
-        #elevProfileBtn:hover {
-            background-color: #ccc; /* Change background color on hover */
-        }
+#icon-elevation-container .material-symbols-outlined {
+    margin-right: 5px;
+    /* Adjust spacing between icon and text as needed */
+}
 
-        #elevProfileBtn i.material-symbols-outlined {
-            font-size: 30px;
-            color: #515151;
-        }
+#elevation-container.open {
+    height: 320px;
+    width: ;
+    /* Adjust the height as needed */
+}
 
-        #elevProfileBtn.active {
-            background-color: #FF6666;
-        }
+#chart {
+    width: 100%;
+    height: 200%;
+    padding: 25px 10px;
+}
 
-        #elevProfileBtn.active i.material-symbols-outlined {
-            color: #ffffff;
-        }
-
-        #finishdrawLineElevProfile {
-            position: fixed;
-            bottom: 20%;
-            left: 50%;
-            transform: translate(-50%, 0);
-        }
-
-        .finish-drawLineElevProfile {
-            background-color: #ffffff;
-            padding: 15px 20px;
-            border-radius: 100px;
-            font-size: 35px;
-            color: #515151;
-            outline: none;
-            border: none;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: 'Be Vietnam Pro', sans-serif;
-        }
-
-        .finish-drawLineElevProfile {
-            cursor: pointer;
-            background-color: #f1f1f1;
-        }
-
-        /*finish drawing check icon*/
-        .check-icon {
-            margin-right: 10px;
-            font-family: 'Material Icons', sans-serif;
-        }
+#close-elevation-container {
+    /*close button*/
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
 
 
+#elevProfileBtn {
+    position: fixed;
+    top: 445px;
+    right: 15px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
 
-        #min-elevation,
-        #max-elevation {
-            font-size: 10px;
-            display: block;
-            text-align: center;
-            margin: 0px 10px;
-            font-family: 'Be Vietnam Pro', sans-serif;
-            color: #515151;
-        }
+}
 
+#elevProfileBtn:hover {
+    background-color: #ccc;
+    /* Change background color on hover */
+}
 
-        /***** START CURRENT ACTIVITY FLOATING TITLE ******/
+#elevProfileBtn i.material-symbols-outlined {
+    font-size: 30px;
+    color: #515151;
+}
 
-        .generateElevationProfilefloatingTitle {
-            position: fixed;
-            top: -100px;
-            /* Start off-screen */
-            left: 50%;
-            width: fit-content;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            background-color: #ffffffc0;
-            border-radius: 50px;
-            padding: 10px 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            z-index: 2;
-            animation: slideDownUp 5s forwards;
-        }
+#elevProfileBtn.active {
+    background-color: #FF6666;
+}
 
-        @keyframes slideDownUp {
-            0% {
-                top: -100px;
-                /* Start off-screen */
-            }
+#elevProfileBtn.active i.material-symbols-outlined {
+    color: #ffffff;
+}
 
-            5% {
-                top: 25px;
-                /* Slide down to this position */
-            }
+#finishdrawLineElevProfile {
+    position: fixed;
+    bottom: 20%;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
 
-            95% {
-                top: 25px;
-                /* Stay at this position for 10 seconds */
-            }
+.finish-drawLineElevProfile {
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 100px;
+    font-size: 35px;
+    color: #515151;
+    outline: none;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
 
-            100% {
-                top: -100px;
-                /* Slide back up to off-screen */
-            }
-        }
+.finish-drawLineElevProfile {
+    cursor: pointer;
+    background-color: #f1f1f1;
+}
 
-        .generateElevationProfileTitle {
-            font-size: 14px;
-            color: #515151;
-
-        }
-
-        .generateElevationProfilefloatingTitle {
-            display: none;
-        }
-
-        /***** END CURRENT ACTIVITY FLOATING TITLE ******/
-
-        .pointElevMap-Label {
-            position: absolute;
-            background-color: rgba(255, 225, 0, 0.8);
-            border: 1px solid #ccc;
-            padding: 5px;
-            border-radius: 40px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            /*z-index: 9999;*/
-        }
-
-        .elevation-tool-disclaimer {
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(255, 255, 255, 1);
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            max-width: 200px;
-            font-size: 12px;
-            text-align: justify;
-            /* Add this to make the close button positioned relative to the container */
-        }
-
-        .close-ElevProfile-disclaimer-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            bottom: 200px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #515151;
-        }
+/*finish drawing check icon*/
+.check-icon {
+    margin-right: 10px;
+    font-family: 'Material Icons', sans-serif;
+}
 
 
-        #info-ElevProfile-disclaimer-btn {
-            /*info button*/
-            position: absolute;
-            top: 10px;
-            right: 35px;
-            cursor: pointer;
-        }
+
+#min-elevation,
+#max-elevation {
+    font-size: 10px;
+    display: block;
+    text-align: center;
+    margin: 0px 10px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    color: #515151;
+}
+
+
+/***** START CURRENT ACTIVITY FLOATING TITLE ******/
+
+.generateElevationProfilefloatingTitle {
+    position: fixed;
+    top: -100px;
+    /* Start off-screen */
+    left: 50%;
+    width: fit-content;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    background-color: #ffffffc0;
+    border-radius: 50px;
+    padding: 10px 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    animation: slideDownUp 5s forwards;
+}
+
+@keyframes slideDownUp {
+    0% {
+        top: -100px;
+        /* Start off-screen */
+    }
+
+    5% {
+        top: 25px;
+        /* Slide down to this position */
+    }
+
+    95% {
+        top: 25px;
+        /* Stay at this position for 10 seconds */
+    }
+
+    100% {
+        top: -100px;
+        /* Slide back up to off-screen */
+    }
+}
+
+.generateElevationProfileTitle {
+    font-size: 14px;
+    color: #515151;
+
+}
+
+.generateElevationProfilefloatingTitle {
+    display: none;
+}
+
+/***** END CURRENT ACTIVITY FLOATING TITLE ******/
+
+.pointElevMap-Label {
+    position: absolute;
+    background-color: rgba(255, 225, 0, 0.8);
+    border: 1px solid #ccc;
+    padding: 5px;
+    border-radius: 40px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /*z-index: 9999;*/
+}
+
+.elevation-tool-disclaimer {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 1);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-width: 200px;
+    font-size: 12px;
+    text-align: justify;
+    /* Add this to make the close button positioned relative to the container */
+}
+
+.close-ElevProfile-disclaimer-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    bottom: 200px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #515151;
+}
+
+#info-ElevProfile-disclaimer-btn {
+    /*info button*/
+    position: absolute;
+    top: 10px;
+    right: 35px;
+    cursor: pointer;
+}
+
+
