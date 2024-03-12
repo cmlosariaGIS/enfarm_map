@@ -1,4 +1,16 @@
 
+////////// <----- START ENFARM LOGO URL REDIRECT -----> \\\\\\\\\\
+
+document.getElementById('logoDiv').addEventListener('click', function() {
+    //var confirmation = confirm("Do you want to open the browser and navigate to https://enfarm.com/?");
+    var confirmation = confirm("Bạn có muốn mở trình duyệt và điều hướng đến https://enfarm.com/?");
+    if (confirmation) {
+        window.open('https://enfarm.com/', '_blank');
+    }
+});
+
+////////// <----- END ENFARM LOGO URL REDIRECT -----> \\\\\\\\\\
+
 
 ////////// <----- START ENFARM MAP PRODUCT TOUR -----> \\\\\\\\\\
 
@@ -158,10 +170,7 @@ function resetProductTour() {
 
 
 
-
-
-
-///// <----- WINDY MAP FORECAST FUNCTION -----> \\\\\
+////////// <----- WINDY MAP FORECAST FUNCTION -----> \\\\\\\\\\
 const showMapButton = document.getElementById('windyMapBtn');
 const mapContainer = document.getElementById('windyMapContainer');
 const buttonText = document.querySelector('#windyMapBtn .windyMapBtn-text');
@@ -196,12 +205,10 @@ showMapButton.addEventListener('click', function () {
 
             iframe = document.createElement('iframe');
             iframe.width = '100%';
-            iframe.height = '99%';
+            iframe.height = '100%';
             iframe.src = `https://embed.windy.com/embed2.html?lat=${initialLatitude}&lon=${initialLongitude}&zoom=${initialZoomLevel}&width=300&height=450&level=surface&overlay=rain&product=ecmwf&menu=&message=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=km%2Fh&metricTemp=%C2%B0C&radarRange=-1`;
             //iframe.src = `https://earth.nullschool.net/#current/wind/surface/level/orthographic=-245.08,11.45,1183/loc=107.832,12.362`;
             //iframe.src = "https://www.meteoblue.com/en/weather/maps/widget/ho-chi-minh-city_vietnam_1566083?windAnimation=0&windAnimation=1&gust=0&gust=1&satellite=0&satellite=1&cloudsAndPrecipitation=0&cloudsAndPrecipitation=1&temperature=0&temperature=1&sunshine=0&sunshine=1&extremeForecastIndex=0&extremeForecastIndex=1&geoloc=fixed&tempunit=C&windunit=km%252Fh&lengthunit=metric&zoom=5&autowidth=auto";
-
-
 
             messageElement = document.createElement('div');
             messageElement.textContent = 'Định vị người dùng...'; //Locating user...
@@ -276,7 +283,8 @@ showMapButton.addEventListener('click', function () {
 
 
 
-///// <----- SEARCH PLACE BUTTON FUNCTION -----> \\\\\
+////////// <----- SEARCH PLACE BUTTON FUNCTION -----> \\\\\\\\\\
+
 const searchBtn = document.getElementById("searchBtn");
 const searchBar = document.getElementById("searchBar");
 const searchInput = document.getElementById("searchInput");
@@ -296,12 +304,13 @@ searchIcon.addEventListener("click", handleSearchIconClick);
 
 //const searchInput = document.getElementById("searchInput");
 const placeholderTexts = [
-    "  Tra Cứu..",
-    "  Tra Cứu Cho Một Mốc",
-    "  Tra Cứu Cho Một Huyện",
-    "  Tra Cứu Cho Một Xã",
-    "  Tra Cứu.."
+    "  Tìm kiếm...",
+    "  Tìm kiếm cột mốc",
+    "  Tìm kiếm địa chỉ",
+    "  Tìm kiếm theo tọa độ",
+    "  Tìm kiếm..."
 ];
+
 let placeholderIndex = 0;
 let placeholderTimeout;
 
@@ -980,9 +989,82 @@ if (savedHistoricalPlaces) {
 searchInput.addEventListener("input", handleSearchInput);
 
 
+// Function to handle searching by place name or coordinates
+function handleSearch() {
+    const searchText = searchInput.value.trim();
+
+    // Check if the input matches the coordinates format (e.g., "longitude,latitude")
+    const coordinatesPattern = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/;
+    if (coordinatesPattern.test(searchText)) {
+        // If the input matches the coordinates format, split the input into longitude and latitude
+        const [longitude, latitude] = searchText.split(',').map(coord => parseFloat(coord));
+        if (!isNaN(longitude) && !isNaN(latitude)) {
+            // If both longitude and latitude are valid numbers, search by coordinates
+            fetchPlaceByCoordinates([longitude, latitude])
+                .then((place) => {
+                    if (place) {
+                        console.log("Place found:", place);
+                        // Display the place information
+                    } else {
+                        console.log("No place found at the provided coordinates.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Failed to fetch place information:", error);
+                });
+            return; // Exit the function to avoid searching by place name
+        }
+    }
+
+    // If the input is not coordinates or invalid coordinates, search by place name
+    fetchPlaceByName(searchText)
+        .then((place) => {
+            if (place) {
+                console.log("Place found:", place);
+                // Display the place information
+            } else {
+                console.log("No place found with the provided name.");
+            }
+        })
+        .catch((error) => {
+            console.error("Failed to fetch place information:", error);
+        });
+}
+
+// Function to fetch place information by place name
+async function fetchPlaceByName(placeName) {
+    const baseUrl = "https://nominatim.openstreetmap.org/search";
+    const format = "json";
+    const limit = 1; // Limit to one result
+    const url = `${baseUrl}?q=${encodeURIComponent(placeName)}&format=${format}&limit=${limit}&countrycodes=VN`;
+
+    try {
+        const response = await fetch(url);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.length > 0) {
+                return data[0].display_name;
+            } else {
+                return null; // No place found
+            }
+        } else {
+            console.error("Failed to fetch place information:", response.status, response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error("Failed to fetch place information:", error);
+        return null;
+    }
+}
+
+// Attach event listener to the search input for searching by place name or coordinates
+searchInput.addEventListener("input", handleSearch);
 
 
-///// <----- BASEMAP SWITCHER BUTTON FUNCTION -----> \\\\\
+
+
+
+////////// <----- BASEMAP SWITCHER BUTTON FUNCTION -----> \\\\\\\\\\
 
 function cycleBasemap() {
     const basemapSelector = document.getElementById("basemapSelector");
