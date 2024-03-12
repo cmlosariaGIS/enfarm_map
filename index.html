@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>enfarm Map</title>
     <link rel="stylesheet" href="style.css">
@@ -16,30 +15,19 @@
     <link rel="stylesheet" href="https://viglino.github.io/ol-ext/dist/ol-ext.css" />
     <script type="text/javascript" src="https://viglino.github.io/ol-ext/dist/ol-ext.js"></script>
 
-    <link rel="stylesheet" href="https://viglino.github.io/ol-ext/dist/ol-ext.css" />
-    <script type="text/javascript" src="https://viglino.github.io/ol-ext/dist/ol-ext.js"></script>
-
     <!--Product Tour Library-->
     <script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css" />
-
-
-    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
-
 
     <!--Fonts-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
     <!-- Load Chart.js for displaying elevation profile -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 
     <!--Font Icons-->
     <script src="https://kit.fontawesome.com/0eb73cfc5c.js" crossorigin="anonymous"></script>
@@ -47,19 +35,19 @@
     <!--Animation files-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.10/lottie.min.js"></script>
 
-    <!--<script src="https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/ol-ext@4.0.10/dist/ol-ext.min.css" rel="stylesheet">!-->
-
-
     <!-- jQuery -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 
-    <!--MapTiler Basemap-->
-    <script src="https://unpkg.com/ol-mapbox-style@12.1.1/dist/olms.js"></script>
-
-
+    <!-- truf.js -->
     <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
+
     <script src="https://d3js.org/d3.v3.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
+
+        <!--MapTiler Basemap
+    <script src="https://unpkg.com/ol-mapbox-style@12.1.1/dist/olms.js"></script>-->
 
     <style>
         /***** START MAP PRODUCT TOUR *****/
@@ -217,8 +205,6 @@
         <div id="map" class="map">
             <div class="blur-mask"></div>
         </div>
-
-
 
 
         <!----------------------------------------------------///// More Info on Grid Systems and Orientation Angle \\\\\---------------------------------------------------->
@@ -540,8 +526,8 @@
 
     <!----------///// SEARCH BUTTON AND FUNCTIONS \\\\\---------->
 
-    <div>
-        <img src="https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png" alt="Logo" class="enfarmLogo">
+    <div id="logoDiv">
+        <img src="https://i.ibb.co/LCK5s6V/en-Farm-logo-6-2x.png" alt="Logo" class="enfarmLogo" id="logo">
     </div>
 
     <button id="searchBtn" class="searchBtn">
@@ -595,7 +581,7 @@
             <div class="image-container">
                 <div onclick="selectBasemap(1)" style="position: relative;">
                     <img src="https://i.ibb.co/Jjg7bMD/bm-street.png" alt="Đường phố">
-                    <div class="osminfo-icon" style="position: absolute; top: 3px; left: 16px;">
+                    <div class="osminfo-icon" style="position: absolute; top: 5px; left: 8px;">
                         <i class="material-icons"
                             style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
@@ -605,9 +591,9 @@
 
                 <div onclick="selectBasemap(2)" style="position: relative;">
                     <img src="https://i.ibb.co/j3fq23k/bm-imagery.png" alt="Vệ tinh" border="0">
-                    <div class="mapboxinfo-icon" style="position: absolute; top: 3px; left: 16px;">
+                    <div class="mapboxinfo-icon" style="position: absolute; top: 3px; left: 8px;">
                         <i class="material-icons"
-                            style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
+                            style="font-size: 25px; color: white; text-shadow: px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
                     <div class="caption">Vệ tinh</div>
                     <div class="selected-basemap-circle"></div>
@@ -615,7 +601,7 @@
 
                 <div onclick="selectBasemap(0)" style="position: relative;">
                     <img src="https://i.ibb.co/52KrTf7/bm-terrain.png" alt="Địa hình" border="0">
-                    <div class="gebcoinfo-icon" style="position: absolute; top: 3px; left: 16px;">
+                    <div class="gebcoinfo-icon" style="position: absolute; top: 5px; left: 8px;">
                         <i class="material-icons"
                             style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
@@ -625,7 +611,7 @@
 
                 <div onclick="selectBasemap(0)" style="position: relative;">
                     <img src="https://i.ibb.co/VM1tBQj/bm-carbon.png" alt="Tín chỉ Các bon" border="0">
-                    <div class="info-icon" style="position: absolute; top: 3px; left: 16px;">
+                    <div class="info-icon" style="position: absolute; top: 5px; left: 8px;">
                         <i class="material-icons"
                             style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
@@ -636,7 +622,7 @@
 
                 <div onclick="selectBasemap(3)" style="position: relative;">
                     <img src="https://i.ibb.co/n73N7QY/bm-ph.png" alt="Bản đồ pH" border="0">
-                    <div class="info-icon" style="position: absolute; top: 3px; left: 16px;">
+                    <div class="info-icon" style="position: absolute; top: 5px; left: 8px;">
                         <i class="material-icons"
                             style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
@@ -646,7 +632,7 @@
 
                 <div onclick="selectBasemap(4)" style="position: relative;">
                     <img src="https://i.ibb.co/Krtp9sf/bm-nitrogen.png" alt="Bản đồ Ni tơ" border="0">
-                    <div class="info-icon" style="position: absolute; top: 3px; left: 16px;">
+                    <div class="info-icon" style="position: absolute; top: 5px; left: 8px;">
                         <i class="material-icons"
                             style="font-size: 25px; color: white; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">info</i>
                     </div>
@@ -1533,8 +1519,28 @@
     </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/idb-js@2.0.0/dist/Idb.min.js"></script>
-    <script src="script.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/idb-js@2.0.0/dist/Idb.min.js"></script>-->
+    <!--<script src="script.js"></script>-->
+
+
+    <script src="01_enfarm_logo_redirect.js"></script>
+    <script src="02_map_product_tour.js"></script>
+    <script src="03_windy.js"></script>
+    <script src="11_basemap_selector.js"></script> 
+    <script src="04_user_location.js"></script>
+    <script src="04A_pan_to_user_or_parcel.js"></script>
+    <script src="05_refresh_map.js"></script>
+    <script src="06_perspective.js"></script>
+    <script src="07_scale_bar.js"></script>
+    <script src="08_search_place_coordinates.js"></script>
+    <script src="09_sketch_farm.js"></script>
+    <script src="10_add_sensors.js"></script>
+    <script src="12_measure_area.js"></script>
+    <script src="13_measure_length.js"></script>
+    <script src="14_elevation_profile.js"></script>
+    <script src="15_north_arrow.js"></script>
+    <script src="16_birds_cloud_weather.js"></script>
+
 </body>
 
 </html>
