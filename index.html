@@ -24,7 +24,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
     <!-- Load Chart.js for displaying elevation profile -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -46,7 +47,7 @@
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css" />
 
-        <!--MapTiler Basemap
+    <!--MapTiler Basemap
     <script src="https://unpkg.com/ol-mapbox-style@12.1.1/dist/olms.js"></script>-->
 
     <style>
@@ -481,25 +482,31 @@
 
 
     <!------------------------------------------------///// Current Activity Tool \\\\\--------------------------------------------------------------->
-    <div class="measuringAreafloatingTitle">
+    <div id="measuringAreafloatingTitle" class="measuringAreafloatingTitle" style="display: none;">
         <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">square_foot</i>
-        <span class="measuringAreaTitle">Đo diện tích</span> <!--Measuring Area-->
+        <span class="measuringAreaTitle" style="color: #515151;">Đo diện tích</span> <!--Measuring Area-->
     </div>
-
-    <div class="measuringLengthfloatingTitle">
+    
+    <div id="measuringLengthfloatingTitle" class="measuringLengthfloatingTitle" style="display: none;">
         <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">straighten</i>
-        <span class="measuringLengthTitle">Đo độ dài</span> <!--Measuring Length-->
+        <span class="measuringLengthTitle" style="color: #515151;">Đo độ dài</span> <!--Measuring Length-->
     </div>
-
-    <div class="sketchingFarmfloatingTitle">
+    
+    <div id="sketchingFarmfloatingTitle" class="sketchingFarmfloatingTitle" style="display: none;">
         <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">create</i>
-        <span class="sketchingFarmTitle">Vẽ phác thảo một mảnh đất nông trại</span><!--Sketching a Farm Parcel-->
+        <span class="sketchingFarmTitle" style="color: #515151;">Vẽ đất nông nghiệp của bạn</span><!--Sketching a Farm Parcel-->
     </div>
-
-    <div class="addSensorsfloatingTitle">
+    
+    <div id="addSensorsfloatingTitle" class="addSensorsfloatingTitle" style="display: none;">
         <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">sensors</i>
-        <span class="addSensorsTitle">Thêm cảm biến Enfarm</span><!--Adding enfarm sensors-->
+        <span class="addSensorsTitle" style="color: #515151;">Thêm cảm biến Enfarm</span><!--Adding enfarm sensors-->
     </div>
+    
+    <div id="generateElevationProfilefloatingTitle" class="generateElevationProfilefloatingTitle" style="display: none;">
+        <i class="material-symbols-outlined" style="font-size: 30px; padding-right: 5px; color: #515151;">elevation</i>
+        <span class="generateElevationProfileTitle" style="color: #515151;">Đo chiều cao</span> <!-- Generate Elevation Profile -->
+    </div>
+    
 
 
     <!---------------------------------------------------///// Adding Farm and Sensor Success Message \\\\\------------------------------------------->
@@ -1343,18 +1350,6 @@
 
 
 
-    <!----------///// MEASURE AREA BUTTON AND FUNCTIONS \\\\\---------->
-
-    <button id="measureAreaBtn" class="measureAreaBtn" onclick="startMeasurementArea()">
-        <i class="material-icons">square_foot</i>
-    </button>
-
-
-    <!----------///// MEASURE LENGTH BUTTON AND FUNCTIONS \\\\\---------->
-
-    <button id="measureLengthBtn" class="measureLengthBtn" onclick="startMeasurementLength()">
-        <i class="material-icons">straighten</i>
-    </button>
 
 
     <!----------///// SKETCH FARM BUTTON AND FUNCTIONS \\\\\---------->
@@ -1472,13 +1467,22 @@
     <!--<h1>OpenLayers Elevation Profile</h1>-->
     <!--<div id="map"></div>-->
 
-    <!------------------------------------------------///// Current Tool Activated Floating Message \\\\\--------------------------------------------------------------->
 
-    <div class="generateElevationProfilefloatingTitle">
-        <i class="material-symbols-outlined" style="font-size: 30px; padding-right: 5px; color: #515151;">elevation</i>
-        <span class="generateElevationProfileTitle">Đo chiều cao</span> <!-- Generate Elevation Profile -->
-    </div>
 
+    <!----------///// MEASURE AREA BUTTON AND FUNCTIONS \\\\\---------->
+
+    <button id="measureAreaBtn" class="measureAreaBtn" onclick="startMeasurementArea()">
+        <i class="material-icons">square_foot</i>
+    </button>
+
+
+    <!----------///// MEASURE LENGTH BUTTON AND FUNCTIONS \\\\\---------->
+
+    <button id="measureLengthBtn" class="measureLengthBtn" onclick="startMeasurementLength()">
+        <i class="material-icons">straighten</i>
+    </button>
+
+    <!----------///// GENERATE ELEVATION PROFILE BUTTON AND FUNCTIONS \\\\\---------->
 
     <button id="elevProfileBtn">
         <i class="material-symbols-outlined">elevation</i>
@@ -1515,9 +1519,9 @@
             <span class="material-icons" style="font-size: 24px; color: #ff4d4d;">cancel</span>
         </button>
         <!--<p>This tool is meant to show indicative values only and is not meant to replace on-ground survey or be used for engineering purposes.</p>-->
-        <p>Công cụ này chỉ nhằm mục đích hiển thị các giá trị biểu thị và không nhằm thay thế khảo sát trên mặt đất hoặc được sử dụng cho mục đích kỹ thuật.</p>
+        <p>Công cụ này chỉ nhằm mục đích hiển thị các giá trị biểu thị và không nhằm thay thế khảo sát trên mặt đất hoặc
+            được sử dụng cho mục đích kỹ thuật.</p>
     </div>
-
 
     <!--<script src="https://cdn.jsdelivr.net/npm/idb-js@2.0.0/dist/Idb.min.js"></script>-->
     <!--<script src="script.js"></script>-->
@@ -1526,20 +1530,22 @@
     <script src="01_enfarm_logo_redirect.js"></script>
     <script src="02_map_product_tour.js"></script>
     <script src="03_windy.js"></script>
-    <script src="11_basemap_selector.js"></script> 
+    <script src="11_basemap_selector.js"></script>
     <script src="04_user_location.js"></script>
-    <script src="04A_pan_to_user_or_parcel.js"></script>
+    <!--<script src="04A_pan_to_user_or_parcel.js"></script>-->
     <script src="05_refresh_map.js"></script>
     <script src="06_perspective.js"></script>
     <script src="07_scale_bar.js"></script>
     <script src="08_search_place_coordinates.js"></script>
-    <script src="09_sketch_farm.js"></script>
+    <!--<script src="09_sketch_farm.js"></script>-->
+    <script src="09_sketch_farm_ver2.js"></script>
     <script src="10_add_sensors.js"></script>
     <script src="12_measure_area.js"></script>
     <script src="13_measure_length.js"></script>
     <script src="14_elevation_profile.js"></script>
     <script src="15_north_arrow.js"></script>
     <script src="16_birds_cloud_weather.js"></script>
+
 
 </body>
 
