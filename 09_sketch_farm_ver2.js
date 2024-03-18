@@ -256,12 +256,6 @@ originalButton.addEventListener('click', function () {
 document.getElementById('undoSketchBtn').addEventListener('click', undoSketchInteraction);
 
 
-
-
-
-
-
-
 ////////////////////// Function to add the area size label to the point feature \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 // Function to add the area size label to the point feature
 function addAreaLabelToFeature(feature, areaSquareMeters, areaHectares) {
@@ -269,7 +263,7 @@ function addAreaLabelToFeature(feature, areaSquareMeters, areaHectares) {
     var areaSize = areaSquareMeters < 1000 ? areaSquareMeters.toFixed(2) + ' sqm' : areaHectares.toFixed(2) + ' ha';
     var treeRange = estimateTreeRange(areaHectares);
     //var additionalText = "Approximate robusta coffee trees for this plot is " + treeRange[0] + " to " + treeRange[1];
-    var additionalText = "Approximate arabica coffee trees for this plot is " + treeRange[0] + " to " + treeRange[1];
+    var additionalText = "" + treeRange[0] + " to " + treeRange[1];
 
 
     // Create area size label overlay
@@ -296,6 +290,7 @@ function addAreaLabelToFeature(feature, areaSquareMeters, areaHectares) {
 
 /*
 // Function to estimate the range of Robusta Coffee Trees for a given area
+// Based on ANACAFE formula (https://wikifarmer.com/coffee-trees-planting-and-plant-spacing/)
 function estimateTreeRange(areaHectares) {
     // Calculate the minimum and maximum number of trees based on the area
     var minTrees = Math.round(areaHectares * 625);
@@ -303,13 +298,21 @@ function estimateTreeRange(areaHectares) {
     return [minTrees, maxTrees];
 }*/
 
-// Function to estimate the range of Robusta Coffee Trees for a given area
+// Function to estimate the range of Arabica Coffee Trees for a given area
+// Based on Helena Coffee's article (https://www.helenacoffee.vn/arabica-coffee-varieties/)
 function estimateTreeRange(areaHectares) {
     // Calculate the minimum and maximum number of trees based on the area
     var minTrees = Math.round(areaHectares * 3000);
     var maxTrees = Math.round(areaHectares * 5000);
-    return [minTrees, maxTrees];
+
+    // Add commas to the tree range if it exceeds one thousand trees
+    var formattedMinTrees = minTrees.toLocaleString();
+    var formattedMaxTrees = maxTrees.toLocaleString();
+
+    return [formattedMinTrees, formattedMaxTrees];
 }
+
+
 
 // Function to save area size label and tree range to local storage
 function saveAreaLabel(label, coordinates, treeRange) {
@@ -322,6 +325,7 @@ function saveAreaLabel(label, coordinates, treeRange) {
     // Save the updated object to local storage
     localStorage.setItem('storedAreaLabels', JSON.stringify(storedLabels));
 }
+
 
 // Function to create label element with additional text that can be expanded
 function createLabelElement(areaSize, additionalText) {
@@ -356,8 +360,6 @@ function createLabelElement(areaSize, additionalText) {
 
     // Create additional text span
     var additionalTextDiv = document.createElement('div');
-    additionalTextDiv.textContent = additionalText;
-    additionalTextDiv.style.display = 'none'; // Initially hide the additional text
     additionalTextDiv.style.paddingTop = '5px';
     additionalTextDiv.style.padding = '6px'; // Add padding to the expanded text
     additionalTextDiv.style.fontSize = '10px';
@@ -365,6 +367,40 @@ function createLabelElement(areaSize, additionalText) {
     additionalTextDiv.style.fontFamily = 'Be Vietnam Pro'; // Set font family to 'Be Vietnam Pro'
     additionalTextDiv.style.transition = 'max-height 0.3s ease-in-out'; // Add smooth transition effect
     additionalTextDiv.style.backgroundColor = 'white'; // Set background color to opaque white
+
+    // Split the additional text by the "to" separator
+    var splitText = additionalText.split(" to ");
+    var beforeRange = splitText[0].trim();
+    var afterRange = splitText[1].trim();
+
+    // Create text nodes for non-bold parts of the additional text
+    var textNodeBefore = document.createTextNode(beforeRange);
+    var textNodeAfter = document.createTextNode(afterRange);
+
+    // Create span elements for bold treeRange values
+    var boldTreeRangeStart = document.createElement('b');
+    boldTreeRangeStart.appendChild(textNodeBefore);
+
+    var boldTreeRangeEnd = document.createElement('b');
+    boldTreeRangeEnd.appendChild(textNodeAfter);
+
+    // Create span elements for normal weight text //The approximate arabica coffee trees for this plot is
+    var normalText1 = document.createElement('span');
+    normalText1.textContent = "The approximate arabica coffee trees for this plot is ";
+    normalText1.style.fontWeight = 'normal'; // Set font weight to normal
+
+    var normalText2 = document.createElement('span'); //to
+    normalText2.textContent = " to ";
+    normalText2.style.fontWeight = 'normal'; // Set font weight to normal
+
+    // Append the bold treeRange values and normal weight text to the additional text div
+    additionalTextDiv.appendChild(normalText1);
+    additionalTextDiv.appendChild(boldTreeRangeStart);
+    additionalTextDiv.appendChild(normalText2);
+    additionalTextDiv.appendChild(boldTreeRangeEnd);
+
+    // Initially hide the additional text
+    additionalTextDiv.style.display = 'none';
 
     // Append additional text to the container
     containerDiv.appendChild(additionalTextDiv);
@@ -381,6 +417,14 @@ function createLabelElement(areaSize, additionalText) {
     return containerDiv;
 }
 
+
+
+
+
+
+
+
+
 // Function to load area size labels from local storage and display them on map load
 function loadAreaLabels() {
     // Retrieve stored labels from local storage
@@ -392,8 +436,8 @@ function loadAreaLabels() {
         var label = labelInfo.label;
         var treeRange = labelInfo.treeRange;
         // Fetch additional text from wherever it's stored (e.g., database or another local storage item)
-        var additionalText = "Approximate robusta coffee trees for this plot is " + treeRange[0] + " to " + treeRange[1]; // Example additional text
-        var additionalText = "Approximate arabica coffee trees for this plot is " + treeRange[0] + " to " + treeRange[1]; // Example additional text
+        //var additionalText = "Approximate robusta coffee trees for this plot is " + treeRange[0] + " to " + treeRange[1]; // Example additional text
+        var additionalText = "" + treeRange[0] + " to " + treeRange[1]; // Example additional text
         var areaSizeLabel = new ol.Overlay({
             element: createLabelElement(label, additionalText), // Create label element with additional text
             offset: [90, -40], // Offset to position the label
@@ -562,7 +606,7 @@ document.getElementById('deleteYes').addEventListener('click', function () {
 function clearStoredAreaLabels() {
     // Retrieve stored labels from local storage
     var storedLabels = JSON.parse(localStorage.getItem('storedAreaLabels')) || {};
-    
+
     // Iterate over stored labels and remove overlay from the map
     Object.keys(storedLabels).forEach(function (coordinatesStr) {
         var coordinates = JSON.parse(coordinatesStr);
