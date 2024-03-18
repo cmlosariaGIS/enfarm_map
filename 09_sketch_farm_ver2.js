@@ -7,7 +7,6 @@ var storedPointCoordinates;
 // Keep track of the added area size labels
 var areaSizeLabels = {};
 
-
 // Define the style for the polygons
 var polygonStyle = new ol.style.Style({
     fill: new ol.style.Fill({
@@ -25,6 +24,93 @@ var vectorLayer = new ol.layer.Vector({
     style: polygonStyle // Apply the style to the layer
 });
 map.addLayer(vectorLayer);
+
+
+////////////// Function to Highlight Selected Farm Polygon \\\\\\\\\\\\\\\\
+
+// Define style for highlighted polygons with sky blue outline
+var highlightedPolygonStyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: 'rgba(33,105,104, 0.5)' // Fill color (green with 50% opacity)
+    }),
+    stroke: new ol.style.Stroke({
+        color: '#00b4d8', // Outline color (sky blue)
+        width: 5 // Outline width (5 pixels)
+    })
+});
+
+
+// Initialize select interaction
+var selectInteraction = new ol.interaction.Select({
+    layers: [vectorLayer], // Set the layer to perform selection on
+});
+
+// Add the select interaction to the map
+map.addInteraction(selectInteraction);
+
+
+// Function to delete the selected polygon
+function deleteSelectedPolygon(feature, deleteButton) {
+    // Remove the feature from the source
+    source.removeFeature(feature);
+    // Remove the delete button
+    deleteButton.remove();
+}
+
+// Event listener for when a feature is selected
+selectInteraction.on('select', function (event) {
+    var selectedFeatures = event.selected; // Get the selected features
+
+    // Remove any existing delete buttons
+    var existingDeleteButtons = document.querySelectorAll('.delete-button');
+    existingDeleteButtons.forEach(function (button) {
+        button.remove();
+    });
+
+    // Loop through selected features
+    selectedFeatures.forEach(function (feature) {
+        feature.setStyle(highlightedPolygonStyle); // Apply highlighted style
+
+        // Create the delete button
+        var deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.innerHTML = '<i class="material-icons">delete</i>';
+        deleteButton.style.position = 'absolute';
+        deleteButton.style.bottom = '30%';
+        deleteButton.style.left = '50%';
+        deleteButton.style.transform = 'translateX(-50%)';
+        deleteButton.style.backgroundColor = '#ff4d4d';
+        deleteButton.style.border = 'none';
+        deleteButton.style.borderRadius = '50%';
+        deleteButton.style.padding = '10px';
+        deleteButton.style.display = 'flex';
+        deleteButton.style.alignItems = 'center';
+        deleteButton.style.justifyContent = 'center';
+        deleteButton.style.cursor = 'pointer';
+        deleteButton.style.color = 'white';
+        deleteButton.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+        deleteButton.style.transition = 'background-color 0.3s';
+
+        // Append the delete button to the map container
+        map.getViewport().appendChild(deleteButton);
+
+        // Event listener for delete button click
+        deleteButton.addEventListener('click', function () {
+            deleteSelectedPolygon(feature, deleteButton);
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
 
 // Function to load area size labels from local storage and display them on map load
 function loadAreaLabels() {
@@ -312,8 +398,6 @@ function estimateTreeRange(areaHectares) {
     return [formattedMinTrees, formattedMaxTrees];
 }
 
-
-
 // Function to save area size label and tree range to local storage
 function saveAreaLabel(label, coordinates, treeRange) {
     // Retrieve existing stored labels or initialize an empty object
@@ -336,10 +420,9 @@ function createLabelElement(areaSize, additionalText) {
     containerDiv.style.borderRadius = '20px';
     containerDiv.style.border = '1px solid #ccc';
     containerDiv.style.fontSize = '12px';
-    containerDiv.style.fontFamily = 'Be Vietnam Pro'; // Set font family to 'Be Vietnam Pro'
+    containerDiv.style.fontFamily = 'Be Vietnam Pro';
     containerDiv.style.display = 'flex';
     containerDiv.style.alignItems = 'center';
-    containerDiv.style.flexDirection = 'row'; // Change flex direction to stack content vertically
     containerDiv.style.cursor = 'pointer'; // Change cursor to pointer to indicate it's clickable
 
     // Create icon span
@@ -364,30 +447,30 @@ function createLabelElement(areaSize, additionalText) {
     additionalTextDiv.style.padding = '6px'; // Add padding to the expanded text
     additionalTextDiv.style.fontSize = '10px';
     additionalTextDiv.style.color = '#666';
-    additionalTextDiv.style.fontFamily = 'Be Vietnam Pro'; // Set font family to 'Be Vietnam Pro'
+    additionalTextDiv.style.fontFamily = 'Be Vietnam Pro';
     additionalTextDiv.style.transition = 'max-height 0.3s ease-in-out'; // Add smooth transition effect
-    additionalTextDiv.style.backgroundColor = 'white'; // Set background color to opaque white
+    additionalTextDiv.style.backgroundColor = 'white';
 
     // Split the additional text by the "to" separator
     var splitText = additionalText.split(" to ");
     var beforeRange = splitText[0].trim();
     var afterRange = splitText[1].trim();
 
-    // Create text nodes for non-bold parts of the additional text
-    var textNodeBefore = document.createTextNode(beforeRange);
-    var textNodeAfter = document.createTextNode(afterRange);
-
     // Create span elements for bold treeRange values
     var boldTreeRangeStart = document.createElement('b');
-    boldTreeRangeStart.appendChild(textNodeBefore);
+    boldTreeRangeStart.textContent = beforeRange;
 
     var boldTreeRangeEnd = document.createElement('b');
-    boldTreeRangeEnd.appendChild(textNodeAfter);
+    boldTreeRangeEnd.textContent = afterRange;
 
     // Create span elements for normal weight text //The approximate arabica coffee trees for this plot is
     var normalText1 = document.createElement('span');
     normalText1.textContent = "The approximate arabica coffee trees for this plot is ";
     normalText1.style.fontWeight = 'normal'; // Set font weight to normal
+
+
+    // Append the icon before the text
+    containerDiv.insertBefore(iconSpan, labelContent);
 
     var normalText2 = document.createElement('span'); //to
     normalText2.textContent = " to ";
@@ -416,9 +499,6 @@ function createLabelElement(areaSize, additionalText) {
 
     return containerDiv;
 }
-
-
-
 
 
 
@@ -475,11 +555,6 @@ function calculateCentroid(coordinates) {
 
     return [x, y];
 }
-
-
-
-
-
 
 
 // Function to save the point's coordinates to the browser's storage
