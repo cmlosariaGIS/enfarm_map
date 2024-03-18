@@ -62,7 +62,7 @@ function startAddSensor() {
         addSensorsFloatingTitle.style.display = "block";
     }
 
-    addSensorBtnIcon.textContent = "delete_forever";
+    addSensorBtnIcon.textContent = "close";
     addSensorBtn.style.backgroundColor = "#FF6666";
     addSensorBtnIcon.style.color = "white";
 
@@ -349,6 +349,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Retrieve points from local storage when the page loads
 window.addEventListener('load', function () {
+    // Retrieve enfarm sensors coordinates from local storage
+    const storedPoints = retrievePointsFromLocalStorage();
+
     // Define the layer only if it does not exist
     if (!sensorVectorLayer) {
         const source = new ol.source.Vector();
@@ -359,7 +362,7 @@ window.addEventListener('load', function () {
         map.addLayer(sensorVectorLayer);
     }
 
-    const storedPoints = retrievePointsFromLocalStorage();
+    // Add the stored points as features to the vector layer
     if (storedPoints.length > 0) {
         storedPoints.forEach(function (point) {
             const coordinate = ol.proj.transform([point.enfarm_sensor_lon, point.enfarm_sensor_lat], 'EPSG:4326', 'EPSG:3857');
@@ -368,6 +371,9 @@ window.addEventListener('load', function () {
             });
             sensorVectorLayer.getSource().addFeature(feature);
         });
+
+        // Show the "Clear All Drawing" button
+        showButton('clearAllDrawingBtn');
     }
 
     const undoSensorBtn = document.getElementById("undoSensorBtn");
@@ -375,3 +381,51 @@ window.addEventListener('load', function () {
 });
 
 undoSensorBtn.addEventListener("click", undoLastSensor);
+
+
+
+
+
+
+/// Clearing enfarm sensor points \\\
+const clearAllDrawingBtn = document.getElementById("clearAllDrawingBtn");
+const deleteDialog = document.getElementById("dialog");
+
+// Function to show the delete confirmation dialog
+function showDeleteDialog() {
+    deleteDialog.classList.remove("hidden");
+}
+
+// Function to hide the delete confirmation dialog
+function hideDeleteDialog() {
+    deleteDialog.classList.add("hidden");
+}
+
+// Event listener for the "Clear All Drawing" button
+clearAllDrawingBtn.addEventListener("click", function () {
+    // Show the delete confirmation dialog
+    showDeleteDialog();
+});
+
+// Event listener for the "deleteNo" button in the delete confirmation dialog
+document.getElementById("deleteNo").addEventListener("click", function () {
+    // Hide the delete confirmation dialog without deleting the points
+    hideDeleteDialog();
+});
+
+// Event listener for the "deleteYes" button in the delete confirmation dialog
+document.getElementById("deleteYes").addEventListener("click", function () {
+    // Delete the points
+    deletePoints();
+
+    // Clear the points stored in the storage
+    localStorage.removeItem('enfarm_sensor_coordinates');
+
+    // Hide the delete confirmation dialog
+    hideDeleteDialog();
+});
+
+
+
+
+
