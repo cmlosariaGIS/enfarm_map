@@ -120,6 +120,7 @@ function undoSketchInteraction() {
     }
 }
 
+
 originalButton.addEventListener('click', function () {
     // Toggle the draw interaction state
     drawActive = !drawActive;
@@ -140,6 +141,31 @@ originalButton.addEventListener('click', function () {
     const sketchingFarmFloatingTitle = document.querySelector('.sketchingFarmfloatingTitle');
     if (sketchingFarmFloatingTitle) {
         sketchingFarmFloatingTitle.style.display = drawActive ? 'block' : 'none';
+    }
+
+    // Show sketchingFarmfloatingTitle when sketching is active
+    if (drawActive) {
+        const floatingMessage = document.createElement("div");
+        floatingMessage.className = "floating-message";
+        const infoIcon = document.createElement("i");
+        infoIcon.className = "material-icons";
+        infoIcon.textContent = "touch_app";
+        infoIcon.style.fontSize = "50px";
+        floatingMessage.appendChild(infoIcon);
+        floatingMessage.innerHTML +=
+            "Chạm vào bản đồ để bắt đầu vẽ trang trại"; // "Tap on the map to start drawing the farm"
+        map.getViewport().appendChild(floatingMessage);
+
+        timeoutId = setTimeout(function () {
+            map.getViewport().removeChild(floatingMessage);
+        }, 3000);
+
+    } else {
+        // Remove the floating message when not drawing
+        const floatingMessage = document.querySelector(".floating-message");
+        if (floatingMessage) {
+            map.getViewport().removeChild(floatingMessage);
+        }
     }
 
     if (drawActive) {
@@ -201,7 +227,7 @@ originalButton.addEventListener('click', function () {
         });
 
         // Change the button content to "delete_forever" icon
-        originalButton.innerHTML = '<i class="material-icons" style="color: white;">delete_forever</i>';
+        originalButton.innerHTML = '<i class="material-icons" style="color: white;">close</i>';
     } else {
         // Hide the undo button
         document.getElementById('undoSketchBtn').style.display = 'none';
@@ -235,16 +261,21 @@ document.getElementById('undoSketchBtn').addEventListener('click', undoSketchInt
 
 
 
+
 ////////////////////// Function to add the area size label to the point feature \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 // Function to add the area size label to the point feature
 function addAreaLabelToFeature(feature, areaSquareMeters, areaHectares) {
     // Calculate area size
     var areaSize = areaSquareMeters < 1000 ? areaSquareMeters.toFixed(2) + ' sqm' : areaHectares.toFixed(2) + ' ha';
+    var treeRange = estimateTreeRange(areaHectares);
+    //var additionalText = "Approximate robusta coffee trees for this plot is " + treeRange[0] + " to " + treeRange[1];
+    var additionalText = "Approximate arabica coffee trees for this plot is " + treeRange[0] + " to " + treeRange[1];
+
 
     // Create area size label overlay
     var areaSizeLabel = new ol.Overlay({
         id: JSON.stringify(feature.getGeometry().getCoordinates()), // Unique identifier for the overlay
-        element: createLabelElement(areaSize), // Create label element
+        element: createLabelElement(areaSize, additionalText), // Create label element
         offset: [90, -40], // Offset to position the label
         positioning: 'top-right', // Position the label to the top right of the feature
         insertFirst: false // Ensure that the label is not inserted as the first child
@@ -259,55 +290,123 @@ function addAreaLabelToFeature(feature, areaSquareMeters, areaHectares) {
     // Save reference to the area size label overlay
     areaSizeLabels[areaSizeLabel.getId()] = areaSizeLabel;
 
-    // Save area size label to local storage
-    saveAreaLabel(areaSize, feature.getGeometry().getCoordinates());
+    // Save area size label and tree range to local storage
+    saveAreaLabel(areaSize, feature.getGeometry().getCoordinates(), treeRange);
 }
 
+/*
+// Function to estimate the range of Robusta Coffee Trees for a given area
+function estimateTreeRange(areaHectares) {
+    // Calculate the minimum and maximum number of trees based on the area
+    var minTrees = Math.round(areaHectares * 625);
+    var maxTrees = Math.round(areaHectares * 1667);
+    return [minTrees, maxTrees];
+}*/
 
-// Function to save area size label to local storage
-function saveAreaLabel(label, coordinates) {
+// Function to estimate the range of Robusta Coffee Trees for a given area
+function estimateTreeRange(areaHectares) {
+    // Calculate the minimum and maximum number of trees based on the area
+    var minTrees = Math.round(areaHectares * 3000);
+    var maxTrees = Math.round(areaHectares * 5000);
+    return [minTrees, maxTrees];
+}
+
+// Function to save area size label and tree range to local storage
+function saveAreaLabel(label, coordinates, treeRange) {
     // Retrieve existing stored labels or initialize an empty object
     var storedLabels = JSON.parse(localStorage.getItem('storedAreaLabels')) || {};
     // Convert coordinates to string for use as object key
     var coordinatesKey = JSON.stringify(coordinates);
-    // Add the label with coordinates to the object
-    storedLabels[coordinatesKey] = label;
+    // Add the label with coordinates and tree range to the object
+    storedLabels[coordinatesKey] = { label: label, treeRange: treeRange };
     // Save the updated object to local storage
     localStorage.setItem('storedAreaLabels', JSON.stringify(storedLabels));
 }
 
-// Function to create label element
-function createLabelElement(areaSize) {
+// Function to create label element with additional text that can be expanded
+function createLabelElement(areaSize, additionalText) {
     // Create container div
     var containerDiv = document.createElement('div');
-    containerDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+    containerDiv.style.backgroundColor = 'white';
     containerDiv.style.padding = '6px';
     containerDiv.style.borderRadius = '20px';
     containerDiv.style.border = '1px solid #ccc';
     containerDiv.style.fontSize = '12px';
-    containerDiv.style.fontFamily = 'Be Vietnam Pro';
-    containerDiv.style.display = 'flex'; // Align items horizontally
-    containerDiv.style.alignItems = 'center'; // Center the items vertically
+    containerDiv.style.fontFamily = 'Be Vietnam Pro'; // Set font family to 'Be Vietnam Pro'
+    containerDiv.style.display = 'flex';
+    containerDiv.style.alignItems = 'center';
+    containerDiv.style.flexDirection = 'row'; // Change flex direction to stack content vertically
+    containerDiv.style.cursor = 'pointer'; // Change cursor to pointer to indicate it's clickable
 
     // Create icon span
     var iconSpan = document.createElement('span');
     iconSpan.className = 'material-symbols-outlined';
     iconSpan.textContent = 'psychiatry';
     iconSpan.style.marginRight = '3px'; // Add some margin between the icon and the text
-    iconSpan.style.color = '#515151'; // Set the font color
+    iconSpan.style.color = '#515151';
 
     // Create label content span
     var labelContent = document.createElement('span');
     labelContent.textContent = areaSize;
-    labelContent.style.color = '#515151'; // Set the font color
+    labelContent.style.color = '#515151';
 
     // Append icon and label content to the container
     containerDiv.appendChild(iconSpan);
     containerDiv.appendChild(labelContent);
 
+    // Create additional text span
+    var additionalTextDiv = document.createElement('div');
+    additionalTextDiv.textContent = additionalText;
+    additionalTextDiv.style.display = 'none'; // Initially hide the additional text
+    additionalTextDiv.style.paddingTop = '5px';
+    additionalTextDiv.style.padding = '6px'; // Add padding to the expanded text
+    additionalTextDiv.style.fontSize = '10px';
+    additionalTextDiv.style.color = '#666';
+    additionalTextDiv.style.fontFamily = 'Be Vietnam Pro'; // Set font family to 'Be Vietnam Pro'
+    additionalTextDiv.style.transition = 'max-height 0.3s ease-in-out'; // Add smooth transition effect
+    additionalTextDiv.style.backgroundColor = 'white'; // Set background color to opaque white
+
+    // Append additional text to the container
+    containerDiv.appendChild(additionalTextDiv);
+
+    // Add event listener to toggle expansion on click
+    containerDiv.addEventListener('click', function () {
+        // Toggle the display of additional text only
+        additionalTextDiv.style.display = additionalTextDiv.style.display === 'none' ? 'block' : 'none';
+        // Toggle the display of icon and area size
+        iconSpan.style.display = iconSpan.style.display === 'none' ? 'inline-block' : 'none';
+        labelContent.style.display = labelContent.style.display === 'none' ? 'inline-block' : 'none';
+    });
+
     return containerDiv;
 }
 
+// Function to load area size labels from local storage and display them on map load
+function loadAreaLabels() {
+    // Retrieve stored labels from local storage
+    var storedLabels = JSON.parse(localStorage.getItem('storedAreaLabels')) || {};
+    // Iterate over stored labels and create overlay for each
+    Object.keys(storedLabels).forEach(function (coordinatesStr) {
+        var coordinates = JSON.parse(coordinatesStr);
+        var labelInfo = storedLabels[coordinatesStr];
+        var label = labelInfo.label;
+        var treeRange = labelInfo.treeRange;
+        // Fetch additional text from wherever it's stored (e.g., database or another local storage item)
+        var additionalText = "Approximate robusta coffee trees for this plot is " + treeRange[0] + " to " + treeRange[1]; // Example additional text
+        var additionalText = "Approximate arabica coffee trees for this plot is " + treeRange[0] + " to " + treeRange[1]; // Example additional text
+        var areaSizeLabel = new ol.Overlay({
+            element: createLabelElement(label, additionalText), // Create label element with additional text
+            offset: [90, -40], // Offset to position the label
+            positioning: 'top-right', // Position the label to the top right of the feature
+            insertFirst: false // Ensure that the label is not inserted as the first child
+        });
+        areaSizeLabel.setPosition(coordinates);
+        map.addOverlay(areaSizeLabel);
+    });
+}
+
+// Call the function to load and display area size labels on map load
+loadAreaLabels();
 
 // Function to calculate the area of a polygon
 function calculatePolygonArea(coordinates) {
@@ -332,6 +431,10 @@ function calculateCentroid(coordinates) {
 
     return [x, y];
 }
+
+
+
+
 
 
 
