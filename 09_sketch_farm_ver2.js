@@ -28,6 +28,40 @@ map.addLayer(vectorLayer);
 
 ////////////// Function to Highlight Selected Farm Polygon \\\\\\\\\\\\\\\\
 
+// Initialize vector source and layer for drawn polygons 
+var source = new ol.source.Vector();
+
+// Define a variable to store the point's coordinates
+var storedPointCoordinates;
+
+// Keep track of the added area size labels
+var areaSizeLabels = {};
+
+// Define the style for the polygons
+var polygonStyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: 'rgba(33,105,104, 0.5)' // Fill color (green with 50% opacity)
+    }),
+    stroke: new ol.style.Stroke({
+        color: 'rgba(33,105,104, 0.5)', // Outline color (green)
+        width: 5 // Outline width (5 pixels)
+    })
+});
+
+// Initialize/display vector layer with the defined style
+var vectorLayer = new ol.layer.Vector({
+    source: source,
+    style: polygonStyle // Apply the style to the layer
+});
+map.addLayer(vectorLayer);
+
+
+
+
+
+
+////////////// Function to Highlight Selected Farm Polygon \\\\\\\\\\\\\\\\
+
 // Define style for highlighted polygons with sky blue outline
 var highlightedPolygonStyle = new ol.style.Style({
     fill: new ol.style.Fill({
@@ -39,6 +73,22 @@ var highlightedPolygonStyle = new ol.style.Style({
     })
 });
 
+// Define style for highlighted points with sky blue outline
+var highlightedPointStyle = new ol.style.Style({
+    image: new ol.style.Circle({
+        radius: 5,
+        fill: new ol.style.Fill({
+            color: 'yellow'
+        }),
+        stroke: new ol.style.Stroke({
+            color: 'yellow',
+            width: 3
+        })
+    })
+});
+
+
+
 
 // Initialize select interaction
 var selectInteraction = new ol.interaction.Select({
@@ -49,15 +99,11 @@ var selectInteraction = new ol.interaction.Select({
 map.addInteraction(selectInteraction);
 
 
-// Function to delete the selected polygon
-function deleteSelectedPolygon(feature, deleteButton) {
-    // Remove the feature from the source
-    source.removeFeature(feature);
-    // Remove the delete button
-    deleteButton.remove();
-}
 
-// Event listener for when a feature is selected
+
+
+
+// Event listener for when a feature is selected or deselected
 selectInteraction.on('select', function (event) {
     var selectedFeatures = event.selected; // Get the selected features
 
@@ -67,9 +113,27 @@ selectInteraction.on('select', function (event) {
         button.remove();
     });
 
+    // Loop through all stored point features and reset their styles
+    var storedPointLayers = map.getLayers().getArray().filter(layer => layer.get('name') === 'storedPointLayer');
+    storedPointLayers.forEach(function (layer) {
+        layer.getSource().getFeatures().forEach(function (pointFeature) {
+            pointFeature.setStyle(null);
+        });
+    });
+
     // Loop through selected features
     selectedFeatures.forEach(function (feature) {
         feature.setStyle(highlightedPolygonStyle); // Apply highlighted style
+
+        // Highlight stored points on top of the selected polygon
+        storedPointLayers.forEach(function (layer) {
+            layer.getSource().getFeatures().forEach(function (pointFeature) {
+                if (feature.getGeometry().intersectsCoordinate(pointFeature.getGeometry().getCoordinates())) {
+                    // Highlight stored point
+                    pointFeature.setStyle(highlightedPointStyle);
+                }
+            });
+        });
 
         // Create the delete button
         var deleteButton = document.createElement('button');
@@ -99,11 +163,85 @@ selectInteraction.on('select', function (event) {
             deleteSelectedPolygon(feature, deleteButton);
         });
     });
+
+    // Hide delete button if no polygon is selected
+    if (selectedFeatures.length === 0) {
+        var existingDeleteButtons = document.querySelectorAll('.delete-button');
+        existingDeleteButtons.forEach(function (button) {
+            button.remove();
+        });
+    }
 });
 
 
 
 
+
+
+
+
+
+
+
+
+// Function to delete the selected polygon
+function deleteSelectedPolygon(feature, deleteButton) {
+    // Remove the feature from the source
+    source.removeFeature(feature);
+    // Remove the delete button
+    deleteButton.remove();
+
+    // Retrieve stored polygons from local storage
+    var storedPolygons = loadPolygons();
+    // Find the index of the deleted polygon in the stored polygons
+    var index = storedPolygons.findIndex(polygon => JSON.stringify(polygon) === JSON.stringify(feature.getGeometry().getCoordinates()));
+    // Remove the deleted polygon from the stored polygons
+    if (index !== -1) {
+        storedPolygons.splice(index, 1);
+        // Save the updated stored polygons back to local storage
+        savePolygons(storedPolygons);
+    }
+
+    // Remove associated point and area size label
+    var centroid = calculateCentroid(feature.getGeometry().getCoordinates()[0]);
+    removeAssociatedPointAndLabel(centroid);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Function to load area size labels from local storage and display them on map load
+function loadAreaLabels() {
+    // Retrieve stored labels from local storage
+    var storedLabels = JSON.parse(localStorage.getItem('storedAreaLabels')) || {};
+    // Iterate over stored labels and create overlay for each
+    Object.keys(storedLabels).forEach(function (coordinatesStr) {
+        var coordinates = JSON.parse(coordinatesStr);
+        var label = storedLabels[coordinatesStr];
+        var areaSizeLabel = new ol.Overlay({
+            element: createLabelElement(label), // Create label element
+            offset: [90, -40], // Offset to position the label
+            positioning: 'top-right', // Position the label to the top right of the feature
+            insertFirst: false // Ensure that the label is not inserted as the first child
+        });
+        areaSizeLabel.setPosition(coordinates);
+        map.addOverlay(areaSizeLabel);
+    });
+}
 
 
 
@@ -173,6 +311,8 @@ loadPoints().forEach(coordinates => {
     });
     map.addLayer(pointLayer);
 });
+
+
 
 
 
@@ -398,6 +538,8 @@ function estimateTreeRange(areaHectares) {
     return [formattedMinTrees, formattedMaxTrees];
 }
 
+
+
 // Function to save area size label and tree range to local storage
 function saveAreaLabel(label, coordinates, treeRange) {
     // Retrieve existing stored labels or initialize an empty object
@@ -409,6 +551,24 @@ function saveAreaLabel(label, coordinates, treeRange) {
     // Save the updated object to local storage
     localStorage.setItem('storedAreaLabels', JSON.stringify(storedLabels));
 }
+
+
+/*
+// Function to save area size label and tree range to local storage
+function saveAreaLabel(label, coordinates, treeRange) {
+    // Retrieve existing stored labels or initialize an empty object
+    var storedLabels = JSON.parse(localStorage.getItem('storedAreaLabels')) || {};
+    // Generate a new objectID based on the current count of stored labels
+    var objectID = Object.keys(storedLabels).length;
+    // Convert coordinates to string for use as object key
+    var coordinatesKey = JSON.stringify(coordinates);
+    // Add the label with coordinates, tree range, and objectID to the object
+    storedLabels[coordinatesKey] = { objectID: objectID, label: label, coordinates: coordinates, treeRange: treeRange };
+    // Save the updated object to local storage
+    localStorage.setItem('storedAreaLabels', JSON.stringify(storedLabels));
+}*/
+
+
 
 
 // Function to create label element with additional text that can be expanded
@@ -777,6 +937,19 @@ document.getElementById('finishDrawingButton').addEventListener('click', functio
 
 // Call the function to toggle the visibility of the clear all drawings button initially
 toggleClearAllButtonVisibility();
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
