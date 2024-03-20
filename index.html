@@ -486,27 +486,30 @@
         <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">square_foot</i>
         <span class="measuringAreaTitle" style="color: #515151;">Đo diện tích</span> <!--Measuring Area-->
     </div>
-    
+
     <div id="measuringLengthfloatingTitle" class="measuringLengthfloatingTitle" style="display: none;">
         <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">straighten</i>
         <span class="measuringLengthTitle" style="color: #515151;">Đo độ dài</span> <!--Measuring Length-->
     </div>
-    
+
     <div id="sketchingFarmfloatingTitle" class="sketchingFarmfloatingTitle" style="display: none;">
         <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">create</i>
-        <span class="sketchingFarmTitle" style="color: #515151;">Vẽ đất nông nghiệp của bạn</span><!--Sketching a Farm Parcel-->
+        <span class="sketchingFarmTitle" style="color: #515151;">Vẽ đất nông nghiệp của
+            bạn</span><!--Sketching a Farm Parcel-->
     </div>
-    
+
     <div id="addSensorsfloatingTitle" class="addSensorsfloatingTitle" style="display: none;">
         <i class="material-icons" style="font-size: 30px; padding-right: 10px; color: #515151;">sensors</i>
         <span class="addSensorsTitle" style="color: #515151;">Thêm cảm biến Enfarm</span><!--Adding enfarm sensors-->
     </div>
-    
-    <div id="generateElevationProfilefloatingTitle" class="generateElevationProfilefloatingTitle" style="display: none;">
+
+    <div id="generateElevationProfilefloatingTitle" class="generateElevationProfilefloatingTitle"
+        style="display: none;">
         <i class="material-symbols-outlined" style="font-size: 30px; padding-right: 5px; color: #515151;">elevation</i>
-        <span class="generateElevationProfileTitle" style="color: #515151;">Đo chiều cao</span> <!-- Generate Elevation Profile -->
+        <span class="generateElevationProfileTitle" style="color: #515151;">Đo chiều cao</span>
+        <!-- Generate Elevation Profile -->
     </div>
-    
+
 
 
     <!---------------------------------------------------///// Adding Farm and Sensor Success Message \\\\\------------------------------------------->
@@ -520,6 +523,9 @@
         <div class="addMessage">Đã thêm ranh giới trang trại</div>
         <!-- Da tehm ranh gioi trang trai - Farm boundary added-->
     </div>
+
+
+    <button id="deletePointBtn" style="display: none;">Delete Point</button>
 
 
     <!-----------------------------------------------------///// Windy Weather \\\\\------------------------------------------------------------------->
@@ -1523,6 +1529,28 @@
             được sử dụng cho mục đích kỹ thuật.</p>
     </div>
 
+    <!----------///// GPS DRAW FARM BUTTON AND FUNCTIONS \\\\\---------->
+    <!-- HTML buttons -->
+    <button id="gpsDrawFarmBtn">
+        <i class="material-symbols-outlined">mode_of_travel</i>
+    </button>
+
+
+    <button id="gpsDrawFarmStartBtn" class="hidden" onclick="draw.start()">
+        <i class="material-symbols-outlined">play_arrow</i>
+    </button>
+
+    <button id="gpsDrawFarmPauseBtn" class="hidden" onclick="draw.pause()">
+        <i class="material-symbols-outlined">pause</i>
+    </button>
+
+    <button id="gpsDrawFarmStopBtn" class="hidden" onclick="draw.stop()">
+        <i class="material-symbols-outlined">stop_circle</i>
+    </button>
+
+
+
+
     <!--<script src="https://cdn.jsdelivr.net/npm/idb-js@2.0.0/dist/Idb.min.js"></script>-->
     <!--<script src="script.js"></script>-->
 
@@ -1539,12 +1567,15 @@
     <script src="08_search_place_coordinates.js"></script>
     <!--<script src="09_sketch_farm.js"></script>-->
     <script src="09_sketch_farm_ver2.js"></script>
+
+    <script src="09_gps_draw.js"></script>
+
     <script src="10_add_sensors.js"></script>
     <script src="12_measure_area.js"></script>
     <script src="13_measure_length.js"></script>
     <script src="14_elevation_profile.js"></script>
     <script src="15_north_arrow.js"></script>
-    <script src="16_birds_cloud_weather.js"></script>
+    <!--<script src="16_birds_cloud_weather.js"></script>-->
 
 
 </body>
