@@ -30,7 +30,7 @@ var draw = new ol.interaction.GeolocationDraw({
 map.addInteraction(draw);
 
 // Hard code the drawing type to "Polygon"
-draw.set("type", "Point");
+draw.set("type", "Polygon");
 
 // Hard code followTrack to true
 draw.setFollowTrack(true);
