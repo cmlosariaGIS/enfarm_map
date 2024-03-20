@@ -2124,3 +2124,152 @@ body {
 }
 
 
+/*GPS DRAW FARM*/
+
+#gpsDrawFarmBtn {
+    position: fixed;
+    top: 515px;
+    right: 15px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+#gpsDrawFarmBtn:hover {
+    background-color: #ccc;
+    /* Change background color on hover */
+}
+
+#gpsDrawFarmBtn i.material-symbols-outlined {
+    font-size: 30px;
+    color: #515151;
+}
+
+#gpsDrawFarmBtn.active {
+    background-color: #FF6666;
+}
+
+#gpsDrawFarmBtn.active i.material-symbols-outlined {
+    color: #ffffff;
+}
+
+/*START*/
+#gpsDrawFarmStartBtn {
+    position: fixed;
+    top: 515px;
+    right: 230px;
+    background-color: #19977b;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+#gpsDrawFarmStartBtn:hover {
+    background-color: #ccc;
+    /* Change background color on hover */
+}
+
+#gpsDrawFarmStartBtn  i.material-symbols-outlined {
+    font-size: 30px;
+    color: #ffffff;
+}
+
+#gpsDrawFarmStartBtn.active {
+    background-color: #4e9af1;
+}
+
+#gpsDrawFarmStartBtn.active i.material-symbols-outlined {
+    color: #ffffff;
+}
+
+/* PAUSE */
+#gpsDrawFarmPauseBtn {
+    position: fixed;
+    top: 515px;
+    right: 160px;
+    background-color: #e98d0d;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+#gpsDrawFarmPauseBtn:hover {
+    background-color: #ccc;
+    /* Change background color on hover */
+}
+
+#gpsDrawFarmPauseBtn i.material-symbols-outlined {
+    font-size: 30px;
+    color: #ffffff;
+}
+
+#gpsDrawFarmPauseBtn.active {
+    background-color: #4e9af1;
+}
+
+#gpsDrawFarmPauseBtn.active i.material-symbols-outlined {
+    color: #ffffff;
+}
+
+
+
+/*STOP*/
+
+#gpsDrawFarmStopBtn {
+    position: fixed;
+    top: 515px;
+    right: 90px;
+    background-color: #ed226c;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+#gpsDrawFarmStopBtn:hover {
+    background-color: #ccc;
+    /* Change background color on hover */
+}
+
+#gpsDrawFarmStopBtn  i.material-symbols-outlined {
+    font-size: 30px;
+    color: #ffffff;
+}
+
+#gpsDrawFarmStopBtn.active {
+    background-color: #4e9af1;
+}
+
+#gpsDrawFarmStopBtn.active i.material-symbols-outlined {
+    color: #ffffff;
+}
+
+
+
+
+
+
