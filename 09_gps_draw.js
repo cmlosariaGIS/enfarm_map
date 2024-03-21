@@ -119,7 +119,6 @@ draw.on("drawend", function (e) {
 });
 
 /////// Save the GPS Drawing \\\\\\\
-/*
 // Define the gpsDrawSave function
 function gpsDrawSave() {
     try {
@@ -134,44 +133,6 @@ function gpsDrawSave() {
         console.error('Error saving drawing:', error);
     }
 }
-*/
-
-// Define the gpsDrawSave function
-function gpsDrawSave() {
-    try {
-        // Get the features from the vector source
-        var features = vector.getSource().getFeatures();
-        // Convert features to GeoJSON format
-        var geojsonFormat = new ol.format.GeoJSON();
-        var geojson = geojsonFormat.writeFeaturesObject(features);
-        // Save GeoJSON string to localStorage
-        localStorage.setItem('savedDrawing', JSON.stringify(geojson));
-
-        // Call function to save data to Google Sheets
-        saveToGoogleSheets(JSON.stringify(geojson));
-    } catch (error) {
-        console.error('Error saving drawing:', error);
-    }
-}
-
-
-// Register an event listener for the "Save" button
-document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function () {
-    //alert("Save button clicked!"); // Check if this alert is displayed
-    gpsDrawSave(); // Call the save function
-});
-
-
-/////// Function to save data to Google Sheets \\\\\
-function saveToGoogleSheets(data) {
-    var url = "https://script.google.com/a/macros/ensightful.co/s/AKfycbzK-8Gh0AENOIXbLLtrfgFrJViod5C-U9FOm3wGhc8N/dev";
-    google.script.run.withSuccessHandler(function(response) {
-        console.log("Data saved to Google Sheets");
-    }).withFailureHandler(function(error) {
-        console.error("Error saving data to Google Sheets:", error);
-    }).saveDataToSheet(data);
-}
-
 
 //////// Retrieve the saved GPS Drawing \\\\\\\
 
@@ -197,7 +158,6 @@ function gpsDrawLoad() {
 window.addEventListener('load', gpsDrawLoad);
 
 
-
 ////// Discard the GPS Drawing \\\\\\\
 // Define the gpsDrawDiscard function
 function gpsDrawDiscard() {
@@ -207,6 +167,58 @@ function gpsDrawDiscard() {
 
 // Register an event listener for the "Discard" button
 document.getElementById('gpsDrawFarmDiscardDrawBtn').addEventListener('click', gpsDrawDiscard);
+
+
+
+
+
+
+
+
+
+
+
+
+///////////// Function to Highlight Selected Farm Polygon \\\\\\\\\\\\\\\\
+
+// Define style for highlighted polygons with sky blue outline
+var highlightedPolygonStyle = new ol.style.Style({
+    fill: new ol.style.Fill({
+        color: 'rgba(33,105,104, 0.5)' // Fill color (green with 50% opacity)
+    }),
+    stroke: new ol.style.Stroke({
+        color: '#00b4d8', // Outline color (sky blue)
+        width: 5 // Outline width (5 pixels)
+    })
+});
+
+// Initialize select interaction
+var selectInteraction = new ol.interaction.Select({
+    layers: [vector], // Set the layer to perform selection on
+});
+
+// Add the select interaction to the map
+map.addInteraction(selectInteraction);
+
+// Define a function to apply highlight style to selected feature
+function highlightSelectedFeature(event) {
+    var selectedFeatures = event.selected; // Get selected features
+    var deselectedFeatures = event.deselected; // Get deselected features
+
+    // Apply highlight style to selected features
+    selectedFeatures.forEach(function(feature) {
+        feature.setStyle(highlightedPolygonStyle);
+    });
+
+    // Reset style for deselected features
+    deselectedFeatures.forEach(function(feature) {
+        feature.setStyle(styleFunction); // Use original style
+    });
+}
+
+// Register an event listener for the 'select' event of the select interaction
+selectInteraction.on('select', highlightSelectedFeature);
+
 
 
 
