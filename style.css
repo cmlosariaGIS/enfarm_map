@@ -2183,7 +2183,7 @@ body {
 #gpsDrawFarmStartBtn {
     position: fixed;
     top: 515px;
-    right: 160px;
+    right: 90px;
     background-color: #19977b;
     border: none;
     border-radius: 50%;
@@ -2218,7 +2218,7 @@ body {
 #gpsDrawFarmPauseBtn {
     position: fixed;
     top: 515px;
-    right: 160px;
+    right: 90px;
     background-color: #e98d0d;
     border: none;
     border-radius: 50%;
@@ -2256,7 +2256,7 @@ body {
 #gpsDrawFarmStopBtn {
     position: fixed;
     top: 515px;
-    right: 90px;
+    right: 160px;
     background-color: #ed226c;
     border: none;
     border-radius: 50%;
@@ -2290,7 +2290,7 @@ body {
 /*SAVE FARM DRAWWING*/
 #gpsDrawFarmSaveDrawBtn {
     position: fixed;
-    top: 515px;
+    top: 75%;
     right: 41%;
     background-color: #069c63;
     border: none;
@@ -2325,7 +2325,7 @@ body {
 /*DISCARD FARM DRAWING*/
 #gpsDrawFarmDiscardDrawBtn {
     position: fixed;
-    top: 515px;
+    top: 75%;
     left: 41%;
     background-color: #ff0000;
     border: none;
