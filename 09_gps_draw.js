@@ -119,7 +119,7 @@ document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', func
 });
 
 
-/////// Retrieve the saved GPS Drawing \\\\\\\
+/*/////// Retrieve the saved GPS Drawing \\\\\\\
 // Function to load the saved drawing from local storage
 function loadSavedDrawing() {
     var savedDrawing = localStorage.getItem('savedDrawing');
@@ -140,7 +140,29 @@ function loadSavedDrawing() {
 }
 
 // Call the function to load the saved drawing when the DOM content is loaded
-document.addEventListener('DOMContentLoaded', loadSavedDrawing);
+document.addEventListener('DOMContentLoaded', loadSavedDrawing);*/
+
+// Define the gpsDrawLoad function
+function gpsDrawLoad() {
+    try {
+        // Retrieve the saved GeoJSON string from localStorage
+        const savedGeoJSONString = localStorage.getItem('savedDrawing');
+        if (savedGeoJSONString) {
+            // Parse the GeoJSON string into features
+            const geojsonFormat = new ol.format.GeoJSON();
+            const features = geojsonFormat.readFeatures(JSON.parse(savedGeoJSONString));
+            // Clear existing features and add the loaded features
+            vector.getSource().clear();
+            vector.getSource().addFeatures(features);
+        }
+    } catch (error) {
+        console.error('Error loading drawing:', error);
+    }
+}
+
+// Call the gpsDrawLoad function when the map loads
+window.addEventListener('load', gpsDrawLoad);
+
 
 
 
@@ -151,7 +173,6 @@ function gpsDrawDiscard() {
     // Clear the vector source to discard the drawing
     vector.getSource().clear();
 }
-
 // Register an event listener for the "Discard" button
 document.getElementById('gpsDrawFarmDiscardDrawBtn').addEventListener('click', gpsDrawDiscard);
 
