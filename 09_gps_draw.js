@@ -164,7 +164,7 @@ document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', func
 
 /////// Function to save data to Google Sheets \\\\\
 function saveToGoogleSheets(data) {
-    var url = "https://script.google.com/a/macros/ensightful.co/s/AKfycbyA4XF3GWKXJZwdQSPtkuD1nAeufhRF--h0g4qO4NWUILB2eOVRsj8pxYb_ePC1QZ_0/exec";
+    var url = "https://script.google.com/a/macros/ensightful.co/s/AKfycbzK-8Gh0AENOIXbLLtrfgFrJViod5C-U9FOm3wGhc8N/dev";
     google.script.run.withSuccessHandler(function(response) {
         console.log("Data saved to Google Sheets");
     }).withFailureHandler(function(error) {
