@@ -1,5 +1,4 @@
 ///// Showing and hiding Start, Pause and Stop buttons \\\\\
-
 document.addEventListener('DOMContentLoaded', function () {
     var startBtn = document.getElementById('gpsDrawFarmStartBtn');
     var pauseBtn = document.getElementById('gpsDrawFarmPauseBtn');
@@ -51,7 +50,7 @@ var styleFunction = function(feature) {
     });
 };
 
-// New vector layer 
+// New coffee farm vector layer 
 var vector = new ol.layer.Vector({
     name: 'coffeeFarm',
     source: new ol.source.Vector(),
@@ -120,6 +119,29 @@ document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', func
 });
 
 
+/////// Retrieve the saved GPS Drawing \\\\\\\
+// Function to load the saved drawing from local storage
+function loadSavedDrawing() {
+    var savedDrawing = localStorage.getItem('savedDrawing');
+    if (savedDrawing) {
+        var geojsonFormat = new ol.format.GeoJSON();
+        var features = geojsonFormat.readFeatures(savedDrawing, {
+            featureProjection: 'EPSG:3857', // Assuming your map uses EPSG:3857 projection
+        });
+        // Clear existing features before adding saved features
+        vector.getSource().clear();
+        // Apply style function to loaded features
+        features.forEach(function(feature) {
+            feature.setStyle(styleFunction(feature));
+        });
+        // Add features to the vector source
+        vector.getSource().addFeatures(features);
+    }
+}
+
+// Call the function to load the saved drawing when the DOM content is loaded
+document.addEventListener('DOMContentLoaded', loadSavedDrawing);
+
 
 
 
@@ -134,22 +156,6 @@ function gpsDrawDiscard() {
 document.getElementById('gpsDrawFarmDiscardDrawBtn').addEventListener('click', gpsDrawDiscard);
 
 
-/////// Retrieve the saved GPS Drawing \\\\\\\
-// Function to load the saved drawing from local storage
-function loadSavedDrawing() {
-    var savedDrawing = localStorage.getItem('savedDrawing');
-    if (savedDrawing) {
-        var geojsonFormat = new ol.format.GeoJSON();
-        var features = geojsonFormat.readFeatures(savedDrawing, {
-            featureProjection: 'EPSG:3857', // Assuming your map uses EPSG:3857 projection
-            style: styleFunction // Apply the same style function to the loaded features
-        });
-        vector.getSource().addFeatures(features);
-    }
-}
-
-// Call the function to load the saved drawing when the DOM content is loaded
-document.addEventListener('DOMContentLoaded', loadSavedDrawing);
 
 
 
