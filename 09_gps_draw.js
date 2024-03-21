@@ -100,17 +100,25 @@ draw.on("drawend", function (e) {
 /////// Save the GPS Drawing \\\\\\\
 // Define the gpsDrawSave function
 function gpsDrawSave() {
-    // Get the features from the vector source
-    var features = vector.getSource().getFeatures();
-    // Convert features to GeoJSON format
-    var geojsonFormat = new ol.format.GeoJSON();
-    var geojson = geojsonFormat.writeFeaturesObject(features);
-    // Save GeoJSON string to localStorage
-    localStorage.setItem('savedDrawing', JSON.stringify(geojson));
+    try {
+        // Get the features from the vector source
+        var features = vector.getSource().getFeatures();
+        // Convert features to GeoJSON format
+        var geojsonFormat = new ol.format.GeoJSON();
+        var geojson = geojsonFormat.writeFeaturesObject(features);
+        // Save GeoJSON string to localStorage
+        localStorage.setItem('savedDrawing', JSON.stringify(geojson));
+    } catch (error) {
+        console.error('Error saving drawing:', error);
+    }
 }
 
 // Register an event listener for the "Save" button
-document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', gpsDrawSave);
+document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function() {
+    alert("Save button clicked!"); // Check if this alert is displayed
+    gpsDrawSave(); // Call the save function
+});
+
 
 
 
