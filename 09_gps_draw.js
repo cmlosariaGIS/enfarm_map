@@ -119,6 +119,7 @@ draw.on("drawend", function (e) {
 });
 
 /////// Save the GPS Drawing \\\\\\\
+/*
 // Define the gpsDrawSave function
 function gpsDrawSave() {
     try {
@@ -133,12 +134,43 @@ function gpsDrawSave() {
         console.error('Error saving drawing:', error);
     }
 }
+*/
+
+// Define the gpsDrawSave function
+function gpsDrawSave() {
+    try {
+        // Get the features from the vector source
+        var features = vector.getSource().getFeatures();
+        // Convert features to GeoJSON format
+        var geojsonFormat = new ol.format.GeoJSON();
+        var geojson = geojsonFormat.writeFeaturesObject(features);
+        // Save GeoJSON string to localStorage
+        localStorage.setItem('savedDrawing', JSON.stringify(geojson));
+
+        // Call function to save data to Google Sheets
+        saveToGoogleSheets(JSON.stringify(geojson));
+    } catch (error) {
+        console.error('Error saving drawing:', error);
+    }
+}
+
 
 // Register an event listener for the "Save" button
 document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function () {
     //alert("Save button clicked!"); // Check if this alert is displayed
     gpsDrawSave(); // Call the save function
 });
+
+
+/////// Function to save data to Google Sheets \\\\\
+function saveToGoogleSheets(data) {
+    var url = "https://script.google.com/a/macros/ensightful.co/s/AKfycbyA4XF3GWKXJZwdQSPtkuD1nAeufhRF--h0g4qO4NWUILB2eOVRsj8pxYb_ePC1QZ_0/exec";
+    google.script.run.withSuccessHandler(function(response) {
+        console.log("Data saved to Google Sheets");
+    }).withFailureHandler(function(error) {
+        console.error("Error saving data to Google Sheets:", error);
+    }).saveDataToSheet(data);
+}
 
 
 //////// Retrieve the saved GPS Drawing \\\\\\\
@@ -163,8 +195,6 @@ function gpsDrawLoad() {
 
 // Call the gpsDrawLoad function when the map loads
 window.addEventListener('load', gpsDrawLoad);
-
-
 
 
 
