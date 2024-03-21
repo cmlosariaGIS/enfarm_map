@@ -39,6 +39,23 @@ body {
     cursor: pointer;
 }
 
+/*@keyframes glow {
+    0% {
+        box-shadow: 0 0 0px 0px rgba(255, 0, 0, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.7);
+    }
+    100% {
+        box-shadow: 0 0 0px 0px rgba(255, 0, 0, 0.7);
+    }
+}
+
+.glowing {
+    animation: glow 1.5s infinite alternate;
+}*/
+
+
 .searchBtn,
 .drawFarmBtn,
 .undoSketchBtn,
@@ -1132,9 +1149,11 @@ body {
 
 }
 
+/*
 .hidden {
     display: none;
 }
+*/
 
 /****** START WINDY WEATHER STYLES *******/
 :root {
@@ -1762,9 +1781,10 @@ body {
     font-size: 15px;
 }
 
+/*
 .hidden {
     display: none;
-}
+}*/
 
 /*END Style Retreieved Pill on map restart*/
 
@@ -2164,7 +2184,7 @@ body {
 #gpsDrawFarmStartBtn {
     position: fixed;
     top: 515px;
-    right: 230px;
+    right: 160px;
     background-color: #19977b;
     border: none;
     border-radius: 50%;
@@ -2273,3 +2293,15 @@ body {
 
 
 
+
+
+
+
+
+
+
+
+
+.hidden {
+    display: none;
+}
