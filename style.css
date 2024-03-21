@@ -95,7 +95,7 @@ body {
 .locationBtn:hover,
 .sketchFarmBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 .searchBtn i,
@@ -136,7 +136,6 @@ body {
 
 #tutorialBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
 }
 
 #tutorialBtn i.material-icons {
@@ -189,7 +188,7 @@ body {
 
 .searchBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 
@@ -903,7 +902,7 @@ body {
 
 .sketchFarmBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 .undoSketchBtn {
@@ -934,7 +933,7 @@ body {
 
 .addSensorBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 .undoSensorBtn {
@@ -1021,7 +1020,7 @@ body {
 
 .northArrow:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 .northArrow .material-icons {
@@ -1286,7 +1285,7 @@ body {
 
 #resetBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 #resetBtn i.material-icons {
@@ -1328,7 +1327,7 @@ body {
 
 #perspectiveBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 #perspectiveBtn i.material-icons {
@@ -1982,7 +1981,7 @@ body {
 
 #elevProfileBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 #elevProfileBtn i.material-symbols-outlined {
@@ -2164,7 +2163,7 @@ body {
 
 #gpsDrawFarmBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 #gpsDrawFarmBtn i.material-symbols-outlined {
@@ -2199,7 +2198,7 @@ body {
 
 #gpsDrawFarmStartBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 #gpsDrawFarmStartBtn  i.material-symbols-outlined {
@@ -2234,7 +2233,7 @@ body {
 
 #gpsDrawFarmPauseBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 #gpsDrawFarmPauseBtn i.material-symbols-outlined {
@@ -2272,7 +2271,7 @@ body {
 
 #gpsDrawFarmStopBtn:hover {
     background-color: #ccc;
-    /* Change background color on hover */
+
 }
 
 #gpsDrawFarmStopBtn  i.material-symbols-outlined {
@@ -2288,7 +2287,74 @@ body {
     color: #ffffff;
 }
 
+/*SAVE FARM DRAWWING*/
+#gpsDrawFarmSaveDrawBtn {
+    position: fixed;
+    top: 515px;
+    right: 41%;
+    background-color: #069c63;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
 
+#gpsDrawFarmSaveDrawBtn:hover {
+    background-color: #ccc;
+
+}
+
+#gpsDrawFarmSaveDrawBtn  i.material-symbols-outlined {
+    font-size: 22px;
+    color: #ffffff;
+}
+
+/*#gpsDrawFarmSaveDrawBtn.active {
+    background-color: #4e9af1;
+}*/
+
+#gpsDrawFarmSaveDrawBtn.active i.material-symbols-outlined {
+    color: #ffffff;
+}
+
+/*DISCARD FARM DRAWING*/
+#gpsDrawFarmDiscardDrawBtn {
+    position: fixed;
+    top: 515px;
+    left: 41%;
+    background-color: #ff0000;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+#gpsDrawFarmDiscardDrawBtn:hover {
+    background-color: #ccc;
+
+}
+
+#gpsDrawFarmDiscardDrawBtn i.material-symbols-outlined {
+    font-size: 22spx;
+    color: #ffffff;
+}
+#gpsDrawFarmDiscardDrawBtn.active {
+    background-color: #4e9af1;
+}
+
+#gpsDrawFarmStopBtn.active i.material-symbols-outlined {
+    color: #ffffff;
+}
 
 
 
