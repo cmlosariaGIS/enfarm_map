@@ -4,16 +4,20 @@ document.addEventListener('DOMContentLoaded', function () {
     var pauseBtn = document.getElementById('gpsDrawFarmPauseBtn');
     var stopBtn = document.getElementById('gpsDrawFarmStopBtn');
     var farmBtn = document.getElementById('gpsDrawFarmBtn');
+    var saveBtn = document.getElementById('gpsDrawFarmSaveDrawBtn');
+    var discardBtn = document.getElementById('gpsDrawFarmDiscardDrawBtn');
 
     // Hide buttons on map load
     startBtn.style.display = 'none';
     stopBtn.style.display = 'none';
-    pauseBtn.style.display = 'none'; 
+    pauseBtn.style.display = 'none';
+    saveBtn.style.display = 'none';
+    discardBtn.style.display = 'none';
 
     function toggleButtons() {
         var showButtons = (startBtn.style.display === 'none');
         startBtn.style.display = showButtons ? 'block' : 'none';
-        stopBtn.style.display = showButtons ? 'block' : 'none';
+        stopBtn.style.display = showButtons ? 'none' : 'none';
 
         if (pauseBtn.style.display === 'block') {
             pauseBtn.style.display = 'none';
@@ -33,19 +37,37 @@ document.addEventListener('DOMContentLoaded', function () {
     stopBtn.addEventListener('click', function () {
         startBtn.style.display = 'block';
         pauseBtn.style.display = 'none';
+        saveBtn.style.display = 'block';
+        discardBtn.style.display = 'block';
+    });
+
+    saveBtn.addEventListener('click', function () {
+        startBtn.style.display = 'none';
+        pauseBtn.style.display = 'none';
+        stopBtn.style.display = 'none';
+        saveBtn.style.display = 'none';
+        discardBtn.style.display = 'none';
+    });
+
+    discardBtn.addEventListener('click', function () {
+        startBtn.style.display = 'none';
+        pauseBtn.style.display = 'none';
+        stopBtn.style.display = 'none';
+        saveBtn.style.display = 'none';
+        discardBtn.style.display = 'none';
     });
 });
 
 
 // Define the Polygon style 
-var styleFunction = function(feature) {
+var styleFunction = function (feature) {
     return new ol.style.Style({
         fill: new ol.style.Fill({
             color: 'rgba(33,105,104, 0.5)' // Fill color (green with 50% opacity)
         }),
         stroke: new ol.style.Stroke({
             color: 'rgba(33,105,104, 0.5)', // Outline color (green)
-            width: 5 
+            width: 5
         })
     });
 };
@@ -54,7 +76,7 @@ var styleFunction = function(feature) {
 var vector = new ol.layer.Vector({
     name: 'coffeeFarm',
     source: new ol.source.Vector(),
-    style: styleFunction 
+    style: styleFunction
 });
 
 // Add the vector layer to the map
@@ -65,7 +87,7 @@ map.addLayer(vector);
 var draw = new ol.interaction.GeolocationDraw({
     source: vector.getSource(),
     zoom: 18,
-    minAccuracy: 1000, //10000
+    minAccuracy: 10, //10000
     tolerance: 1,
 });
 
@@ -113,34 +135,13 @@ function gpsDrawSave() {
 }
 
 // Register an event listener for the "Save" button
-document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function() {
+document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function () {
     alert("Save button clicked!"); // Check if this alert is displayed
     gpsDrawSave(); // Call the save function
 });
 
 
-/*/////// Retrieve the saved GPS Drawing \\\\\\\
-// Function to load the saved drawing from local storage
-function loadSavedDrawing() {
-    var savedDrawing = localStorage.getItem('savedDrawing');
-    if (savedDrawing) {
-        var geojsonFormat = new ol.format.GeoJSON();
-        var features = geojsonFormat.readFeatures(savedDrawing, {
-            featureProjection: 'EPSG:3857', // Assuming your map uses EPSG:3857 projection
-        });
-        // Clear existing features before adding saved features
-        vector.getSource().clear();
-        // Apply style function to loaded features
-        features.forEach(function(feature) {
-            feature.setStyle(styleFunction(feature));
-        });
-        // Add features to the vector source
-        vector.getSource().addFeatures(features);
-    }
-}
-
-// Call the function to load the saved drawing when the DOM content is loaded
-document.addEventListener('DOMContentLoaded', loadSavedDrawing);*/
+//////// Retrieve the saved GPS Drawing \\\\\\\
 
 // Define the gpsDrawLoad function
 function gpsDrawLoad() {
@@ -173,6 +174,7 @@ function gpsDrawDiscard() {
     // Clear the vector source to discard the drawing
     vector.getSource().clear();
 }
+
 // Register an event listener for the "Discard" button
 document.getElementById('gpsDrawFarmDiscardDrawBtn').addEventListener('click', gpsDrawDiscard);
 
