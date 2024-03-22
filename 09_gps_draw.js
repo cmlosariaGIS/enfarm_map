@@ -131,42 +131,9 @@ draw.on('follow', function (e) {
 });
 
 // Handle drawing
-draw.on("drawstart", function (e) {
-});
-
 draw.on("drawend", function (e) {
     $(".follow").hide();
-
-    // Get the drawn polygon feature
-    var feature = e.feature;
-
-    // Get the geometry of the drawn polygon
-    var geometry = feature.getGeometry();
-
-    // Calculate the center of the polygon
-    var center = ol.extent.getCenter(geometry.getExtent());
-
-    // Log the center coordinates
-    console.log("Center coordinates:", center);
-
-    // Save the center coordinates to storage
-    saveCenterCoordinates(center);
-
-    // Function to save center coordinates to storage
-    function saveCenterCoordinates(coordinates) {
-        try {
-            // Get the existing center points or initialize an empty array
-            var existingCenterPoints = JSON.parse(localStorage.getItem('gpsDrawnPolygonsCenterPoint')) || [];
-            // Add the new center point to the array
-            existingCenterPoints.push(coordinates);
-            // Save the updated array to storage
-            localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(existingCenterPoints));
-        } catch (error) {
-            console.error('Error saving center coordinates:', error);
-        }
-    }
 });
-
 
 /////// Save the GPS Drawing \\\\\\\
 // Define the gpsDrawSave function
@@ -179,10 +146,49 @@ function gpsDrawSave() {
         var geojson = geojsonFormat.writeFeaturesObject(features);
         // Save GeoJSON string to localStorage
         localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
+
+        // Log center coordinates after saving
+        logCenterCoordinates();
     } catch (error) {
         console.error('Error saving drawing:', error);
     }
 }
+
+// Function to log center coordinates
+function logCenterCoordinates() {
+    try {
+        // Get the features from the vector source
+        var features = vector.getSource().getFeatures();
+        // Iterate through features and log center coordinates
+        features.forEach(function (feature) {
+            var geometry = feature.getGeometry();
+            var center = ol.extent.getCenter(geometry.getExtent());
+            console.log("Center coordinates:", center);
+            saveCenterCoordinates(center);
+        });
+    } catch (error) {
+        console.error('Error logging center coordinates:', error);
+    }
+}
+
+// Function to save center coordinates to storage
+function saveCenterCoordinates(coordinates) {
+    try {
+        // Get the existing center points or initialize an empty array
+        var existingCenterPoints = JSON.parse(localStorage.getItem('gpsDrawnPolygonsCenterPoint')) || [];
+        // Add the new center point to the array
+        existingCenterPoints.push(coordinates);
+        // Save the updated array to storage
+        localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(existingCenterPoints));
+    } catch (error) {
+        console.error('Error saving center coordinates:', error);
+    }
+}
+
+// Register an event listener for the "Save" button
+document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', gpsDrawSave);
+
+
 
 //////// Retrieve the saved GPS Drawing \\\\\\\
 
