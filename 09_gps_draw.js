@@ -82,6 +82,13 @@ var vector = new ol.layer.Vector({
 // Add the vector layer to the map
 map.addLayer(vector);
 
+// Initialize a vector layer for displaying point features
+var coffeeFarmCentroid = new ol.layer.Vector({
+    source: new ol.source.Vector(), // Creating a new source for the point layer
+    name: 'coffeeFarmCentroid' // Renaming the layer
+});
+map.addLayer(coffeeFarmCentroid);
+
 
 
 
@@ -133,9 +140,11 @@ draw.on('follow', function (e) {
 // Handle drawing
 draw.on("drawend", function (e) {
     $(".follow").hide();
+
+    // Log center coordinates after saving
+    logCenterCoordinates();
 });
 
-/////// Save the GPS Drawing \\\\\\\
 // Define the gpsDrawSave function
 function gpsDrawSave() {
     try {
@@ -145,10 +154,7 @@ function gpsDrawSave() {
         var geojsonFormat = new ol.format.GeoJSON();
         var geojson = geojsonFormat.writeFeaturesObject(features);
         // Save GeoJSON string to localStorage
-        localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
-
-        // Log center coordinates after saving
-        logCenterCoordinates();
+        localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(geojson)); // Renaming the data saved to storage
     } catch (error) {
         console.error('Error saving drawing:', error);
     }
@@ -165,6 +171,7 @@ function logCenterCoordinates() {
             var center = ol.extent.getCenter(geometry.getExtent());
             console.log("Center coordinates:", center);
             saveCenterCoordinates(center);
+            createPointFeature(center); // Create a point feature for each center coordinate
         });
     } catch (error) {
         console.error('Error logging center coordinates:', error);
@@ -185,8 +192,23 @@ function saveCenterCoordinates(coordinates) {
     }
 }
 
+// Function to create a point feature for each center coordinate
+function createPointFeature(coordinates) {
+    // Create a point feature for the centroid
+    var pointFeature = new ol.Feature({
+        geometry: new ol.geom.Point(coordinates)
+    });
+
+    // Add the point feature to the coffeeFarmCentroid layer source
+    coffeeFarmCentroid.getSource().addFeature(pointFeature);
+}
+
 // Register an event listener for the "Save" button
-document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', gpsDrawSave);
+document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function () {
+    gpsDrawSave();
+    // Log center coordinates after saving
+    logCenterCoordinates();
+});
 
 
 
