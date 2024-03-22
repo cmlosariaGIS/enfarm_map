@@ -423,6 +423,7 @@ function removePolygonFromStorage(feature) {
 
 
 
+
 ///////////////////////// Function to pan to the user's location \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 // Define the panToUserLocation function
 function panToUserLocation() {
@@ -474,6 +475,12 @@ function panToUserLocation() {
 
 // Call the function to pan to the user's location
 panToUserLocation();
+
+
+
+
+
+
 
 
 
