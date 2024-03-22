@@ -190,14 +190,21 @@ function saveCenterCoordinates(coordinates) {
     try {
         // Get the existing center points or initialize an empty array
         var existingCenterPoints = JSON.parse(localStorage.getItem('gpsDrawnPolygonsCenterPoint')) || [];
-        // Add the new center point to the array
-        existingCenterPoints.push(coordinates);
-        // Save the updated array to storage
-        localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(existingCenterPoints));
+        // Check if the coordinates already exist in the array
+        var isDuplicate = existingCenterPoints.some(function(point) {
+            return point[0] === coordinates[0] && point[1] === coordinates[1];
+        });
+        // Add the new center point to the array if it's not a duplicate
+        if (!isDuplicate) {
+            existingCenterPoints.push(coordinates);
+            // Save the updated array to storage
+            localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(existingCenterPoints));
+        }
     } catch (error) {
         console.error('Error saving center coordinates:', error);
     }
 }
+
 
 // Function to create a point feature for each center coordinate
 function createPointFeature(coordinates) {
