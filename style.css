@@ -385,7 +385,8 @@ body {
 /*Basemap floating title*/
 .basemapfloatingTitle {
     position: fixed;
-    bottom: -100px; /* Initial position off-screen */
+    bottom: -100px;
+    /* Initial position off-screen */
     left: 50%;
     width: fit-content;
     transform: translateX(-50%);
@@ -393,7 +394,8 @@ body {
     align-items: center;
     background-color: #ffffff;
     border-radius: 50px;
-    padding: 10px 10px; /* Increased padding for better appearance */
+    padding: 10px 10px;
+    /* Increased padding for better appearance */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1;
     animation: slideUpDown 5s forwards;
@@ -401,19 +403,23 @@ body {
 
 @keyframes slideUpDown {
     0% {
-        bottom: -100px; /* Start off-screen */
+        bottom: -100px;
+        /* Start off-screen */
     }
 
     5% {
-        bottom: calc(30% - 50px); /* Slide up to position 30% from bottom */
+        bottom: calc(30% - 50px);
+        /* Slide up to position 30% from bottom */
     }
 
     95% {
-        bottom: calc(30% - 50px); /* Stay in this position */
+        bottom: calc(30% - 50px);
+        /* Stay in this position */
     }
 
     100% {
-        bottom: -100px; /* Slide back down to off-screen */
+        bottom: -100px;
+        /* Slide back down to off-screen */
     }
 }
 
@@ -1243,7 +1249,8 @@ body {
 }
 
 #clearAllDrawingBtn:hover {
-    background-color: rgb(253, 0, 0); /* Change background color to red on hover */
+    background-color: rgb(253, 0, 0);
+    /* Change background color to red on hover */
 }
 
 /***** END CLEAR ALL DRAWINGS BUTTON *****/
@@ -2143,7 +2150,7 @@ body {
 }
 
 
-/*GPS DRAW FARM*/
+/****** Start GPS DRAW FARM ******/
 
 #gpsDrawFarmBtn {
     position: fixed;
@@ -2201,7 +2208,7 @@ body {
 
 }
 
-#gpsDrawFarmStartBtn  i.material-symbols-outlined {
+#gpsDrawFarmStartBtn i.material-symbols-outlined {
     font-size: 30px;
     color: #ffffff;
 }
@@ -2274,7 +2281,7 @@ body {
 
 }
 
-#gpsDrawFarmStopBtn  i.material-symbols-outlined {
+#gpsDrawFarmStopBtn i.material-symbols-outlined {
     font-size: 30px;
     color: #ffffff;
 }
@@ -2287,7 +2294,7 @@ body {
     color: #ffffff;
 }
 
-/*SAVE FARM DRAWWING*/
+/*SAVE FARM DRAWING*/
 #gpsDrawFarmSaveDrawBtn {
     position: fixed;
     top: 75%;
@@ -2309,14 +2316,11 @@ body {
 
 }
 
-#gpsDrawFarmSaveDrawBtn  i.material-symbols-outlined {
+#gpsDrawFarmSaveDrawBtn i.material-symbols-outlined {
     font-size: 22px;
     color: #ffffff;
 }
 
-/*#gpsDrawFarmSaveDrawBtn.active {
-    background-color: #4e9af1;
-}*/
 
 #gpsDrawFarmSaveDrawBtn.active i.material-symbols-outlined {
     color: #ffffff;
@@ -2345,9 +2349,10 @@ body {
 }
 
 #gpsDrawFarmDiscardDrawBtn i.material-symbols-outlined {
-    font-size: 22spx;
+    font-size: 22px;
     color: #ffffff;
 }
+
 #gpsDrawFarmDiscardDrawBtn.active {
     background-color: #4e9af1;
 }
@@ -2356,9 +2361,79 @@ body {
     color: #ffffff;
 }
 
+/****** End GPS DRAW FARM ******/
 
 
 
+
+/***** Start LONG PRESS TO SEE/COPY COORDINATES *****/
+#longPressCoordinatesBanner {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.95); /* Soft white background */
+    padding: 15px; /* Increased padding for better spacing */
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    z-index: 1000;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 14px; /* Slightly increased font size */
+    color: #333; /* Dark text color */
+    display: none;
+}
+
+
+.copy-button {
+    position: absolute;
+    top: 35px;
+    left: 10px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.copy-button .material-icons {
+    font-size: 18px;
+    color: #828384;
+}
+
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 10px; /* Adjusted to the right side */
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.close-button .material-icons {
+    font-size: 20px;
+    color: #ff4d4d;
+}
+
+#coordinates {
+    margin-top: 20px;
+    margin-left: 20px; /* Adjust to push coordinates to the left */
+}
+
+#gps-icon {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background-image: url('https://i.ibb.co/gWyRjHP/icons8-pin-96-xxhdpi.png');
+    background-size: cover;
+    z-index: 1001;
+    display: none;
+}
+
+/***** END LONG PRESS TO SEE/COPY COORDINATES *****/
 
 
 
