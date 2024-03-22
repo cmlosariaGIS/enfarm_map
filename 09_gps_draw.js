@@ -83,6 +83,20 @@ var vector = new ol.layer.Vector({
 map.addLayer(vector);
 
 
+
+
+// Pan to the drawn polygon if it exists, otherwise pan to user location
+if (vector.getSource().getFeatures().length > 0) {
+    map.getView().fit(vector.getSource().getExtent(), { padding: [100, 100, 100, 100] });
+} else {
+    // If no drawn polygon exists, pan to user location
+    panToUserLocation();
+}
+
+
+
+
+
 // Draw interaction
 var draw = new ol.interaction.GeolocationDraw({
     source: vector.getSource(),
