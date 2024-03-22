@@ -88,7 +88,7 @@ var draw = new ol.interaction.GeolocationDraw({
     source: vector.getSource(),
     zoom: 18,
     minAccuracy: 10, //10000
-    tolerance: 1,
+    tolerance: 3,
 });
 
 map.addInteraction(draw);
@@ -269,6 +269,7 @@ selectInteraction.on('select', function (event) {
         // Event listener for delete button click
         deleteButton.addEventListener('click', function () {
             deleteSelectedItems(feature, deleteButton);
+            removePolygonFromStorage(feature);
         });
     });
 
@@ -280,6 +281,27 @@ selectInteraction.on('select', function (event) {
         });
     }
 });
+
+// Function to remove polygon's array entry from browser storage
+function removePolygonFromStorage(feature) {
+    try {
+        // Get the features from the vector source
+        var features = vector.getSource().getFeatures();
+        // Convert features to GeoJSON format
+        var geojsonFormat = new ol.format.GeoJSON();
+        var geojson = geojsonFormat.writeFeaturesObject(features);
+        // Remove the polygon's array entry from the GeoJSON object
+        var filteredGeojsonFeatures = geojson.features.filter(function (geojsonFeature) {
+            return !ol.extent.containsCoordinate(feature.getGeometry().getExtent(), geojsonFeature.geometry.coordinates);
+        });
+        geojson.features = filteredGeojsonFeatures;
+        // Save updated GeoJSON string to localStorage
+        localStorage.setItem('savedDrawing', JSON.stringify(geojson));
+    } catch (error) {
+        console.error('Error removing polygon from storage:', error);
+    }
+}
+
 
 
 
