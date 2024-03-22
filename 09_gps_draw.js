@@ -137,6 +137,7 @@ draw.on('follow', function (e) {
     else $(".follow").show();
 });
 
+
 // Handle drawing
 draw.on("drawend", function (e) {
     $(".follow").hide();
@@ -158,7 +159,6 @@ function gpsDrawSave() {
         var geojson = geojsonFormat.writeFeaturesObject(features);
         // Save GeoJSON string to localStorage
         localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
-        localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(geojson)); // Renaming the data saved to storage
 
         // Log center coordinates after saving
         logCenterCoordinates();
@@ -178,6 +178,7 @@ function logCenterCoordinates() {
             var center = ol.extent.getCenter(geometry.getExtent());
             console.log("Center coordinates:", center);
             saveCenterCoordinates(center);
+            createPointFeature(center); // Create a point feature for each center coordinate
         });
     } catch (error) {
         console.error('Error logging center coordinates:', error);
@@ -209,29 +210,40 @@ function createPointFeature(coordinates) {
     coffeeFarmCentroid.getSource().addFeature(pointFeature);
 }
 
-
 // Register an event listener for the "Save" button
-document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function () {
-    gpsDrawSave();
-    // Log center coordinates after saving
-    logCenterCoordinates();
-});
+document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', gpsDrawSave);
 
 
-//////// Retrieve the saved GPS Drawing \\\\\\\
+//////// Retrieve the saved GPS Drawing and Centerpoint \\\\\\\
 
 // Define the gpsDrawLoad function
 function gpsDrawLoad() {
     try {
-        // Retrieve the saved GeoJSON string from localStorage
-        const savedGeoJSONString = localStorage.getItem('gpsDrawnPolygons');
-        if (savedGeoJSONString) {
+        // Retrieve the saved GeoJSON string for polygons from localStorage
+        const savedPolygonsGeoJSONString = localStorage.getItem('gpsDrawnPolygons');
+        if (savedPolygonsGeoJSONString) {
             // Parse the GeoJSON string into features
             const geojsonFormat = new ol.format.GeoJSON();
-            const features = geojsonFormat.readFeatures(JSON.parse(savedGeoJSONString));
-            // Clear existing features and add the loaded features
+            const polygonFeatures = geojsonFormat.readFeatures(JSON.parse(savedPolygonsGeoJSONString));
+            // Clear existing polygon features and add the loaded features
             vector.getSource().clear();
-            vector.getSource().addFeatures(features);
+            vector.getSource().addFeatures(polygonFeatures);
+        }
+
+        // Retrieve the saved GeoJSON string for center points from localStorage
+        const savedCenterPointsGeoJSONString = localStorage.getItem('gpsDrawnPolygonsCenterPoint');
+        if (savedCenterPointsGeoJSONString) {
+            // Parse the GeoJSON string into features
+            const centerPointsGeoJSON = JSON.parse(savedCenterPointsGeoJSONString);
+            const centerPoints = centerPointsGeoJSON.map(function (point) {
+                return new ol.Feature({
+                    geometry: new ol.geom.Point(point)
+                });
+            });
+
+            // Add the loaded center point features to the coffeeFarmCentroid layer source
+            coffeeFarmCentroid.getSource().clear();
+            coffeeFarmCentroid.getSource().addFeatures(centerPoints);
         }
     } catch (error) {
         console.error('Error loading drawing:', error);
@@ -240,6 +252,7 @@ function gpsDrawLoad() {
 
 // Call the gpsDrawLoad function when the map loads
 window.addEventListener('load', gpsDrawLoad);
+
 
 
 ////// Discard the GPS Drawing \\\\\\\
