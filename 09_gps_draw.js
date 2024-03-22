@@ -136,7 +136,37 @@ draw.on("drawstart", function (e) {
 
 draw.on("drawend", function (e) {
     $(".follow").hide();
+
+    // Get the drawn polygon feature
+    var feature = e.feature;
+
+    // Get the geometry of the drawn polygon
+    var geometry = feature.getGeometry();
+
+    // Calculate the center of the polygon
+    var center = ol.extent.getCenter(geometry.getExtent());
+
+    // Log the center coordinates
+    console.log("Center coordinates:", center);
+
+    // Save the center coordinates to storage
+    saveCenterCoordinates(center);
+
+    // Function to save center coordinates to storage
+    function saveCenterCoordinates(coordinates) {
+        try {
+            // Get the existing center points or initialize an empty array
+            var existingCenterPoints = JSON.parse(localStorage.getItem('gpsDrawnPolygonsCenterPoint')) || [];
+            // Add the new center point to the array
+            existingCenterPoints.push(coordinates);
+            // Save the updated array to storage
+            localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(existingCenterPoints));
+        } catch (error) {
+            console.error('Error saving center coordinates:', error);
+        }
+    }
 });
+
 
 /////// Save the GPS Drawing \\\\\\\
 // Define the gpsDrawSave function
