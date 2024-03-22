@@ -85,7 +85,7 @@ map.addLayer(vector);
 
 
 
-// Pan to the drawn polygon if it exists, otherwise pan to user location
+// Pan to the drawn polygon if it exists
 if (vector.getSource().getFeatures().length > 0) {
     map.getView().fit(vector.getSource().getExtent(), { padding: [100, 100, 100, 100] });
 } else {
@@ -142,7 +142,7 @@ function gpsDrawSave() {
         var geojsonFormat = new ol.format.GeoJSON();
         var geojson = geojsonFormat.writeFeaturesObject(features);
         // Save GeoJSON string to localStorage
-        localStorage.setItem('savedDrawing', JSON.stringify(geojson));
+        localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
     } catch (error) {
         console.error('Error saving drawing:', error);
     }
@@ -154,7 +154,7 @@ function gpsDrawSave() {
 function gpsDrawLoad() {
     try {
         // Retrieve the saved GeoJSON string from localStorage
-        const savedGeoJSONString = localStorage.getItem('savedDrawing');
+        const savedGeoJSONString = localStorage.getItem('gpsDrawnPolygons');
         if (savedGeoJSONString) {
             // Parse the GeoJSON string into features
             const geojsonFormat = new ol.format.GeoJSON();
@@ -316,7 +316,7 @@ function removePolygonFromStorage(feature) {
         });
         geojson.features = filteredGeojsonFeatures;
         // Save updated GeoJSON string to localStorage
-        localStorage.setItem('savedDrawing', JSON.stringify(geojson));
+        localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
     } catch (error) {
         console.error('Error removing polygon from storage:', error);
     }
