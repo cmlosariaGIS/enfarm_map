@@ -385,7 +385,7 @@ selectInteraction.on('select', function (event) {
     }
 });
 
-/////// Function to remove polygon's array entry from browser storage \\\\\\\
+// Function to remove polygon and its associated centroid from browser storage
 function removePolygonFromStorage(feature) {
     try {
         // Remove the polygon's array entry from the GeoJSON object
@@ -400,7 +400,7 @@ function removePolygonFromStorage(feature) {
             localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
         }
 
-        // Remove the corresponding point from the gpsDrawnPolygonsCenterPoint array
+        // Remove the corresponding centroid point from the gpsDrawnPolygonsCenterPoint array
         var centerPointsString = localStorage.getItem('gpsDrawnPolygonsCenterPoint');
         if (centerPointsString) {
             var centerPoints = JSON.parse(centerPointsString);
