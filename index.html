@@ -1535,7 +1535,6 @@
         <i class="material-symbols-outlined">mode_of_travel</i>
     </button>
 
-
     <button id="gpsDrawFarmStartBtn" class="hidden" onclick="draw.start()">
         <i class="material-symbols-outlined">play_arrow</i>
     </button>
@@ -1551,10 +1550,22 @@
     <button id="gpsDrawFarmSaveDrawBtn" class="hidden" onclick="gpsDrawSave()">
         <i class="material-symbols-outlined">save</i>
     </button>
-    
+
     <button id="gpsDrawFarmDiscardDrawBtn" class="hidden" onclick="gpsDrawDiscard()">
         <i class="material-symbols-outlined">delete_forever</i>
     </button>
+
+    <!----------///// LONG PRESS TO SEE AND COPY COORDINATES \\\\\---------->
+    <div id="longPressCoordinatesBanner">
+        <button class="close-button" onclick="dismissBanner()">
+            <span class="material-icons">cancel</span>
+        </button>
+        <div id="coordinates"></div> <!-- Coordinate Values -->
+        <button class="copy-button" onclick="copyCoordinates()">
+            <span class="material-icons">content_copy</span>
+        </button>
+    </div>
+    <div id="gps-icon"></div> <!-- GPS Icon -->
 
 
 
@@ -1583,6 +1594,7 @@
     <script src="14_elevation_profile.js"></script>
     <script src="15_north_arrow.js"></script>
     <!--<script src="16_birds_cloud_weather.js"></script>-->
+    <script src="17_longpress_coordinates.js"></script>
 
 
 </body>
