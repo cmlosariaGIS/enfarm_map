@@ -82,13 +82,13 @@ var vector = new ol.layer.Vector({
 // Add the vector layer to the map
 map.addLayer(vector);
 
+
 // Initialize a vector layer for displaying point features
 var coffeeFarmCentroid = new ol.layer.Vector({
     source: new ol.source.Vector(), // Creating a new source for the point layer
     name: 'coffeeFarmCentroid' // Renaming the layer
 });
 map.addLayer(coffeeFarmCentroid);
-
 
 
 
@@ -145,6 +145,9 @@ draw.on("drawend", function (e) {
     logCenterCoordinates();
 });
 
+
+
+/////// Save the GPS Drawing \\\\\\\
 // Define the gpsDrawSave function
 function gpsDrawSave() {
     try {
@@ -154,7 +157,11 @@ function gpsDrawSave() {
         var geojsonFormat = new ol.format.GeoJSON();
         var geojson = geojsonFormat.writeFeaturesObject(features);
         // Save GeoJSON string to localStorage
+        localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
         localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(geojson)); // Renaming the data saved to storage
+
+        // Log center coordinates after saving
+        logCenterCoordinates();
     } catch (error) {
         console.error('Error saving drawing:', error);
     }
@@ -171,7 +178,6 @@ function logCenterCoordinates() {
             var center = ol.extent.getCenter(geometry.getExtent());
             console.log("Center coordinates:", center);
             saveCenterCoordinates(center);
-            createPointFeature(center); // Create a point feature for each center coordinate
         });
     } catch (error) {
         console.error('Error logging center coordinates:', error);
@@ -203,13 +209,13 @@ function createPointFeature(coordinates) {
     coffeeFarmCentroid.getSource().addFeature(pointFeature);
 }
 
+
 // Register an event listener for the "Save" button
 document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function () {
     gpsDrawSave();
     // Log center coordinates after saving
     logCenterCoordinates();
 });
-
 
 
 //////// Retrieve the saved GPS Drawing \\\\\\\
