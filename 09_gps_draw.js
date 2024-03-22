@@ -85,13 +85,19 @@ map.addLayer(vector);
 
 
 
-// Pan to the drawn polygon if it exists
-if (vector.getSource().getFeatures().length > 0) {
-    map.getView().fit(vector.getSource().getExtent(), { padding: [100, 100, 100, 100] });
-} else {
-    // If no drawn polygon exists, pan to user location
-    panToUserLocation();
-}
+// Call the gpsDrawLoad function when the map loads
+window.addEventListener('load', function() {
+    gpsDrawLoad();
+
+    // Pan to the drawn polygon if it exists, otherwise pan to user location
+    if (vector.getSource().getFeatures().length > 0) {
+        map.getView().fit(vector.getSource().getExtent(), { padding: [100, 100, 100, 100] });
+    } else {
+        // If no drawn polygon exists, pan to user location
+        panToUserLocation();
+    }
+});
+
 
 
 
@@ -326,6 +332,59 @@ function removePolygonFromStorage(feature) {
 
 
 
+
+
+///////////////////////// Function to pan to the user's location \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+// Define the panToUserLocation function
+function panToUserLocation() {
+    // Function to create the user location marker
+    function createUserLocationMarker() {
+        const markerElement = document.createElement("div");
+        markerElement.className = "user-marker";
+
+        const markerOverlay = new ol.Overlay({
+            element: markerElement,
+            positioning: "center-center",
+            stopEvent: false,
+        });
+
+        map.addOverlay(markerOverlay);
+
+        return markerOverlay;
+    }
+
+    // Function to update the user location marker position
+    function updateUserLocationMarker(markerOverlay, position) {
+        const { latitude, longitude } = position.coords;
+        const userLocation = ol.proj.fromLonLat([longitude, latitude]);
+
+        markerOverlay.setPosition(userLocation);
+    }
+
+    // Function to handle errors when geolocation is not available or permission denied
+    function handleGeolocationError(error) {
+        console.error("Error getting user's location:", error);
+    }
+
+    // Check if geolocation is supported by the browser
+    if ("geolocation" in navigator) {
+        const markerOverlay = createUserLocationMarker();
+
+        // Get the user's current location
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                updateUserLocationMarker(markerOverlay, position);
+                map.getView().animate({ center: markerOverlay.getPosition(), zoom: 17 });
+            },
+            handleGeolocationError
+        );
+    } else {
+        console.log("Geolocation is not supported by your browser.");
+    }
+}
+
+// Call the function to pan to the user's location
+panToUserLocation();
 
 
 
