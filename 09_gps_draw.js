@@ -385,25 +385,37 @@ selectInteraction.on('select', function (event) {
     }
 });
 
-// Function to remove polygon's array entry from browser storage
+/////// Function to remove polygon's array entry from browser storage \\\\\\\
 function removePolygonFromStorage(feature) {
     try {
-        // Get the features from the vector source
-        var features = vector.getSource().getFeatures();
-        // Convert features to GeoJSON format
-        var geojsonFormat = new ol.format.GeoJSON();
-        var geojson = geojsonFormat.writeFeaturesObject(features);
         // Remove the polygon's array entry from the GeoJSON object
-        var filteredGeojsonFeatures = geojson.features.filter(function (geojsonFeature) {
-            return !ol.extent.containsCoordinate(feature.getGeometry().getExtent(), geojsonFeature.geometry.coordinates);
-        });
-        geojson.features = filteredGeojsonFeatures;
-        // Save updated GeoJSON string to localStorage
-        localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
+        var geojsonString = localStorage.getItem('gpsDrawnPolygons');
+        if (geojsonString) {
+            var geojson = JSON.parse(geojsonString);
+            var filteredFeatures = geojson.features.filter(function (geojsonFeature) {
+                return !ol.extent.containsCoordinate(feature.getGeometry().getExtent(), geojsonFeature.geometry.coordinates);
+            });
+            geojson.features = filteredFeatures;
+            // Save updated GeoJSON string to localStorage
+            localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
+        }
+
+        // Remove the corresponding point from the gpsDrawnPolygonsCenterPoint array
+        var centerPointsString = localStorage.getItem('gpsDrawnPolygonsCenterPoint');
+        if (centerPointsString) {
+            var centerPoints = JSON.parse(centerPointsString);
+            var centroid = ol.extent.getCenter(feature.getGeometry().getExtent());
+            var updatedCenterPoints = centerPoints.filter(function (point) {
+                return !(point[0] === centroid[0] && point[1] === centroid[1]);
+            });
+            // Save updated center points array to localStorage
+            localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(updatedCenterPoints));
+        }
     } catch (error) {
         console.error('Error removing polygon from storage:', error);
     }
 }
+
 
 
 
