@@ -268,8 +268,14 @@ selectInteraction.on('select', function (event) {
 
         // Event listener for delete button click
         deleteButton.addEventListener('click', function () {
-            deleteSelectedItems(feature, deleteButton);
+            // Remove the feature from the vector layer
+            vector.getSource().removeFeature(feature);
+
+            // Remove the corresponding entry from browser storage
             removePolygonFromStorage(feature);
+
+            // Remove the delete button
+            deleteButton.remove();
         });
     });
 
@@ -301,6 +307,7 @@ function removePolygonFromStorage(feature) {
         console.error('Error removing polygon from storage:', error);
     }
 }
+
 
 
 
