@@ -165,7 +165,7 @@ function gpsDrawSave() {
 
         // Reset the map view to reflect changes
         var extent = vector.getSource().getExtent();
-        map.getView().fit(extent, { padding: [100, 100, 100, 100] });
+        map.getView().fit(extent, { padding: [200, 200, 200, 200] });
 
     } catch (error) {
         console.error('Error saving drawing:', error);
@@ -174,6 +174,8 @@ function gpsDrawSave() {
 
 
 
+// Array to temporarily store center coordinates
+var tempCenterCoordinates = [];
 
 // Function to log center coordinates
 function logCenterCoordinates() {
@@ -185,7 +187,7 @@ function logCenterCoordinates() {
             var geometry = feature.getGeometry();
             var center = ol.extent.getCenter(geometry.getExtent());
             console.log("Center coordinates:", center);
-            saveCenterCoordinates(center);
+            tempCenterCoordinates.push(center); // Store in temporary array
             createPointFeature(center); // Create a point feature for each center coordinate
         });
     } catch (error) {
@@ -194,24 +196,30 @@ function logCenterCoordinates() {
 }
 
 // Function to save center coordinates to storage
-function saveCenterCoordinates(coordinates) {
+function saveCenterCoordinates() {
     try {
         // Get the existing center points or initialize an empty array
         var existingCenterPoints = JSON.parse(localStorage.getItem('gpsDrawnPolygonsCenterPoint')) || [];
-        // Check if the coordinates already exist in the array
-        var isDuplicate = existingCenterPoints.some(function(point) {
-            return point[0] === coordinates[0] && point[1] === coordinates[1];
+        // Iterate through temporary center coordinates and save them
+        tempCenterCoordinates.forEach(function (coordinates) {
+            // Check if the coordinates already exist in the array
+            var isDuplicate = existingCenterPoints.some(function(point) {
+                return point[0] === coordinates[0] && point[1] === coordinates[1];
+            });
+            // Add the new center point to the array if it's not a duplicate
+            if (!isDuplicate) {
+                existingCenterPoints.push(coordinates);
+            }
         });
-        // Add the new center point to the array if it's not a duplicate
-        if (!isDuplicate) {
-            existingCenterPoints.push(coordinates);
-            // Save the updated array to storage
-            localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(existingCenterPoints));
-        }
+        // Save the updated array to storage
+        localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(existingCenterPoints));
+        // Clear the temporary array
+        tempCenterCoordinates = [];
     } catch (error) {
         console.error('Error saving center coordinates:', error);
     }
 }
+
 
 
 // Function to create a point feature for each center coordinate
@@ -228,7 +236,13 @@ function createPointFeature(coordinates) {
 
 
 // Register an event listener for the "Save" button
-document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', gpsDrawSave);
+document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function() {
+    // Call the function to save center coordinates
+    saveCenterCoordinates();
+    // Call the function to save the drawn polygons
+    gpsDrawSave();
+});
+
 
 
 //////// Retrieve the saved GPS Drawing and Centerpoint \\\\\\\
