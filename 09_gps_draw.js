@@ -37,8 +37,16 @@ document.addEventListener('DOMContentLoaded', function () {
     stopBtn.addEventListener('click', function () {
         startBtn.style.display = 'block';
         pauseBtn.style.display = 'none';
+
+        // Show save and discard buttons
         saveBtn.style.display = 'block';
         discardBtn.style.display = 'block';
+
+        // Highlight the latest drawn polygon
+        var features = vector.getSource().getFeatures();
+        var latestDrawnPolygon = features[features.length - 1];
+        latestDrawnPolygon.setStyle(highlightedPolygonStyle);
+
     });
 
     saveBtn.addEventListener('click', function () {
@@ -93,7 +101,7 @@ map.addLayer(coffeeFarmCentroid);
 
 
 // Call the gpsDrawLoad function when the map loads
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     gpsDrawLoad();
 
     // Pan to the drawn polygon if it exists, otherwise pan to user location
@@ -203,7 +211,7 @@ function saveCenterCoordinates() {
         // Iterate through temporary center coordinates and save them
         tempCenterCoordinates.forEach(function (coordinates) {
             // Check if the coordinates already exist in the array
-            var isDuplicate = existingCenterPoints.some(function(point) {
+            var isDuplicate = existingCenterPoints.some(function (point) {
                 return point[0] === coordinates[0] && point[1] === coordinates[1];
             });
             // Add the new center point to the array if it's not a duplicate
@@ -236,7 +244,7 @@ function createPointFeature(coordinates) {
 
 
 // Register an event listener for the "Save" button
-document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function() {
+document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function () {
     // Call the function to save center coordinates
     saveCenterCoordinates();
     // Call the function to save the drawn polygons
@@ -286,12 +294,42 @@ window.addEventListener('load', gpsDrawLoad);
 
 
 
-////// Discard the GPS Drawing \\\\\\\
+// Define the gpsDrawDiscard function
 // Define the gpsDrawDiscard function
 function gpsDrawDiscard() {
-    // Clear the vector source to discard the drawing
-    vector.getSource().clear();
+    // Get the selected feature (highlighted polygon)
+    var selectedFeatures = selectInteraction.getFeatures().getArray();
+
+    // Check if there's a selected feature (highlighted polygon)
+    if (selectedFeatures.length > 0) {
+        var selectedFeature = selectedFeatures[0];
+        
+        // Reset the style of the selected feature to its original style
+        selectedFeature.setStyle(styleFunction);
+
+        // Remove the selected feature from the select interaction
+        selectInteraction.getFeatures().remove(selectedFeature);
+
+        // Remove the selected feature (highlighted polygon) from the vector source
+        vector.getSource().removeFeature(selectedFeature);
+
+        // Remove the corresponding point feature from the coffeeFarmCentroid layer
+        coffeeFarmCentroid.getSource().getFeatures().forEach(function (pointFeature) {
+            if (pointFeature.getGeometry().getCoordinates()[0] === selectedFeature.getGeometry().getCoordinates()[0] &&
+                pointFeature.getGeometry().getCoordinates()[1] === selectedFeature.getGeometry().getCoordinates()[1]) {
+                coffeeFarmCentroid.getSource().removeFeature(pointFeature);
+            }
+        });
+
+        // Refresh the map view
+        map.getView().setCenter(map.getView().getCenter());
+    }
 }
+
+
+
+
+
 
 // Register an event listener for the "Discard" button
 document.getElementById('gpsDrawFarmDiscardDrawBtn').addEventListener('click', gpsDrawDiscard);
@@ -324,12 +362,12 @@ function highlightSelectedFeature(event) {
     var deselectedFeatures = event.deselected; // Get deselected features
 
     // Apply highlight style to selected features
-    selectedFeatures.forEach(function(feature) {
+    selectedFeatures.forEach(function (feature) {
         feature.setStyle(highlightedPolygonStyle);
     });
 
     // Reset style for deselected features
-    deselectedFeatures.forEach(function(feature) {
+    deselectedFeatures.forEach(function (feature) {
         feature.setStyle(styleFunction); // Use original style
     });
 }
@@ -397,32 +435,32 @@ selectInteraction.on('select', function (event) {
 
 
 
-// Event listener for delete button click
-deleteButton.addEventListener('click', function () {
-    // Remove the feature from the vector layer
-    vector.getSource().removeFeature(feature);
+        // Event listener for delete button click
+        deleteButton.addEventListener('click', function () {
+            // Remove the feature from the vector layer
+            vector.getSource().removeFeature(feature);
 
-    // Remove the corresponding point feature from the coffeeFarmCentroid layer
-    coffeeFarmCentroid.getSource().getFeatures().forEach(function (pointFeature) {
-        if (pointFeature.getGeometry().getCoordinates()[0] === feature.getGeometry().getCoordinates()[0] &&
-            pointFeature.getGeometry().getCoordinates()[1] === feature.getGeometry().getCoordinates()[1]) {
-            coffeeFarmCentroid.getSource().removeFeature(pointFeature);
-        }
+            // Remove the corresponding point feature from the coffeeFarmCentroid layer
+            coffeeFarmCentroid.getSource().getFeatures().forEach(function (pointFeature) {
+                if (pointFeature.getGeometry().getCoordinates()[0] === feature.getGeometry().getCoordinates()[0] &&
+                    pointFeature.getGeometry().getCoordinates()[1] === feature.getGeometry().getCoordinates()[1]) {
+                    coffeeFarmCentroid.getSource().removeFeature(pointFeature);
+                }
+            });
+
+            // Remove the corresponding entry from browser storage
+            removePolygonFromStorage(feature);
+
+            // Refresh the map view
+            map.getView().setCenter(map.getView().getCenter());
+        });
+
+
     });
 
-    // Remove the corresponding entry from browser storage
-    removePolygonFromStorage(feature);
-
-    // Refresh the map view
-    map.getView().setCenter(map.getView().getCenter());
-});
-
-
-    });
 
 
 
-    
     // Hide delete button if no polygon is selected
     if (selectedFeatures.length === 0) {
         var existingDeleteButtons = document.querySelectorAll('.delete-button');
@@ -445,7 +483,7 @@ function removePolygonFromStorage(feature) {
 
         // Remove the corresponding point feature from the coffeeFarmCentroid layer source
         var pointFeatures = coffeeFarmCentroid.getSource().getFeatures();
-        pointFeatures.forEach(function(pointFeature) {
+        pointFeatures.forEach(function (pointFeature) {
             if (ol.extent.containsCoordinate(extent, pointFeature.getGeometry().getCoordinates())) {
                 coffeeFarmCentroid.getSource().removeFeature(pointFeature);
             }
@@ -458,7 +496,7 @@ function removePolygonFromStorage(feature) {
             geojson.features = geojson.features.filter(function (geojsonFeature) {
                 // Check if the feature's coordinates match with the current polygon's coordinates
                 return JSON.stringify(geojsonFeature.geometry.coordinates) !== JSON.stringify(feature.getGeometry().getCoordinates());
-            });        
+            });
             // Save updated GeoJSON string to localStorage
             localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
         }
