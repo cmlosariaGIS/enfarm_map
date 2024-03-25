@@ -162,10 +162,18 @@ function gpsDrawSave() {
 
         // Log center coordinates after saving
         logCenterCoordinates();
+
+        // Reset the map view to reflect changes
+        var extent = vector.getSource().getExtent();
+        map.getView().fit(extent, { padding: [100, 100, 100, 100] });
+
     } catch (error) {
         console.error('Error saving drawing:', error);
     }
 }
+
+
+
 
 // Function to log center coordinates
 function logCenterCoordinates() {
@@ -216,6 +224,8 @@ function createPointFeature(coordinates) {
     // Add the point feature to the coffeeFarmCentroid layer source
     coffeeFarmCentroid.getSource().addFeature(pointFeature);
 }
+
+
 
 // Register an event listener for the "Save" button
 document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', gpsDrawSave);
@@ -370,19 +380,35 @@ selectInteraction.on('select', function (event) {
         // Append the delete button to the map container
         map.getViewport().appendChild(deleteButton);
 
-        // Event listener for delete button click
-        deleteButton.addEventListener('click', function () {
-            // Remove the feature from the vector layer
-            vector.getSource().removeFeature(feature);
 
-            // Remove the corresponding entry from browser storage
-            removePolygonFromStorage(feature);
 
-            // Remove the delete button
-            deleteButton.remove();
-        });
+
+// Event listener for delete button click
+deleteButton.addEventListener('click', function () {
+    // Remove the feature from the vector layer
+    vector.getSource().removeFeature(feature);
+
+    // Remove the corresponding point feature from the coffeeFarmCentroid layer
+    coffeeFarmCentroid.getSource().getFeatures().forEach(function (pointFeature) {
+        if (pointFeature.getGeometry().getCoordinates()[0] === feature.getGeometry().getCoordinates()[0] &&
+            pointFeature.getGeometry().getCoordinates()[1] === feature.getGeometry().getCoordinates()[1]) {
+            coffeeFarmCentroid.getSource().removeFeature(pointFeature);
+        }
     });
 
+    // Remove the corresponding entry from browser storage
+    removePolygonFromStorage(feature);
+
+    // Refresh the map view
+    map.getView().setCenter(map.getView().getCenter());
+});
+
+
+    });
+
+
+
+    
     // Hide delete button if no polygon is selected
     if (selectedFeatures.length === 0) {
         var existingDeleteButtons = document.querySelectorAll('.delete-button');
@@ -392,17 +418,33 @@ selectInteraction.on('select', function (event) {
     }
 });
 
-// Function to remove polygon and its associated centroid from browser storage
+
+
+// Function to remove a polygon feature and its corresponding point feature from storage and map
 function removePolygonFromStorage(feature) {
     try {
+        // Remove the polygon feature from the vector layer source
+        vector.getSource().removeFeature(feature);
+
+        // Get the extent of the polygon feature
+        var extent = feature.getGeometry().getExtent();
+
+        // Remove the corresponding point feature from the coffeeFarmCentroid layer source
+        var pointFeatures = coffeeFarmCentroid.getSource().getFeatures();
+        pointFeatures.forEach(function(pointFeature) {
+            if (ol.extent.containsCoordinate(extent, pointFeature.getGeometry().getCoordinates())) {
+                coffeeFarmCentroid.getSource().removeFeature(pointFeature);
+            }
+        });
+
         // Remove the polygon's array entry from the GeoJSON object
         var geojsonString = localStorage.getItem('gpsDrawnPolygons');
         if (geojsonString) {
             var geojson = JSON.parse(geojsonString);
-            var filteredFeatures = geojson.features.filter(function (geojsonFeature) {
-                return !ol.extent.containsCoordinate(feature.getGeometry().getExtent(), geojsonFeature.geometry.coordinates);
-            });
-            geojson.features = filteredFeatures;
+            geojson.features = geojson.features.filter(function (geojsonFeature) {
+                // Check if the feature's coordinates match with the current polygon's coordinates
+                return JSON.stringify(geojsonFeature.geometry.coordinates) !== JSON.stringify(feature.getGeometry().getCoordinates());
+            });        
             // Save updated GeoJSON string to localStorage
             localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
         }
@@ -411,17 +453,33 @@ function removePolygonFromStorage(feature) {
         var centerPointsString = localStorage.getItem('gpsDrawnPolygonsCenterPoint');
         if (centerPointsString) {
             var centerPoints = JSON.parse(centerPointsString);
-            var centroid = ol.extent.getCenter(feature.getGeometry().getExtent());
+            var centroid = ol.extent.getCenter(extent);
             var updatedCenterPoints = centerPoints.filter(function (point) {
                 return !(point[0] === centroid[0] && point[1] === centroid[1]);
             });
             // Save updated center points array to localStorage
             localStorage.setItem('gpsDrawnPolygonsCenterPoint', JSON.stringify(updatedCenterPoints));
         }
+
+        // Remove the corresponding centroid point from the coffeeFarmCentroid layer source
+        var centroidFeatures = coffeeFarmCentroid.getSource().getFeatures();
+        var centroidToRemove = centroidFeatures.find(function (centroidFeature) {
+            return centroidFeature.getGeometry().getCoordinates()[0] === centroid[0] && centroidFeature.getGeometry().getCoordinates()[1] === centroid[1];
+        });
+        if (centroidToRemove) {
+            coffeeFarmCentroid.getSource().removeFeature(centroidToRemove);
+        }
+
     } catch (error) {
         console.error('Error removing polygon from storage:', error);
     }
 }
+
+
+
+
+
+
 
 
 
@@ -484,7 +542,7 @@ function panToUserLocation() {
 panToUserLocation();
 
 
-
+//test3
 
 
 
