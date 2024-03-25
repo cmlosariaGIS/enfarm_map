@@ -2423,6 +2423,7 @@ body {
     margin-left: 20px; /* Adjust to push coordinates to the left */
 }
 
+
 #gps-icon {
     position: absolute;
     width: 32px;
@@ -2434,9 +2435,6 @@ body {
 }
 
 /***** END LONG PRESS TO SEE/COPY COORDINATES *****/
-
-
-
 
 
 
