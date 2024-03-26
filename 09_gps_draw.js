@@ -1,3 +1,7 @@
+
+// Keep track of the added area size labels
+var gpsAreaSizeLabels = {};
+
 document.addEventListener('DOMContentLoaded', function () {
     var startBtn = document.getElementById('gpsDrawFarmStartBtn');
     var pauseBtn = document.getElementById('gpsDrawFarmPauseBtn');
@@ -81,23 +85,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    saveBtn.addEventListener('click', function () {
-        startBtn.style.display = 'none';
-        pauseBtn.style.display = 'none';
-        stopBtn.style.display = 'none';
-        saveBtn.style.display = 'none';
-        discardBtn.style.display = 'none';
 
-        // Remove the highlight on the farm polygon when the saveBtn is clicked
-        var features = vector.getSource().getFeatures();
-        var latestDrawnPolygon = features[features.length - 1];
-        latestDrawnPolygon.setStyle(styleFunction); // Reset style to original
+// Combine event listeners for "Save" button and saveBtn
+function handleSaveButtonClick() {
+    // Call the function to save center coordinates
+    saveCenterCoordinates();
+    // Call the function to save the drawn polygons
+    gpsDrawSave();
 
-        // Call the function to save center coordinates
-        saveCenterCoordinates();
-        // Call the function to save the drawn polygons
-        gpsDrawSave();
-    });
+    // Remove the highlight on the farm polygon when the saveBtn is clicked
+    var features = vector.getSource().getFeatures();
+    var latestDrawnPolygon = features[features.length - 1];
+    latestDrawnPolygon.setStyle(styleFunction); // Reset style to original
+
+    // Add area label to the saved polygon
+    var areaSquareMeters = calculatePolygonArea(latestDrawnPolygon.getGeometry().getCoordinates()[0]);
+    var areaHectares = areaSquareMeters / 10000;
+    addAreaLabelToFeature(latestDrawnPolygon, areaSquareMeters, areaHectares);
+
+    // Hide buttons after save
+    startBtn.style.display = 'none';
+    pauseBtn.style.display = 'none';
+    stopBtn.style.display = 'none';
+    saveBtn.style.display = 'none';
+    discardBtn.style.display = 'none';
+}
+
+// Register event listeners for both "Save" button and saveBtn
+document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', handleSaveButtonClick);
+saveBtn.addEventListener('click', handleSaveButtonClick);
+
+
+
 
     discardBtn.addEventListener('click', function () {
         startBtn.style.display = 'none';
@@ -292,7 +311,7 @@ function createPointFeature(coordinates) {
 }
 
 
-
+/*
 // Register an event listener for the "Save" button
 document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function () {
     // Call the function to save center coordinates
@@ -300,7 +319,7 @@ document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', func
     // Call the function to save the drawn polygons
     gpsDrawSave();
 });
-
+*/
 
 
 //////// Retrieve the saved GPS Drawing and Centerpoint \\\\\\\
@@ -580,8 +599,137 @@ function removePolygonFromStorage(feature) {
 }
 
 
+// Function to calculate the area of a polygon
+function calculatePolygonArea(coordinates) {
+    var polygon = new ol.geom.Polygon([coordinates]);
+    var area = polygon.getArea(); // Area in square meters
+    return area;
+}
+
+// Function to calculate the centroid of a polygon
+function calculateCentroid(coordinates) {
+    var len = coordinates.length;
+    var x = 0;
+    var y = 0;
+
+    for (var i = 0; i < len; i++) {
+        x += coordinates[i][0];
+        y += coordinates[i][1];
+    }
+
+    x /= len;
+    y /= len;
+
+    return [x, y];
+}
 
 
+// Function to add the area size label to the polygon feature
+function addAreaLabelToFeature(feature, areaSquareMeters, areaHectares) {
+    var areaSize = areaSquareMeters < 1000 ? areaSquareMeters.toFixed(2) + ' sqm' : areaHectares.toFixed(2) + ' ha';
+    var treeRange = estimateTreeRange(areaHectares);
+
+    // Create area size label overlay
+    var areaSizeLabel = new ol.Overlay({
+        id: JSON.stringify(feature.getGeometry().getCoordinates()), // Unique identifier for the overlay
+        element: createLabelElement(areaSize, treeRange), // Create label element
+        offset: [90, -40], // Offset to position the label
+        positioning: 'top-right', // Position the label to the top right of the feature
+        insertFirst: false // Ensure that the label is not inserted as the first child
+    });
+
+    // Set label position
+    areaSizeLabel.setPosition(feature.getGeometry().getInteriorPoint().getCoordinates());
+
+    // Add area size label overlay to the map
+    map.addOverlay(areaSizeLabel);
+
+    // Save reference to the area size label overlay
+    gpsAreaSizeLabels[areaSizeLabel.getId()] = areaSizeLabel;
+}
+
+
+
+// Function to estimate the range of Arabica Coffee Trees for a given area
+// Based on Helena Coffee's article (https://www.helenacoffee.vn/arabica-coffee-varieties/)
+function estimateTreeRange(areaHectares) {
+    var minTrees = Math.round(areaHectares * 3000);
+    var maxTrees = Math.round(areaHectares * 5000);
+    return [minTrees, maxTrees];
+}
+
+
+
+// Function to create label element with additional text that can be expanded
+function createLabelElement(areaSize, treeRange) {
+    var containerDiv = document.createElement('div');
+    containerDiv.style.backgroundColor = 'white';
+    containerDiv.style.padding = '6px';
+    containerDiv.style.borderRadius = '20px';
+    containerDiv.style.border = '1px solid #ccc';
+    containerDiv.style.fontSize = '12px';
+    containerDiv.style.fontFamily = 'Be Vietnam Pro';
+    containerDiv.style.display = 'flex';
+    containerDiv.style.alignItems = 'center';
+    containerDiv.style.cursor = 'pointer'; // Change cursor to pointer to indicate it's clickable
+
+    // Create icon span
+    var iconSpan = document.createElement('span');
+    iconSpan.className = 'material-symbols-outlined'; // Adjust the class name according to your icon library
+    iconSpan.textContent = 'psychiatry'; // Adjust the icon content accordingly
+    iconSpan.style.marginRight = '3px'; // Add some margin between the icon and the text
+    iconSpan.style.color = '#515151';
+    containerDiv.appendChild(iconSpan); // Append the icon before the label content
+
+    var labelContent = document.createElement('span');
+    labelContent.textContent = areaSize;
+    labelContent.style.color = '#515151';
+
+    containerDiv.appendChild(labelContent);
+
+    containerDiv.addEventListener('click', function () {
+        var additionalTextDiv = containerDiv.querySelector('.additional-text');
+        if (additionalTextDiv.style.display === 'none') {
+            additionalTextDiv.style.display = 'block';
+        } else {
+            additionalTextDiv.style.display = 'none';
+        }
+    });
+
+    var additionalTextDiv = document.createElement('div');
+    additionalTextDiv.classList.add('additional-text');
+    additionalTextDiv.style.paddingTop = '5px';
+    additionalTextDiv.style.padding = '6px';
+    additionalTextDiv.style.fontSize = '10px';
+    additionalTextDiv.style.color = '#666';
+    additionalTextDiv.style.fontFamily = 'Be Vietnam Pro';
+    additionalTextDiv.style.transition = 'max-height 0.3s ease-in-out';
+    additionalTextDiv.style.backgroundColor = 'white';
+    additionalTextDiv.style.display = 'none';
+
+    var boldTreeRangeStart = document.createElement('b');
+    boldTreeRangeStart.textContent = treeRange[0];
+
+    var boldTreeRangeEnd = document.createElement('b');
+    boldTreeRangeEnd.textContent = treeRange[1];
+
+    var normalText1 = document.createElement('span');
+    normalText1.textContent = "Approximate Arabica Coffee Trees for this plot is ";
+    normalText1.style.fontWeight = 'normal';
+
+    var normalText2 = document.createElement('span');
+    normalText2.textContent = " to ";
+    normalText2.style.fontWeight = 'normal';
+
+    additionalTextDiv.appendChild(normalText1);
+    additionalTextDiv.appendChild(boldTreeRangeStart);
+    additionalTextDiv.appendChild(normalText2);
+    additionalTextDiv.appendChild(boldTreeRangeEnd);
+
+    containerDiv.appendChild(additionalTextDiv);
+
+    return containerDiv;
+}
 
 
 
@@ -645,6 +793,8 @@ function panToUserLocation() {
 // Call the function to pan to the user's location
 panToUserLocation();
 
+
+//test4
 
 
 
