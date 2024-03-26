@@ -294,37 +294,45 @@ window.addEventListener('load', gpsDrawLoad);
 
 
 
-// Define the gpsDrawDiscard function
+// Define a variable to store the last drawn feature
+var lastDrawnFeature = null;
+
 // Define the gpsDrawDiscard function
 function gpsDrawDiscard() {
-    // Get the selected feature (highlighted polygon)
-    var selectedFeatures = selectInteraction.getFeatures().getArray();
+    try {
+        if (lastDrawnFeature) {
+            // Remove the last drawn feature from the vector source
+            vector.getSource().removeFeature(lastDrawnFeature);
 
-    // Check if there's a selected feature (highlighted polygon)
-    if (selectedFeatures.length > 0) {
-        var selectedFeature = selectedFeatures[0];
-        
-        // Reset the style of the selected feature to its original style
-        selectedFeature.setStyle(styleFunction);
+            // Remove the corresponding point feature from the coffeeFarmCentroid layer
+            coffeeFarmCentroid.getSource().getFeatures().forEach(function (pointFeature) {
+                if (pointFeature.getGeometry().getCoordinates()[0] === lastDrawnFeature.getGeometry().getCoordinates()[0] &&
+                    pointFeature.getGeometry().getCoordinates()[1] === lastDrawnFeature.getGeometry().getCoordinates()[1]) {
+                    coffeeFarmCentroid.getSource().removeFeature(pointFeature);
+                }
+            });
 
-        // Remove the selected feature from the select interaction
-        selectInteraction.getFeatures().remove(selectedFeature);
+            // Reset the last drawn feature variable
+            lastDrawnFeature = null;
 
-        // Remove the selected feature (highlighted polygon) from the vector source
-        vector.getSource().removeFeature(selectedFeature);
-
-        // Remove the corresponding point feature from the coffeeFarmCentroid layer
-        coffeeFarmCentroid.getSource().getFeatures().forEach(function (pointFeature) {
-            if (pointFeature.getGeometry().getCoordinates()[0] === selectedFeature.getGeometry().getCoordinates()[0] &&
-                pointFeature.getGeometry().getCoordinates()[1] === selectedFeature.getGeometry().getCoordinates()[1]) {
-                coffeeFarmCentroid.getSource().removeFeature(pointFeature);
-            }
-        });
-
-        // Refresh the map view
-        map.getView().setCenter(map.getView().getCenter());
+            // Refresh the map view
+            map.getView().setCenter(map.getView().getCenter());
+        }
+    } catch (error) {
+        console.error('Error discarding drawing:', error);
     }
 }
+
+// Event listener for when a feature is added by drawing
+vector.getSource().on('addfeature', function (event) {
+    // Update the last drawn feature when a new feature is added
+    lastDrawnFeature = event.feature;
+});
+
+
+
+
+
 
 
 
@@ -594,7 +602,7 @@ function panToUserLocation() {
 panToUserLocation();
 
 
-//test3
+//test4
 
 
 
