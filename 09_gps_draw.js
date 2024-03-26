@@ -1,4 +1,3 @@
-///// Showing and hiding Start, Pause and Stop buttons \\\\\
 document.addEventListener('DOMContentLoaded', function () {
     var startBtn = document.getElementById('gpsDrawFarmStartBtn');
     var pauseBtn = document.getElementById('gpsDrawFarmPauseBtn');
@@ -14,6 +13,10 @@ document.addEventListener('DOMContentLoaded', function () {
     saveBtn.style.display = 'none';
     discardBtn.style.display = 'none';
 
+    // Flag to track if drawing process has started
+    var drawingStarted = false;
+    var startTime; // Variable to store the start time
+
     function toggleButtons() {
         var showButtons = (startBtn.style.display === 'none');
         startBtn.style.display = showButtons ? 'block' : 'none';
@@ -25,28 +28,57 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     farmBtn.addEventListener('click', toggleButtons);
+
     startBtn.addEventListener('click', function () {
         startBtn.style.display = 'none';
         stopBtn.style.display = 'block';
         pauseBtn.style.display = 'block';
+
+        // Set drawingStarted flag to true when the user starts drawing
+        drawingStarted = true;
+        // Record the start time
+        startTime = new Date().getTime();
     });
-    pauseBtn.addEventListener('click', function () {
-        pauseBtn.style.display = 'none';
-        startBtn.style.display = 'block';
-    });
+
     stopBtn.addEventListener('click', function () {
-        startBtn.style.display = 'block';
-        pauseBtn.style.display = 'none';
+        // Check if stop button is pressed within 5 seconds of pressing start button
+        var timeoutDuration = 5000; // 5 seconds
+        var now = new Date().getTime();
+        if (drawingStarted && (now - startTime) < timeoutDuration) {
+            startBtn.style.display = 'none';
+            pauseBtn.style.display = 'none';
+            stopBtn.style.display = 'none';
+            saveBtn.style.display = 'none';
+            discardBtn.style.display = 'none';
 
-        // Show save and discard buttons
-        saveBtn.style.display = 'block';
-        discardBtn.style.display = 'block';
+            // Clear the temporary center coordinates array
+            tempCenterCoordinates = [];
+            // Remove the last drawn feature if exists
+            if (lastDrawnFeature) {
+                vector.getSource().removeFeature(lastDrawnFeature);
+                lastDrawnFeature = null;
+            }
+        } else {
+            startBtn.style.display = 'none';
+            pauseBtn.style.display = 'block';
+            stopBtn.style.display = 'block';
 
-        // Highlight the latest drawn polygon
-        var features = vector.getSource().getFeatures();
-        var latestDrawnPolygon = features[features.length - 1];
-        latestDrawnPolygon.setStyle(highlightedPolygonStyle);
+            // Check if any features have been drawn
+            var features = vector.getSource().getFeatures();
+            if (features.length > 0) {
+                // Show save and discard buttons if features have been drawn
+                saveBtn.style.display = 'block';
+                discardBtn.style.display = 'block';
 
+                // Highlight the latest drawn polygon
+                var latestDrawnPolygon = features[features.length - 1];
+                latestDrawnPolygon.setStyle(highlightedPolygonStyle);
+            } else {
+                // Hide save and discard buttons if no features have been drawn
+                saveBtn.style.display = 'none';
+                discardBtn.style.display = 'none';
+            }
+        }
     });
 
     saveBtn.addEventListener('click', function () {
@@ -55,6 +87,16 @@ document.addEventListener('DOMContentLoaded', function () {
         stopBtn.style.display = 'none';
         saveBtn.style.display = 'none';
         discardBtn.style.display = 'none';
+
+        // Remove the highlight on the farm polygon when the saveBtn is clicked
+        var features = vector.getSource().getFeatures();
+        var latestDrawnPolygon = features[features.length - 1];
+        latestDrawnPolygon.setStyle(styleFunction); // Reset style to original
+
+        // Call the function to save center coordinates
+        saveCenterCoordinates();
+        // Call the function to save the drawn polygons
+        gpsDrawSave();
     });
 
     discardBtn.addEventListener('click', function () {
@@ -63,8 +105,18 @@ document.addEventListener('DOMContentLoaded', function () {
         stopBtn.style.display = 'none';
         saveBtn.style.display = 'none';
         discardBtn.style.display = 'none';
+
+        // Remove the last drawn feature if exists
+        if (lastDrawnFeature) {
+            vector.getSource().removeFeature(lastDrawnFeature);
+            lastDrawnFeature = null;
+        }
+
+        // Clear the temporary center coordinates array
+        tempCenterCoordinates = [];
     });
 });
+
 
 
 // Define the Polygon style 
@@ -112,8 +164,6 @@ window.addEventListener('load', function () {
         panToUserLocation();
     }
 });
-
-
 
 
 
@@ -254,7 +304,6 @@ document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', func
 
 
 //////// Retrieve the saved GPS Drawing and Centerpoint \\\\\\\
-
 // Define the gpsDrawLoad function
 function gpsDrawLoad() {
     try {
@@ -297,6 +346,8 @@ window.addEventListener('load', gpsDrawLoad);
 // Define a variable to store the last drawn feature
 var lastDrawnFeature = null;
 
+
+// Funtion to discard GPS drawn polygon
 // Define the gpsDrawDiscard function
 function gpsDrawDiscard() {
     try {
@@ -328,13 +379,6 @@ vector.getSource().on('addfeature', function (event) {
     // Update the last drawn feature when a new feature is added
     lastDrawnFeature = event.feature;
 });
-
-
-
-
-
-
-
 
 
 
@@ -601,8 +645,6 @@ function panToUserLocation() {
 // Call the function to pan to the user's location
 panToUserLocation();
 
-
-//test4
 
 
 
