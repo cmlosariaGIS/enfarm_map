@@ -2,6 +2,7 @@
 // Keep track of the added area size labels
 var gpsAreaSizeLabels = {};
 
+
 document.addEventListener('DOMContentLoaded', function () {
     var startBtn = document.getElementById('gpsDrawFarmStartBtn');
     var pauseBtn = document.getElementById('gpsDrawFarmPauseBtn');
@@ -86,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-// Combine event listeners for "Save" button and saveBtn
+// Event listeners for "Save" button
 function handleSaveButtonClick() {
     // Call the function to save center coordinates
     saveCenterCoordinates();
@@ -101,7 +102,13 @@ function handleSaveButtonClick() {
     // Add area label to the saved polygon
     var areaSquareMeters = calculatePolygonArea(latestDrawnPolygon.getGeometry().getCoordinates()[0]);
     var areaHectares = areaSquareMeters / 10000;
-    addAreaLabelToFeature(latestDrawnPolygon, areaSquareMeters, areaHectares);
+    var labelCoordinates = latestDrawnPolygon.getGeometry().getInteriorPoint().getCoordinates();
+    var treeRange = estimateTreeRange(areaHectares);
+    var areaSize = areaSquareMeters < 1000 ? areaSquareMeters.toFixed(2) + ' sqm' : areaHectares.toFixed(2) + ' ha'; // Define areaSize here
+    addAreaLabelToFeature(latestDrawnPolygon, areaSquareMeters, areaHectares, areaSize); // Pass areaSize to addAreaLabelToFeature function
+
+    // Save area label and tree range to local storage
+    saveAreaLabel(areaSize, labelCoordinates, treeRange);
 
     // Hide buttons after save
     startBtn.style.display = 'none';
@@ -114,6 +121,16 @@ function handleSaveButtonClick() {
 // Register event listeners for both "Save" button and saveBtn
 document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', handleSaveButtonClick);
 saveBtn.addEventListener('click', handleSaveButtonClick);
+ner('click', handleSaveButtonClick);
+saveBtn.addEventListener('click', handleSaveButtonClick);
+
+
+
+
+
+
+
+
 
 
 
@@ -138,6 +155,11 @@ saveBtn.addEventListener('click', handleSaveButtonClick);
 
 
 
+
+
+
+
+
 // Define the Polygon style 
 var styleFunction = function (feature) {
     return new ol.style.Style({
@@ -150,6 +172,7 @@ var styleFunction = function (feature) {
         })
     });
 };
+
 
 // New coffee farm vector layer 
 var vector = new ol.layer.Vector({
@@ -309,17 +332,6 @@ function createPointFeature(coordinates) {
     // Add the point feature to the coffeeFarmCentroid layer source
     coffeeFarmCentroid.getSource().addFeature(pointFeature);
 }
-
-
-/*
-// Register an event listener for the "Save" button
-document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', function () {
-    // Call the function to save center coordinates
-    saveCenterCoordinates();
-    // Call the function to save the drawn polygons
-    gpsDrawSave();
-});
-*/
 
 
 //////// Retrieve the saved GPS Drawing and Centerpoint \\\\\\\
@@ -732,6 +744,18 @@ function createLabelElement(areaSize, treeRange) {
 }
 
 
+
+// Function to save area size label and tree range to local storage
+function saveAreaLabel(label, coordinates, treeRange) {
+    // Retrieve existing stored labels or initialize an empty object
+    var storedLabels = JSON.parse(localStorage.getItem('gpsDrawnPolygonsLabel')) || {};
+    // Convert coordinates to string for use as object key
+    var coordinatesKey = JSON.stringify(coordinates);
+    // Add the label with coordinates and tree range to the object
+    storedLabels[coordinatesKey] = { label: label, treeRange: treeRange };
+    // Save the updated object to local storage
+    localStorage.setItem('gpsDrawnPolygonsLabel', JSON.stringify(storedLabels));
+}
 
 
 
