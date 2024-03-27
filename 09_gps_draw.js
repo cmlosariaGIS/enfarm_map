@@ -700,6 +700,9 @@ function removePolygonFromStorage(feature) {
         // Refresh the map view
         map.getView().setCenter(map.getView().getCenter());
 
+        // Refresh the browser
+        window.location.reload();
+
     } catch (error) {
         console.error('Error removing polygon from storage:', error);
     }
