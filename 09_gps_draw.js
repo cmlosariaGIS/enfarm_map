@@ -121,8 +121,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Register event listeners for both "Save" button and saveBtn
     document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', handleSaveButtonClick);
     saveBtn.addEventListener('click', handleSaveButtonClick);
-    ner('click', handleSaveButtonClick);
-    saveBtn.addEventListener('click', handleSaveButtonClick);
+    //ner('click', handleSaveButtonClick);
+    //saveBtn.addEventListener('click', handleSaveButtonClick);
 
 
 
@@ -411,11 +411,13 @@ function addAreaLabelToMap(label, coordinates, treeRange) {
 var lastDrawnFeature = null;
 
 
-// Funtion to discard GPS drawn polygon
-// Define the gpsDrawDiscard function
+// Function to discard GPS drawn polygon
 function gpsDrawDiscard() {
     try {
         if (lastDrawnFeature) {
+            // Remove the corresponding label overlay from the map
+            removeAreaLabelFromMap(lastDrawnFeature);
+
             // Remove the last drawn feature from the vector source
             vector.getSource().removeFeature(lastDrawnFeature);
 
@@ -427,6 +429,9 @@ function gpsDrawDiscard() {
                 }
             });
 
+            // Remove the corresponding entry from browser storage
+            removePolygonFromStorage(lastDrawnFeature);
+
             // Reset the last drawn feature variable
             lastDrawnFeature = null;
 
@@ -437,6 +442,45 @@ function gpsDrawDiscard() {
         console.error('Error discarding drawing:', error);
     }
 }
+
+
+// Event listener for the "Discard" button
+document.getElementById('gpsDrawFarmDiscardDrawBtn').addEventListener('click', gpsDrawDiscard);
+
+
+// Function to remove the area size label associated with a polygon
+function removeAreaLabel(feature) {
+    try {
+        // Get the coordinates of the feature's centroid
+        var centroidCoordinates = feature.getGeometry().getInteriorPoint().getCoordinates();
+
+        // Find the area size label overlay associated with the centroid coordinates
+        var areaSizeLabel = gpsAreaSizeLabels[JSON.stringify(centroidCoordinates)];
+        if (areaSizeLabel) {
+            // Remove the area size label overlay from the map
+            map.removeOverlay(areaSizeLabel);
+            // Delete the reference from the gpsAreaSizeLabels object
+            delete gpsAreaSizeLabels[JSON.stringify(centroidCoordinates)];
+        }
+    } catch (error) {
+        console.error('Error removing area size label:', error);
+    }
+}
+
+// Function to remove the area size label overlay from the map
+function removeAreaLabelFromMap(feature) {
+    // Remove the corresponding label overlay from the map
+    var labelId = JSON.stringify(feature.getGeometry().getInteriorPoint().getCoordinates());
+    var areaSizeLabel = gpsAreaSizeLabels[labelId];
+    if (areaSizeLabel) {
+        map.removeOverlay(areaSizeLabel);
+        delete gpsAreaSizeLabels[labelId]; // Remove reference from the gpsAreaSizeLabels object
+    }
+}
+
+
+
+
 
 // Event listener for when a feature is added by drawing
 vector.getSource().on('addfeature', function (event) {
@@ -590,7 +634,6 @@ selectInteraction.on('select', function (event) {
 
 
 // Function to remove a polygon feature and its corresponding point feature from storage and map
-// Function to remove a polygon feature and its corresponding point feature from storage and map
 function removePolygonFromStorage(feature) {
     try {
         // Remove the polygon feature from the vector layer source
@@ -654,10 +697,18 @@ function removePolygonFromStorage(feature) {
             coffeeFarmCentroid.getSource().removeFeature(centroidToRemove);
         }
 
+        // Refresh the map view
+        map.getView().setCenter(map.getView().getCenter());
+
     } catch (error) {
         console.error('Error removing polygon from storage:', error);
     }
 }
+
+
+
+
+
 
 
 
