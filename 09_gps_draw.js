@@ -364,6 +364,19 @@ function gpsDrawLoad() {
             coffeeFarmCentroid.getSource().clear();
             coffeeFarmCentroid.getSource().addFeatures(centerPoints);
         }
+
+        // Retrieve the saved labels for polygons from localStorage
+        const savedLabelsString = localStorage.getItem('gpsDrawnPolygonsLabel');
+        if (savedLabelsString) {
+            const savedLabels = JSON.parse(savedLabelsString);
+            // Iterate through saved labels and add them back to the map as overlays
+            Object.keys(savedLabels).forEach(function (coordinatesKey) {
+                const labelInfo = savedLabels[coordinatesKey];
+                const coordinates = JSON.parse(coordinatesKey);
+                const { label, treeRange } = labelInfo;
+                addAreaLabelToMap(label, coordinates, treeRange);
+            });
+        }
     } catch (error) {
         console.error('Error loading drawing:', error);
     }
@@ -371,6 +384,26 @@ function gpsDrawLoad() {
 
 // Call the gpsDrawLoad function when the map loads
 window.addEventListener('load', gpsDrawLoad);
+
+// Function to add area label to the map as an overlay
+function addAreaLabelToMap(label, coordinates, treeRange) {
+    // Create area size label overlay
+    var areaSizeLabel = new ol.Overlay({
+        element: createLabelElement(label, treeRange), // Create label element
+        offset: [90, -40], // Offset to position the label
+        positioning: 'top-right', // Position the label to the top right of the feature
+        insertFirst: false // Ensure that the label is not inserted as the first child
+    });
+
+    // Set label position
+    areaSizeLabel.setPosition(coordinates);
+
+    // Add area size label overlay to the map
+    map.addOverlay(areaSizeLabel);
+}
+
+
+
 
 
 
