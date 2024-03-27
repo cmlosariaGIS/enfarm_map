@@ -87,42 +87,42 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-// Event listeners for "Save" button
-function handleSaveButtonClick() {
-    // Call the function to save center coordinates
-    saveCenterCoordinates();
-    // Call the function to save the drawn polygons
-    gpsDrawSave();
+    // Event listeners for "Save" button
+    function handleSaveButtonClick() {
+        // Call the function to save center coordinates
+        saveCenterCoordinates();
+        // Call the function to save the drawn polygons
+        gpsDrawSave();
 
-    // Remove the highlight on the farm polygon when the saveBtn is clicked
-    var features = vector.getSource().getFeatures();
-    var latestDrawnPolygon = features[features.length - 1];
-    latestDrawnPolygon.setStyle(styleFunction); // Reset style to original
+        // Remove the highlight on the farm polygon when the saveBtn is clicked
+        var features = vector.getSource().getFeatures();
+        var latestDrawnPolygon = features[features.length - 1];
+        latestDrawnPolygon.setStyle(styleFunction); // Reset style to original
 
-    // Add area label to the saved polygon
-    var areaSquareMeters = calculatePolygonArea(latestDrawnPolygon.getGeometry().getCoordinates()[0]);
-    var areaHectares = areaSquareMeters / 10000;
-    var labelCoordinates = latestDrawnPolygon.getGeometry().getInteriorPoint().getCoordinates();
-    var treeRange = estimateTreeRange(areaHectares);
-    var areaSize = areaSquareMeters < 1000 ? areaSquareMeters.toFixed(2) + ' sqm' : areaHectares.toFixed(2) + ' ha'; // Define areaSize here
-    addAreaLabelToFeature(latestDrawnPolygon, areaSquareMeters, areaHectares, areaSize); // Pass areaSize to addAreaLabelToFeature function
+        // Add area label to the saved polygon
+        var areaSquareMeters = calculatePolygonArea(latestDrawnPolygon.getGeometry().getCoordinates()[0]);
+        var areaHectares = areaSquareMeters / 10000;
+        var labelCoordinates = latestDrawnPolygon.getGeometry().getInteriorPoint().getCoordinates();
+        var treeRange = estimateTreeRange(areaHectares);
+        var areaSize = areaSquareMeters < 1000 ? areaSquareMeters.toFixed(2) + ' sqm' : areaHectares.toFixed(2) + ' ha'; // Define areaSize here
+        addAreaLabelToFeature(latestDrawnPolygon, areaSquareMeters, areaHectares, areaSize); // Pass areaSize to addAreaLabelToFeature function
 
-    // Save area label and tree range to local storage
-    saveAreaLabel(areaSize, labelCoordinates, treeRange);
+        // Save area label and tree range to local storage
+        saveAreaLabel(areaSize, labelCoordinates, treeRange);
 
-    // Hide buttons after save
-    startBtn.style.display = 'none';
-    pauseBtn.style.display = 'none';
-    stopBtn.style.display = 'none';
-    saveBtn.style.display = 'none';
-    discardBtn.style.display = 'none';
-}
+        // Hide buttons after save
+        startBtn.style.display = 'none';
+        pauseBtn.style.display = 'none';
+        stopBtn.style.display = 'none';
+        saveBtn.style.display = 'none';
+        discardBtn.style.display = 'none';
+    }
 
-// Register event listeners for both "Save" button and saveBtn
-document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', handleSaveButtonClick);
-saveBtn.addEventListener('click', handleSaveButtonClick);
-ner('click', handleSaveButtonClick);
-saveBtn.addEventListener('click', handleSaveButtonClick);
+    // Register event listeners for both "Save" button and saveBtn
+    document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', handleSaveButtonClick);
+    saveBtn.addEventListener('click', handleSaveButtonClick);
+    ner('click', handleSaveButtonClick);
+    saveBtn.addEventListener('click', handleSaveButtonClick);
 
 
 
@@ -564,6 +564,7 @@ selectInteraction.on('select', function (event) {
                 }
             });
 
+
             // Remove the corresponding entry from browser storage
             removePolygonFromStorage(feature);
 
@@ -589,21 +590,28 @@ selectInteraction.on('select', function (event) {
 
 
 // Function to remove a polygon feature and its corresponding point feature from storage and map
+// Function to remove a polygon feature and its corresponding point feature from storage and map
 function removePolygonFromStorage(feature) {
     try {
         // Remove the polygon feature from the vector layer source
         vector.getSource().removeFeature(feature);
 
-        // Get the extent of the polygon feature
-        var extent = feature.getGeometry().getExtent();
-
         // Remove the corresponding point feature from the coffeeFarmCentroid layer source
         var pointFeatures = coffeeFarmCentroid.getSource().getFeatures();
         pointFeatures.forEach(function (pointFeature) {
-            if (ol.extent.containsCoordinate(extent, pointFeature.getGeometry().getCoordinates())) {
+            if (pointFeature.getGeometry().getCoordinates()[0] === feature.getGeometry().getCoordinates()[0] &&
+                pointFeature.getGeometry().getCoordinates()[1] === feature.getGeometry().getCoordinates()[1]) {
                 coffeeFarmCentroid.getSource().removeFeature(pointFeature);
             }
         });
+
+        // Remove the corresponding label overlay from the map
+        var labelId = JSON.stringify(feature.getGeometry().getInteriorPoint().getCoordinates());
+        var areaSizeLabel = gpsAreaSizeLabels[labelId];
+        if (areaSizeLabel) {
+            map.removeOverlay(areaSizeLabel);
+            delete gpsAreaSizeLabels[labelId]; // Remove reference from the gpsAreaSizeLabels object
+        }
 
         // Remove the polygon's array entry from the GeoJSON object
         var geojsonString = localStorage.getItem('gpsDrawnPolygons');
@@ -617,11 +625,19 @@ function removePolygonFromStorage(feature) {
             localStorage.setItem('gpsDrawnPolygons', JSON.stringify(geojson));
         }
 
+        // Remove the corresponding entry from the gpsDrawnPolygonsLabel array
+        var labelsString = localStorage.getItem('gpsDrawnPolygonsLabel');
+        if (labelsString) {
+            var labels = JSON.parse(labelsString);
+            delete labels[labelId]; // Remove the label entry for the deleted polygon
+            localStorage.setItem('gpsDrawnPolygonsLabel', JSON.stringify(labels));
+        }
+
         // Remove the corresponding centroid point from the gpsDrawnPolygonsCenterPoint array
         var centerPointsString = localStorage.getItem('gpsDrawnPolygonsCenterPoint');
         if (centerPointsString) {
             var centerPoints = JSON.parse(centerPointsString);
-            var centroid = ol.extent.getCenter(extent);
+            var centroid = ol.extent.getCenter(feature.getGeometry().getExtent());
             var updatedCenterPoints = centerPoints.filter(function (point) {
                 return !(point[0] === centroid[0] && point[1] === centroid[1]);
             });
@@ -642,6 +658,7 @@ function removePolygonFromStorage(feature) {
         console.error('Error removing polygon from storage:', error);
     }
 }
+
 
 
 // Function to calculate the area of a polygon
