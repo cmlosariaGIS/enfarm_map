@@ -1439,7 +1439,9 @@ body {
 .measuringAreafloatingTitle,
 .measuringLengthfloatingTitle,
 .sketchingFarmfloatingTitle,
-.addSensorsfloatingTitle {
+.addSensorsfloatingTitle,
+.generateElevationProfilefloatingTitle,
+.gpsDrawfloatingTitle {
     position: fixed;
     top: -100px;
     /* Start off-screen */
@@ -1478,10 +1480,12 @@ body {
     }
 }
 
-.addSensorsfloatingTitle .addSensorsTitle,
-.sketchingFarmfloatingTitle .sketchingFarmTitle,
-.measuringLengthfloatingTitle .measuringLengthTitle,
-.measuringAreafloatingTitle .measuringAreaTitle {
+.addSensorsfloatingTitle, .addSensorsTitle,
+.sketchingFarmfloatingTitle, .sketchingFarmTitle,
+.measuringLengthfloatingTitle, .measuringLengthTitle,
+.measuringAreafloatingTitle, .measuringAreaTitle
+.generateElevationProfilefloatingTitle,
+.gpsDrawfloatingTitle {
     font-size: 14px;
     color: #515151;
 }
@@ -1489,7 +1493,9 @@ body {
 .measuringAreafloatingTitle,
 .measuringLengthfloatingTitle,
 .sketchingFarmfloatingTitle,
-.addSensorsfloatingTitle {
+.addSensorsfloatingTitle,
+.generateElevationProfilefloatingTitle,
+.gpsDrawfloatingTitle {
     display: none;
 }
 
@@ -2051,59 +2057,6 @@ body {
 }
 
 
-/***** START CURRENT ACTIVITY FLOATING TITLE ******/
-
-.generateElevationProfilefloatingTitle {
-    position: fixed;
-    top: -100px;
-    /* Start off-screen */
-    left: 50%;
-    width: fit-content;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    background-color: #ffffffc0;
-    border-radius: 50px;
-    padding: 10px 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 2;
-    animation: slideDownUp 5s forwards;
-}
-
-@keyframes slideDownUp {
-    0% {
-        top: -100px;
-        /* Start off-screen */
-    }
-
-    5% {
-        top: 25px;
-        /* Slide down to this position */
-    }
-
-    95% {
-        top: 25px;
-        /* Stay at this position for 10 seconds */
-    }
-
-    100% {
-        top: -100px;
-        /* Slide back up to off-screen */
-    }
-}
-
-.generateElevationProfileTitle {
-    font-size: 14px;
-    color: #515151;
-
-}
-
-.generateElevationProfilefloatingTitle {
-    display: none;
-}
-
-/***** END CURRENT ACTIVITY FLOATING TITLE ******/
-
 .pointElevMap-Label {
     position: absolute;
     background-color: rgba(255, 225, 0, 0.8);
@@ -2360,6 +2313,9 @@ body {
 #gpsDrawFarmStopBtn.active i.material-symbols-outlined {
     color: #ffffff;
 }
+
+
+
 
 /****** End GPS DRAW FARM ******/
 
