@@ -44,7 +44,7 @@ function dismissBanner() {
 
 // Variables to keep track of long press
 var longPressTimer;
-var longPressDelay = 600; // milliseconds
+var longPressDelay = 1500; // milliseconds
 
 // Event listeners for touchstart and mousedown events to detect long press
 map.getViewport().addEventListener('mousedown', function (event) {
