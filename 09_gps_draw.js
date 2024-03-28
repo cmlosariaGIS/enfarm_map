@@ -45,17 +45,19 @@ document.addEventListener('DOMContentLoaded', function () {
         startTime = new Date().getTime();
     });
 
+
     stopBtn.addEventListener('click', function () {
         // Check if stop button is pressed within 5 seconds of pressing start button
         var timeoutDuration = 5000; // 5 seconds
         var now = new Date().getTime();
         if (drawingStarted && (now - startTime) < timeoutDuration) {
+            // If stop button is pressed within timeout duration, remove last drawn feature
             startBtn.style.display = 'none';
             pauseBtn.style.display = 'none';
             stopBtn.style.display = 'none';
             saveBtn.style.display = 'none';
             discardBtn.style.display = 'none';
-
+    
             // Clear the temporary center coordinates array
             tempCenterCoordinates = [];
             // Remove the last drawn feature if exists
@@ -64,17 +66,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 lastDrawnFeature = null;
             }
         } else {
+            // If stop button is pressed after timeout or drawing has started, show save and discard buttons
             startBtn.style.display = 'none';
-            pauseBtn.style.display = 'block';
-            stopBtn.style.display = 'block';
-
+            pauseBtn.style.display = 'none';
+            stopBtn.style.display = 'none';
+    
             // Check if any features have been drawn
             var features = vector.getSource().getFeatures();
             if (features.length > 0) {
                 // Show save and discard buttons if features have been drawn
                 saveBtn.style.display = 'block';
                 discardBtn.style.display = 'block';
-
+    
                 // Highlight the latest drawn polygon
                 var latestDrawnPolygon = features[features.length - 1];
                 latestDrawnPolygon.setStyle(highlightedPolygonStyle);
@@ -84,6 +87,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 discardBtn.style.display = 'none';
             }
         }
+    
+        // Remove the center point when stop button is clicked
+        removeCenterPoint();
     });
 
 
@@ -121,8 +127,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Register event listeners for both "Save" button and saveBtn
     document.getElementById('gpsDrawFarmSaveDrawBtn').addEventListener('click', handleSaveButtonClick);
     saveBtn.addEventListener('click', handleSaveButtonClick);
-    //ner('click', handleSaveButtonClick);
-    //saveBtn.addEventListener('click', handleSaveButtonClick);
+        // Call the function to save center coordinates
+        saveCenterCoordinates();
 
 
 
@@ -150,6 +156,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Clear the temporary center coordinates array
         tempCenterCoordinates = [];
+
+            // Remove the center point when discard button is clicked
+    removeCenterPoint();
     });
 });
 
@@ -333,6 +342,11 @@ function createPointFeature(coordinates) {
     coffeeFarmCentroid.getSource().addFeature(pointFeature);
 }
 
+// Function to remove the center point feature
+function removeCenterPoint() {
+    coffeeFarmCentroid.getSource().clear(); // Clear all features from coffeeFarmCentroid layer
+}
+
 
 //////// Retrieve the saved GPS Drawing and Centerpoint \\\\\\\
 // Define the gpsDrawLoad function
@@ -436,7 +450,7 @@ function gpsDrawDiscard() {
             lastDrawnFeature = null;
 
             // Refresh the map view
-            map.getView().setCenter(map.getView().getCenter());
+            //map.getView().setCenter(map.getView().getCenter());
         }
     } catch (error) {
         console.error('Error discarding drawing:', error);
@@ -698,7 +712,7 @@ function removePolygonFromStorage(feature) {
         }
 
         // Refresh the map view
-        map.getView().setCenter(map.getView().getCenter());
+        //map.getView().setCenter(map.getView().getCenter());
 
         // Refresh the browser
         window.location.reload();
@@ -776,8 +790,7 @@ function estimateTreeRange(areaHectares) {
 
 
 
-// Function to create label element with additional text that can be expanded
-function createLabelElement(areaSize, treeRange) {
+function createLabelElement(areaSize, treeRange, showAdditionalText) {
     var containerDiv = document.createElement('div');
     containerDiv.style.backgroundColor = 'white';
     containerDiv.style.padding = '6px';
@@ -787,31 +800,28 @@ function createLabelElement(areaSize, treeRange) {
     containerDiv.style.fontFamily = 'Be Vietnam Pro';
     containerDiv.style.display = 'flex';
     containerDiv.style.alignItems = 'center';
-    containerDiv.style.cursor = 'pointer'; // Change cursor to pointer to indicate it's clickable
+    containerDiv.style.cursor = 'pointer';
 
     // Create icon span
     var iconSpan = document.createElement('span');
-    iconSpan.className = 'material-symbols-outlined'; // Adjust the class name according to your icon library
-    iconSpan.textContent = 'psychiatry'; // Adjust the icon content accordingly
-    iconSpan.style.marginRight = '3px'; // Add some margin between the icon and the text
+    iconSpan.className = 'material-symbols-outlined';
+    iconSpan.textContent = 'psychiatry';
+    iconSpan.style.marginRight = '3px';
     iconSpan.style.color = '#515151';
-    containerDiv.appendChild(iconSpan); // Append the icon before the label content
+    containerDiv.appendChild(iconSpan);
 
     var labelContent = document.createElement('span');
     labelContent.textContent = areaSize;
     labelContent.style.color = '#515151';
-
     containerDiv.appendChild(labelContent);
 
+    // Add event listener to toggle additional text
     containerDiv.addEventListener('click', function () {
         var additionalTextDiv = containerDiv.querySelector('.additional-text');
-        if (additionalTextDiv.style.display === 'none') {
-            additionalTextDiv.style.display = 'block';
-        } else {
-            additionalTextDiv.style.display = 'none';
-        }
+        additionalTextDiv.style.display = additionalTextDiv.style.display === 'none' ? 'block' : 'none';
     });
 
+    // Create additional text div
     var additionalTextDiv = document.createElement('div');
     additionalTextDiv.classList.add('additional-text');
     additionalTextDiv.style.paddingTop = '5px';
@@ -821,8 +831,9 @@ function createLabelElement(areaSize, treeRange) {
     additionalTextDiv.style.fontFamily = 'Be Vietnam Pro';
     additionalTextDiv.style.transition = 'max-height 0.3s ease-in-out';
     additionalTextDiv.style.backgroundColor = 'white';
-    additionalTextDiv.style.display = 'none';
+    additionalTextDiv.style.display = showAdditionalText ? 'block' : 'none'; // Initial display based on condition
 
+    // Create bold and normal text elements
     var boldTreeRangeStart = document.createElement('b');
     boldTreeRangeStart.textContent = treeRange[0];
 
@@ -830,23 +841,29 @@ function createLabelElement(areaSize, treeRange) {
     boldTreeRangeEnd.textContent = treeRange[1];
 
     var normalText1 = document.createElement('span');
-    normalText1.textContent = "Approximate Arabica Coffee Trees for this plot is ";
+    normalText1.textContent = "[Cây cà phê gần đúng: ";
     normalText1.style.fontWeight = 'normal';
 
     var normalText2 = document.createElement('span');
     normalText2.textContent = " to ";
     normalText2.style.fontWeight = 'normal';
 
+    var normalText3 = document.createElement('span');
+    normalText3.textContent = " ]";
+    normalText3.style.fontWeight = 'normal';
+
+    // Append text elements to additional text div
     additionalTextDiv.appendChild(normalText1);
     additionalTextDiv.appendChild(boldTreeRangeStart);
     additionalTextDiv.appendChild(normalText2);
     additionalTextDiv.appendChild(boldTreeRangeEnd);
+    additionalTextDiv.appendChild(normalText3);
 
+    // Append additional text div to container div
     containerDiv.appendChild(additionalTextDiv);
 
     return containerDiv;
 }
-
 
 
 // Function to save area size label and tree range to local storage
@@ -860,10 +877,6 @@ function saveAreaLabel(label, coordinates, treeRange) {
     // Save the updated object to local storage
     localStorage.setItem('gpsDrawnPolygonsLabel', JSON.stringify(storedLabels));
 }
-
-
-
-
 
 
 
